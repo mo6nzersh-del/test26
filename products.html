@@ -264,6 +264,21 @@
                 <label for="load-note">ملاحظات (اختياري)</label>
                 <input type="text" id="load-note" placeholder="مثال: دفعة يوليو..." />
               </div>
+              <!-- حالة الدفع -->
+              <div class="field" style="margin-bottom:18px">
+                <label style="display:block;margin-bottom:8px;font-weight:600">حالة الدفع</label>
+                <div style="display:flex;gap:0;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content">
+                  <label id="pay-label-unpaid" style="display:flex;align-items:center;gap:6px;padding:8px 20px;cursor:pointer;background:#fff4e5;color:#a06a10;font-weight:700;font-size:.92rem;border-left:1.5px solid var(--border)">
+                    <input type="radio" name="load_payment" value="unpaid" id="load-pay-unpaid" checked style="accent-color:#a06a10" />
+                    ⏳ غير مدفوع
+                  </label>
+                  <label id="pay-label-paid" style="display:flex;align-items:center;gap:6px;padding:8px 20px;cursor:pointer;background:#f0f0f0;color:#888;font-weight:600;font-size:.92rem">
+                    <input type="radio" name="load_payment" value="paid" id="load-pay-paid" style="accent-color:#1a6b3a" />
+                    ✅ تم الدفع
+                  </label>
+                </div>
+                <p id="pay-hint" style="margin:6px 0 0;font-size:.82rem;color:#a06a10">سيُسجَّل دين على التاجر بقيمة الفاتورة</p>
+              </div>
               <button type="submit" class="btn" id="loading-submit-btn">تنفيذ عملية البيع</button>
             </form>
           </div>
