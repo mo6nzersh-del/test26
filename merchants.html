@@ -995,61 +995,69 @@ function renderUnifiedStats(){
   const legacyTotal    =legacyOps.reduce((s,op)=>s+(op.totalAmount||0),0);
   const hasPaymentData =merLoadOps.some(op=>op.paymentStatus);
 
+  // ── تفصيل الدفع داخل بطاقة المبيعات ──
+  const payBreakdown = hasPaymentData ? `
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(0,0,0,.08)">
+      ${debtOps.length?`<div style="display:flex;flex-direction:column;flex:1;min-width:80px;background:rgba(180,60,40,.08);border-radius:7px;padding:7px 10px">
+        <span style="font-size:10px;font-weight:700;color:#92400e;letter-spacing:.3px">📋 دين</span>
+        <span style="font-size:15px;font-weight:900;color:#78350f;margin:2px 0">${fmt(debtTotal)}</span>
+        <span style="font-size:10px;color:#a16207">${debtOps.length} عملية</span>
+      </div>`:""}
+      ${partialOps.length?`<div style="display:flex;flex-direction:column;flex:1;min-width:80px;background:rgba(120,90,20,.08);border-radius:7px;padding:7px 10px">
+        <span style="font-size:10px;font-weight:700;color:#854d0e;letter-spacing:.3px">💳 جزئي</span>
+        <span style="font-size:15px;font-weight:900;color:#713f12;margin:2px 0">${fmt(partialRemain)}</span>
+        <span style="font-size:10px;color:#92400e">${partialOps.length} عملية · دُفع ${fmt(partialPaid)}</span>
+      </div>`:""}
+      ${paidOps.length?`<div style="display:flex;flex-direction:column;flex:1;min-width:80px;background:rgba(20,90,50,.08);border-radius:7px;padding:7px 10px">
+        <span style="font-size:10px;font-weight:700;color:#166534;letter-spacing:.3px">✅ مدفوع</span>
+        <span style="font-size:15px;font-weight:900;color:#14532d;margin:2px 0">${fmt(paidTotal)}</span>
+        <span style="font-size:10px;color:#15803d">${paidOps.length} عملية</span>
+      </div>`:""}
+      ${legacyOps.length?`<div style="display:flex;flex-direction:column;flex:1;min-width:80px;background:rgba(0,0,0,.04);border-radius:7px;padding:7px 10px">
+        <span style="font-size:10px;font-weight:700;color:#6b7280;letter-spacing:.3px">📂 قديمة</span>
+        <span style="font-size:15px;font-weight:900;color:#374151;margin:2px 0">${fmt(legacyTotal)}</span>
+        <span style="font-size:10px;color:#6b7280">${legacyOps.length} عملية</span>
+      </div>`:""}
+    </div>` : "";
+
+  // ── بطاقة الرصيد ──
+  const isDebt = net <= 0;        // net ≤ 0 → التاجر مدين
+  const netDisplay = isDebt
+    ? `<span style="font-size:13px;font-weight:700;vertical-align:middle;margin-left:2px">−</span>${fmt(Math.abs(net))}`
+    : `<span style="font-size:13px;font-weight:700;vertical-align:middle;margin-left:2px">+</span>${fmt(net)}`;
+  const netCardBg   = isDebt ? "linear-gradient(135deg,#fef3c7 0%,#fffbeb 100%)" : "linear-gradient(135deg,#d1fae5 0%,#f0fdf4 100%)";
+  const netBorder   = isDebt ? "#fcd34d" : "#6ee7b7";
+  const netValColor = isDebt ? "#78350f" : "#14532d";
+  const netLabel    = isDebt
+    ? `<span style="color:#92400e;font-weight:800">⚠️ على التاجر سداد هذا المبلغ</span>`
+    : `<span style="color:#15803d;font-weight:800">✅ رصيد دائن — التاجر دفع أكثر</span>`;
+
   document.getElementById("mer-unified-stats").innerHTML=`
     <div class="mer-stat stat-in">
-      <div class="msk">📦 إجمالي مبيعات هذا التاجر${isFiltered?" (الفترة)":""}</div>
-      <div class="msv" style="color:#1a6b3a">${fmt(isFiltered?filtIn:totalIn)}</div>
+      <div class="msk">📦 إجمالي عمليات البيع${isFiltered?" (الفترة)":""}</div>
+      <div class="msv" style="color:#1e40af">${fmt(isFiltered?filtIn:totalIn)}</div>
       <div class="mss">
-        <strong style="color:#1a6b3a">${inCount} عملية بيع</strong>
-        <br/>البضائع التي أخذها التاجر من المخزن — هذا ما يدين به
+        <strong style="color:#1e40af">${inCount} عملية</strong>
+        · إجمالي ما أخذه التاجر من المخزن
       </div>
+      ${payBreakdown}
     </div>
     <div class="mer-stat stat-net">
-      <div class="msk">💳 إجمالي مدفوعات التاجر${isFiltered?" (الفترة)":""}</div>
-      <div class="msv" style="color:#1a4bbf">${fmt(isFiltered?filtOut:totalOut)}</div>
+      <div class="msk">💳 إجمالي المدفوعات المستلمة${isFiltered?" (الفترة)":""}</div>
+      <div class="msv" style="color:#0f766e">${fmt(isFiltered?filtOut:totalOut)}</div>
       <div class="mss">
-        <strong style="color:#1a4bbf">${outCount} دفعة</strong>
-        <br/>المبالغ التي دفعها التاجر فعلياً حتى الآن
+        <strong style="color:#0f766e">${outCount} دفعة</strong>
+        · المبالغ التي دفعها التاجر فعلياً
       </div>
     </div>
-    <div class="mer-stat stat-out">
-      <div class="msk">💰 المبلغ المستحق على هذا التاجر</div>
-      <div class="msv" style="color:${net<=0?"#b3432f":"#1a6b3a"}">
-        ${fmt(Math.abs(net))}
-      </div>
+    <div class="mer-stat stat-out" style="background:${netCardBg};border-color:${netBorder}">
+      <div class="msk">💰 الرصيد الصافي</div>
+      <div class="msv" style="color:${netValColor};font-size:1.7rem">${netDisplay}</div>
       <div class="mss">
-        <strong style="color:${net<=0?"#b3432f":"#1a6b3a"}">
-          ${net<=0?"⚠️ على التاجر سداد هذا المبلغ":"✅ رصيد دائن — التاجر دفع أكثر"}
-        </strong>
-        <br/>${allFull.length} عملية إجمالاً (مبيعات − مدفوعات)
+        ${netLabel}
+        <br/><span style="color:#6b7280">${allFull.length} حركة إجمالاً</span>
       </div>
-    </div>
-    ${hasPaymentData?`
-    <div class="mer-stat" style="background:linear-gradient(135deg,#fde8e5 0%,#fff4f2 100%);border-color:#f0b8b0;grid-column:1/-1">
-      <div class="msk" style="font-size:12px;font-weight:800;margin-bottom:10px;color:#6b2020">📊 تفصيل عمليات البيع حسب طريقة الدفع</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
-        <div style="background:#fde8e5;border:1.5px solid #f0b8b0;border-radius:8px;padding:12px 14px">
-          <div style="font-size:11.5px;font-weight:700;color:#6b2020;margin-bottom:4px">📋 دين (لم يُدفع)</div>
-          <div style="font-size:20px;font-weight:900;color:#b3432f">${fmt(debtTotal)}</div>
-          <div style="font-size:11px;color:#b3432f;margin-top:3px">${debtOps.length} عملية بيع بالدين</div>
-        </div>
-        <div style="background:#fdf4e3;border:1.5px solid #f0d99b;border-radius:8px;padding:12px 14px">
-          <div style="font-size:11.5px;font-weight:700;color:#7a4f10;margin-bottom:4px">💳 دفع جزئي</div>
-          <div style="font-size:20px;font-weight:900;color:#7a4f10">${fmt(partialRemain)}</div>
-          <div style="font-size:11px;color:#7a4f10;margin-top:3px">${partialOps.length} عملية — دُفع ${fmt(partialPaid)} — متبقي ${fmt(partialRemain)}</div>
-        </div>
-        <div style="background:#e8f8ee;border:1.5px solid #a8dbb7;border-radius:8px;padding:12px 14px">
-          <div style="font-size:11.5px;font-weight:700;color:#1a6b3a;margin-bottom:4px">✅ مدفوع بالكامل</div>
-          <div style="font-size:20px;font-weight:900;color:#1a6b3a">${fmt(paidTotal)}</div>
-          <div style="font-size:11px;color:#1a6b3a;margin-top:3px">${paidOps.length} عملية مدفوعة نقداً</div>
-        </div>
-        ${legacyTotal>0?`<div style="background:#f2f2f2;border:1.5px solid #d0d0d0;border-radius:8px;padding:12px 14px">
-          <div style="font-size:11.5px;font-weight:700;color:#555;margin-bottom:4px">📂 عمليات قديمة</div>
-          <div style="font-size:20px;font-weight:900;color:#555">${fmt(legacyTotal)}</div>
-          <div style="font-size:11px;color:#666;margin-top:3px">${legacyOps.length} عملية (قبل تصنيف الدفع)</div>
-        </div>`:""}
-      </div>
-    </div>`:""}`;
+    </div>`;
 }
 
 /* ── كشف الحساب ── */
