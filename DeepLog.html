@@ -2234,13 +2234,18 @@ function loadAccounts() {
         <td style="font-size:13px">${esc(r.email)}</td>
         <td style="font-size:13px">${esc(r.name || "—")}</td>
         <td style="font-weight:700;color:var(--primary-dark)">${esc(r.alias || "—")}</td>
-        <td style="font-size:12px;color:var(--muted)">${esc(r.createdBy || "—")}</td>
+        <td style="font-size:12px;color:var(--muted)">${esc(resolveAlias(r.createdBy) || "—")}</td>
         <td style="font-size:12px;white-space:nowrap">${fmtDateTime(r.createdAt)}</td>
         <td>
-          <button class="btn small" style="padding:3px 10px;font-size:12px"
-            onclick="editAccountAlias('${esc(r._id)}','${esc(r.alias||'')}')">✏️ تعديل</button>
+          <button class="btn small alias-edit-btn" style="padding:3px 10px;font-size:12px"
+            data-doc-id="${esc(r._id)}" data-alias="${esc(r.alias||'')}">✏️ تعديل</button>
         </td>
       </tr>`).join("");
+
+    /* event delegation — inline onclick لا يعمل في module scope */
+    tbody.querySelectorAll(".alias-edit-btn").forEach(btn => {
+      btn.addEventListener("click", () => editAccountAlias(btn.dataset.docId, btn.dataset.alias));
+    });
   }, err => console.error("loadAccounts failed", err));
 }
 
