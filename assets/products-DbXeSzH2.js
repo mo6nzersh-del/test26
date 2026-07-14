@@ -682,23 +682,13 @@ function initLoadingForm() {
     renderLoadLines();
   });
 
-  // ── حالة السداد: إظهار/إخفاء حقل المبلغ المدفوع عند اختيار "مدفوع جزئياً" ──
-  const partialField = document.getElementById("load-partial-amount-field");
-  const paidInput = document.getElementById("load-paid-amount");
-  document.querySelectorAll('input[name="load_pay_status"]').forEach(r => {
-    r.addEventListener("change", () => {
-      const isPartial = r.value === "partial" && r.checked;
-      if (r.checked) partialField.style.display = r.value === "partial" ? "block" : "none";
-      if (isPartial) updatePartialHint();
+  // ── إظهار/إخفاء حقل الدفع الجزئي ──
+  document.querySelectorAll('input[name="load_payment"]').forEach(radio => {
+    radio.addEventListener("change", () => {
+      const partialField = document.getElementById("partial-amount-field");
+      if (partialField) partialField.style.display = radio.value === "partial" ? "block" : "none";
     });
   });
-  function updatePartialHint() {
-    const total = loadLines.filter(l => l.productId && l.qty > 0).reduce((s, l) => s + l.qty * l.price, 0);
-    const paid = Number(paidInput.value) || 0;
-    const hint = document.getElementById("load-remaining-hint");
-    if (hint) hint.textContent = `الإجمالي: ${fmtMoney(total)} — سيبقى ديناً على التاجر: ${fmtMoney(Math.max(0, total - paid))}`;
-  }
-  paidInput.addEventListener("input", updatePartialHint);
 
   const form = document.getElementById("loading-form");
   const submitBtn = document.getElementById("loading-submit-btn");
@@ -711,24 +701,9 @@ function initLoadingForm() {
     if (!merchantId) { showToast("اختر التاجر", true); return; }
     const validLines = loadLines.filter(l => l.productId && l.qty > 0);
     if (validLines.length === 0) { showToast("أضف صنفاً واحداً على الأقل", true); return; }
-
-    // ── حالة السداد ──
-    const paymentStatus = document.querySelector('input[name="load_pay_status"]:checked')?.value || "unpaid";
-    const totalForCheck = validLines.reduce((s, l) => s + l.qty * l.price, 0);
-    let paidAmount = 0;
-    if (paymentStatus === "paid") {
-      paidAmount = totalForCheck;
-    } else if (paymentStatus === "partial") {
-      paidAmount = Number(document.getElementById("load-paid-amount").value) || 0;
-      if (paidAmount <= 0 || paidAmount >= totalForCheck) {
-        showToast("أدخل مبلغاً مدفوعاً أكبر من صفر وأقل من إجمالي العملية (وإلا اختر مدفوع بالكامل / غير مدفوع)", true);
-        return;
-      }
-    } else {
-      paidAmount = 0;
-    }
-    const remainingDebt = Math.max(0, totalForCheck - paidAmount);
-
+    const paymentStatus = document.querySelector('input[name="load_payment"]:checked')?.value ?? "debt";
+    const paidAmount = paymentStatus === "partial" ? (Number(document.getElementById("load-paid-amount")?.value) || 0) : 0;
+    if (paymentStatus === "partial" && paidAmount <= 0) { showToast("أدخل المبلغ المدفوع جزئياً", true); return; }
     submitBtn.disabled = true; submitBtn.innerHTML = '<span class="spinner"></span>';
     try {
       const batch = writeBatch(db);
@@ -755,32 +730,59 @@ function initLoadingForm() {
         type: "loading", opId,
         warehouseId: whId, warehouseName: wh?.name ?? "",
         merchantId, merchantName: merchant?.name ?? "",
-        lines: lineDetails, totalAmount, note,
+        lines: lineDetails, totalAmount,
+        paymentStatus,         // "paid" | "partial" | "debt"
+        paidAmount: paymentStatus === "partial" ? paidAmount : paymentStatus === "paid" ? totalAmount : 0,
+        note,
         performedBy: currentUser?.email ?? "—",
         createdAt: serverTimestamp(),
       });
-      // write to merchantTransactions so it appears in the merchant account page
+      // write to merchantTransactions based on payment status
       const today = new Date().toISOString().slice(0, 10);
       const txId = `TL-${Date.now().toString(36).toUpperCase().slice(-6)}`;
-      const txRef = docRef(collection(db, "merchantTransactions"));
-      batch.set(txRef, {
-        merchantId,
-        merchantName: merchant?.name ?? "",
-        amount: totalAmount,
-        type: "in",   // merchant owes us money (we expect to collect)
-        note: `تحميل من مخزن ${wh?.name ?? ""}${note ? " — " + note : ""}`,
-        date: today,
-        txId,
-        opId,
-        source: "loading",
-        createdAt: serverTimestamp(),
-      });
+      const paymentLabels = { paid: "مدفوع بالكامل", partial: "دفع جزئي", debt: "دين" };
+      const baseNote = `بيع من مخزن ${wh?.name ?? ""}${note ? " — " + note : ""} [${paymentLabels[paymentStatus] ?? "دين"}]`;
+
+      if (paymentStatus === "debt") {
+        // كامل المبلغ دين على التاجر
+        const txRef = docRef(collection(db, "merchantTransactions"));
+        batch.set(txRef, {
+          merchantId, merchantName: merchant?.name ?? "",
+          amount: totalAmount, type: "in",
+          note: baseNote, date: today, txId, opId,
+          source: "loading", paymentStatus: "debt",
+          createdAt: serverTimestamp(),
+        });
+      } else if (paymentStatus === "partial") {
+        // المبلغ الكلي يُضاف كدين، ثم الجزء المدفوع يُخصم فوراً
+        const debtRef = docRef(collection(db, "merchantTransactions"));
+        batch.set(debtRef, {
+          merchantId, merchantName: merchant?.name ?? "",
+          amount: totalAmount, type: "in",
+          note: baseNote + ` — إجمالي الفاتورة: ${fmtMoney(totalAmount)}`,
+          date: today, txId, opId,
+          source: "loading", paymentStatus: "partial",
+          createdAt: serverTimestamp(),
+        });
+        // تسجيل الجزء المدفوع كتسديد فوري
+        const txIdPaid = `TLP-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+        const paidRef = docRef(collection(db, "merchantTransactions"));
+        batch.set(paidRef, {
+          merchantId, merchantName: merchant?.name ?? "",
+          amount: paidAmount, type: "out",
+          note: `دفعة جزئية فورية — ${baseNote}`,
+          date: today, txId: txIdPaid, opId,
+          source: "loading-partial-payment", paymentStatus: "partial-paid",
+          createdAt: serverTimestamp(),
+        });
+      }
+      // paymentStatus === "paid": لا دين على التاجر — كُل المبلغ استُلم نقداً، لا يُضاف شيء لحسابه
       // activity log
       const logRef = docRef(collection(db, "activityLog"));
       batch.set(logRef, {
         type: "loading",
-        summary: `تحميل: ${wh?.name ?? ""} → ${merchant?.name ?? ""}`,
-        details: `${lineDetails.length} صنف — إجمالي: ${fmtMoney(totalAmount)}`,
+        summary: `بيع: ${wh?.name ?? ""} → ${merchant?.name ?? ""}`,
+        details: `${lineDetails.length} صنف — إجمالي: ${fmtMoney(totalAmount)} — ${paymentLabels[paymentStatus] ?? "دين"}`,
         opId, note,
         performedBy: currentUser?.email ?? "—",
         createdAt: serverTimestamp(),
@@ -788,8 +790,8 @@ function initLoadingForm() {
       // سجل المراقبة الشامل (تظهر في صفحة السجل الشامل)
       const auditRef = docRef(collection(db, "auditLog"));
       batch.set(auditRef, {
-        action: "إضافة", entity: "عملية تحميل", page: "المنتجات",
-        details: `تحميل: ${wh?.name ?? ""} → ${merchant?.name ?? ""} — ${lineDetails.length} صنف — إجمالي: ${fmtMoney(totalAmount)}`,
+        action: "إضافة", entity: "عملية بيع", page: "المنتجات",
+        details: `بيع: ${wh?.name ?? ""} → ${merchant?.name ?? ""} — ${lineDetails.length} صنف — إجمالي: ${fmtMoney(totalAmount)} — ${paymentLabels[paymentStatus] ?? "دين"}`,
         userEmail: currentUser?.email ?? "—",
         createdAt: serverTimestamp(),
       });
@@ -798,15 +800,20 @@ function initLoadingForm() {
         type: "loading", opId,
         warehouseName: wh?.name ?? "",
         merchantName: merchant?.name ?? "",
-        lines: lineDetails, totalAmount, note,
-        performedBy: currentUser?.email ?? "—",
+        lines: lineDetails, totalAmount, paymentStatus, paidAmount,
+        note, performedBy: currentUser?.email ?? "—",
       });
       form.reset();
+      // إعادة ضبط حقل الدفع الجزئي
+      const partialField = document.getElementById("partial-amount-field");
+      if (partialField) partialField.style.display = "none";
+      const payPaid = document.getElementById("pay-paid");
+      if (payPaid) payPaid.checked = true;
       loadLines = [{ id: ++loadLineCounter, productId: "", qty: 1, price: 0 }];
       renderLoadLines();
-      showToast("تمت عملية التحميل بنجاح");
+      showToast("تمت عملية البيع بنجاح");
     } catch (err) { console.error(err); showToast("حدث خطأ أثناء التنفيذ", true); }
-    finally { submitBtn.disabled = false; submitBtn.textContent = "تنفيذ عملية التحميل"; }
+    finally { submitBtn.disabled = false; submitBtn.textContent = "تنفيذ عملية البيع"; }
   });
 }
 
@@ -894,9 +901,14 @@ function loadLoadingRecords() {
   const container = document.getElementById("loading-records-list");
   const q = query(collection(db, "loadingOperations"), orderBy("createdAt", "desc"));
   onSnapshot(q, snap => {
-    if (snap.empty) { container.innerHTML = '<div class="empty-state">لا توجد عمليات تحميل بعد</div>'; return; }
+    if (snap.empty) { container.innerHTML = '<div class="empty-state">لا توجد عمليات بيع بعد</div>'; return; }
     container.innerHTML = "";
     loadingRecordsCache = {};
+    const payBadges = {
+      paid:    `<span style="font-size:10px;background:#e8f8ee;color:#1a6b3a;border-radius:5px;padding:1px 6px;font-weight:700;white-space:nowrap">✅ مدفوع</span>`,
+      partial: `<span style="font-size:10px;background:#fdf4e3;color:#7a4f10;border-radius:5px;padding:1px 6px;font-weight:700;white-space:nowrap">💳 جزئي</span>`,
+      debt:    `<span style="font-size:10px;background:#fde8e5;color:#b3432f;border-radius:5px;padding:1px 6px;font-weight:700;white-space:nowrap">📋 دين</span>`,
+    };
     snap.forEach(docSnap => {
       const d = docSnap.data();
       if (d.opId) loadingRecordsCache[d.opId] = { id: docSnap.id, ...d };
@@ -905,11 +917,15 @@ function loadLoadingRecords() {
       const serialHtml = d.opId
         ? `<span class="op-serial-link" data-op-id="${esc(d.opId)}" data-op-kind="loading" title="عرض تفاصيل الحركة"># ${esc(d.opId.slice(0, 8).toUpperCase())}</span>`
         : "";
+      const payBadge = payBadges[d.paymentStatus] ?? payBadges.debt;
+      const paidInfo = d.paymentStatus === "partial"
+        ? ` · دُفع: ${fmtMoney(d.paidAmount ?? 0)} · متبقي: ${fmtMoney((d.totalAmount ?? 0) - (d.paidAmount ?? 0))}`
+        : d.paymentStatus === "paid" ? " · (مدفوع بالكامل)" : "";
       row.innerHTML = `
-        <span class="record-badge loading">تحميل</span>
+        <span class="record-badge loading">بيع</span>
         <div class="record-main">
-          <div class="title">${esc(d.warehouseName)} → ${esc(d.merchantName)} ${serialHtml}</div>
-          <div class="meta">${d.lines?.length ?? 0} صنف · الإجمالي: ${fmtMoney(d.totalAmount)} · ${d.createdAt ? fmtDateTime(d.createdAt) : "الآن"}</div>
+          <div class="title">${esc(d.warehouseName)} → ${esc(d.merchantName)} ${payBadge} ${serialHtml}</div>
+          <div class="meta">${d.lines?.length ?? 0} صنف · الإجمالي: ${fmtMoney(d.totalAmount)}${paidInfo} · ${d.createdAt ? fmtDateTime(d.createdAt) : "الآن"}</div>
         </div>
         <div class="record-amount out">${fmtMoney(d.totalAmount)}</div>
         <button class="delete-btn" data-col="loadingOperations" data-id="${docSnap.id}" title="حذف">✕</button>`;
@@ -983,7 +999,7 @@ function loadActivityLog() {
     let rowNum = snap.size; // newest = highest number
     snap.forEach(docSnap => {
       const d = docSnap.data();
-      const badgeMap = { production: ["log-prod","إنتاج"], transfer: ["log-transfer","تحويل"], loading: ["log-load","تحميل"] };
+      const badgeMap = { production: ["log-prod","إنتاج"], transfer: ["log-transfer","تحويل"], loading: ["log-load","بيع"] };
       const [cls, label] = badgeMap[d.type] ?? ["log-prod", d.type];
       const seqLabel = `OP-${String(rowNum).padStart(5, "0")}`;
       rowNum--;
@@ -1070,11 +1086,34 @@ function showInvoice(data) {
         <tbody><tr><td>${esc(data.productName)}</td><td>${fmtNum(data.quantity)} ${esc(data.unit)}</td></tr></tbody>
       </table>`;
   } else if (data.type === "loading") {
-    typeLabel = "عملية تحميل للتاجر"; typeCls = "inv-load";
+    typeLabel = "عملية بيع للتاجر"; typeCls = "inv-load";
     const lineRows = (data.lines || []).map(l =>
       `<tr><td>${esc(l.productName)}</td><td>${fmtNum(l.qty)} ${esc(l.unit)}</td><td>${fmtMoney(l.price)}</td><td style="font-weight:700">${fmtMoney(l.total)}</td></tr>`
     ).join("");
-    totalHtml = `<div class="invoice-total-row"><span>الإجمالي المطلوب من التاجر</span><span>${fmtMoney(data.totalAmount)}</span></div>`;
+    const paymentStatusLabels = { paid: "✅ مدفوع بالكامل", partial: "💳 دفع جزئي", debt: "📋 دين (لم يُدفع)" };
+    const payLabel = paymentStatusLabels[data.paymentStatus] ?? paymentStatusLabels.debt;
+    const payBgMap = { paid: "#e8f8ee", partial: "#fdf4e3", debt: "#fde8e5" };
+    const payColorMap = { paid: "#1a6b3a", partial: "#7a4f10", debt: "#b3432f" };
+    const payBg = payBgMap[data.paymentStatus] ?? payBgMap.debt;
+    const payColor = payColorMap[data.paymentStatus] ?? payColorMap.debt;
+    const debtAmount = data.paymentStatus === "paid" ? 0
+      : data.paymentStatus === "partial" ? (data.totalAmount - (data.paidAmount || 0))
+      : data.totalAmount;
+    const paymentSummaryHtml = `
+      <div style="background:${payBg};border-radius:8px;padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:13px;font-weight:800;color:${payColor}">${payLabel}</div>
+          ${data.paymentStatus === "partial"
+            ? `<div style="font-size:11.5px;color:var(--muted);margin-top:3px">المدفوع: <strong style="color:${payColor}">${fmtMoney(data.paidAmount || 0)}</strong> &nbsp;|&nbsp; المتبقي (دين): <strong style="color:#b3432f">${fmtMoney(debtAmount)}</strong></div>`
+            : data.paymentStatus === "paid"
+            ? `<div style="font-size:11.5px;color:var(--muted);margin-top:3px">استُلم كامل المبلغ نقداً — لا دين على التاجر</div>`
+            : `<div style="font-size:11.5px;color:var(--muted);margin-top:3px">كامل المبلغ مُسجَّل دينًا على التاجر</div>`}
+        </div>
+      </div>`;
+    totalHtml = `
+      ${paymentSummaryHtml}
+      <div class="invoice-total-row"><span>الإجمالي الكلي للفاتورة</span><span>${fmtMoney(data.totalAmount)}</span></div>
+      ${debtAmount > 0 ? `<div style="display:flex;justify-content:space-between;font-size:13px;color:#b3432f;font-weight:700;margin-top:6px;padding-top:6px;border-top:1px dashed #f0b8b0"><span>المبلغ المستحق (دين على التاجر)</span><span>${fmtMoney(debtAmount)}</span></div>` : ""}`;
     bodyHtml = `
       <div style="margin-bottom:14px">
         <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px">من مخزن: <strong style="color:var(--ink)">${esc(data.warehouseName)}</strong></div>
