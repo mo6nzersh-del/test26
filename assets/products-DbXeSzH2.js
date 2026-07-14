@@ -1172,9 +1172,7 @@ function showInvoice(data) {
       <!-- رأس الفاتورة -->
       <div class="inv-doc-head">
         <div class="inv-doc-logo-wrap">
-          <img src="https://i.imgur.com/NsN1HgC.png" class="inv-doc-logo"
-               onerror="this.outerHTML='<div class=\'inv-doc-logo\' style=\'display:flex;align-items:center;justify-content:center;font-size:11px;color:#aaa;\'>الشعار</div>'" />
-          <div class="inv-doc-brand">أحمد وحمدي</div>
+          <div class="inv-doc-brand">Ahmed And Hamdy</div>
           <div class="inv-doc-brand-sub">نظام المحاسبة الداخلي${isReplay?" — معاينة حركة سابقة":""}</div>
         </div>
         <div class="inv-doc-nums">
