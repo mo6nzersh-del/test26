@@ -244,8 +244,7 @@
               💳 تسجيل دفعة مالية
             </button>
             <button type="button" class="btn small outline" id="export-csv-btn">📥 CSV</button>
-            <button type="button" class="btn small outline" onclick="window.print()">🖨️ طباعة</button>
-            <button type="button" class="btn small" id="print-stmt-btn" style="background:#1a3a6b;color:#fff;border:none" onclick="printStatement()">📄 طباعة كشف الحساب</button>
+            <button type="button" class="btn small" id="print-stmt-btn" style="background:#1a3a6b;color:#fff;border:none">📄 طباعة كشف الحساب</button>
           </div>
         </div>
         <div class="filter-bar" style="padding:0 20px 14px">
@@ -492,6 +491,9 @@ function init(){
   loadActivityOpMap();
   // نافذة التفاصيل — مستقلة عن تحميل البيانات
   try{ setupDetailModal(); }catch(e){ console.warn("setupDetailModal:",e); }
+  // كشف الحساب + CSV
+  document.getElementById("print-stmt-btn").addEventListener("click", printStatement);
+  document.getElementById("export-csv-btn").addEventListener("click", exportLedgerCSV);
 }
 
 /* ── نافذة تفاصيل الحركة ── */
@@ -816,7 +818,6 @@ function setupDetail(){
   });
 
   // تصدير CSV
-  document.getElementById("export-csv-btn").addEventListener("click",exportLedgerCSV);
 
   // نموذج الدفعة المالية
   setupFinTxModal();
@@ -1215,20 +1216,57 @@ function renderUnifiedList(){
 /* ── تصدير CSV ── */
 function exportLedgerCSV(){
   const mer=merchants.find(m=>m.id===currentMerId);
-  const all=_buildAllRows();
-  if(!all.length){ toast("لا توجد بيانات للتصدير",true); return; }
   const fromVal=document.getElementById("filter-from").value;
   const toVal  =document.getElementById("filter-to").value;
-  const BOM="\uFEFF"; // UTF-8 BOM لدعم Excel العربي
-  const header=["الرقم التسلسلي","التاريخ","الاتجاه","المبلغ","البيان","النوع"].join(",");
-  const rows=all.map(t=>[
-    t.seqId,
-    t.dateStr,
-    t.dir==="in"?"داخل (تحصيل)":"خارج (دفع)",
-    t.amount,
-    `"${(t.note||"").replace(/"/g,'""')}"`,
-    t._src==="finance"?"مالية":t._src==="loading"?"تحميل":"مباشرة",
-  ].join(","));
+
+  // الحركات مرتبة تصاعدياً
+  const all=_buildAllRows().slice().sort((a,b)=>a.dateSecs-b.dateSecs);
+  if(!all.length){ toast("لا توجد بيانات للتصدير",true); return; }
+
+  // رصيد افتتاحي
+  let openingBal=0;
+  if(fromVal){
+    [...merchantTxs.filter(t=>t.merchantId===currentMerId),
+     ...finTxs.filter(t=>t.merchantId===currentMerId&&t.type==="merchant")]
+    .forEach(t=>{
+      const ds=_toDateStr(t);
+      if(ds&&ds<fromVal) openingBal+=(t.type==="in"||t.dir==="in"?1:-1)*(t.amount||0);
+    });
+  }
+
+  const BOM="\uFEFF";
+  const q=s=>`"${String(s||"").replace(/"/g,'""')}"`;
+  const header=["#","التاريخ","الرقم التسلسلي","البيان","النوع","مدين (عليه)","دائن (له)","الرصيد"].join(",");
+
+  let runBal=openingBal;
+  const rows=[];
+
+  // صف الرصيد الافتتاحي
+  if(fromVal&&openingBal!==0){
+    rows.push(["—",fromVal,"—",q("رصيد مرحّل"),"—","","",openingBal.toFixed(2)].join(","));
+  }
+
+  all.forEach((t,i)=>{
+    const isIn=t.dir==="in";
+    runBal+=isIn?t.amount:-t.amount;
+    const srcLbl=t._src==="loading"?"تحميل بضاعة":t._src==="finance"?"دفعة مالية":"مباشر";
+    rows.push([
+      i+1,
+      t.dateStr,
+      t.seqId,
+      q(t.note||srcLbl),
+      srcLbl,
+      isIn?t.amount.toFixed(2):"",
+      !isIn?t.amount.toFixed(2):"",
+      runBal.toFixed(2),
+    ].join(","));
+  });
+
+  // صف الإجمالي
+  const totIn=all.filter(t=>t.dir==="in").reduce((s,t)=>s+t.amount,0);
+  const totOut=all.filter(t=>t.dir==="out").reduce((s,t)=>s+t.amount,0);
+  rows.push(["—","—","—",q("الإجمالي"),"",totIn.toFixed(2),totOut.toFixed(2),runBal.toFixed(2)].join(","));
+
   const csv=BOM+header+"\n"+rows.join("\n");
   const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
   const url=URL.createObjectURL(blob);
