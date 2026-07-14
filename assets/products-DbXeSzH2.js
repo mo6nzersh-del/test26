@@ -682,6 +682,24 @@ function initLoadingForm() {
     renderLoadLines();
   });
 
+  // ── حالة السداد: إظهار/إخفاء حقل المبلغ المدفوع عند اختيار "مدفوع جزئياً" ──
+  const partialField = document.getElementById("load-partial-amount-field");
+  const paidInput = document.getElementById("load-paid-amount");
+  document.querySelectorAll('input[name="load_pay_status"]').forEach(r => {
+    r.addEventListener("change", () => {
+      const isPartial = r.value === "partial" && r.checked;
+      if (r.checked) partialField.style.display = r.value === "partial" ? "block" : "none";
+      if (isPartial) updatePartialHint();
+    });
+  });
+  function updatePartialHint() {
+    const total = loadLines.filter(l => l.productId && l.qty > 0).reduce((s, l) => s + l.qty * l.price, 0);
+    const paid = Number(paidInput.value) || 0;
+    const hint = document.getElementById("load-remaining-hint");
+    if (hint) hint.textContent = `الإجمالي: ${fmtMoney(total)} — سيبقى ديناً على التاجر: ${fmtMoney(Math.max(0, total - paid))}`;
+  }
+  paidInput.addEventListener("input", updatePartialHint);
+
   const form = document.getElementById("loading-form");
   const submitBtn = document.getElementById("loading-submit-btn");
   form.addEventListener("submit", async e => {
@@ -693,6 +711,24 @@ function initLoadingForm() {
     if (!merchantId) { showToast("اختر التاجر", true); return; }
     const validLines = loadLines.filter(l => l.productId && l.qty > 0);
     if (validLines.length === 0) { showToast("أضف صنفاً واحداً على الأقل", true); return; }
+
+    // ── حالة السداد ──
+    const paymentStatus = document.querySelector('input[name="load_pay_status"]:checked')?.value || "unpaid";
+    const totalForCheck = validLines.reduce((s, l) => s + l.qty * l.price, 0);
+    let paidAmount = 0;
+    if (paymentStatus === "paid") {
+      paidAmount = totalForCheck;
+    } else if (paymentStatus === "partial") {
+      paidAmount = Number(document.getElementById("load-paid-amount").value) || 0;
+      if (paidAmount <= 0 || paidAmount >= totalForCheck) {
+        showToast("أدخل مبلغاً مدفوعاً أكبر من صفر وأقل من إجمالي العملية (وإلا اختر مدفوع بالكامل / غير مدفوع)", true);
+        return;
+      }
+    } else {
+      paidAmount = 0;
+    }
+    const remainingDebt = Math.max(0, totalForCheck - paidAmount);
+
     submitBtn.disabled = true; submitBtn.innerHTML = '<span class="spinner"></span>';
     try {
       const batch = writeBatch(db);

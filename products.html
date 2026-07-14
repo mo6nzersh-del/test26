@@ -143,7 +143,7 @@
 
         <div class="section-tabs">
           <button type="button" class="active" id="tab-movements">الحركات</button>
-          <button type="button" id="tab-loading">عمليات التحميل</button>
+          <button type="button" id="tab-loading">عمليات البيع</button>
           <button type="button" id="tab-warehouses">المخازن والبضائع</button>
           <button type="button" id="tab-log">سجل العمليات</button>
         </div>
@@ -261,10 +261,38 @@
                 <button type="button" class="btn small ghost" id="load-add-line-btn">+ إضافة صنف</button>
               </div>
               <div class="field">
+                <label>حالة السداد *</label>
+                <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+                  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;
+                    background:#e8f8ee;border:2px solid #a8dbb7;border-radius:8px;padding:10px 14px;
+                    font-size:14px;font-weight:700;color:#1a6b3a;transition:border-color .12s">
+                    <input type="radio" name="load_pay_status" value="paid" id="load-pay-paid" checked />
+                    ✅ مدفوع بالكامل الآن
+                  </label>
+                  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;
+                    background:#fdf7e6;border:2px solid #eccf83;border-radius:8px;padding:10px 14px;
+                    font-size:14px;font-weight:700;color:#8a6510;transition:border-color .12s">
+                    <input type="radio" name="load_pay_status" value="partial" id="load-pay-partial" />
+                    🟡 مدفوع جزئياً — والباقي دَين على التاجر
+                  </label>
+                  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;
+                    background:#fdf0ee;border:2px solid #f0b8b0;border-radius:8px;padding:10px 14px;
+                    font-size:14px;font-weight:700;color:#b3432f;transition:border-color .12s">
+                    <input type="radio" name="load_pay_status" value="unpaid" id="load-pay-unpaid" />
+                    ⛔ غير مدفوع — الإجمالي بالكامل دَين على التاجر
+                  </label>
+                </div>
+              </div>
+              <div class="field" id="load-partial-amount-field" style="display:none">
+                <label for="load-paid-amount">المبلغ المدفوع الآن (ج.م) *</label>
+                <input type="number" id="load-paid-amount" min="0.01" step="0.01" placeholder="0.00" />
+                <p style="font-size:11.5px;color:var(--muted);margin:4px 0 0" id="load-remaining-hint"></p>
+              </div>
+              <div class="field">
                 <label for="load-note">ملاحظات (اختياري)</label>
                 <input type="text" id="load-note" placeholder="مثال: دفعة يوليو..." />
               </div>
-              <button type="submit" class="btn" id="loading-submit-btn">تنفيذ عملية التحميل</button>
+              <button type="submit" class="btn" id="loading-submit-btn">تنفيذ عملية البيع</button>
             </form>
           </div>
 
@@ -437,4 +465,86 @@
     </div>
 
   </body>
+
+  <!-- ══════════ سجل السداد للعمليات — يسجّل حركة الدفع/الدَين في finance_transactions ══════════
+       يعمل بشكل مستقل عن الحزمة المبنية (products-DbXeSzH2.js) عن طريق حدث مخصّص، بنفس
+       أسلوب finance.html و merchants.html، ويستخدم نفس تطبيق Firebase الافتراضي (getApp). -->
+  <script type="module">
+    import { getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore, doc, collection, addDoc, updateDoc, writeBatch,
+      runTransaction, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const _app  = getApp();
+    const _auth = getAuth(_app);
+    const _db   = getFirestore(_app);
+
+    async function _nextFinId(){
+      const cRef = doc(_db, "counters", "finance_trans");
+      let seqNum = 1;
+      await runTransaction(_db, async tx => {
+        const snap = await tx.get(cRef);
+        seqNum = (snap.exists() ? snap.data().seq : 0) + 1;
+        tx.set(cRef, { seq: seqNum }, { merge: true });
+      });
+      return "F-" + String(seqNum).padStart(4, "0");
+    }
+
+    async function _writeAuditLog(action, entity, details){
+      try{
+        await addDoc(collection(_db, "auditLog"), {
+          action, entity, page: "المنتجات", details,
+          userEmail: _auth.currentUser?.email || "—",
+          createdAt: serverTimestamp(),
+        });
+      }catch(err){ console.error("auditLog write failed", err); }
+    }
+
+    // يُستدعى من products-DbXeSzH2.js بعد إتمام عملية البيع، فقط إذا كان هناك مبلغ مدفوع فوراً
+    window.addEventListener("app:loading-payment", async (ev) => {
+      const d = ev.detail || {};
+      if (!d.merchantId || !d.paidAmount || d.paidAmount <= 0) return;
+      try{
+        const finId = await _nextFinId();
+        const batch = writeBatch(_db);
+        const statusLabel = d.paymentStatus === "paid" ? "مدفوع بالكامل" : "مدفوع جزئياً";
+
+        // ١. تسديد على دفتر مستحقات التاجر — يقلل دينه بمقدار المبلغ المدفوع الآن
+        const merRef = doc(collection(_db, "finance_transactions"));
+        batch.set(merRef, {
+          type: "merchant", dir: "out", amount: d.paidAmount,
+          date: new Date().toISOString().slice(0, 10),
+          description: `سداد فوري عند عملية بيع (${statusLabel}) — ${d.warehouseName || ""} → ${d.merchantName || ""}${d.note ? " — " + d.note : ""}`,
+          merchantId: d.merchantId, merchantName: d.merchantName || "", partyName: "",
+          employeeId: "", employeeName: "",
+          finId, _active: true, sourcePage: "المنتجات", opId: d.opId || "",
+          createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
+        });
+
+        // ٢. مرآة على صندوق الكاش — المبلغ دخل الصندوق نقداً
+        const cashRef = doc(collection(_db, "finance_transactions"));
+        batch.set(cashRef, {
+          type: "deposit", dir: "in", amount: d.paidAmount,
+          date: new Date().toISOString().slice(0, 10),
+          description: `دفعة تاجر (${d.merchantName || ""}) — سداد فوري عند عملية بيع`,
+          partyName: d.merchantName || "", merchantId: "", merchantName: "",
+          employeeId: "", employeeName: "",
+          finId, _active: true, sourcePage: "المنتجات", opId: d.opId || "",
+          createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
+        });
+
+        await batch.commit();
+
+        // اربط رقم حركة السداد بسجل عملية البيع نفسه لعرضه لاحقاً
+        if (d.loadingOpDocId) {
+          try{ await updateDoc(doc(_db, "loadingOperations", d.loadingOpDocId), { financeFinId: finId }); }
+          catch(err){ console.error("linking financeFinId failed", err); }
+        }
+
+        _writeAuditLog("إضافة", "دفعة تاجر", `${d.merchantName || "—"} — ${statusLabel} — ${d.paidAmount} ج.م (سداد فوري عند البيع) — ${finId}`);
+      }catch(err){ console.error("app:loading-payment handler failed", err); }
+    });
+  </script>
 </html>
