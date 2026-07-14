@@ -731,7 +731,7 @@ function initLoadingForm() {
         merchantId,
         merchantName: merchant?.name ?? "",
         amount: totalAmount,
-        type: "in",   // merchant owes us money (we expect to collect)
+        type: "out",  // merchant owes us money — loading (debt on merchant)
         note: `تحميل من مخزن ${wh?.name ?? ""}${note ? " — " + note : ""}`,
         date: today,
         txId,
