@@ -731,7 +731,7 @@ function initLoadingForm() {
         merchantId,
         merchantName: merchant?.name ?? "",
         amount: totalAmount,
-        type: "in",   // loading = increases merchant debt (dir "in" means debt grows)
+        type: "out",  // تحميل = يُثبَّت كـ"out" حتى يُعامَل كدين على التاجر (balance يصبح سالباً = مديون)
         note: `تحميل من مخزن ${wh?.name ?? ""}${note ? " — " + note : ""}`,
         date: today,
         txId,
