@@ -4,6 +4,21 @@ import{f as compressImage}from"./image-utils-ix_Ztzsr.js";
 
 const BASE = "/";
 
+/* ─── alias map: email → اسم مستعار ─── */
+let emailToAlias = {};
+function resolveAlias(email) {
+  if (!email || email === "—") return email;
+  return emailToAlias[email] || email;
+}
+// يستمع إلى appUsers ويبني الخريطة فور أي تغيير
+onSnapshot(collection(db, "appUsers"), snap => {
+  emailToAlias = {};
+  snap.forEach(d => {
+    const { email, alias } = d.data();
+    if (email && alias) emailToAlias[email] = alias;
+  });
+});
+
 /* ─── state ─── */
 let currentUser = null;
 let warehouses = [];
@@ -1050,7 +1065,7 @@ function loadActivityLog() {
           <div style="font-weight:700;font-size:13px">${esc(d.summary || "")}</div>
           <div style="font-size:12px;color:var(--muted)">${esc(d.details || "")}${d.note ? ` — <em>${esc(d.note)}</em>` : ""}</div>
         </td>
-        <td style="font-size:12.5px">${esc(d.performedBy || "—")}</td>
+        <td style="font-size:12.5px">${esc(resolveAlias(d.performedBy) || "—")}</td>
         <td class="log-time">${d.createdAt ? fmtDateTime(d.createdAt) : "—"}</td>`;
       tbody.appendChild(tr);
     });
@@ -1145,7 +1160,7 @@ function showInvoice(data) {
     <div class="invoice-meta-row">
       <div><span>رقم العملية: </span><strong>${data.seqLabel ? shortId : "#" + shortId}</strong></div>
       <div><span>${isReplay ? "تمت الحركة في: " : "التاريخ: "}</span><strong>${now}</strong></div>
-      <div><span>نفّذها: </span><strong>${esc(data.performedBy || "—")}</strong></div>
+      <div><span>نفّذها: </span><strong>${esc(resolveAlias(data.performedBy) || "—")}</strong></div>
     </div>
     ${bodyHtml}
     ${totalHtml}
