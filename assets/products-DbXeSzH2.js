@@ -682,6 +682,31 @@ function initLoadingForm() {
     renderLoadLines();
   });
 
+  // تحديث المظهر البصري لخيار الدفع
+  function updatePayStyle() {
+    const isPaid = document.getElementById("load-pay-paid").checked;
+    const labelPaid   = document.getElementById("pay-label-paid");
+    const labelUnpaid = document.getElementById("pay-label-unpaid");
+    const hint        = document.getElementById("pay-hint");
+    if (isPaid) {
+      labelPaid.style.background   = "#e8f5e9";
+      labelPaid.style.color        = "#1a6b3a";
+      labelUnpaid.style.background = "#f0f0f0";
+      labelUnpaid.style.color      = "#888";
+      hint.style.color             = "#1a6b3a";
+      hint.textContent             = "سيُسجَّل دفع فوري — لن يُضاف دين على التاجر";
+    } else {
+      labelUnpaid.style.background = "#fff4e5";
+      labelUnpaid.style.color      = "#a06a10";
+      labelPaid.style.background   = "#f0f0f0";
+      labelPaid.style.color        = "#888";
+      hint.style.color             = "#a06a10";
+      hint.textContent             = "سيُسجَّل دين على التاجر بقيمة الفاتورة";
+    }
+  }
+  document.getElementById("load-pay-paid").addEventListener("change", updatePayStyle);
+  document.getElementById("load-pay-unpaid").addEventListener("change", updatePayStyle);
+
   const form = document.getElementById("loading-form");
   const submitBtn = document.getElementById("loading-submit-btn");
   form.addEventListener("submit", async e => {
@@ -689,6 +714,7 @@ function initLoadingForm() {
     const whId = document.getElementById("load-warehouse").value;
     const merchantId = document.getElementById("load-merchant").value;
     const note = document.getElementById("load-note").value.trim();
+    const isPaid = document.getElementById("load-pay-paid").checked;
     if (!whId) { showToast("اختر المخزن", true); return; }
     if (!merchantId) { showToast("اختر التاجر", true); return; }
     const validLines = loadLines.filter(l => l.productId && l.qty > 0);
@@ -731,14 +757,49 @@ function initLoadingForm() {
         merchantId,
         merchantName: merchant?.name ?? "",
         amount: totalAmount,
-        type: "out",  // تحميل = يُثبَّت كـ"out" حتى يُعامَل كدين على التاجر (balance يصبح سالباً = مديون)
-        note: `تحميل من مخزن ${wh?.name ?? ""}${note ? " — " + note : ""}`,
+        type: "out",  // بيع = يُثبَّت كـ"out" حتى يُعامَل كدين على التاجر (balance يصبح سالباً = مديون)
+        note: `بيع من مخزن ${wh?.name ?? ""}${isPaid ? " — نقدي" : ""}${note ? " — " + note : ""}`,
         date: today,
         txId,
         opId,
         source: "loading",
+        paid: isPaid,
         createdAt: serverTimestamp(),
       });
+      // إذا تم الدفع فوراً: أضف حركة دفع تلقائية في finance_transactions تُلغي الدين
+      if (isPaid && totalAmount > 0) {
+        const payTxId = `PY-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+        const payRef  = docRef(collection(db, "finance_transactions"));
+        batch.set(payRef, {
+          type: "merchant",
+          dir: "in",          // dir="in" = دفع من التاجر = يُقلّل الدين
+          amount: totalAmount,
+          date: today,
+          merchantId,
+          merchantName: merchant?.name ?? "",
+          txId: payTxId,
+          opId,
+          source: "auto-payment",
+          description: `دفع فوري — بيع نقدي من مخزن ${wh?.name ?? ""}${note ? " — " + note : ""}`,
+          affectsCash: true,
+          performedBy: currentUser?.email ?? "—",
+          createdAt: serverTimestamp(),
+        });
+        // يُسجَّل إيداع في الصندوق تلقائياً
+        const cashRef = docRef(collection(db, "finance_transactions"));
+        batch.set(cashRef, {
+          type: "deposit",
+          dir: "in",
+          amount: totalAmount,
+          date: today,
+          txId: `DP-${Date.now().toString(36).toUpperCase().slice(-6)}`,
+          opId,
+          source: "auto-payment",
+          description: `إيداع نقدي — بيع للتاجر ${merchant?.name ?? ""}${note ? " — " + note : ""}`,
+          performedBy: currentUser?.email ?? "—",
+          createdAt: serverTimestamp(),
+        });
+      }
       // activity log
       const logRef = docRef(collection(db, "activityLog"));
       batch.set(logRef, {
