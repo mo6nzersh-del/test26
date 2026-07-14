@@ -7,6 +7,21 @@
   <meta name="robots" content="noindex, nofollow" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="stylesheet" href="/assets/auth-guard-C6CJ8_8i.css" />
+  <!-- ضمان الأرقام اللاتينية فقط -->
+  <script>
+  (function(){
+    var _NF=Intl.NumberFormat;
+    function patchLocale(l){
+      if(!l)return"ar-EG-u-nu-latn";
+      if(typeof l==="string")return l.includes("nu-")?l:l.replace(/^ar(-EG)?/,"ar-EG-u-nu-latn");
+      if(Array.isArray(l))return l.map(patchLocale);
+      return"ar-EG-u-nu-latn";
+    }
+    Intl.NumberFormat=function(l,o){return new _NF(patchLocale(l),o)};
+    Object.assign(Intl.NumberFormat,_NF);
+    Intl.NumberFormat.prototype=_NF.prototype;
+  })();
+  </script>
   <style>
     /* ── شريط التنقل بين الأشهر ── */
     .month-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;
