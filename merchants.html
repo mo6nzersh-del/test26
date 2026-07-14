@@ -408,7 +408,6 @@ function renderNav(user){
 let merchants      = [];
 let merchantTxs    = [];   // merchantTransactions (النظام الأصلي)
 let finTxs         = [];   // finance_transactions (الجديد)
-let loadingOps     = [];   // loadingOperations (عمليات البيع بالتاجر — لتصنيف الدفع)
 let activityOpMap  = {};   // opId → OP-XXXXX من سجل المنتجات
 let currentMerId   = null;
 let editMerId      = null;
@@ -454,18 +453,8 @@ function init(){
   loadAllMerchantTxs();
   loadFinTxs();
   loadActivityOpMap();
-  loadLoadingOps();
   // نافذة التفاصيل — مستقلة عن تحميل البيانات
   try{ setupDetailModal(); }catch(e){ console.warn("setupDetailModal:",e); }
-}
-
-/* ── تحميل عمليات البيع (loadingOperations) لتصنيف الدفع ── */
-function loadLoadingOps(){
-  const q=query(collection(db,"loadingOperations"),orderBy("createdAt","desc"));
-  onSnapshot(q,snap=>{
-    loadingOps=snap.docs.map(d=>({id:d.id,...d.data()}));
-    if(currentMerId) renderUnifiedStats();
-  },err=>{ console.error(err); });
 }
 
 /* ── نافذة تفاصيل الحركة ── */
@@ -979,83 +968,33 @@ function renderUnifiedStats(){
   const isFiltered=document.getElementById("filter-from").value||document.getElementById("filter-to").value;
   const inCount =allFull.filter(t=>t.dir==="in").length;
   const outCount=allFull.filter(t=>t.dir==="out").length;
-
-  // ── إحصائيات طرق الدفع من عمليات البيع ──
-  const merLoadOps=loadingOps.filter(op=>op.merchantId===currentMerId);
-  const debtOps   =merLoadOps.filter(op=>op.paymentStatus==="debt");
-  const partialOps=merLoadOps.filter(op=>op.paymentStatus==="partial");
-  const paidOps   =merLoadOps.filter(op=>op.paymentStatus==="paid");
-  const legacyOps =merLoadOps.filter(op=>!op.paymentStatus); // عمليات قديمة بدون حقل paymentStatus
-
-  const debtTotal      =debtOps.reduce((s,op)=>s+(op.totalAmount||0),0);
-  const partialTotal   =partialOps.reduce((s,op)=>s+(op.totalAmount||0),0);
-  const partialPaid    =partialOps.reduce((s,op)=>s+(op.paidAmount||0),0);
-  const partialRemain  =partialTotal-partialPaid;
-  const paidTotal      =paidOps.reduce((s,op)=>s+(op.totalAmount||0),0);
-  const legacyTotal    =legacyOps.reduce((s,op)=>s+(op.totalAmount||0),0);
-  const hasPaymentData =merLoadOps.some(op=>op.paymentStatus);
-
-  // ── تفصيل الدفع داخل بطاقة المبيعات ──
-  const payBreakdown = hasPaymentData ? `
-    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(0,0,0,.08)">
-      ${debtOps.length?`<div style="display:flex;flex-direction:column;flex:1;min-width:80px;background:rgba(180,60,40,.08);border-radius:7px;padding:7px 10px">
-        <span style="font-size:10px;font-weight:700;color:#92400e;letter-spacing:.3px">📋 دين</span>
-        <span style="font-size:15px;font-weight:900;color:#78350f;margin:2px 0">${fmt(debtTotal)}</span>
-        <span style="font-size:10px;color:#a16207">${debtOps.length} عملية</span>
-      </div>`:""}
-      ${partialOps.length?`<div style="display:flex;flex-direction:column;flex:1;min-width:80px;background:rgba(120,90,20,.08);border-radius:7px;padding:7px 10px">
-        <span style="font-size:10px;font-weight:700;color:#854d0e;letter-spacing:.3px">💳 جزئي</span>
-        <span style="font-size:15px;font-weight:900;color:#713f12;margin:2px 0">${fmt(partialRemain)}</span>
-        <span style="font-size:10px;color:#92400e">${partialOps.length} عملية · دُفع ${fmt(partialPaid)}</span>
-      </div>`:""}
-      ${paidOps.length?`<div style="display:flex;flex-direction:column;flex:1;min-width:80px;background:rgba(20,90,50,.08);border-radius:7px;padding:7px 10px">
-        <span style="font-size:10px;font-weight:700;color:#166534;letter-spacing:.3px">✅ مدفوع</span>
-        <span style="font-size:15px;font-weight:900;color:#14532d;margin:2px 0">${fmt(paidTotal)}</span>
-        <span style="font-size:10px;color:#15803d">${paidOps.length} عملية</span>
-      </div>`:""}
-      ${legacyOps.length?`<div style="display:flex;flex-direction:column;flex:1;min-width:80px;background:rgba(0,0,0,.04);border-radius:7px;padding:7px 10px">
-        <span style="font-size:10px;font-weight:700;color:#6b7280;letter-spacing:.3px">📂 قديمة</span>
-        <span style="font-size:15px;font-weight:900;color:#374151;margin:2px 0">${fmt(legacyTotal)}</span>
-        <span style="font-size:10px;color:#6b7280">${legacyOps.length} عملية</span>
-      </div>`:""}
-    </div>` : "";
-
-  // ── بطاقة الرصيد ──
-  const isDebt = net <= 0;        // net ≤ 0 → التاجر مدين
-  const netDisplay = isDebt
-    ? `<span style="font-size:13px;font-weight:700;vertical-align:middle;margin-left:2px">−</span>${fmt(Math.abs(net))}`
-    : `<span style="font-size:13px;font-weight:700;vertical-align:middle;margin-left:2px">+</span>${fmt(net)}`;
-  const netCardBg   = isDebt ? "linear-gradient(135deg,#fef3c7 0%,#fffbeb 100%)" : "linear-gradient(135deg,#d1fae5 0%,#f0fdf4 100%)";
-  const netBorder   = isDebt ? "#fcd34d" : "#6ee7b7";
-  const netValColor = isDebt ? "#78350f" : "#14532d";
-  const netLabel    = isDebt
-    ? `<span style="color:#92400e;font-weight:800">⚠️ على التاجر سداد هذا المبلغ</span>`
-    : `<span style="color:#15803d;font-weight:800">✅ رصيد دائن — التاجر دفع أكثر</span>`;
-
   document.getElementById("mer-unified-stats").innerHTML=`
     <div class="mer-stat stat-in">
-      <div class="msk">📦 إجمالي عمليات البيع${isFiltered?" (الفترة)":""}</div>
-      <div class="msv" style="color:#1e40af">${fmt(isFiltered?filtIn:totalIn)}</div>
+      <div class="msk">📦 إجمالي مسحوبات هذا التاجر${isFiltered?" (الفترة)":""}</div>
+      <div class="msv" style="color:#1a6b3a">${fmt(isFiltered?filtIn:totalIn)}</div>
       <div class="mss">
-        <strong style="color:#1e40af">${inCount} عملية</strong>
-        · إجمالي ما أخذه التاجر من المخزن
+        <strong style="color:#1a6b3a">${inCount} عملية تحميل</strong>
+        <br/>البضائع التي أخذها التاجر من المخزن — هذا ما يدين به
       </div>
-      ${payBreakdown}
     </div>
     <div class="mer-stat stat-net">
-      <div class="msk">💳 إجمالي المدفوعات المستلمة${isFiltered?" (الفترة)":""}</div>
-      <div class="msv" style="color:#0f766e">${fmt(isFiltered?filtOut:totalOut)}</div>
+      <div class="msk">💳 إجمالي مدفوعات التاجر${isFiltered?" (الفترة)":""}</div>
+      <div class="msv" style="color:#1a4bbf">${fmt(isFiltered?filtOut:totalOut)}</div>
       <div class="mss">
-        <strong style="color:#0f766e">${outCount} دفعة</strong>
-        · المبالغ التي دفعها التاجر فعلياً
+        <strong style="color:#1a4bbf">${outCount} دفعة</strong>
+        <br/>المبالغ التي دفعها التاجر فعلياً حتى الآن
       </div>
     </div>
-    <div class="mer-stat stat-out" style="background:${netCardBg};border-color:${netBorder}">
-      <div class="msk">💰 الرصيد الصافي</div>
-      <div class="msv" style="color:${netValColor};font-size:1.7rem">${netDisplay}</div>
+    <div class="mer-stat stat-out">
+      <div class="msk">💰 المبلغ المستحق على هذا التاجر</div>
+      <div class="msv" style="color:${net<=0?"#b3432f":"#1a6b3a"}">
+        ${fmt(Math.abs(net))}
+      </div>
       <div class="mss">
-        ${netLabel}
-        <br/><span style="color:#6b7280">${allFull.length} حركة إجمالاً</span>
+        <strong style="color:${net<=0?"#b3432f":"#1a6b3a"}">
+          ${net<=0?"⚠️ على التاجر سداد هذا المبلغ":"✅ رصيد دائن — التاجر دفع أكثر"}
+        </strong>
+        <br/>${allFull.length} عملية إجمالاً (مسحوبات − مدفوعات)
       </div>
     </div>`;
 }
@@ -1140,7 +1079,7 @@ function renderUnifiedList(){
       :t._src==="finance-other"
         ?`<span style="font-size:10px;background:#f2f2f2;color:#555;border-radius:5px;padding:2px 7px;font-weight:700;white-space:nowrap">${otherTypeLabels[t.txType]||"حركة مالية"}</span>`
         :t._src==="loading"
-          ?`<span style="font-size:10px;background:#edf7ed;color:#2e7d32;border-radius:5px;padding:2px 7px;font-weight:700;white-space:nowrap">📦 بيع</span>`
+          ?`<span style="font-size:10px;background:#edf7ed;color:#2e7d32;border-radius:5px;padding:2px 7px;font-weight:700;white-space:nowrap">📦 تحميل</span>`
           :`<span style="font-size:10px;background:#f0f4fb;color:#2a5bbf;border-radius:5px;padding:2px 7px;font-weight:700;white-space:nowrap">مباشرة</span>`;
     const dateDisp=t.dateStr
       ? new Date(t.dateStr+"T00:00:00").toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"short",day:"numeric"})
@@ -1198,7 +1137,7 @@ function renderUnifiedList(){
       const mer=merchants.find(m=>m.id===currentMerId);
       if(src==="direct"||src==="loading"){
         await deleteDoc(doc(db,"merchantTransactions",btn.dataset.id));
-        writeAuditLog("حذف","حركة تاجر",`${mer?.name||"—"} — ${src==="loading"?"بيع":"مباشرة"}`);
+        writeAuditLog("حذف","حركة تاجر",`${mer?.name||"—"} — ${src==="loading"?"تحميل":"مباشرة"}`);
       } else {
         // نحذف جميع السجلات التي تحمل نفس finId (السجل الأصل + المرآة الكاش إن وُجدت)
         const tx = finTxs.find(t=>t.id===btn.dataset.id);
@@ -1231,7 +1170,7 @@ function exportLedgerCSV(){
     t.dir==="in"?"داخل (تحصيل)":"خارج (دفع)",
     t.amount,
     `"${(t.note||"").replace(/"/g,'""')}"`,
-    t._src==="finance"?"مالية":t._src==="loading"?"بيع":"مباشرة",
+    t._src==="finance"?"مالية":t._src==="loading"?"تحميل":"مباشرة",
   ].join(","));
   const csv=BOM+header+"\n"+rows.join("\n");
   const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
