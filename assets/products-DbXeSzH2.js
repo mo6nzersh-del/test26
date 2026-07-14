@@ -743,7 +743,7 @@ function initLoadingForm() {
       const logRef = docRef(collection(db, "activityLog"));
       batch.set(logRef, {
         type: "loading",
-        summary: `تحميل: ${wh?.name ?? ""} → ${merchant?.name ?? ""}`,
+        summary: `بيع: ${wh?.name ?? ""} → ${merchant?.name ?? ""}`,
         details: `${lineDetails.length} صنف — إجمالي: ${fmtMoney(totalAmount)}`,
         opId, note,
         performedBy: currentUser?.email ?? "—",
@@ -752,8 +752,8 @@ function initLoadingForm() {
       // سجل المراقبة الشامل (تظهر في صفحة السجل الشامل)
       const auditRef = docRef(collection(db, "auditLog"));
       batch.set(auditRef, {
-        action: "إضافة", entity: "عملية تحميل", page: "المنتجات",
-        details: `تحميل: ${wh?.name ?? ""} → ${merchant?.name ?? ""} — ${lineDetails.length} صنف — إجمالي: ${fmtMoney(totalAmount)}`,
+        action: "إضافة", entity: "عملية بيع", page: "المنتجات",
+        details: `بيع: ${wh?.name ?? ""} → ${merchant?.name ?? ""} — ${lineDetails.length} صنف — إجمالي: ${fmtMoney(totalAmount)}`,
         userEmail: currentUser?.email ?? "—",
         createdAt: serverTimestamp(),
       });
@@ -768,9 +768,9 @@ function initLoadingForm() {
       form.reset();
       loadLines = [{ id: ++loadLineCounter, productId: "", qty: 1, price: 0 }];
       renderLoadLines();
-      showToast("تمت عملية التحميل بنجاح");
+      showToast("تمت عملية البيع بنجاح");
     } catch (err) { console.error(err); showToast("حدث خطأ أثناء التنفيذ", true); }
-    finally { submitBtn.disabled = false; submitBtn.textContent = "تنفيذ عملية التحميل"; }
+    finally { submitBtn.disabled = false; submitBtn.textContent = "تنفيذ عملية البيع"; }
   });
 }
 
@@ -870,7 +870,7 @@ function loadLoadingRecords() {
         ? `<span class="op-serial-link" data-op-id="${esc(d.opId)}" data-op-kind="loading" title="عرض تفاصيل الحركة"># ${esc(d.opId.slice(0, 8).toUpperCase())}</span>`
         : "";
       row.innerHTML = `
-        <span class="record-badge loading">تحميل</span>
+        <span class="record-badge loading">بيع</span>
         <div class="record-main">
           <div class="title">${esc(d.warehouseName)} → ${esc(d.merchantName)} ${serialHtml}</div>
           <div class="meta">${d.lines?.length ?? 0} صنف · الإجمالي: ${fmtMoney(d.totalAmount)} · ${d.createdAt ? fmtDateTime(d.createdAt) : "الآن"}</div>
@@ -947,7 +947,7 @@ function loadActivityLog() {
     let rowNum = snap.size; // newest = highest number
     snap.forEach(docSnap => {
       const d = docSnap.data();
-      const badgeMap = { production: ["log-prod","إنتاج"], transfer: ["log-transfer","تحويل"], loading: ["log-load","تحميل"] };
+      const badgeMap = { production: ["log-prod","إنتاج"], transfer: ["log-transfer","تحويل"], loading: ["log-load","بيع"] };
       const [cls, label] = badgeMap[d.type] ?? ["log-prod", d.type];
       const seqLabel = `OP-${String(rowNum).padStart(5, "0")}`;
       rowNum--;
@@ -1034,7 +1034,7 @@ function showInvoice(data) {
         <tbody><tr><td>${esc(data.productName)}</td><td>${fmtNum(data.quantity)} ${esc(data.unit)}</td></tr></tbody>
       </table>`;
   } else if (data.type === "loading") {
-    typeLabel = "عملية تحميل للتاجر"; typeCls = "inv-load";
+    typeLabel = "عملية بيع للتاجر"; typeCls = "inv-load";
     const lineRows = (data.lines || []).map(l =>
       `<tr><td>${esc(l.productName)}</td><td>${fmtNum(l.qty)} ${esc(l.unit)}</td><td>${fmtMoney(l.price)}</td><td style="font-weight:700">${fmtMoney(l.total)}</td></tr>`
     ).join("");
