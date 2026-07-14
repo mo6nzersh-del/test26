@@ -245,6 +245,7 @@
             </button>
             <button type="button" class="btn small outline" id="export-csv-btn">📥 CSV</button>
             <button type="button" class="btn small outline" onclick="window.print()">🖨️ طباعة</button>
+            <button type="button" class="btn small" id="print-stmt-btn" style="background:#1a3a6b;color:#fff;border:none" onclick="printStatement()">📄 طباعة كشف الحساب</button>
           </div>
         </div>
         <div class="filter-bar" style="padding:0 20px 14px">
@@ -1238,6 +1239,219 @@ function exportLedgerCSV(){
   a.click(); URL.revokeObjectURL(url);
   toast("تم التصدير — "+all.length+" سجل");
 }
+
+/* ══════════════════════════════════════════════════
+   طباعة كشف حساب التاجر (ترويسة تتكرر في كل صفحة)
+══════════════════════════════════════════════════ */
+function printStatement(){
+  const mer=merchants.find(m=>m.id===currentMerId);
+  if(!mer){ toast("لا يوجد تاجر محدد",true); return; }
+
+  const fromVal=document.getElementById("filter-from").value;
+  const toVal  =document.getElementById("filter-to").value;
+
+  /* الحركات مرتبة تصاعدياً بالتاريخ */
+  const all=_buildAllRows().slice().sort((a,b)=>a.dateSecs-b.dateSecs);
+
+  /* رصيد افتتاحي: كل ما قبل fromVal */
+  let openingBalance=0;
+  if(fromVal){
+    [...merchantTxs.filter(t=>t.merchantId===currentMerId),
+     ...finTxs.filter(t=>t.merchantId===currentMerId&&t.type==="merchant")]
+    .forEach(t=>{
+      const ds=_toDateStr(t);
+      if(ds&&ds<fromVal) openingBalance+=(t.type==="in"||t.dir==="in"?1:-1)*(t.amount||0);
+    });
+  }
+
+  /* بناء صفوف مع رصيد جارٍ */
+  let runBal=openingBalance;
+  let totalIn=0,totalOut=0;
+  const rows=all.map((t,idx)=>{
+    const isIn=t.dir==="in";
+    isIn?totalIn+=t.amount:totalOut+=t.amount;
+    runBal+=isIn?t.amount:-t.amount;
+    return{...t,runBal,idx:idx+1};
+  });
+
+  /* مساعدات تنسيق */
+  const fmtD=s=>s?new Date(s+"T00:00:00").toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"short",day:"numeric"}):"—";
+  const fmtM=n=>new Intl.NumberFormat("ar-EG-u-nu-latn",{minimumFractionDigits:2,maximumFractionDigits:2}).format(n||0)+" ج.م";
+  const printNow=new Date().toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"long",day:"numeric"});
+  const periodLabel=(fromVal||toVal)?`${fromVal?fmtD(fromVal):"البداية"}  —  ${toVal?fmtD(toVal):"اليوم"}`:"جميع الفترات";
+
+  /* تسمية نوع الحركة */
+  function srcLabel(t){
+    if(t._src==="loading") return"عملية بيع / تحميل";
+    if(t._src==="finance") return t.dir==="out"?"تسديد مستحقات":"إضافة على الحساب";
+    if(t._src==="finance-other") return"حركة مالية";
+    return t.note||"حركة مباشرة";
+  }
+
+  /* ── HTML الكامل لنافذة الطباعة ── */
+  const doc=`<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>كشف حساب — ${mer.name}</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  @page{size:A4 portrait;margin:0}
+  body{
+    font-family:'Cairo',Arial,sans-serif;direction:rtl;
+    color:#111;background:#fff;
+    padding:14mm 16mm 14mm 16mm;
+    font-size:11.5px;
+  }
+  /* ─── الترويسة المتكررة ─── */
+  table{width:100%;border-collapse:collapse;table-layout:fixed}
+  thead{display:table-header-group} /* يتكرر في كل صفحة */
+  tbody{display:table-row-group}
+  tfoot{display:table-footer-group}
+
+  /* رأس الترويسة */
+  .hdr-cell{padding-bottom:12px;border-bottom:2px solid #1a3a6b;margin-bottom:0}
+  .hdr-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding-bottom:10px;border-bottom:1.5px solid #1a3a6b;margin-bottom:8px}
+  .hdr-brand{font-size:18px;font-weight:900;color:#1a3a6b;letter-spacing:.5px}
+  .hdr-brand-sub{font-size:10px;color:#666;margin-top:2px}
+  .hdr-nums{text-align:left;font-size:11px;min-width:160px}
+  .hdr-nums div{display:flex;justify-content:space-between;gap:14px;margin-bottom:3px}
+  .hdr-nums span{color:#777}
+  .hdr-nums strong{color:#111}
+  /* قسم إلى */
+  .hdr-bill{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0}
+  .hdr-bill-left .lbl{font-size:9.5px;font-weight:700;color:#777;letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px}
+  .hdr-bill-left .name{font-size:14px;font-weight:800;color:#111}
+  .hdr-bill-left .detail{font-size:10px;color:#555;margin-top:2px}
+  .hdr-badge{display:inline-block;background:#f0f4fa;border:1px solid #b0c0e0;border-radius:4px;padding:4px 14px;font-size:11px;font-weight:700;color:#1a3a6b;white-space:nowrap}
+  /* رأس الأعمدة */
+  .col-hdr th{
+    background:#1a3a6b;color:#fff;
+    padding:8px 10px;font-size:11px;font-weight:700;
+    border:1px solid #1a3a6b;text-align:right;
+    white-space:nowrap;
+  }
+  .col-hdr th.num-col{text-align:center}
+  /* صفوف البيانات */
+  tbody tr td{padding:7px 10px;border:1px solid #dde4f0;font-size:11.5px;vertical-align:middle}
+  tbody tr:nth-child(even) td{background:#f7f9ff}
+  tbody tr:hover td{background:#eef2fb}
+  td.num-col{text-align:center;color:#555;font-family:monospace;font-size:10.5px}
+  td.amt-in{text-align:center;color:#1a6b3a;font-weight:700;font-family:monospace}
+  td.amt-out{text-align:center;color:#b3432f;font-weight:700;font-family:monospace}
+  td.amt-bal{text-align:center;font-weight:800;font-family:monospace}
+  td.amt-bal.pos{color:#1a6b3a}
+  td.amt-bal.neg{color:#b3432f}
+  td.dash{text-align:center;color:#bbb}
+  /* صف الرصيد الافتتاحي */
+  tr.opening td{background:#f0f4fa;font-weight:700;color:#1a3a6b;font-style:italic;border:1px solid #c8d4e8}
+  /* صف الإجمالي */
+  tfoot tr td{background:#1a3a6b!important;color:#fff!important;font-weight:800;padding:9px 10px;border:1px solid #0d2550;font-size:12px}
+  tfoot .f-lbl{font-size:11px}
+  tfoot .f-val{text-align:center;font-family:monospace}
+  /* تذييل الطباعة */
+  .print-footer{margin-top:18px;padding-top:10px;border-top:1px dashed #ccc;display:flex;justify-content:space-between;font-size:10px;color:#999}
+  .sig-wrap{text-align:center}
+  .sig-line{width:100px;border-top:1px solid #555;margin-bottom:4px}
+  /* لا url */
+  @media print{
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    body{padding:14mm 16mm}
+    a::after{content:"" !important}
+  }
+</style>
+</head>
+<body>
+<table>
+  <thead>
+    <tr>
+      <td colspan="6" style="padding:0 0 8px 0;border:none">
+        <div class="hdr-top">
+          <div>
+            <div class="hdr-brand">Ahmed And Hamdy</div>
+            <div class="hdr-brand-sub">نظام المحاسبة الداخلي</div>
+          </div>
+          <div class="hdr-nums">
+            <div><span>نوع المستند</span><strong>كشف حساب</strong></div>
+            <div><span>تاريخ الطباعة</span><strong>${printNow}</strong></div>
+            <div><span>الفترة</span><strong>${periodLabel}</strong></div>
+          </div>
+        </div>
+        <div class="hdr-bill" style="padding-top:7px">
+          <div class="hdr-bill-left">
+            <div class="lbl">حساب التاجر</div>
+            <div class="name">${mer.name}</div>
+            <div class="detail">${[mer.phone,mer.address].filter(Boolean).join("  |  ")||"—"}</div>
+          </div>
+          <div>
+            ${fromVal||toVal
+              ?`<span class="hdr-badge">📅 ${periodLabel}</span>`
+              :`<span class="hdr-badge">جميع الفترات</span>`}
+          </div>
+        </div>
+        ${fromVal?`<div style="font-size:10px;color:#777;margin-top:6px;padding-top:6px;border-top:1px dashed #ddd">
+          رصيد مرحّل قبل الفترة: <strong style="color:${openingBalance>=0?"#1a6b3a":"#b3432f"}">${fmtM(Math.abs(openingBalance))} ${openingBalance>=0?"(على التاجر)":"(دائن)"}</strong>
+        </div>`:""}
+      </td>
+    </tr>
+    <tr class="col-hdr">
+      <th style="width:9%" class="num-col">#</th>
+      <th style="width:14%">التاريخ</th>
+      <th style="width:32%">البيان</th>
+      <th style="width:14%" class="num-col">مدين (عليه)</th>
+      <th style="width:14%" class="num-col">دائن (له)</th>
+      <th style="width:17%" class="num-col">الرصيد</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    ${fromVal&&openingBalance!==0?`<tr class="opening">
+      <td class="num-col">—</td>
+      <td>${fmtD(fromVal)}</td>
+      <td>رصيد مرحّل من الفترة السابقة</td>
+      <td class="dash">—</td>
+      <td class="dash">—</td>
+      <td class="amt-bal ${openingBalance>=0?"pos":"neg"}">${fmtM(Math.abs(openingBalance))}</td>
+    </tr>`:""}
+    ${rows.map(r=>`<tr>
+      <td class="num-col">${r.idx}</td>
+      <td>${fmtD(r.dateStr)}</td>
+      <td>${r.note||srcLabel(r)}</td>
+      <td class="${r.dir==="in"?"amt-in":"dash"}">${r.dir==="in"?fmtM(r.amount):"—"}</td>
+      <td class="${r.dir==="out"?"amt-out":"dash"}">${r.dir==="out"?fmtM(r.amount):"—"}</td>
+      <td class="amt-bal ${r.runBal>=0?"pos":"neg"}">${fmtM(Math.abs(r.runBal))}</td>
+    </tr>`).join("")}
+  </tbody>
+
+  <tfoot>
+    <tr>
+      <td colspan="3" class="f-lbl">الإجمالي — ${rows.length} حركة${fromVal||toVal?" في الفترة المحددة":""}</td>
+      <td class="f-val">${fmtM(totalIn)}</td>
+      <td class="f-val">${fmtM(totalOut)}</td>
+      <td class="f-val">${fmtM(Math.abs(runBal))} ${runBal>=0?"(مدين)":"(دائن)"}</td>
+    </tr>
+  </tfoot>
+</table>
+
+<div class="print-footer">
+  <div>طُبع بتاريخ: ${printNow}</div>
+  <div class="sig-wrap">
+    <div class="sig-line"></div>
+    <div>التوقيع والختم</div>
+  </div>
+  <div>Ahmed And Hamdy — نظام المحاسبة الداخلي</div>
+</div>
+</body>
+</html>`;
+
+  const w=window.open("","_blank","width=900,height=700");
+  if(!w){ toast("السماح بالنوافذ المنبثقة لطباعة الكشف",true); return; }
+  w.document.open();
+  w.document.write(doc);
+  w.document.close();
+  w.onload=()=>{ setTimeout(()=>w.print(),400); };
+}
+
 </script>
 </body>
 </html>
