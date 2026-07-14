@@ -768,6 +768,16 @@ function initLoadingForm() {
       });
       // إذا تم الدفع فوراً: أضف حركة دفع تلقائية في finance_transactions تُلغي الدين
       if (isPaid && totalAmount > 0) {
+        // قراءة الـ counter لتوليد finId تسلسلي صحيح (F-XXXX)
+        const counterRef = docRef(db, "counters", "finance_trans");
+        const counterSnap = await new Promise((res, rej) => {
+          const unsub = onSnapshot(counterRef, snap => { unsub(); res(snap); }, rej);
+        });
+        const newSeq   = (counterSnap.exists() ? counterSnap.data().seq : 0) + 1;
+        const payFinId = "F-" + String(newSeq).padStart(4, "0");
+        // تحديث الـ counter في نفس الـ batch
+        batch.set(counterRef, { seq: newSeq }, { merge: true });
+
         const payTxId = `PY-${Date.now().toString(36).toUpperCase().slice(-6)}`;
         const payRef  = docRef(collection(db, "finance_transactions"));
         batch.set(payRef, {
@@ -779,13 +789,17 @@ function initLoadingForm() {
           merchantName: merchant?.name ?? "",
           txId: payTxId,
           opId,
+          finId: payFinId,
+          _active: true,
           source: "auto-payment",
+          sourcePage: "المنتجات",
           description: `دفع فوري — بيع نقدي من مخزن ${wh?.name ?? ""}${note ? " — " + note : ""}`,
           affectsCash: true,
           performedBy: currentUser?.email ?? "—",
           createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
         });
-        // يُسجَّل إيداع في الصندوق تلقائياً
+        // يُسجَّل إيداع في الصندوق تلقائياً بنفس finId
         const cashRef = docRef(collection(db, "finance_transactions"));
         batch.set(cashRef, {
           type: "deposit",
@@ -794,10 +808,14 @@ function initLoadingForm() {
           date: today,
           txId: `DP-${Date.now().toString(36).toUpperCase().slice(-6)}`,
           opId,
+          finId: payFinId,
+          _active: true,
           source: "auto-payment",
+          sourcePage: "المنتجات",
           description: `إيداع نقدي — بيع للتاجر ${merchant?.name ?? ""}${note ? " — " + note : ""}`,
           performedBy: currentUser?.email ?? "—",
           createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
         });
       }
       // activity log
