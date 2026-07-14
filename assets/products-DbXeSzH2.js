@@ -1099,77 +1099,110 @@ function showInvoice(data) {
   // اعرض الرقم التسلسلي نفسه من سجل العمليات (OP-00006) بدل جزء من opId
   const shortId = data.seqLabel || (data.opId ? data.opId.slice(0, 8).toUpperCase() : "—");
 
-  let typeLabel = "", typeCls = "", bodyHtml = "", totalHtml = "";
+  let typeLabel = "", typeCls = "", bodyHtml = "", billToHtml = "";
 
   if (data.type === "production") {
     typeLabel = "عملية إنتاج"; typeCls = "inv-prod";
     const inputRows = (data.inputs || []).map(i =>
-      `<tr><td>${esc(i.productName)}</td><td>${fmtNum(i.qty)} ${esc(i.unit)}</td><td style="color:var(--danger)">استهلاك ←</td></tr>`).join("");
+      `<tr><td>${esc(i.productName)}</td><td style="text-align:center">${fmtNum(i.qty)} ${esc(i.unit)}</td><td style="color:#b91c1c;text-align:center">استهلاك</td></tr>`).join("");
     const outputRows = (data.outputs || []).map(o =>
-      `<tr><td>${esc(o.productName)}</td><td>${fmtNum(o.qty)} ${esc(o.unit)}</td><td style="color:var(--primary-dark)">إنتاج ←</td></tr>`).join("");
+      `<tr><td>${esc(o.productName)}</td><td style="text-align:center">${fmtNum(o.qty)} ${esc(o.unit)}</td><td style="color:#15803d;text-align:center">إنتاج</td></tr>`).join("");
+    billToHtml = `<div class="inv-doc-bill">
+      <div class="inv-doc-bill-label">المخازن</div>
+      <div class="inv-doc-bill-name">${esc(data.fromWarehouseName||"")}</div>
+      <div class="inv-doc-bill-detail">إلى مخزن: ${esc(data.toWarehouseName||"")}</div>
+    </div>`;
     bodyHtml = `
-      <div style="margin-bottom:10px">
-        <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px">📦 من مخزن: <strong style="color:var(--ink)">${esc(data.fromWarehouseName)}</strong></div>
-        <div style="font-size:12px;font-weight:700;color:var(--muted)">🏭 إلى مخزن: <strong style="color:var(--ink)">${esc(data.toWarehouseName)}</strong></div>
-      </div>
-      <table class="invoice-table">
-        <thead><tr><th>الصنف</th><th>الكمية</th><th>الحركة</th></tr></thead>
+      <table class="inv-doc-table">
+        <thead><tr><th>الصنف</th><th style="text-align:center">الكمية</th><th style="text-align:center">الحركة</th></tr></thead>
         <tbody>${inputRows}${outputRows}</tbody>
-      </table>`;
+      </table>
+      <div class="inv-doc-total-wrap"><table class="inv-doc-total-table">
+        <tr><td class="tot-lbl">إجمالي الأصناف</td><td class="tot-val">${(data.inputs||[]).length+(data.outputs||[]).length}</td></tr>
+      </table></div>`;
   } else if (data.type === "transfer") {
     typeLabel = "تحويل بين مخازن"; typeCls = "inv-transfer";
+    billToHtml = `<div class="inv-doc-bill">
+      <div class="inv-doc-bill-label">من</div>
+      <div class="inv-doc-bill-name">${esc(data.fromWarehouseName||"")}</div>
+      <div class="inv-doc-bill-detail">إلى: ${esc(data.toWarehouseName||"")}</div>
+    </div>`;
     bodyHtml = `
-      <div style="margin-bottom:14px">
-        <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px">من مخزن: <strong style="color:var(--ink)">${esc(data.fromWarehouseName)}</strong></div>
-        <div style="font-size:12px;font-weight:700;color:var(--muted)">إلى مخزن: <strong style="color:var(--ink)">${esc(data.toWarehouseName)}</strong></div>
-      </div>
-      <table class="invoice-table">
-        <thead><tr><th>الصنف</th><th>الكمية المحوّلة</th></tr></thead>
-        <tbody><tr><td>${esc(data.productName)}</td><td>${fmtNum(data.quantity)} ${esc(data.unit)}</td></tr></tbody>
-      </table>`;
+      <table class="inv-doc-table">
+        <thead><tr><th>الصنف</th><th style="text-align:center">الكمية المحوّلة</th></tr></thead>
+        <tbody><tr><td>${esc(data.productName)}</td><td style="text-align:center">${fmtNum(data.quantity)} ${esc(data.unit)}</td></tr></tbody>
+      </table>
+      <div class="inv-doc-total-wrap"><table class="inv-doc-total-table">
+        <tr><td class="tot-lbl">الكمية المحوّلة</td><td class="tot-val">${fmtNum(data.quantity)} ${esc(data.unit)}</td></tr>
+      </table></div>`;
   } else if (data.type === "loading") {
-    typeLabel = "عملية بيع للتاجر"; typeCls = "inv-load";
+    typeLabel = "فاتورة بيع"; typeCls = "inv-load";
     const lineRows = (data.lines || []).map(l =>
-      `<tr><td>${esc(l.productName)}</td><td>${fmtNum(l.qty)} ${esc(l.unit)}</td><td>${fmtMoney(l.price)}</td><td style="font-weight:700">${fmtMoney(l.total)}</td></tr>`
-    ).join("");
-    totalHtml = `<div class="invoice-total-row"><span>الإجمالي المطلوب من التاجر</span><span>${fmtMoney(data.totalAmount)}</span></div>`;
+      `<tr>
+        <td>${esc(l.productName)}</td>
+        <td style="text-align:center">${fmtNum(l.qty)} ${esc(l.unit)}</td>
+        <td style="text-align:center">${fmtMoney(l.price)}</td>
+        <td style="text-align:center;font-weight:700">${fmtMoney(l.total)}</td>
+      </tr>`).join("");
+    billToHtml = `<div class="inv-doc-bill">
+      <div class="inv-doc-bill-label">إلى</div>
+      <div class="inv-doc-bill-name">${esc(data.merchantName||"")}</div>
+      <div class="inv-doc-bill-detail">من مخزن: ${esc(data.warehouseName||"")}</div>
+    </div>`;
     bodyHtml = `
-      <div style="margin-bottom:14px">
-        <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px">من مخزن: <strong style="color:var(--ink)">${esc(data.warehouseName)}</strong></div>
-        <div style="font-size:12px;font-weight:700;color:var(--muted)">إلى التاجر: <strong style="color:var(--ink)">${esc(data.merchantName)}</strong></div>
-      </div>
-      <table class="invoice-table">
-        <thead><tr><th>الصنف</th><th>الكمية</th><th>سعر الوحدة</th><th>الإجمالي</th></tr></thead>
+      <table class="inv-doc-table">
+        <thead><tr><th>الصنف</th><th style="text-align:center">الكمية</th><th style="text-align:center">سعر الوحدة</th><th style="text-align:center">الإجمالي</th></tr></thead>
         <tbody>${lineRows}</tbody>
-      </table>`;
+      </table>
+      <div class="inv-doc-total-wrap"><table class="inv-doc-total-table">
+        <tr><td class="tot-lbl">المجموع الفرعي</td><td class="tot-val">${fmtMoney(data.totalAmount)}</td></tr>
+        <tr><td class="tot-lbl"><strong>الإجمالي</strong></td><td class="tot-val"><strong>${fmtMoney(data.totalAmount)}</strong></td></tr>
+      </table></div>`;
   }
 
   const printNow = new Date().toLocaleString("ar-EG", { year:"numeric", month:"long", day:"numeric", hour:"2-digit", minute:"2-digit" });
   const modalTitle = document.getElementById("invoice-modal-title") || document.querySelector("#invoice-modal .modal-box-header h3");
   if (modalTitle) modalTitle.textContent = isReplay ? "معاينة الحركة" : "فاتورة العملية";
 
+  // تحديد بادج نوع العملية
+  const docTypeCls = data.type==="production"?"t-prod":data.type==="loading"?"t-load":"t-trans";
+
   content.innerHTML = `
-    <div class="invoice-header">
-      <div class="invoice-mark">أ</div>
-      <div class="invoice-company">أحمد وحمدي</div>
-      <div class="invoice-sub">نظام المحاسبة الداخلي${isReplay ? " — معاينة حركة سابقة" : ""}</div>
-    </div>
-    <div style="text-align:center;margin-bottom:14px">
-      <span class="invoice-type-badge ${typeCls}">${typeLabel}</span>
-    </div>
-    <div class="invoice-meta-row">
-      <div><span>رقم العملية: </span><strong>${data.seqLabel ? shortId : "#" + shortId}</strong></div>
-      <div><span>${isReplay ? "تمت الحركة في: " : "التاريخ: "}</span><strong>${now}</strong></div>
-      <div><span>نفّذها: </span><strong>${esc(resolveAlias(data.performedBy) || "—")}</strong></div>
-    </div>
-    ${bodyHtml}
-    ${totalHtml}
-    ${data.note ? `<div style="margin-top:12px;font-size:13px;color:var(--muted)">ملاحظة: <em>${esc(data.note)}</em></div>` : ""}
-    <div class="invoice-footer">
-      <div>${isReplay ? "تمت معاينتها بتاريخ: " : "طُبع بتاريخ: "}${printNow}</div>
-      <div class="invoice-sig">
-        <div class="invoice-sig-line"></div>
-        <div>التوقيع والختم</div>
+    <div class="inv-doc">
+      <!-- رأس الفاتورة -->
+      <div class="inv-doc-head">
+        <div class="inv-doc-logo-wrap">
+          <img src="https://i.imgur.com/NsN1HgC.png" class="inv-doc-logo"
+               onerror="this.outerHTML='<div class=\'inv-doc-logo\' style=\'display:flex;align-items:center;justify-content:center;font-size:11px;color:#aaa;\'>الشعار</div>'" />
+          <div class="inv-doc-brand">أحمد وحمدي</div>
+          <div class="inv-doc-brand-sub">نظام المحاسبة الداخلي${isReplay?" — معاينة حركة سابقة":""}</div>
+        </div>
+        <div class="inv-doc-nums">
+          <div class="inv-doc-num-row"><span>رقم الفاتورة</span><strong>${data.seqLabel?shortId:"#"+shortId}</strong></div>
+          <div class="inv-doc-num-row"><span>${isReplay?"تاريخ الحركة":"التاريخ"}</span><strong>${now}</strong></div>
+          <div class="inv-doc-num-row"><span>نفّذها</span><strong>${esc(resolveAlias(data.performedBy)||"—")}</strong></div>
+        </div>
+      </div>
+
+      <!-- نوع العملية -->
+      <span class="inv-doc-type-badge ${docTypeCls}">${typeLabel}</span>
+
+      <!-- بيانات الطرف الآخر -->
+      ${billToHtml}
+
+      <!-- جسم الفاتورة (جدول + إجمالي) -->
+      ${bodyHtml}
+
+      <!-- ملاحظة -->
+      ${data.note?`<div class="inv-doc-note">ملاحظة: ${esc(data.note)}</div>`:""}
+
+      <!-- تذييل -->
+      <div class="inv-doc-footer">
+        <div>${isReplay?"تمت معاينتها بتاريخ: ":"طُبع بتاريخ: "}${printNow}</div>
+        <div class="inv-doc-sig">
+          <div class="inv-doc-sig-line"></div>
+          <div>التوقيع والختم</div>
+        </div>
       </div>
     </div>`;
 
