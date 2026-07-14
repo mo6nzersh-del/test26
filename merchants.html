@@ -1085,9 +1085,12 @@ function renderUnifiedList(){
       ? new Date(t.dateStr+"T00:00:00").toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"short",day:"numeric"})
       : "—";
     const bal=balances[i];
-    const isClickable=t._src==="finance"||t._src==="finance-other";
-    const recIdCls=isClickable?"rec-id rec-id-link":"rec-id";
-    const recIdAttr=isClickable?` data-fin-id="${t.id}" title="انقر لعرض تفاصيل الحركة"`:"";
+    const isClickable=true;
+    const recIdCls="rec-id rec-id-link";
+    const isFin=t._src==="finance"||t._src==="finance-other";
+    const recIdAttr=isFin
+      ?` data-fin-id="${t.id}" title="انقر لعرض تفاصيل الحركة"`
+      :` data-mer-tx-id="${t.id}" title="انقر لعرض تفاصيل الحركة"`;
     const pageOrigin=t.sourcePage?` · من صفحة ${esc(t.sourcePage)}`:"";
     const balCell=t._src==="finance-other"
       ?`<div style="font-size:10.5px;color:var(--muted);font-weight:600;white-space:nowrap;min-width:80px;text-align:left">لا تُحتسب في مستحقات التاجر</div>`
@@ -1126,6 +1129,23 @@ function renderUnifiedList(){
   }));
   list.querySelectorAll(".rec-id-link[data-fin-id]").forEach(el=>
     el.addEventListener("click",()=>openTxDetail(finTxs.find(t=>t.id===el.dataset.finId))));
+  list.querySelectorAll(".rec-id-link[data-mer-tx-id]").forEach(el=>
+    el.addEventListener("click",()=>{
+      const raw=merchantTxs.find(t=>t.id===el.dataset.merTxId);
+      if(!raw) return;
+      const mer=merchants.find(m=>m.id===currentMerId);
+      openTxDetail({
+        id:       raw.id,
+        type:     "merchant",
+        dir:      raw.type,           // "out"=دين / "in"=رصيد
+        finId:    raw.txId || (raw.opId?raw.opId.slice(0,8).toUpperCase():"—"),
+        date:     raw.date || "",
+        amount:   raw.amount || 0,
+        description: raw.note || "",
+        merchantId:  raw.merchantId  || currentMerId,
+        merchantName:raw.merchantName|| mer?.name || "—",
+      });
+    }));
   list.querySelectorAll(".delete-btn").forEach(btn=>btn.addEventListener("click",async()=>{
     const src=btn.dataset.src;
     const isLoading=src==="loading";
