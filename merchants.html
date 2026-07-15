@@ -1026,40 +1026,42 @@ function renderUnifiedStats(){
     ...merchantTxs.filter(t=>t.merchantId===currentMerId).map(t=>({dir:t.type,amount:t.amount||0})),
     ...finTxs.filter(t=>t.merchantId===currentMerId&&t.type==="merchant").map(t=>({dir:t.dir,amount:t.amount||0})),
   ];
-  const totalIn =allFull.filter(t=>t.dir==="in") .reduce((s,t)=>s+t.amount,0);
-  const totalOut=allFull.filter(t=>t.dir==="out").reduce((s,t)=>s+t.amount,0);
-  const net=totalIn-totalOut;
+  // dir="out" = بيع/تحميل = مسحوبات (ما أخذه التاجر)
+  // dir="in"  = دفعة/سداد = مدفوعات (ما دفعه التاجر)
+  const salesAmt   =allFull.filter(t=>t.dir==="out").reduce((s,t)=>s+t.amount,0);
+  const paymentsAmt=allFull.filter(t=>t.dir==="in") .reduce((s,t)=>s+t.amount,0);
+  const net=salesAmt-paymentsAmt; // موجب = التاجر مدين
 
-  const filtIn =all.filter(t=>t.dir==="in") .reduce((s,t)=>s+t.amount,0);
-  const filtOut=all.filter(t=>t.dir==="out").reduce((s,t)=>s+t.amount,0);
+  const filtSales   =all.filter(t=>t.dir==="out").reduce((s,t)=>s+t.amount,0);
+  const filtPayments=all.filter(t=>t.dir==="in") .reduce((s,t)=>s+t.amount,0);
   const isFiltered=document.getElementById("filter-from").value||document.getElementById("filter-to").value;
-  const inCount =allFull.filter(t=>t.dir==="in").length;
-  const outCount=allFull.filter(t=>t.dir==="out").length;
+  const salesCount   =allFull.filter(t=>t.dir==="out").length;
+  const paymentsCount=allFull.filter(t=>t.dir==="in").length;
   document.getElementById("mer-unified-stats").innerHTML=`
     <div class="mer-stat stat-in">
       <div class="msk">📦 إجمالي مسحوبات هذا التاجر${isFiltered?" (الفترة)":""}</div>
-      <div class="msv" style="color:#1a6b3a">${fmt(isFiltered?filtIn:totalIn)}</div>
+      <div class="msv" style="color:#1a6b3a">${fmt(isFiltered?filtSales:salesAmt)}</div>
       <div class="mss">
-        <strong style="color:#1a6b3a">${inCount} عملية تحميل</strong>
+        <strong style="color:#1a6b3a">${salesCount} عملية تحميل</strong>
         <br/>البضائع التي أخذها التاجر من المخزن — هذا ما يدين به
       </div>
     </div>
     <div class="mer-stat stat-net">
       <div class="msk">💳 إجمالي مدفوعات التاجر${isFiltered?" (الفترة)":""}</div>
-      <div class="msv" style="color:#1a4bbf">${fmt(isFiltered?filtOut:totalOut)}</div>
+      <div class="msv" style="color:#1a4bbf">${fmt(isFiltered?filtPayments:paymentsAmt)}</div>
       <div class="mss">
-        <strong style="color:#1a4bbf">${outCount} دفعة</strong>
+        <strong style="color:#1a4bbf">${paymentsCount} دفعة</strong>
         <br/>المبالغ التي دفعها التاجر فعلياً حتى الآن
       </div>
     </div>
     <div class="mer-stat stat-out">
       <div class="msk">💰 المبلغ المستحق على هذا التاجر</div>
-      <div class="msv" style="color:${net<=0?"#b3432f":"#1a6b3a"}">
+      <div class="msv" style="color:${net>=0?"#b3432f":"#1a6b3a"}">
         ${fmt(Math.abs(net))}
       </div>
       <div class="mss">
-        <strong style="color:${net<=0?"#b3432f":"#1a6b3a"}">
-          ${net<=0?"⚠️ على التاجر سداد هذا المبلغ":"✅ رصيد دائن — التاجر دفع أكثر"}
+        <strong style="color:${net>=0?"#b3432f":"#1a6b3a"}">
+          ${net>=0?"⚠️ على التاجر سداد هذا المبلغ":"✅ رصيد دائن — التاجر دفع أكثر"}
         </strong>
         <br/>${allFull.length} عملية إجمالاً (مسحوبات − مدفوعات)
       </div>
