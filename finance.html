@@ -404,7 +404,7 @@
         <div class="sc-val" id="stat-pf-inventory">—</div>
         <div class="sc-sub">كمية × سعر لكل منتج</div>
       </div>
-      <div class="stat-card stat-pf-dues" onclick="openDuesModal()" title="انقر لعرض تفاصيل مستحقات التجار">
+      <div class="stat-card stat-pf-dues" id="dues-card-btn" title="انقر لعرض تفاصيل مستحقات التجار">
         <div class="sc-label">🤝 مستحقات التجار <span style="font-size:10px;opacity:.6">← تفاصيل</span></div>
         <div class="sc-val" id="stat-pf-dues">—</div>
         <div class="sc-sub" id="stat-pf-dues-sub">بضاعة أُرسلت ولم تُدفع بعد</div>
@@ -960,7 +960,7 @@ function openDuesModal(){
 
     const blockId="dm-block-"+r.id;
     return`<div class="dm-merchant-block">
-      <div class="dm-merchant-hdr" onclick="dmToggle('${blockId}')">
+      <div class="dm-merchant-hdr" data-toggle="${blockId}">
         <div>
           <div class="dm-mer-name">${r.name} ${r.phone?`<span style="font-size:11px;color:#888;font-weight:400">(${r.phone})</span>`:""}</div>
           <div style="font-size:11px;color:#888;margin-top:2px">${allRows.length} حركة</div>
@@ -987,19 +987,25 @@ function openDuesModal(){
   }).join("");
 
   modal.classList.add("open");
-}
-function dmToggle(id){
-  const body=document.getElementById(id);
-  const chev=document.getElementById("chev-"+id);
-  if(!body) return;
-  body.classList.toggle("open");
-  chev?.classList.toggle("open");
+
+  // event delegation لأزرار توسيع التاجر (بديل عن onclick inline)
+  body.addEventListener("click",e=>{
+    const hdr=e.target.closest("[data-toggle]");
+    if(!hdr) return;
+    // لا تطوي عند النقر على رابط "فتح ملف التاجر"
+    if(e.target.closest("a")) return;
+    const id=hdr.dataset.toggle;
+    const tb=document.getElementById(id);
+    const chev=document.getElementById("chev-"+id);
+    if(tb){ tb.classList.toggle("open"); chev?.classList.toggle("open"); }
+  });
 }
 
 /* ── نافذة تفاصيل الحركة ── */
 function setupDetailModal(){
   // مودال مستحقات التجار
   const duesModal=document.getElementById("dues-modal");
+  document.getElementById("dues-card-btn").addEventListener("click", openDuesModal);
   document.getElementById("dues-modal-close").addEventListener("click",()=>duesModal.classList.remove("open"));
   duesModal.addEventListener("click",e=>{ if(e.target===duesModal) duesModal.classList.remove("open"); });
   // نافذة تفاصيل الحركة
