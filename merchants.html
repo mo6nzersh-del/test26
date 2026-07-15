@@ -377,7 +377,7 @@ import { getAuth, onAuthStateChanged, signOut }
                             from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, collection, doc,
-  addDoc, updateDoc, deleteDoc,
+  addDoc, updateDoc, deleteDoc, getDocs,
   query, where, orderBy, onSnapshot,
   serverTimestamp, runTransaction, writeBatch
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -799,9 +799,38 @@ function renderList(){
 }
 
 async function deleteMer(id){
-  if(!confirm("هل تريد حذف هذا التاجر؟")) return;
-  try{ await deleteDoc(doc(db,"merchants",id)); toast("تم حذف التاجر"); }
-  catch(err){ console.error(err); toast("خطأ",true); }
+  const mer=merchants.find(m=>m.id===id);
+  const merName=mer?.name??"التاجر";
+
+  // احسب عدد الحركات أولاً
+  const [mSnap,fSnap]=await Promise.all([
+    getDocs(query(collection(db,"merchantTransactions"),where("merchantId","==",id))),
+    getDocs(query(collection(db,"finance_transactions"),where("merchantId","==",id))),
+  ]);
+  const total=mSnap.size+fSnap.size;
+  const msg=total>0
+    ? `هل تريد حذف التاجر "${merName}" نهائياً؟\n\nسيتم حذف ${total} حركة مرتبطة به من قاعدة البيانات.\n\nهذا الإجراء لا يمكن التراجع عنه.`
+    : `هل تريد حذف التاجر "${merName}" نهائياً؟\n\nهذا الإجراء لا يمكن التراجع عنه.`;
+  if(!confirm(msg)) return;
+
+  try{
+    // Firebase writeBatch يقبل 500 عملية كحد أقصى لكل دفعة
+    const CHUNK=490;
+    const allDocs=[
+      ...mSnap.docs.map(d=>d.ref),
+      ...fSnap.docs.map(d=>d.ref),
+    ];
+    // احذف الحركات على دفعات
+    for(let i=0;i<allDocs.length;i+=CHUNK){
+      const batch=writeBatch(db);
+      allDocs.slice(i,i+CHUNK).forEach(ref=>batch.delete(ref));
+      await batch.commit();
+    }
+    // احذف التاجر نفسه
+    await deleteDoc(doc(db,"merchants",id));
+    toast(`تم حذف التاجر و ${allDocs.length} حركة مرتبطة به`);
+    writeAuditLog("حذف","تاجر",`${merName} — ${allDocs.length} حركة`);
+  }catch(err){ console.error(err); toast("خطأ أثناء الحذف",true); }
 }
 
 /* ── صفحة التفاصيل ── */
