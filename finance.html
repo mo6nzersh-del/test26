@@ -46,8 +46,36 @@
     .fund-title:first-of-type{margin-top:0}
     .stat-pf-inv  {border-top:3px solid #2a3f8f}
     .stat-pf-inv   .sc-val{color:#2a3f8f}
-    .stat-pf-dues {border-top:3px solid #d4a854}
+    .stat-pf-dues {border-top:3px solid #d4a854;cursor:pointer;transition:box-shadow .15s,transform .12s}
+    .stat-pf-dues:hover{box-shadow:0 4px 18px rgba(212,168,84,.35);transform:translateY(-2px)}
     .stat-pf-dues  .sc-val{color:#7a4f10}
+    /* ── مودال مستحقات التجار ── */
+    #dues-modal{z-index:1100}
+    #dues-modal .modal-box{max-width:780px;max-height:90vh;display:flex;flex-direction:column}
+    #dues-modal .modal-body{overflow-y:auto;flex:1;padding:0 20px 20px}
+    .dm-merchant-block{border:1.5px solid #e8dfc8;border-radius:10px;margin-bottom:14px;overflow:hidden}
+    .dm-merchant-hdr{display:flex;justify-content:space-between;align-items:center;
+      padding:10px 16px;background:#fdf8ef;cursor:pointer;gap:12px}
+    .dm-merchant-hdr:hover{background:#f8eedb}
+    .dm-mer-name{font-size:14px;font-weight:800;color:#1a1a1a}
+    .dm-mer-bal{font-size:15px;font-weight:900;color:#b3432f;white-space:nowrap}
+    .dm-mer-bal.credit{color:#1a6b3a}
+    .dm-tx-link{font-size:11px;color:#1a3a6b;text-decoration:underline;white-space:nowrap}
+    .dm-tx-table{width:100%;border-collapse:collapse;font-size:11.5px}
+    .dm-tx-table th{background:#f0f4fa;color:#555;padding:6px 10px;font-weight:700;
+      border-bottom:1px solid #dde4f0;text-align:right}
+    .dm-tx-table td{padding:6px 10px;border-bottom:1px solid #eef2fb;vertical-align:middle}
+    .dm-tx-table tr:last-child td{border-bottom:none}
+    .dm-tx-table .dt-in{color:#1a6b3a;font-weight:700;text-align:center}
+    .dm-tx-table .dt-out{color:#b3432f;font-weight:700;text-align:center}
+    .dm-tx-table .dt-dash{color:#bbb;text-align:center}
+    .dm-tx-body{display:none}
+    .dm-tx-body.open{display:table-row-group}
+    .dm-chevron{font-size:12px;color:#888;transition:transform .2s}
+    .dm-chevron.open{transform:rotate(180deg)}
+    .dm-summary-bar{display:flex;gap:16px;flex-wrap:wrap;padding:10px 16px 0;
+      border-top:1px dashed #ddd;font-size:11.5px;color:#666}
+    .dm-summary-bar strong{color:#333}
     .stat-pf-total{border-top:3px solid #4caf7d}
     .stat-pf-total .sc-val{color:#1a6b3a}
     .stat-pf-wh   {border-top:3px solid #7c3aed}
@@ -376,8 +404,8 @@
         <div class="sc-val" id="stat-pf-inventory">—</div>
         <div class="sc-sub">كمية × سعر لكل منتج</div>
       </div>
-      <div class="stat-card stat-pf-dues">
-        <div class="sc-label">🤝 مستحقات التجار</div>
+      <div class="stat-card stat-pf-dues" onclick="openDuesModal()" title="انقر لعرض تفاصيل مستحقات التجار">
+        <div class="sc-label">🤝 مستحقات التجار <span style="font-size:10px;opacity:.6">← تفاصيل</span></div>
         <div class="sc-val" id="stat-pf-dues">—</div>
         <div class="sc-sub" id="stat-pf-dues-sub">بضاعة أُرسلت ولم تُدفع بعد</div>
       </div>
@@ -507,6 +535,22 @@
     <div style="display:flex;gap:10px">
       <button type="button" class="btn" id="mp-save-btn">حفظ الدفعة</button>
       <button type="button" class="btn outline" id="mp-cancel-btn">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ مودال مستحقات التجار ═══════ -->
+<div class="modal-overlay" id="dues-modal">
+  <div class="modal-box">
+    <div class="modal-box-header">
+      <h3>🤝 مستحقات التجار — تفاصيل العمليات</h3>
+      <button type="button" class="modal-close" id="dues-modal-close">&times;</button>
+    </div>
+    <div style="padding:12px 20px 8px;border-bottom:1px solid var(--border)">
+      <div id="dues-modal-summary" style="font-size:13px;color:var(--muted)"></div>
+    </div>
+    <div class="modal-body" id="dues-modal-body">
+      <div style="padding:30px;text-align:center;color:var(--muted)">جارِ التحميل...</div>
     </div>
   </div>
 </div>
@@ -804,7 +848,7 @@ function init(){
 }
 
 /* ── صندوق المنتجات: قيمة المخزون + مستحقات التجار ── */
-let allProducts=[], allMerchantTxs=[];
+let allProducts=[], allMerchantTxs=[], lastByMerchant={};
 function loadProductsFund(){
   onSnapshot(collection(db,"products"),snap=>{
     allProducts=snap.docs.map(d=>d.data());
@@ -833,6 +877,8 @@ function renderProductsFund(){
     byMerchant[t.merchantId]=(byMerchant[t.merchantId]||0)+(t.dir==="in"?1:-1)*(Number(t.amount)||0);
   });
 
+  // احفظ byMerchant عالمياً لاستخدامه في المودال
+  lastByMerchant=byMerchant;
   // الرصيد السالب = التاجر مدين ← نجمع Math.max(0, -bal)
   const entries=Object.values(byMerchant);
   const merchantDues=entries.reduce((s,bal)=>s+Math.max(0,-bal),0);
@@ -845,8 +891,118 @@ function renderProductsFund(){
   document.getElementById("stat-pf-total").textContent=fmt(inventoryValue+merchantDues);
 }
 
+
+/* ── مودال مستحقات التجار ── */
+function openDuesModal(){
+  const modal=document.getElementById("dues-modal");
+  const body=document.getElementById("dues-modal-body");
+  const summary=document.getElementById("dues-modal-summary");
+
+  // بناء قائمة التجار مع أرصدتهم
+  const rows=Object.entries(lastByMerchant).map(([id,bal])=>{
+    const mer=merchants.find(m=>m.id===id);
+    return{id,bal,name:mer?.name??id,phone:mer?.phone??""};
+  }).sort((a,b)=>a.bal-b.bal); // الأكثر ديناً أولاً
+
+  const totalDebt=rows.filter(r=>r.bal<-0.005).reduce((s,r)=>s+(-r.bal),0);
+  const debtors=rows.filter(r=>r.bal<-0.005);
+  const credits=rows.filter(r=>r.bal>0.005);
+
+  summary.innerHTML=`<span>إجمالي المستحقات: <strong style="color:#b3432f">${fmt(totalDebt)}</strong></span>
+    &nbsp;|&nbsp; <span>تجار مدينون: <strong>${debtors.length}</strong></span>
+    &nbsp;|&nbsp; <span>تجار دائنون: <strong>${credits.length}</strong></span>`;
+
+  if(!rows.length){
+    body.innerHTML='<div style="padding:40px;text-align:center;color:var(--muted)">لا توجد بيانات</div>';
+    modal.classList.add("open");
+    return;
+  }
+
+  const fmtD=s=>s?new Date(s+"T00:00:00").toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"short",day:"numeric"}):"—";
+
+  body.innerHTML=rows.map(r=>{
+    const isDebt=r.bal<-0.005;
+    const isCredit=r.bal>0.005;
+    const balClass=isDebt?"dm-mer-bal":isCredit?"dm-mer-bal credit":"dm-mer-bal";
+    const balLabel=isDebt?`مدين: ${fmt(-r.bal)}`
+                  :isCredit?`دائن: ${fmt(r.bal)}`
+                  :"مسدّد بالكامل";
+
+    // حركات هذا التاجر
+    const mTxs=allMerchantTxs.filter(t=>t.merchantId===r.id)
+      .map(t=>({
+        date:t.date||t.createdAt?.toDate?.()?.toISOString?.()?.slice(0,10)||"",
+        note:t.note||"عملية بيع / تحميل",
+        type:t.type,  // "out"=دين, غيره=دفعة
+        amount:Number(t.amount)||0,
+        src:"mer"
+      }));
+    const fTxs=allTx.filter(t=>t.type==="merchant"&&t.merchantId===r.id)
+      .map(t=>({
+        date:t.date||"",
+        note:t.description||"دفعة مالية",
+        dir:t.dir,  // "in"=سداد
+        amount:Number(t.amount)||0,
+        src:"fin"
+      }));
+    const allRows=[...mTxs,...fTxs].sort((a,b)=>(a.date>b.date?-1:1));
+
+    const txRows=allRows.map(t=>{
+      const isIn=(t.src==="mer"&&t.type!=="out")||(t.src==="fin"&&t.dir==="in");
+      const isOut=(t.src==="mer"&&t.type==="out")||(t.src==="fin"&&t.dir!=="in");
+      return`<tr>
+        <td>${fmtD(t.date)}</td>
+        <td>${t.note}</td>
+        <td class="${isOut?"dt-out":"dt-dash"}">${isOut?fmt(t.amount):"—"}</td>
+        <td class="${isIn?"dt-in":"dt-dash"}">${isIn?fmt(t.amount):"—"}</td>
+      </tr>`;
+    }).join("");
+
+    const blockId="dm-block-"+r.id;
+    return`<div class="dm-merchant-block">
+      <div class="dm-merchant-hdr" onclick="dmToggle('${blockId}')">
+        <div>
+          <div class="dm-mer-name">${r.name} ${r.phone?`<span style="font-size:11px;color:#888;font-weight:400">(${r.phone})</span>`:""}</div>
+          <div style="font-size:11px;color:#888;margin-top:2px">${allRows.length} حركة</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="${balClass}">${balLabel}</span>
+          <a href="merchants.html?id=${encodeURIComponent(r.id)}" target="_blank" class="dm-tx-link" onclick="event.stopPropagation()">فتح ملف التاجر ↗</a>
+          <span class="dm-chevron" id="chev-${blockId}">▼</span>
+        </div>
+      </div>
+      ${allRows.length?`<table class="dm-tx-table">
+        <thead>
+          <tr>
+            <th>التاريخ</th><th>البيان</th>
+            <th style="text-align:center">مدين (عليه)</th>
+            <th style="text-align:center">دائن (له)</th>
+          </tr>
+        </thead>
+        <tbody class="dm-tx-body" id="${blockId}">
+          ${txRows}
+        </tbody>
+      </table>`:`<div style="padding:10px 16px;color:var(--muted);font-size:12px">لا توجد حركات مسجّلة</div>`}
+    </div>`;
+  }).join("");
+
+  modal.classList.add("open");
+}
+function dmToggle(id){
+  const body=document.getElementById(id);
+  const chev=document.getElementById("chev-"+id);
+  if(!body) return;
+  body.classList.toggle("open");
+  chev?.classList.toggle("open");
+}
+
 /* ── نافذة تفاصيل الحركة ── */
 function setupDetailModal(){
+  // مودال مستحقات التجار
+  const duesModal=document.getElementById("dues-modal");
+  document.getElementById("dues-modal-close").addEventListener("click",()=>duesModal.classList.remove("open"));
+  duesModal.addEventListener("click",e=>{ if(e.target===duesModal) duesModal.classList.remove("open"); });
+  // نافذة تفاصيل الحركة
   const modal=document.getElementById("tx-detail-modal");
   document.getElementById("tx-detail-close").addEventListener("click",()=>modal.classList.remove("open"));
   document.getElementById("tx-detail-close2").addEventListener("click",()=>modal.classList.remove("open"));
