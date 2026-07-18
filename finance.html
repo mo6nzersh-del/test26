@@ -356,6 +356,100 @@
       .data-table th,.data-table td{border:1px solid #ccc!important;padding:5px 8px!important}
       .data-table th{background:#f0f0f0!important}
     }
+
+    /* ══════════════════════════════════════
+       بطاقات الهاتف — سجل الحركات المالية
+    ══════════════════════════════════════ */
+    .mob-tx-list{display:none}
+    @media(max-width:640px){
+      /* إخفاء الجدول وإظهار البطاقات */
+      .table-wrap{display:none}
+      .mob-tx-list{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+
+      /* البطاقة الأساسية */
+      .mob-tx-card{
+        background:var(--surface);
+        border:1px solid var(--border);
+        border-radius:14px;
+        padding:14px 14px 10px;
+        box-shadow:0 1px 5px rgba(0,0,0,.06);
+        display:flex;flex-direction:column;gap:9px;
+        transition:box-shadow .15s;
+      }
+      .mob-tx-card:active{box-shadow:0 2px 10px rgba(0,0,0,.1)}
+
+      /* سطر الرأس: المعرف + التاريخ */
+      .mob-tx-head{
+        display:flex;align-items:center;
+        justify-content:space-between;gap:8px;
+      }
+      .mob-tx-date{
+        font-size:11.5px;color:var(--muted);white-space:nowrap;
+      }
+
+      /* سطر المنتصف: الشارة + الاتجاه ← المبلغ */
+      .mob-tx-mid{
+        display:flex;align-items:center;
+        justify-content:space-between;gap:8px;flex-wrap:wrap;
+      }
+      .mob-tx-badges{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;min-width:0}
+      .mob-tx-dir{font-size:12px;font-weight:700;white-space:nowrap}
+      .mob-tx-dir.in{color:#1a6b3a}
+      .mob-tx-dir.out{color:#b3432f}
+
+      /* المبلغ الكبير */
+      .mob-tx-amount{
+        font-size:19px;font-weight:900;
+        white-space:nowrap;letter-spacing:-.4px;
+      }
+      .mob-tx-amount.in{color:#1a6b3a}
+      .mob-tx-amount.out{color:#b3432f}
+
+      /* الجهة والوصف */
+      .mob-tx-meta{
+        font-size:12px;color:var(--muted);
+        display:flex;flex-direction:column;gap:2px;
+      }
+      .mob-tx-meta .mob-meta-row{display:flex;gap:4px;align-items:baseline}
+      .mob-tx-meta .mob-meta-lbl{font-size:11px;font-weight:700;color:var(--muted);flex-shrink:0}
+      .mob-tx-meta .mob-meta-val{color:var(--ink);font-size:12.5px;font-weight:600;
+        overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+      .mob-tx-meta .link-cell{color:var(--primary-dark);font-weight:700;cursor:pointer}
+      .mob-tx-meta .link-cell:hover{text-decoration:underline}
+
+      /* شريط الأزرار السفلي */
+      .mob-tx-actions-row{
+        display:flex;gap:6px;padding-top:8px;
+        border-top:1px solid var(--border);align-items:center;
+      }
+      .mob-tx-actions-row .mob-btn-edit,
+      .mob-tx-actions-row .mob-btn-del{
+        flex:1;padding:7px 0;border-radius:9px;
+        font-family:inherit;font-size:12px;font-weight:700;
+        cursor:pointer;text-align:center;
+        border:1px solid var(--border);
+        background:var(--surface);color:var(--ink);
+        transition:background .12s;
+      }
+      .mob-tx-actions-row .mob-btn-del{
+        color:#b3432f;border-color:#f0b3a8;background:#fff5f5;
+      }
+      .mob-tx-actions-row .mob-btn-stat{
+        border:1px solid var(--border);background:var(--surface);
+        border-radius:9px;padding:7px 11px;cursor:pointer;
+        font-size:14px;color:var(--muted);line-height:1;
+        transition:background .12s,color .12s;
+      }
+      .mob-tx-actions-row .mob-btn-stat.active{
+        background:var(--primary-soft,#eef2fb);
+        color:var(--primary-dark,#2a5bbf);
+        border-color:var(--primary,#4a7dd4);
+      }
+
+      /* صندوق الأرصدة القابل للطي */
+      .mob-tx-box4{display:none;padding-top:6px}
+      .mob-tx-box4.open{display:block}
+    }
   </style>
 </head>
 <body>
@@ -466,6 +560,10 @@
             <tr><td colspan="8"><div class="empty-state">جارِ التحميل...</div></td></tr>
           </tbody>
         </table>
+      </div>
+      <!-- بطاقات الهاتف (تظهر فقط على شاشات ≤ 640px) -->
+      <div id="mob-tx-list" class="mob-tx-list">
+        <div class="empty-state">جارِ التحميل...</div>
       </div>
     </div>
 
@@ -1382,11 +1480,14 @@ function renderTable(){
 
   document.getElementById("tx-count").textContent=`${rows.length} عملية`;
   const tbody=document.getElementById("tx-tbody");
+  const mobList=document.getElementById("mob-tx-list");
   if(!rows.length){
     tbody.innerHTML='<tr><td colspan="8"><div class="empty-state">لا توجد عمليات مطابقة</div></td></tr>';
+    mobList.innerHTML='<div class="empty-state">لا توجد عمليات مطابقة</div>';
     return;
   }
   tbody.innerHTML="";
+  mobList.innerHTML="";
 
   // ── حساب أرصدة صناديق الكاش (الرصيد/الإيداعات/المسحوبات/السلف) قبل وبعد كل حركة، على كامل التاريخ بلا فلتر ──
   const fullCashTx=[...allTx.filter(t=>t.type!=="merchant")].sort((a,b)=>{
@@ -1460,7 +1561,42 @@ function renderTable(){
       dtr.innerHTML=`<td colspan="8">${detailHtml}</td>`;
       tbody.appendChild(dtr);
     }
+
+    // ── بطاقة الهاتف ──
+    const mobPartyCell=linkedMerchantId
+      ?`<span class="link-cell" data-merchant-id="${linkedMerchantId}">${esc(party)}</span>`
+      :(t.employeeId
+        ?`<span class="link-cell" data-employee-id="${t.employeeId}">${esc(party)}</span>`
+        :esc(party));
+    const hasMeta=party!=="—"||t.description;
+    const card=document.createElement("div");
+    card.className="mob-tx-card";
+    card.innerHTML=`
+      <div class="mob-tx-head">
+        <span class="rec-id" data-tx-id="${t.id}" title="انقر لعرض التفاصيل">${esc(t.finId||"—")}</span>
+        <span class="mob-tx-date">${esc(fmtDate(t.date))}</span>
+      </div>
+      <div class="mob-tx-mid">
+        <div class="mob-tx-badges">
+          <span class="type-badge ${cfg.badge}">${esc(cfg.label)}</span>
+          <span class="mob-tx-dir ${t.dir==="in"?"in":"out"}">${t.dir==="in"?"↙ إيداع":"↗ سحب"}</span>
+        </div>
+        <div class="mob-tx-amount ${t.dir==="in"?"in":"out"}">${fmt(t.amount)}</div>
+      </div>
+      ${hasMeta?`<div class="mob-tx-meta">
+        ${party!=="—"?`<div class="mob-meta-row"><span class="mob-meta-lbl">الجهة:</span><span class="mob-meta-val">${mobPartyCell}</span></div>`:""}
+        ${t.description?`<div class="mob-meta-row"><span class="mob-meta-lbl">الوصف:</span><span class="mob-meta-val">${esc(t.description)}</span></div>`:""}
+      </div>`:""}
+      <div class="mob-tx-actions-row">
+        <button class="mob-btn-stat" data-toggle="${t.id}" title="أرصدة قبل/بعد">📊</button>
+        <button class="mob-btn-edit" data-id="${t.id}">تعديل</button>
+        <button class="mob-btn-del"  data-id="${t.id}">حذف</button>
+      </div>
+      <div class="mob-tx-box4" id="mob-box4-${t.id}">${detailHtml}</div>`;
+    mobList.appendChild(card);
   });
+
+  // ── أحداث الجدول (سطح المكتب) ──
   tbody.querySelectorAll(".link-cell[data-merchant-id]").forEach(el=>
     el.addEventListener("click",()=>{ window.location.href=`/merchants.html?id=${encodeURIComponent(el.dataset.merchantId)}`; }));
   tbody.querySelectorAll(".link-cell[data-employee-id]").forEach(el=>
@@ -1469,16 +1605,32 @@ function renderTable(){
     btn.addEventListener("click",()=>openModal(allTx.find(t=>t.id===btn.dataset.id))));
   tbody.querySelectorAll(".del").forEach(btn=>
     btn.addEventListener("click",()=>deleteTx(btn.dataset.id)));
-  // ── النقر على رقم الحركة → عرض التفاصيل ──
   tbody.querySelectorAll(".rec-id[data-tx-id]").forEach(el=>
     el.addEventListener("click",()=>openTxDetail(allTx.find(t=>t.id===el.dataset.txId))));
-  // ── إظهار/إخفاء أرصدة الصناديق قبل/بعد الحركة ──
   tbody.querySelectorAll(".tx-row-box4-toggle").forEach(btn=>btn.addEventListener("click",()=>{
     const row=document.getElementById("tx-row-box4-"+btn.dataset.toggle);
     if(!row) return;
     const showing=row.style.display!=="none";
     row.style.display=showing?"none":"table-row";
     btn.classList.toggle("active",!showing);
+  }));
+
+  // ── أحداث بطاقات الهاتف ──
+  mobList.querySelectorAll(".link-cell[data-merchant-id]").forEach(el=>
+    el.addEventListener("click",()=>{ window.location.href=`/merchants.html?id=${encodeURIComponent(el.dataset.merchantId)}`; }));
+  mobList.querySelectorAll(".link-cell[data-employee-id]").forEach(el=>
+    el.addEventListener("click",()=>{ window.location.href=`/employees.html?id=${encodeURIComponent(el.dataset.employeeId)}`; }));
+  mobList.querySelectorAll(".mob-btn-edit").forEach(btn=>
+    btn.addEventListener("click",()=>openModal(allTx.find(t=>t.id===btn.dataset.id))));
+  mobList.querySelectorAll(".mob-btn-del").forEach(btn=>
+    btn.addEventListener("click",()=>deleteTx(btn.dataset.id)));
+  mobList.querySelectorAll(".rec-id[data-tx-id]").forEach(el=>
+    el.addEventListener("click",()=>openTxDetail(allTx.find(t=>t.id===el.dataset.txId))));
+  mobList.querySelectorAll(".mob-btn-stat").forEach(btn=>btn.addEventListener("click",()=>{
+    const box=document.getElementById("mob-box4-"+btn.dataset.toggle);
+    if(!box) return;
+    const open=box.classList.toggle("open");
+    btn.classList.toggle("active",open);
   }));
 }
 
