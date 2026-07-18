@@ -33,22 +33,40 @@
       .warehouse-section-title{font-weight:700;font-size:1rem;color:var(--ink);display:flex;align-items:center;gap:8px}
       .warehouse-section-title .wh-count{font-size:.78rem;font-weight:500;color:var(--muted);background:var(--border);border-radius:20px;padding:1px 9px}
       .warehouse-section-body{padding:16px 18px}
-      .wh-products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
-      .wh-product-card{border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface)}
-      .wh-product-img{width:100%;height:120px;object-fit:cover;display:block;background:var(--bg)}
-      .wh-product-img-placeholder{width:100%;height:120px;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:2rem}
-      .wh-product-info{padding:10px 12px 12px}
-      .wh-product-name{font-weight:700;font-size:.92rem;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-      .wh-product-serial{font-size:.72rem;color:var(--muted);margin-bottom:5px;font-family:monospace}
-      .wh-product-desc{font-size:.76rem;color:var(--muted);margin-bottom:7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-      .wh-product-meta{display:flex;justify-content:space-between;align-items:flex-end;gap:6px;flex-wrap:wrap}
-      .wh-product-qty{font-size:.82rem;font-weight:700;color:var(--ink)}
-      .wh-product-qty span{font-weight:400;color:var(--muted);font-size:.75rem}
-      .wh-product-price{font-size:.84rem;font-weight:700;color:var(--primary)}
-      .wh-product-actions{display:flex;gap:5px;margin-top:9px;padding-top:8px;border-top:1px solid var(--border)}
-      .wh-product-actions button{flex:1;padding:5px 0;border:none;border-radius:5px;cursor:pointer;font-size:.76rem;font-family:inherit}
-      .wh-product-actions .edit-btn{background:var(--bg);color:var(--ink)}
-      .wh-product-actions .del-btn{background:#fee2e2;color:#dc2626}
+      /* ══ بطاقات المنتجات — تصميم نصي بدون صور ══ */
+      .wh-products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+      .wh-product-card{
+        border:1px solid var(--border);
+        border-inline-end:4px solid var(--primary,#1a6b3a);
+        border-radius:12px;background:var(--surface);
+        padding:14px 16px 12px;
+        display:flex;flex-direction:column;gap:10px;
+        transition:box-shadow .15s,transform .12s;
+      }
+      .wh-product-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.09);transform:translateY(-2px)}
+      .wh-product-card.visiting{border-inline-end-color:#d97706}
+      /* رأس البطاقة */
+      .wpc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+      .wpc-name-wrap{display:flex;align-items:center;gap:7px;flex:1;min-width:0}
+      .wpc-icon{font-size:20px;flex-shrink:0;line-height:1}
+      .wpc-name{font-weight:800;font-size:.93rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .wpc-edit-btn{
+        border:1px solid var(--border);border-radius:7px;
+        background:var(--surface);color:var(--muted);
+        font-family:inherit;font-size:.72rem;font-weight:700;
+        padding:4px 10px;cursor:pointer;white-space:nowrap;flex-shrink:0;
+        transition:background .12s,color .12s;
+      }
+      .wpc-edit-btn:hover{background:var(--bg);color:var(--ink)}
+      /* الكمية والسعر */
+      .wpc-mid{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
+      .wpc-qty{line-height:1}
+      .wpc-qty-num{font-size:1.65rem;font-weight:900;color:var(--ink);letter-spacing:-.5px}
+      .wpc-qty-unit{font-size:.78rem;font-weight:500;color:var(--muted);margin-right:3px}
+      .wpc-price{font-size:.86rem;font-weight:700;color:var(--primary-dark,#1a6b3a);white-space:nowrap;padding-bottom:3px}
+      /* الوصف والرقم التسلسلي */
+      .wpc-desc{font-size:.75rem;color:var(--muted);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+      .wpc-serial{font-size:.7rem;font-family:monospace;font-weight:700;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1px 6px;display:inline-block}
       .wh-empty-products{text-align:center;padding:20px 0;color:var(--muted);font-size:.86rem}
       /* ── op-type toggle ── */
       .op-type-group{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
@@ -117,14 +135,17 @@
       .record-badge.loading{background:#fdf4e3;color:#a06a10}
       /* ── log table ── */
       .log-table{width:100%;border-collapse:collapse}
-      .log-table th{text-align:right;font-size:12px;color:var(--muted);font-weight:700;padding:7px 10px;border-bottom:1.5px solid var(--border)}
-      .log-table td{padding:9px 10px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+      .log-table th{text-align:right;font-size:12px;color:var(--muted);font-weight:700;padding:8px 12px;border-bottom:2px solid var(--border);background:var(--bg)}
+      .log-table td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+      .log-table tbody tr:hover td{background:var(--bg)}
       .log-table tr:last-child td{border-bottom:none}
-      .log-badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
+      .log-badge{display:inline-block;padding:3px 10px;border-radius:7px;font-size:11px;font-weight:700;white-space:nowrap}
       .log-prod{background:var(--primary-soft);color:var(--primary-dark)}
       .log-transfer{background:#e8f0fb;color:#2a5bbf}
       .log-load{background:#fdf4e3;color:#a06a10}
       .log-time{font-size:11px;color:var(--muted);font-family:monospace}
+      /* ── بطاقات سجل العمليات على الهاتف ── */
+      .mob-log-list{display:none}
       /* ── clickable serial numbers → operation preview ── */
       .log-serial-link{transition:opacity .15s}
       .log-serial-link:hover{opacity:.75}
@@ -150,6 +171,45 @@
         font-weight:700!important;font-size:.8rem!important;cursor:pointer!important;
         white-space:nowrap!important}
       .remove-line:disabled{opacity:.4;cursor:not-allowed!important}
+      /* ══ تجاوب الهاتف والشاشات المتوسطة ══ */
+      @media(max-width:900px){
+        /* المخازن */
+        .warehouse-section-header{padding:11px 14px}
+        .warehouse-section-body{padding:12px 14px}
+        .wh-products-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px}
+        .wpc-qty-num{font-size:1.4rem}
+        /* سجل العمليات */
+        #log-table-wrap{display:none}
+        .mob-log-list{
+          display:flex;flex-direction:column;gap:8px;padding:12px;
+        }
+        .mob-log-card{
+          background:var(--surface);border:1px solid var(--border);
+          border-radius:12px;padding:12px 14px;
+          display:flex;flex-direction:column;gap:8px;
+          box-shadow:0 1px 4px rgba(0,0,0,.05);
+        }
+        .mlc-head{display:flex;align-items:center;gap:8px}
+        .mlc-serial{
+          font-family:monospace;font-size:11px;font-weight:700;
+          background:var(--bg);border:1px solid var(--border);
+          border-radius:5px;padding:2px 7px;color:var(--muted);white-space:nowrap;
+        }
+        .mlc-serial.clickable{
+          color:var(--primary-dark);background:var(--primary-soft);
+          border-color:var(--primary);cursor:pointer;text-decoration:underline;
+          transition:opacity .15s;
+        }
+        .mlc-serial.clickable:hover{opacity:.75}
+        .mlc-summary{font-size:13px;font-weight:700;color:var(--ink);line-height:1.4}
+        .mlc-details{font-size:11.5px;color:var(--muted);line-height:1.4;margin-top:2px}
+        .mlc-foot{
+          display:flex;align-items:center;justify-content:space-between;
+          gap:8px;padding-top:7px;border-top:1px solid var(--border);
+        }
+        .mlc-by{font-size:11.5px;color:var(--muted);font-weight:600}
+        .mlc-time{font-size:11px;color:var(--muted);font-family:monospace;white-space:nowrap}
+      }
       /* ── print styles ── */
       @media print{
         @page{size:A4 portrait;margin:0}
@@ -357,7 +417,7 @@
               <h3>سجل جميع العمليات</h3>
               <span id="log-count" style="color:var(--muted);font-size:.85rem"></span>
             </div>
-            <div class="table-wrap">
+            <div class="table-wrap" id="log-table-wrap">
               <table class="log-table">
                 <thead>
                   <tr>
@@ -372,6 +432,10 @@
                   <tr><td colspan="5"><div class="empty-state">جارِ التحميل...</div></td></tr>
                 </tbody>
               </table>
+            </div>
+            <!-- بطاقات الهاتف للسجل (≤900px) -->
+            <div id="mob-log-list" class="mob-log-list">
+              <div class="empty-state">جارِ التحميل...</div>
             </div>
           </div>
         </div>
