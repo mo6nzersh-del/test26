@@ -186,24 +186,30 @@ function buildWarehouseSection(wh, whProducts) {
 }
 
 function buildProductCardHTML(p) {
-  const img = p.imageUrl
-    ? `<img class="wh-product-img" src="${p.imageUrl}" alt="${esc(p.name)}" />`
-    : `<div class="wh-product-img-placeholder">📦</div>`;
+  // أيقونة من قائمة ثابتة بناءً على اسم المنتج (لا صورة مطلوبة)
+  const ICONS = ["📦","🏷️","🗃️","📋","🧺","🛒","📌","🗂️"];
+  const icon = p.imageUrl
+    ? `<img style="width:22px;height:22px;object-fit:cover;border-radius:4px;vertical-align:middle" src="${p.imageUrl}" alt="" />`
+    : ICONS[(p.name || "").charCodeAt(0) % ICONS.length] || "📦";
   return `
-    <div class="wh-product-card">
-      ${img}
-      <div class="wh-product-info">
-        <div class="wh-product-name" title="${esc(p.name)}">${esc(p.name)} ${p.isVisiting ? `<span class="wh-product-visiting-badge" title="صنف زائر من مخزن آخر — نفس المعرّف الأصلي">زائر</span>` : ""}</div>
-        ${p.serialId ? `<div class="wh-product-serial"># ${esc(p.serialId)}</div>` : ""}
-        ${p.description ? `<div class="wh-product-desc">${esc(p.description)}</div>` : ""}
-        <div class="wh-product-meta">
-          <div class="wh-product-qty">${fmtNum(p.quantity || 0)} <span>${esc(p.quantityType || "")}</span></div>
-          <div class="wh-product-price">${p.price ? fmtMoney(p.price) : "—"}</div>
+    <div class="wh-product-card${p.isVisiting ? " visiting" : ""}">
+      <div class="wpc-head">
+        <div class="wpc-name-wrap">
+          <span class="wpc-icon">${icon}</span>
+          <span class="wpc-name" title="${esc(p.name)}">${esc(p.name)}</span>
+          ${p.isVisiting ? `<span class="wh-product-visiting-badge" title="صنف زائر من مخزن آخر — نفس المعرّف الأصلي">زائر</span>` : ""}
         </div>
-        <div class="wh-product-actions">
-          <button type="button" class="edit-btn edit-prod-btn" data-prod-id="${p.id}">تعديل</button>
-        </div>
+        <button type="button" class="wpc-edit-btn edit-prod-btn" data-prod-id="${p.id}">تعديل</button>
       </div>
+      <div class="wpc-mid">
+        <div class="wpc-qty">
+          <span class="wpc-qty-num">${fmtNum(p.quantity || 0)}</span>
+          <span class="wpc-qty-unit">${esc(p.quantityType || "")}</span>
+        </div>
+        <div class="wpc-price">${p.price ? fmtMoney(p.price) : "—"}</div>
+      </div>
+      ${p.description ? `<div class="wpc-desc">${esc(p.description)}</div>` : ""}
+      ${p.serialId ? `<div><span class="wpc-serial"># ${esc(p.serialId)}</span></div>` : ""}
     </div>`;
 }
 
@@ -1029,16 +1035,19 @@ function bindDeleteBtns(container, colName) {
 ══════════════════════════════════════ */
 function loadActivityLog() {
   const tbody = document.getElementById("log-table-body");
+  const mobList = document.getElementById("mob-log-list");
   const countEl = document.getElementById("log-count");
   const q = query(collection(db, "activityLog"), orderBy("createdAt", "desc"));
   onSnapshot(q, snap => {
     if (countEl) countEl.textContent = `${snap.size} عملية`;
     if (snap.empty) {
       tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state">لا توجد عمليات مسجلة بعد</div></td></tr>';
+      if (mobList) mobList.innerHTML = '<div class="empty-state">لا توجد عمليات مسجلة بعد</div>';
       return;
     }
     tbody.innerHTML = "";
-    let rowNum = snap.size; // newest = highest number
+    if (mobList) mobList.innerHTML = "";
+    let rowNum = snap.size;
     snap.forEach(docSnap => {
       const d = docSnap.data();
       const badgeMap = { production: ["log-prod","إنتاج"], transfer: ["log-transfer","تحويل"], loading: ["log-load","بيع"] };
@@ -1047,15 +1056,19 @@ function loadActivityLog() {
       rowNum--;
       const kind = d.type === "loading" ? "loading" : "movement";
       const canPreview = !!d.opId;
-      // خزّن الرقم التسلسلي على السجل المخزّن مؤقتاً لاستخدامه لاحقاً في المعاينة
       if (canPreview) {
         const cache = kind === "loading" ? loadingRecordsCache : movementsRecordsCache;
         if (cache[d.opId]) cache[d.opId].seqLabel = seqLabel;
       }
+      const opAttrs = canPreview
+        ? `data-op-id="${esc(d.opId)}" data-op-kind="${kind}" data-seq-label="${esc(seqLabel)}" title="عرض تفاصيل الحركة كما تمت"`
+        : "";
+
+      // ── صف الجدول (سطح المكتب) ──
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>
-          <span class="${canPreview ? "log-serial-link" : ""}" ${canPreview ? `data-op-id="${esc(d.opId)}" data-op-kind="${kind}" data-seq-label="${esc(seqLabel)}" title="عرض تفاصيل الحركة كما تمت"` : ""}
+          <span class="${canPreview ? "log-serial-link" : ""}" ${opAttrs}
             style="font-family:monospace;font-size:11px;font-weight:700;color:${canPreview ? "var(--primary-dark)" : "var(--muted)"};
             background:var(--bg);border-radius:5px;padding:3px 6px;border:1px solid var(--border);
             white-space:nowrap;${canPreview ? "cursor:pointer;text-decoration:underline;" : ""}">${seqLabel}</span>
@@ -1068,11 +1081,34 @@ function loadActivityLog() {
         <td style="font-size:12.5px">${esc(resolveAlias(d.performedBy) || "—")}</td>
         <td class="log-time">${d.createdAt ? fmtDateTime(d.createdAt) : "—"}</td>`;
       tbody.appendChild(tr);
+
+      // ── بطاقة الهاتف ──
+      if (mobList) {
+        const card = document.createElement("div");
+        card.className = "mob-log-card";
+        const detailsTxt = [d.details, d.note ? `(${d.note})` : ""].filter(Boolean).join(" — ");
+        card.innerHTML = `
+          <div class="mlc-head">
+            <span class="mlc-serial${canPreview ? " clickable log-serial-link" : ""}" ${opAttrs}>${seqLabel}</span>
+            <span class="log-badge ${cls}">${label}</span>
+          </div>
+          <div>
+            <div class="mlc-summary">${esc(d.summary || "")}</div>
+            ${detailsTxt ? `<div class="mlc-details">${esc(detailsTxt)}</div>` : ""}
+          </div>
+          <div class="mlc-foot">
+            <span class="mlc-by">👤 ${esc(resolveAlias(d.performedBy) || "—")}</span>
+            <span class="mlc-time">${d.createdAt ? fmtDateTime(d.createdAt) : "—"}</span>
+          </div>`;
+        mobList.appendChild(card);
+      }
     });
-    /* حذف سجلات النشاط أصبح متاحاً فقط من صفحة DeepLog، لذلك لا يوجد زر حذف هنا */
-    tbody.querySelectorAll(".log-serial-link[data-op-id]").forEach(el => {
+    /* حذف سجلات النشاط أصبح متاحاً فقط من صفحة DeepLog */
+    const bindPreview = root => root.querySelectorAll(".log-serial-link[data-op-id]").forEach(el => {
       el.addEventListener("click", () => openOperationPreview(el.dataset.opId, el.dataset.opKind, el.dataset.seqLabel));
     });
+    bindPreview(tbody);
+    if (mobList) bindPreview(mobList);
   }, err => { console.error(err); tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state">حدث خطأ</div></td></tr>'; });
 }
 
