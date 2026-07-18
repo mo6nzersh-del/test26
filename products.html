@@ -33,41 +33,66 @@
       .warehouse-section-title{font-weight:700;font-size:1rem;color:var(--ink);display:flex;align-items:center;gap:8px}
       .warehouse-section-title .wh-count{font-size:.78rem;font-weight:500;color:var(--muted);background:var(--border);border-radius:20px;padding:1px 9px}
       .warehouse-section-body{padding:16px 18px}
-      /* ══ بطاقات المنتجات — تصميم نصي بدون صور ══ */
-      .wh-products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+      /* ══ قائمة المنتجات — عرض صفوف أفقية ══ */
+      .wh-products-grid{display:flex;flex-direction:column;gap:0;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
       .wh-product-card{
-        border:1px solid var(--border);
-        border-inline-end:4px solid var(--primary,#1a6b3a);
-        border-radius:12px;background:var(--surface);
-        padding:14px 16px 12px;
-        display:flex;flex-direction:column;gap:10px;
-        transition:box-shadow .15s,transform .12s;
+        display:grid;
+        grid-template-columns:2.4rem 1fr auto auto;
+        align-items:center;
+        gap:6px 14px;
+        padding:11px 16px;
+        background:var(--surface);
+        border-bottom:1px solid var(--border);
+        border-inline-start:3px solid var(--primary,#1a6b3a);
+        transition:background .12s;
       }
-      .wh-product-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.09);transform:translateY(-2px)}
-      .wh-product-card.visiting{border-inline-end-color:#d97706}
-      /* رأس البطاقة */
-      .wpc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
-      .wpc-name-wrap{display:flex;align-items:center;gap:7px;flex:1;min-width:0}
-      .wpc-icon{font-size:20px;flex-shrink:0;line-height:1}
-      .wpc-name{font-weight:800;font-size:.93rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .wh-product-card:last-child{border-bottom:none}
+      .wh-product-card:hover{background:var(--bg)}
+      .wh-product-card.visiting{border-inline-start-color:#d97706}
+      /* الأيقونة */
+      .wpc-icon{font-size:20px;text-align:center;line-height:1;flex-shrink:0}
+      /* المعلومات */
+      .wpc-info{min-width:0}
+      .wpc-name{font-weight:800;font-size:.91rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .wpc-serial{font-size:.68rem;font-family:monospace;font-weight:700;color:var(--muted);margin-top:1px}
+      .wpc-desc{font-size:.72rem;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      /* بادج الكمية */
+      .wpc-qty-badge{
+        display:flex;flex-direction:column;align-items:center;justify-content:center;
+        background:var(--primary-soft,#eef7f2);border-radius:8px;
+        padding:5px 10px;min-width:54px;text-align:center;flex-shrink:0;
+      }
+      .wpc-qty-num{font-size:1.05rem;font-weight:900;color:var(--ink);line-height:1.1}
+      .wpc-qty-unit{font-size:.64rem;font-weight:600;color:var(--muted);margin-top:1px;white-space:nowrap}
+      /* السعر والتعديل */
+      .wpc-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+      .wpc-price{font-size:.82rem;font-weight:700;color:var(--primary-dark,#1a6b3a);white-space:nowrap}
       .wpc-edit-btn{
-        border:1px solid var(--border);border-radius:7px;
+        border:1px solid var(--border);border-radius:6px;
         background:var(--surface);color:var(--muted);
-        font-family:inherit;font-size:.72rem;font-weight:700;
-        padding:4px 10px;cursor:pointer;white-space:nowrap;flex-shrink:0;
+        font-family:inherit;font-size:.7rem;font-weight:700;
+        padding:3px 9px;cursor:pointer;white-space:nowrap;
         transition:background .12s,color .12s;
       }
-      .wpc-edit-btn:hover{background:var(--bg);color:var(--ink)}
-      /* الكمية والسعر */
-      .wpc-mid{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
-      .wpc-qty{line-height:1}
-      .wpc-qty-num{font-size:1.65rem;font-weight:900;color:var(--ink);letter-spacing:-.5px}
-      .wpc-qty-unit{font-size:.78rem;font-weight:500;color:var(--muted);margin-right:3px}
-      .wpc-price{font-size:.86rem;font-weight:700;color:var(--primary-dark,#1a6b3a);white-space:nowrap;padding-bottom:3px}
-      /* الوصف والرقم التسلسلي */
-      .wpc-desc{font-size:.75rem;color:var(--muted);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-      .wpc-serial{font-size:.7rem;font-family:monospace;font-weight:700;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1px 6px;display:inline-block}
+      .wpc-edit-btn:hover{background:var(--primary-soft);color:var(--primary-dark)}
       .wh-empty-products{text-align:center;padding:20px 0;color:var(--muted);font-size:.86rem}
+      /* ══ خيارات حالة الدفع ══ */
+      .pay-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+      .pay-opt{
+        display:flex;align-items:center;gap:10px;
+        padding:13px 14px;border:2px solid var(--border);
+        border-radius:12px;cursor:pointer;background:var(--surface);
+        transition:border-color .15s,background .15s;
+      }
+      .pay-opt input[type="radio"]{display:none}
+      .pay-opt-icon{font-size:22px;flex-shrink:0;line-height:1}
+      .pay-opt-title{font-weight:800;font-size:.9rem;color:var(--ink)}
+      .pay-opt-sub{font-size:.72rem;color:var(--muted);margin-top:2px;line-height:1.4}
+      .pay-opt.sel-unpaid{border-color:#d97706;background:#fffbeb}
+      .pay-opt.sel-unpaid .pay-opt-title{color:#a06a10}
+      .pay-opt.sel-paid{border-color:var(--primary,#1a6b3a);background:#f0faf4}
+      .pay-opt.sel-paid .pay-opt-title{color:var(--primary-dark,#1a6b3a)}
+      @media(max-width:500px){.pay-options{grid-template-columns:1fr}}
       /* ── op-type toggle ── */
       .op-type-group{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
       .op-type-btn{flex:1;min-width:120px;padding:12px 10px;border:2px solid var(--border);border-radius:10px;background:var(--surface);font-family:inherit;font-weight:700;font-size:.88rem;color:var(--muted);cursor:pointer;text-align:center;transition:all .15s}
@@ -371,18 +396,26 @@
               </div>
               <!-- حالة الدفع -->
               <div class="field" style="margin-bottom:18px">
-                <label style="display:block;margin-bottom:8px;font-weight:600">حالة الدفع</label>
-                <div style="display:flex;gap:0;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content">
-                  <label id="pay-label-unpaid" style="display:flex;align-items:center;gap:6px;padding:8px 20px;cursor:pointer;background:#fff4e5;color:#a06a10;font-weight:700;font-size:.92rem;border-left:1.5px solid var(--border)">
-                    <input type="radio" name="load_payment" value="unpaid" id="load-pay-unpaid" checked style="accent-color:#a06a10" />
-                    ⏳ غير مدفوع
+                <label style="display:block;margin-bottom:10px;font-weight:700;font-size:.93rem">حالة الدفع</label>
+                <div class="pay-options">
+                  <label class="pay-opt pay-opt-unpaid sel-unpaid" id="pay-label-unpaid">
+                    <input type="radio" name="load_payment" value="unpaid" id="load-pay-unpaid" checked />
+                    <span class="pay-opt-icon">⏳</span>
+                    <div>
+                      <div class="pay-opt-title">غير مدفوع</div>
+                      <div class="pay-opt-sub">يُسجَّل دين على التاجر</div>
+                    </div>
                   </label>
-                  <label id="pay-label-paid" style="display:flex;align-items:center;gap:6px;padding:8px 20px;cursor:pointer;background:#f0f0f0;color:#888;font-weight:600;font-size:.92rem">
-                    <input type="radio" name="load_payment" value="paid" id="load-pay-paid" style="accent-color:#1a6b3a" />
-                    ✅ تم الدفع
+                  <label class="pay-opt pay-opt-paid" id="pay-label-paid">
+                    <input type="radio" name="load_payment" value="paid" id="load-pay-paid" />
+                    <span class="pay-opt-icon">✅</span>
+                    <div>
+                      <div class="pay-opt-title">تم الدفع</div>
+                      <div class="pay-opt-sub">لا يُضاف دين على التاجر</div>
+                    </div>
                   </label>
                 </div>
-                <p id="pay-hint" style="margin:6px 0 0;font-size:.82rem;color:#a06a10">سيُسجَّل دين على التاجر بقيمة الفاتورة</p>
+                <p id="pay-hint" style="margin:8px 0 0;font-size:.82rem;color:#a06a10">سيُسجَّل دين على التاجر بقيمة الفاتورة</p>
               </div>
               <button type="submit" class="btn" id="loading-submit-btn">تنفيذ عملية البيع</button>
             </form>
