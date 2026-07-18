@@ -26,46 +26,381 @@
     <link rel="modulepreload" crossorigin href="/assets/nav-C4LmEyvm.js">
     <link rel="stylesheet" crossorigin href="/assets/auth-guard-C6CJ8_8i.css">
     <style>
-      .activity-panel .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
-      .activity-panel .panel-head p{margin:0;font-size:12.5px;color:var(--muted)}
-      #recent-activity-list{display:flex;flex-direction:column;gap:2px;margin-top:10px}
-      .activity-item{display:flex;align-items:center;gap:12px;padding:10px 6px;border-bottom:1px solid var(--border)}
-      .activity-item:last-child{border-bottom:none}
-      .activity-icon{flex:0 0 auto;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--bg)}
-      .activity-icon.act-prod{background:#eef2ff}
-      .activity-icon.act-transfer{background:#eff6ff}
-      .activity-icon.act-loading{background:#fff7ed}
-      .activity-icon.act-in{background:#ecfdf5}
-      .activity-icon.act-out{background:#fef2f2}
-      .activity-icon.act-att{background:#f5f3ff}
-      .activity-body{flex:1 1 auto;min-width:0}
-      .activity-title{font-weight:700;font-size:13.5px;color:var(--text,#1f2937);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-      .activity-sub{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
-      .activity-time{flex:0 0 auto;font-size:11.5px;color:var(--muted);white-space:nowrap;padding-inline-start:6px}
-      #recent-activity-list .empty-state{padding:24px 0}
-      @media (max-width:640px){.activity-sub{display:none}}
+
+      /* ══════════════════════════════════════
+         الداشبورد الرئيسي — تصميم جديد
+      ══════════════════════════════════════ */
+
+      /* ─── هيدر مع تدرج أخضر ─── */
+      .dash-hero {
+        background: linear-gradient(145deg, #1a5c35 0%, #0d3520 55%, #163d25 100%);
+        margin: -28px -24px 0;
+        padding: 22px 22px 56px;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+      }
+      .dash-hero::before {
+        content: "";
+        position: absolute;
+        top: -50px; left: -50px;
+        width: 220px; height: 220px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.05);
+        pointer-events: none;
+      }
+      .dash-hero::after {
+        content: "";
+        position: absolute;
+        bottom: -70px; right: -30px;
+        width: 200px; height: 200px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.04);
+        pointer-events: none;
+      }
+      .dash-hero-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+        position: relative; z-index: 1;
+      }
+      .dash-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .dash-brand-mark {
+        width: 38px; height: 38px;
+        border-radius: 11px;
+        background: rgba(255,255,255,.18);
+        border: 1.5px solid rgba(255,255,255,.3);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 17px; font-weight: 800; color: #fff;
+        letter-spacing: -1px;
+        flex-shrink: 0;
+      }
+      .dash-brand-name {
+        font-size: 15px; font-weight: 800;
+        color: #fff; line-height: 1.15;
+      }
+      .dash-brand-sub {
+        font-size: 11px; opacity: .65; font-weight: 500;
+        margin-top: 1px;
+      }
+      .dash-user-chip {
+        display: flex; align-items: center; gap: 8px;
+      }
+      .dash-user-info { text-align: right; }
+      .dash-user-name {
+        font-size: 12.5px; font-weight: 700; color: #fff;
+        max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      }
+      .dash-user-role {
+        font-size: 10.5px; opacity: .65; margin-top: 1px;
+      }
+      .dash-user-avatar {
+        width: 38px; height: 38px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.18);
+        border: 2px solid rgba(255,255,255,.35);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 17px; color: #fff;
+        flex-shrink: 0; overflow: hidden;
+      }
+
+      /* ─── المقياس البطولي ─── */
+      .dash-hero-metric {
+        position: relative; z-index: 1;
+      }
+      .dash-hero-metric .metric-label {
+        font-size: 12.5px; font-weight: 600;
+        opacity: .75; margin-bottom: 6px;
+        display: flex; align-items: center; gap: 6px;
+      }
+      .dash-hero-metric .metric-value {
+        font-size: 32px; font-weight: 900;
+        letter-spacing: -0.5px; line-height: 1.1;
+        color: #fff;
+      }
+      .dash-hero-metric .metric-sub {
+        font-size: 11.5px; opacity: .6; margin-top: 5px;
+      }
+
+      /* ─── البطاقة العائمة فوق الهيدر ─── */
+      .dash-float-card {
+        background: var(--surface);
+        border-radius: 20px;
+        box-shadow: 0 10px 36px rgba(0,0,0,.13);
+        margin: -34px 4px 22px;
+        position: relative; z-index: 5;
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+      .dash-float-inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      .dash-float-item {
+        padding: 14px 12px;
+        text-align: center;
+        position: relative;
+      }
+      .dash-float-item:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        top: 20%; bottom: 20%;
+        left: 0;
+        width: 1px;
+        background: var(--border);
+      }
+      .dash-float-icon {
+        font-size: 20px; margin-bottom: 4px;
+        display: block;
+      }
+      .dash-float-label {
+        font-size: 10.5px; color: var(--muted); font-weight: 600;
+        margin-bottom: 3px; line-height: 1.3;
+      }
+      .dash-float-val {
+        font-size: 17px; font-weight: 900; color: var(--ink);
+        line-height: 1.1;
+      }
+
+      /* ─── شريط الفترة ─── */
+      .dash-period-wrap {
+        margin-bottom: 22px;
+      }
+      .dash-period-scroll {
+        background: var(--surface);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        padding: 5px;
+        display: flex; gap: 4px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .dash-period-scroll::-webkit-scrollbar { display: none }
+      /* الأزرار تُوسَم بالكلاس القديم للـ JS + الجديد للتنسيق */
+      .dash-period-scroll button {
+        flex: 0 0 auto;
+        padding: 8px 14px;
+        border: none; border-radius: 8px;
+        background: transparent;
+        font-family: inherit; font-size: 13px; font-weight: 700;
+        color: var(--muted); cursor: pointer;
+        transition: background .15s, color .15s;
+        white-space: nowrap;
+      }
+      .dash-period-scroll button.active {
+        background: var(--primary);
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(47,111,79,.35);
+      }
+
+      /* ─── رأس القسم ─── */
+      .dash-sec-head {
+        display: flex; align-items: center; gap: 9px;
+        margin: 0 0 12px;
+      }
+      .dash-sec-icon {
+        width: 32px; height: 32px;
+        border-radius: 9px;
+        background: var(--primary-soft);
+        color: var(--primary-dark);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 16px; flex-shrink: 0;
+      }
+      .dash-sec-title {
+        font-size: 15px; font-weight: 800; color: var(--ink);
+      }
+
+      /* ─── شبكة البطاقات ─── */
+      .dash-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 22px;
+      }
+      .dash-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 15px;
+        padding: 14px 14px 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.04);
+        display: flex; flex-direction: column;
+        transition: transform .12s, box-shadow .12s;
+      }
+      .dash-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0,0,0,.08);
+      }
+      .dash-card.wide { grid-column: 1 / -1; }
+      .dash-card-head {
+        display: flex; align-items: center; gap: 8px;
+        margin-bottom: 11px;
+      }
+      .dash-card-icon {
+        width: 40px; height: 40px;
+        border-radius: 11px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 19px; flex-shrink: 0;
+      }
+      .dc-green  { background: #e8f5e9; }
+      .dc-teal   { background: #e0f7f4; }
+      .dc-blue   { background: #e8eeff; }
+      .dc-gold   { background: #fdf3dc; }
+      .dc-red    { background: #fdecea; }
+      .dc-purple { background: #f0eeff; }
+      .dc-navy   { background: #e8ecf5; }
+      .dc-orange { background: #fff3e0; }
+
+      .dash-card-label {
+        font-size: 11.5px; font-weight: 600;
+        color: var(--muted); line-height: 1.35;
+      }
+      .dash-card-value {
+        font-size: 26px; font-weight: 900;
+        color: var(--ink); line-height: 1.1;
+      }
+      .dash-card-value.money { font-size: 17px; color: var(--primary-dark); }
+
+      /* ─── آخر العمليات ─── */
+      .dash-activity-wrap {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.04);
+        margin-bottom: 22px;
+      }
+      .dash-activity-top {
+        display: flex; align-items: center; justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .dash-activity-title { font-size: 14.5px; font-weight: 800; color: var(--ink); }
+      .dash-activity-sub  { font-size: 12px; color: var(--muted); }
+      /* إعادة استخدام activity-panel class للـ JS */
+      .activity-panel .panel-head { display: none }
+
+      /* ─── روابط سريعة ─── */
+      .dash-shortcuts {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+      .dash-shortcut {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 15px;
+        padding: 16px 10px 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.04);
+        display: flex; flex-direction: column;
+        align-items: center; gap: 8px;
+        text-align: center; color: var(--ink);
+        text-decoration: none;
+        transition: transform .12s, box-shadow .12s;
+      }
+      .dash-shortcut:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.09) }
+      .dash-sc-icon {
+        width: 44px; height: 44px;
+        border-radius: 13px;
+        background: var(--primary-soft);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 21px;
+      }
+      .dash-sc-label { font-size: 12px; font-weight: 700; }
+      .dash-sc-desc  { font-size: 10.5px; color: var(--muted); line-height: 1.35; }
+
+      /* ─── موبايل ─── */
+      @media(max-width:900px){
+        .dash-hero { margin:-16px -14px 0; padding:18px 16px 50px }
+        .dash-float-card { margin:-32px 6px 18px }
+        .dash-card-value { font-size:22px }
+        .dash-card-value.money { font-size:15px }
+        .dash-hero-metric .metric-value { font-size:27px }
+        .dash-float-val { font-size:15px }
+        .dash-float-label { font-size:10px }
+      }
+      @media(max-width:500px){
+        .dash-hero { margin:-12px -10px 0; padding:16px 14px 46px }
+        .dash-float-card { margin:-28px 4px 14px }
+        .dash-float-item { padding:12px 8px }
+        .dash-float-val { font-size:14px }
+        .dash-card-value { font-size:20px }
+        .dash-card-value.money { font-size:14px }
+        .dash-hero-metric .metric-value { font-size:24px }
+        .dash-shortcuts { grid-template-columns: repeat(3,1fr); gap:8px }
+        .dash-sc-icon { width:38px;height:38px;font-size:18px }
+        .dash-sc-label { font-size:11px }
+        .dash-sc-desc { display:none }
+        .dash-card { padding:12px 12px 14px }
+      }
     </style>
   </head>
   <body>
     <div id="app">
       <header id="topbar" class="topbar"></header>
       <main class="page">
-        <div class="page-header">
-          <div>
-            <h2>نظرة عامة</h2>
-            <p>ملخص سريع للمنتجات والتجار والموظفين</p>
+
+        <!-- ══ هيدر الداشبورد ══ -->
+        <div class="dash-hero">
+          <div class="dash-hero-top">
+            <div class="dash-brand">
+              <div class="dash-brand-mark">أح</div>
+              <div>
+                <div class="dash-brand-name">أحمد وحمدي</div>
+                <div class="dash-brand-sub">نظام المحاسبة الداخلي</div>
+              </div>
+            </div>
+            <div class="dash-user-chip">
+              <div class="dash-user-info">
+                <div class="dash-user-name" id="dash-user-name">—</div>
+                <div class="dash-user-role">مستخدم النظام</div>
+              </div>
+              <div class="dash-user-avatar">👤</div>
+            </div>
+          </div>
+          <div class="dash-hero-metric">
+            <div class="metric-label">📦 إجمالي صندوق المنتجات</div>
+            <div class="metric-value" id="hero-pf-total">—</div>
+            <div class="metric-sub">قيمة المخزون + مستحقات التجار</div>
           </div>
         </div>
 
-        <div class="period-bar">
-          <div class="toggle-group" id="period-toggle">
+        <!-- ══ البطاقة العائمة: ملخص سريع ══ -->
+        <div class="dash-float-card">
+          <div class="dash-float-inner">
+            <div class="dash-float-item">
+              <span class="dash-float-icon">🏷️</span>
+              <div class="dash-float-label">المنتجات</div>
+              <div class="dash-float-val" id="float-products-count">—</div>
+            </div>
+            <div class="dash-float-item">
+              <span class="dash-float-icon">🤝</span>
+              <div class="dash-float-label">التجار</div>
+              <div class="dash-float-val" id="float-merchants-count">—</div>
+            </div>
+            <div class="dash-float-item">
+              <span class="dash-float-icon">👤</span>
+              <div class="dash-float-label">الموظفون</div>
+              <div class="dash-float-val" id="float-employees-count">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ شريط الفترة الزمنية ══ -->
+        <div class="dash-period-wrap">
+          <div class="dash-period-scroll" id="period-toggle">
             <button type="button" class="active" data-period="today">اليوم</button>
             <button type="button" data-period="week">آخر أسبوع</button>
             <button type="button" data-period="2weeks">آخر أسبوعين</button>
             <button type="button" data-period="month">آخر شهر</button>
             <button type="button" data-period="custom">تاريخ مخصص</button>
           </div>
-          <div class="custom-range" id="custom-range" style="display: none">
+          <div class="custom-range" id="custom-range" style="display:none;margin-top:10px">
             <input type="date" id="range-from" />
             <span>إلى</span>
             <input type="date" id="range-to" />
@@ -73,96 +408,159 @@
           </div>
         </div>
 
-        <div class="panel dash-group">
-          <h3>المنتجات</h3>
-          <div class="stat-grid">
-            <div class="stat-card">
-              <div class="label">عدد المنتجات</div>
-              <div class="value" id="stat-products-count">—</div>
+        <!-- ══ المنتجات ══ -->
+        <div class="dash-sec-head">
+          <div class="dash-sec-icon">📦</div>
+          <div class="dash-sec-title">المنتجات</div>
+        </div>
+        <div class="dash-grid">
+          <div class="dash-card">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-green">🏷️</div>
+              <div class="dash-card-label">عدد المنتجات</div>
             </div>
-            <div class="stat-card">
-              <div class="label">الكمية الإجمالية بالمخزون</div>
-              <div class="value" id="stat-products-qty">—</div>
+            <div class="dash-card-value" id="stat-products-count">—</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-teal">📊</div>
+              <div class="dash-card-label">الكمية الإجمالية بالمخزون</div>
             </div>
-            <div class="stat-card">
-              <div class="label">قيمة المخزون</div>
-              <div class="value" id="stat-products-value">—</div>
+            <div class="dash-card-value" id="stat-products-qty">—</div>
+          </div>
+          <div class="dash-card wide">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-navy">🏬</div>
+              <div class="dash-card-label">قيمة المخزون الإجمالية</div>
             </div>
+            <div class="dash-card-value money" id="stat-products-value">—</div>
           </div>
         </div>
 
-        <div class="panel dash-group" id="products-fund-panel">
-          <h3>📦 صندوق المنتجات</h3>
-          <div class="stat-grid">
-            <div class="stat-card">
-              <div class="label">قيمة المخزون بالمخازن</div>
-              <div class="value" id="stat-pf-inventory">—</div>
+        <!-- ══ صندوق المنتجات ══ -->
+        <div class="dash-sec-head">
+          <div class="dash-sec-icon">💼</div>
+          <div class="dash-sec-title">صندوق المنتجات</div>
+        </div>
+        <div class="dash-grid" id="products-fund-panel">
+          <div class="dash-card">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-navy">🏬</div>
+              <div class="dash-card-label">قيمة المخزون بالمخازن</div>
             </div>
-            <div class="stat-card">
-              <div class="label">مستحقات التجار (بضاعة غير مدفوعة)</div>
-              <div class="value" id="stat-pf-dues">—</div>
+            <div class="dash-card-value money" id="stat-pf-inventory">—</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-gold">🤝</div>
+              <div class="dash-card-label">مستحقات التجار</div>
             </div>
-            <div class="stat-card">
-              <div class="label">إجمالي صندوق المنتجات</div>
-              <div class="value" id="stat-pf-total">—</div>
+            <div class="dash-card-value money" id="stat-pf-dues">—</div>
+          </div>
+          <div class="dash-card wide">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-green">💼</div>
+              <div class="dash-card-label">إجمالي صندوق المنتجات</div>
             </div>
+            <div class="dash-card-value money" id="stat-pf-total">—</div>
           </div>
         </div>
 
-        <div class="panel dash-group">
-          <h3>التجار</h3>
-          <div class="stat-grid">
-            <div class="stat-card">
-              <div class="label">عدد التجار</div>
-              <div class="value" id="stat-merchants-count">—</div>
+        <!-- ══ التجار والموظفون ══ -->
+        <div class="dash-sec-head">
+          <div class="dash-sec-icon">👥</div>
+          <div class="dash-sec-title">التجار والموظفون</div>
+        </div>
+        <div class="dash-grid">
+          <div class="dash-card">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-blue">🤝</div>
+              <div class="dash-card-label">عدد التجار</div>
             </div>
+            <div class="dash-card-value" id="stat-merchants-count">—</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-orange">👤</div>
+              <div class="dash-card-label">عدد الموظفين</div>
+            </div>
+            <div class="dash-card-value" id="stat-employees-count">—</div>
+          </div>
+          <div class="dash-card wide">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-red">💸</div>
+              <div class="dash-card-label" id="stat-payroll-label">الرواتب المستحقة</div>
+            </div>
+            <div class="dash-card-value money" id="stat-payroll">—</div>
           </div>
         </div>
 
-        <div class="panel dash-group">
-          <h3>الموظفين</h3>
-          <div class="stat-grid">
-            <div class="stat-card">
-              <div class="label">عدد الموظفين</div>
-              <div class="value" id="stat-employees-count">—</div>
-            </div>
-            <div class="stat-card">
-              <div class="label" id="stat-payroll-label">الرواتب المستحقة (اليوم)</div>
-              <div class="value" id="stat-payroll">—</div>
-            </div>
+        <!-- ══ آخر العمليات ══ -->
+        <div class="dash-activity-wrap activity-panel">
+          <div class="dash-activity-top">
+            <div class="dash-activity-title">⚡ آخر العمليات</div>
+            <div class="dash-activity-sub">حسب الفترة المحددة أعلاه</div>
           </div>
-        </div>
-
-        <div class="panel dash-group activity-panel">
-          <div class="panel-head">
-            <h3>آخر العمليات</h3>
-            <p>حسب الفترة المحددة أعلاه</p>
-          </div>
+          <!-- panel-head مخفي — تستخدمه activity-panel JS -->
+          <div class="panel-head" style="display:none"><h3></h3><p></p></div>
           <div id="recent-activity-list">
             <div class="empty-state">جارِ التحميل...</div>
           </div>
         </div>
 
-        <div class="quick-links">
-          <a class="quick-link" href="/products.html">
-            <span class="qmark">1</span>
-            <h3>المنتجات</h3>
-            <p>الحركات، قائمة المنتجات، والمخازن والإنتاج</p>
+        <!-- ══ روابط سريعة ══ -->
+        <div class="dash-shortcuts">
+          <a class="dash-shortcut" href="/products.html">
+            <div class="dash-sc-icon">📦</div>
+            <div class="dash-sc-label">المنتجات</div>
+            <div class="dash-sc-desc">المخازن والحركات</div>
           </a>
-          <a class="quick-link" href="/merchants.html">
-            <span class="qmark">2</span>
-            <h3>التجار</h3>
-            <p>إدارة التجار وسجلات الحساب الخاصة بكل تاجر</p>
+          <a class="dash-shortcut" href="/merchants.html">
+            <div class="dash-sc-icon">🤝</div>
+            <div class="dash-sc-label">التجار</div>
+            <div class="dash-sc-desc">الحسابات والكشوفات</div>
           </a>
-          <a class="quick-link" href="/employees.html">
-            <span class="qmark">3</span>
-            <h3>الموظفين</h3>
-            <p>بيانات الموظفين وسجل الحضور والرواتب وبطاقة العمل</p>
+          <a class="dash-shortcut" href="/employees.html">
+            <div class="dash-sc-icon">👥</div>
+            <div class="dash-sc-label">الموظفون</div>
+            <div class="dash-sc-desc">الرواتب والحضور</div>
           </a>
         </div>
+
       </main>
     </div>
   </body>
+
+  <!-- ═══════ مزامنة البطاقة العائمة مع القيم المحسوبة ═══════ -->
+  <script>
+  (function(){
+    // اسم المستخدم في الهيدر
+    function syncUserName(){
+      try {
+        // محاولة قراءة من localStorage أو cookie يضعه auth-guard
+        const name = localStorage.getItem("ahDisplay") || localStorage.getItem("displayName") || "";
+        if(name) document.getElementById("dash-user-name").textContent = name;
+      } catch(e){}
+    }
+    syncUserName();
+    // مزامنة عداد البطاقة العائمة مع القيم الرئيسية عند تعبئتها
+    function mirrorVal(srcId, destId){
+      const src = document.getElementById(srcId);
+      const dest = document.getElementById(destId);
+      if(!src || !dest) return;
+      const obs = new MutationObserver(()=>{ dest.textContent = src.textContent });
+      obs.observe(src, {childList:true, characterData:true, subtree:true});
+      if(src.textContent !== "—") dest.textContent = src.textContent;
+    }
+    // انتظر حتى يتهيأ DOM بالكامل ثم اربط القيم
+    window.addEventListener("DOMContentLoaded", ()=>{
+      mirrorVal("stat-products-count",  "float-products-count");
+      mirrorVal("stat-merchants-count", "float-merchants-count");
+      mirrorVal("stat-employees-count", "float-employees-count");
+      mirrorVal("stat-pf-total",        "hero-pf-total");
+    });
+  })();
+  </script>
 
   <!-- ═══════ صندوق المنتجات — حساب مستقل (قيمة المخزون + مستحقات التجار) ═══════ -->
   <script type="module">
@@ -183,7 +581,14 @@
 
     const pfFmt = n => new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(n||0)+" ج.م";
 
-    onAuthStateChanged(pfAuth, user => { if (user) loadProductsFund(); });
+    onAuthStateChanged(pfAuth, user => {
+      if (user) {
+        // عرض اسم المستخدم في الهيدر
+        const nameEl = document.getElementById("dash-user-name");
+        if (nameEl && user.displayName) nameEl.textContent = user.displayName;
+        loadProductsFund();
+      }
+    });
 
     async function loadProductsFund(){
       try{
@@ -199,7 +604,7 @@
           return s+(Number(p.quantity)||0)*(Number(p.price)||0);
         }, 0);
 
-        // 2) مستحقات التجار = رصيد كل تاجر (موجب فقط) من حركاته المباشرة + دفعاته المالية
+        // 2) مستحقات التجار = رصيد كل تاجر (موجب فقط)
         const byMerchant = {};
         merTxSnap.docs.forEach(d=>{
           const t=d.data(); if(!t.merchantId) return;
@@ -217,9 +622,12 @@
         document.getElementById("stat-pf-inventory").textContent = pfFmt(inventoryValue);
         document.getElementById("stat-pf-dues").textContent      = pfFmt(merchantDues);
         document.getElementById("stat-pf-total").textContent     = pfFmt(inventoryValue+merchantDues);
+        // تحديث الهيدر البطولي مباشرةً
+        const heroEl = document.getElementById("hero-pf-total");
+        if(heroEl) heroEl.textContent = pfFmt(inventoryValue+merchantDues);
       }catch(err){
         console.error(err);
-        ["stat-pf-inventory","stat-pf-dues","stat-pf-total"].forEach(id=>{
+        ["stat-pf-inventory","stat-pf-dues","stat-pf-total","hero-pf-total"].forEach(id=>{
           const el=document.getElementById(id); if(el) el.textContent="خطأ";
         });
       }
