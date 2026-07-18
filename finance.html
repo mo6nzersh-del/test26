@@ -34,6 +34,9 @@
     .stat-card .sc-label{font-size:12.5px;color:var(--muted);font-weight:600}
     .stat-card .sc-val{font-size:22px;font-weight:800;color:var(--ink)}
     .stat-card .sc-sub{font-size:11.5px;color:var(--muted)}
+    /* الأيقونة والنص — بشكل inline على الحاسوب */
+    .sc-icon{display:inline;font-style:normal}
+    .sc-text{display:inline}
     .stat-balance{border-top:3px solid var(--primary)}
     .stat-balance .sc-val{color:var(--primary-dark)}
     .stat-in   {border-top:3px solid #4caf7d}
@@ -345,6 +348,15 @@
     .dir-hint.out{background:#fce8e5;color:#b3432f}
     .dir-hint.custom{background:#f2f2f2;color:#555}
 
+    /* ── قفل نوع العملية في وضع التعديل ── */
+    .type-selector.locked{pointer-events:none;opacity:.55;position:relative;user-select:none}
+    .type-selector.locked::after{
+      content:"لا يمكن تغيير نوع العملية بعد الحفظ";
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+      font-size:11.5px;font-weight:700;color:#666;
+      background:rgba(255,255,255,.6);border-radius:10px;
+    }
+
     @media print{
       *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
       #topbar,.page-header,.quick-actions,.filters-bar,.row-actions,.modal-overlay,.btn{display:none!important}
@@ -362,6 +374,39 @@
     ══════════════════════════════════════ */
     .mob-tx-list{display:none}
     @media(max-width:900px){
+      /* ══ بطاقات الإحصائيات — تصميم الهاتف ══ */
+      .stats-grid{grid-template-columns:1fr 1fr!important;gap:10px!important}
+      .stat-card{
+        padding:12px 12px 14px!important;
+        gap:0!important;
+        border-top-width:3px!important;
+      }
+      .stat-card .sc-label{
+        display:flex;align-items:center;gap:8px;
+        margin-bottom:10px;
+      }
+      .sc-icon{
+        display:flex!important;align-items:center;justify-content:center;
+        width:40px;height:40px;border-radius:11px;
+        font-size:20px;flex-shrink:0;
+        background:rgba(0,0,0,.06);
+      }
+      .sc-text{
+        display:block!important;
+        font-size:11.5px;color:var(--muted);font-weight:600;line-height:1.35;
+      }
+      .stat-card .sc-val{font-size:26px!important;font-weight:900!important;line-height:1.1}
+      .stat-card .sc-sub{font-size:10.5px;margin-top:4px;color:var(--muted)}
+      /* لون خلفية الأيقونة لكل نوع بطاقة */
+      .stat-balance .sc-icon{background:#e8f5e9}
+      .stat-in      .sc-icon{background:#e8f5e9}
+      .stat-out     .sc-icon{background:#fdecea}
+      .stat-adv     .sc-icon{background:#e8eeff}
+      .stat-pf-inv  .sc-icon{background:#e8ecf5}
+      .stat-pf-dues .sc-icon{background:#fdf3dc}
+      .stat-pf-total .sc-icon{background:#e8f5e9}
+      .stat-pf-wh   .sc-icon{background:#f0eeff}
+
       /* إخفاء الجدول وإظهار البطاقات */
       .table-wrap{display:none}
       .mob-tx-list{display:flex;flex-direction:column;gap:8px;margin-top:4px}
@@ -469,22 +514,22 @@
     <h3 class="fund-title">💰 صندوق الكاش</h3>
     <div class="stats-grid">
       <div class="stat-card stat-balance">
-        <div class="sc-label">💰 رصيد الصندوق الحالي</div>
+        <div class="sc-label"><span class="sc-icon">💰</span><span class="sc-text">رصيد الصندوق الحالي</span></div>
         <div class="sc-val" id="stat-balance">—</div>
         <div class="sc-sub" id="stat-balance-sub">جارِ الحساب...</div>
       </div>
       <div class="stat-card stat-in">
-        <div class="sc-label">📥 إجمالي الإيداعات</div>
+        <div class="sc-label"><span class="sc-icon">📥</span><span class="sc-text">إجمالي الإيداعات</span></div>
         <div class="sc-val" id="stat-in">—</div>
         <div class="sc-sub" id="stat-in-sub">—</div>
       </div>
       <div class="stat-card stat-out">
-        <div class="sc-label">📤 إجمالي المسحوبات</div>
+        <div class="sc-label"><span class="sc-icon">📤</span><span class="sc-text">إجمالي المسحوبات</span></div>
         <div class="sc-val" id="stat-out">—</div>
         <div class="sc-sub" id="stat-out-sub">—</div>
       </div>
       <div class="stat-card stat-adv">
-        <div class="sc-label">👤 إجمالي السلف</div>
+        <div class="sc-label"><span class="sc-icon">👤</span><span class="sc-text">إجمالي السلف</span></div>
         <div class="sc-val" id="stat-adv">—</div>
         <div class="sc-sub" id="stat-adv-sub">—</div>
       </div>
@@ -494,22 +539,22 @@
     <h3 class="fund-title">📦 صندوق المنتجات</h3>
     <div class="stats-grid">
       <div class="stat-card stat-pf-inv">
-        <div class="sc-label">🏬 قيمة المخزون بالمخازن</div>
+        <div class="sc-label"><span class="sc-icon">🏬</span><span class="sc-text">قيمة المخزون بالمخازن</span></div>
         <div class="sc-val" id="stat-pf-inventory">—</div>
         <div class="sc-sub">كمية × سعر لكل منتج</div>
       </div>
       <div class="stat-card stat-pf-dues" id="dues-card-btn" title="انقر لعرض تفاصيل مستحقات التجار">
-        <div class="sc-label">🤝 مستحقات التجار <span style="font-size:10px;opacity:.6">← تفاصيل</span></div>
+        <div class="sc-label"><span class="sc-icon">🤝</span><span class="sc-text">مستحقات التجار <span style="font-size:10px;opacity:.6">← تفاصيل</span></span></div>
         <div class="sc-val" id="stat-pf-dues">—</div>
         <div class="sc-sub" id="stat-pf-dues-sub">بضاعة أُرسلت ولم تُدفع بعد</div>
       </div>
       <div class="stat-card stat-pf-total">
-        <div class="sc-label">📦 إجمالي صندوق المنتجات</div>
+        <div class="sc-label"><span class="sc-icon">📦</span><span class="sc-text">إجمالي صندوق المنتجات</span></div>
         <div class="sc-val" id="stat-pf-total">—</div>
         <div class="sc-sub">قيمة المخزون + مستحقات التجار</div>
       </div>
       <div class="stat-card stat-pf-wh">
-        <div class="sc-label">🏪 قيمة مخزن محدد (بدون بناء)</div>
+        <div class="sc-label"><span class="sc-icon">🏪</span><span class="sc-text">قيمة مخزن محدد (بدون بناء)</span></div>
         <div class="sc-val" id="stat-pf-wh-value">—</div>
         <div class="sc-sub" id="stat-pf-wh-count">كمية × سعر لمنتجات المخزن</div>
         <select class="wh-inline-select" id="wh-finance-select" disabled>
@@ -591,7 +636,7 @@
     <div class="mp-type-opt sel-out selected" id="mp-opt-out">
       <input type="radio" name="mp-pay-type" value="in" id="mp-radio-out" checked />
       <div>
-        <div class="mp-type-label">💳 التاجر دفع نقداً — تسديد مستحقات</div>
+        <div class="mp-type-label">💳 التاجر دفع نقداً — تسديد مستح �ات</div>
         <div class="mp-type-sub">(يقلل دينه)</div>
       </div>
     </div>
@@ -1177,7 +1222,7 @@ function renderTxBalanceBox(tx){
   if(!balCtx){ box.style.display="none"; box.innerHTML=""; return; }
   const card=(icon,label,val)=>`
     <div class="stat-card ${val>=0?"stat-balance":"stat-out"}" style="width:100%">
-      <div class="sc-label">${icon} ${label}</div>
+      <div class="sc-label"><span class="sc-icon">${icon}</span><span class="sc-text">${label}</span></div>
       <div class="sc-val" style="color:${val>=0?"var(--primary-dark)":"var(--danger,#c0392b)"}">${fmt(Math.abs(val))}</div>
       <div class="sc-sub">${val>=0?"":"⚠️ عجز في الصندوق"}</div>
     </div>`;
@@ -1702,7 +1747,9 @@ function openModal(tx=null,preType=null){
   document.getElementById("tx-del-btn").style.display="none";
   document.querySelectorAll(".type-opt").forEach(o=>o.classList.remove("selected"));
 
+  const typeSel=document.getElementById("type-selector");
   if(tx){
+    typeSel.classList.add("locked");
     editTxId=tx.id;
     document.getElementById("f-amount").value =tx.amount??0;
     document.getElementById("f-desc").value   =tx.description??"";
@@ -1715,8 +1762,9 @@ function openModal(tx=null,preType=null){
     selectType(tx.type);
     // يُعاد بناء قائمة الشهر بعد selectType مع القيمة المحفوظة
     if(tx.type==="advance") buildDeductMonthSelect(tx.deductMonth??"");
-  } else if(preType){
-    selectType(preType);
+  } else {
+    typeSel.classList.remove("locked");
+    if(preType) selectType(preType);
   }
   document.getElementById("tx-modal").classList.add("open");
 }
