@@ -200,15 +200,61 @@
       .filter-bar input[type=date]{font-size:12.5px;padding:7px 8px}
       .filter-bar .btn{padding:8px 10px;font-size:12px}
 
+      /* ══ قائمة التجار — إخفاء الجدول ══ */
+      .table-wrap{display:none}
+
+      /* ══ بطاقات التجار على الهاتف ══ */
+      .mob-mer-list{display:flex;flex-direction:column;gap:8px}
+      .mob-mer-card{
+        background:var(--surface);border:1px solid var(--border);
+        border-radius:14px;padding:14px 14px 10px;
+        box-shadow:0 1px 5px rgba(0,0,0,.06);
+        display:flex;flex-direction:column;gap:8px;
+      }
+      .mob-mer-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+      .mob-mer-name-lnk{
+        font-size:15px;font-weight:800;color:var(--primary-dark,#2a5bbf);
+        cursor:pointer;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+      }
+      .mob-mer-name-lnk:hover{text-decoration:underline}
+      .mob-mer-balance{font-size:17px;font-weight:900;white-space:nowrap}
+      .mob-mer-balance.pos{color:var(--primary-dark,#2a5bbf)}
+      .mob-mer-balance.neg{color:#b3432f}
+      .mob-mer-contact{display:flex;flex-direction:column;gap:3px}
+      .mob-mer-contact-row{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+      .mob-mer-contact-row span:last-child{color:var(--ink);font-weight:600}
+      .mob-mer-actions{
+        display:flex;gap:6px;padding-top:8px;
+        border-top:1px solid var(--border);align-items:center;
+      }
+      .mob-mer-btn-open{
+        flex:1;padding:8px 0;border-radius:9px;font-family:inherit;
+        font-size:12.5px;font-weight:700;cursor:pointer;text-align:center;
+        border:none;background:var(--primary,#1a6b3a);color:#fff;
+      }
+      .mob-mer-btn-edit,.mob-mer-btn-del{
+        padding:8px 12px;border-radius:9px;font-family:inherit;
+        font-size:12px;font-weight:700;cursor:pointer;
+        border:1px solid var(--border);background:var(--surface);color:var(--ink);
+      }
+      .mob-mer-btn-del{color:#b3432f;border-color:#f0b3a8;background:#fff5f5}
+
       /* ══ صفوف الحركات — تخطيط بطاقة ══ */
+      .records-list{display:flex;flex-direction:column;gap:8px;padding:10px 12px}
       .record-row{
         grid-template-columns:auto 1fr auto;
         grid-template-areas:
           "badge main  acts"
           ".     right right";
         gap:4px 8px;
-        padding:10px 12px;
+        padding:12px 14px;
+        background:var(--surface);
+        border:1px solid var(--border) !important;
+        border-radius:12px;
+        box-shadow:0 1px 4px rgba(0,0,0,.05);
+        border-bottom:1px solid var(--border) !important;
       }
+      .record-row:last-child{border-bottom:1px solid var(--border)!important}
       .record-main .title{
         font-size:13.5px;white-space:normal;
         overflow:visible;text-overflow:unset;
@@ -221,18 +267,18 @@
         align-items:center;
         justify-content:flex-start;
         gap:10px;min-width:0;
-        padding-top:2px;
+        padding-top:4px;
       }
-      .record-amount{font-size:14px}
+      .record-amount{font-size:15px;font-weight:900}
       .bal-cell{font-size:10.5px}
       .tx-right-col .rec-id{font-size:9.5px;padding:1px 5px}
-      /* أزرار الحركة — عمودياً */
-      .tx-actions-col{flex-direction:row;gap:2px;align-self:start}
-      .tx-row-box3-toggle{padding:3px 6px;font-size:12px}
-      .delete-btn{padding:3px 6px;font-size:11px}
+      /* أزرار الحركة */
+      .tx-actions-col{flex-direction:row;gap:4px;align-self:start}
+      .tx-row-box3-toggle{padding:4px 8px;font-size:13px}
+      .delete-btn{padding:4px 8px;font-size:12px}
 
       /* نافذة تفاصيل الحركة الداخلية */
-      .tx-row-box3-detail{padding:10px 12px 14px}
+      .tx-row-box3-detail{padding:10px 12px 14px;border-radius:10px;margin:0 12px 8px}
       .tx-row-box3-detail .mer-stats{grid-template-columns:1fr!important}
       .tx-row-box3-detail .mer-stat{padding:10px 12px}
       .tx-row-box3-detail .mer-stat .msv{font-size:17px}
@@ -298,6 +344,10 @@
               <tr><td colspan="5"><div class="empty-state">جارِ التحميل...</div></td></tr>
             </tbody>
           </table>
+        </div>
+        <!-- بطاقات الهاتف (تظهر فقط على شاشات ≤ 900px) -->
+        <div id="mob-mer-list" class="mob-mer-list" style="padding:12px">
+          <div class="empty-state">جارِ التحميل...</div>
         </div>
       </div>
     </div>
@@ -865,13 +915,18 @@ function loadActivityOpMap(){
 /* ── قائمة التجار ── */
 function renderList(){
   const tbody=document.getElementById("merchants-tbody");
+  const mobList=document.getElementById("mob-mer-list");
   if(!merchants.length){
     tbody.innerHTML='<tr><td colspan="5"><div class="empty-state">لا يوجد تجار مسجلون بعد</div></td></tr>';
+    mobList.innerHTML='<div class="empty-state">لا يوجد تجار مسجلون بعد</div>';
     return;
   }
   tbody.innerHTML="";
+  mobList.innerHTML="";
   merchants.forEach(mer=>{
     const bal=calcBalance(mer.id);
+
+    // ── صف الجدول (سطح المكتب) ──
     const tr=document.createElement("tr");
     tr.innerHTML=`
       <td><span class="link-cell" data-id="${mer.id}">${esc(mer.name)}</span></td>
@@ -883,12 +938,42 @@ function renderList(){
         <button class="del"  data-id="${mer.id}">حذف</button>
       </div></td>`;
     tbody.appendChild(tr);
+
+    // ── بطاقة الهاتف ──
+    const card=document.createElement("div");
+    card.className="mob-mer-card";
+    card.innerHTML=`
+      <div class="mob-mer-top">
+        <span class="mob-mer-name-lnk" data-id="${mer.id}">${esc(mer.name)}</span>
+        <span class="mob-mer-balance ${bal>=0?"pos":"neg"}">${fmt(bal)}</span>
+      </div>
+      ${(mer.phone||mer.email)?`<div class="mob-mer-contact">
+        ${mer.phone?`<div class="mob-mer-contact-row"><span>📞</span><span>${esc(mer.phone)}</span></div>`:""}
+        ${mer.email?`<div class="mob-mer-contact-row"><span>✉️</span><span>${esc(mer.email)}</span></div>`:""}
+      </div>`:""}
+      <div class="mob-mer-actions">
+        <button class="mob-mer-btn-open" data-id="${mer.id}">📋 عرض الحساب</button>
+        <button class="mob-mer-btn-edit" data-id="${mer.id}">تعديل</button>
+        <button class="mob-mer-btn-del"  data-id="${mer.id}">حذف</button>
+      </div>`;
+    mobList.appendChild(card);
   });
+
+  // ── أحداث الجدول ──
   tbody.querySelectorAll(".link-cell").forEach(el=>el.addEventListener("click",()=>openDetail(el.dataset.id)));
   tbody.querySelectorAll(".edit").forEach(el=>el.addEventListener("click",()=>{
     const m=merchants.find(x=>x.id===el.dataset.id); if(m) openMerModal(m);
   }));
   tbody.querySelectorAll(".del").forEach(el=>el.addEventListener("click",()=>deleteMer(el.dataset.id)));
+
+  // ── أحداث بطاقات الهاتف ──
+  mobList.querySelectorAll(".mob-mer-name-lnk,.mob-mer-btn-open").forEach(el=>
+    el.addEventListener("click",()=>openDetail(el.dataset.id)));
+  mobList.querySelectorAll(".mob-mer-btn-edit").forEach(el=>el.addEventListener("click",()=>{
+    const m=merchants.find(x=>x.id===el.dataset.id); if(m) openMerModal(m);
+  }));
+  mobList.querySelectorAll(".mob-mer-btn-del").forEach(el=>
+    el.addEventListener("click",()=>deleteMer(el.dataset.id)));
 }
 
 async function deleteMer(id){
