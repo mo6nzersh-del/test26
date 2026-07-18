@@ -266,6 +266,24 @@
       }
       .dash-card-value.money { font-size: 17px; color: var(--primary-dark); }
 
+      /* ─── عناصر آخر العمليات (يُنشئها dashboard JS) ─── */
+      #recent-activity-list{display:flex;flex-direction:column;gap:2px;margin-top:4px}
+      .activity-item{display:flex;align-items:center;gap:12px;padding:10px 6px;border-bottom:1px solid var(--border)}
+      .activity-item:last-child{border-bottom:none}
+      .activity-icon{flex:0 0 auto;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--bg)}
+      .activity-icon.act-prod{background:#eef2ff}
+      .activity-icon.act-transfer{background:#eff6ff}
+      .activity-icon.act-loading{background:#fff7ed}
+      .activity-icon.act-in{background:#ecfdf5}
+      .activity-icon.act-out{background:#fef2f2}
+      .activity-icon.act-att{background:#f5f3ff}
+      .activity-body{flex:1 1 auto;min-width:0}
+      .activity-title{font-weight:700;font-size:13.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .activity-sub{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+      .activity-time{flex:0 0 auto;font-size:11.5px;color:var(--muted);white-space:nowrap;padding-inline-start:6px}
+      #recent-activity-list .empty-state{padding:24px 0}
+      @media(max-width:640px){.activity-sub{display:none}}
+
       /* ─── آخر العمليات ─── */
       .dash-activity-wrap {
         background: var(--surface);
@@ -568,14 +586,18 @@
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const pfApp  = initializeApp({
+    // تجنّب خطأ "app already exists" إذا هيَّأه dashboard-DSedGtPY.js
+    import { getApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    const PF_CFG = {
       apiKey:            "AIzaSyDQsaNVskKiV2cwPVlJDixpTD1S-Dhp7gs",
       authDomain:        "reta-and-hamd.firebaseapp.com",
       projectId:         "reta-and-hamd",
       storageBucket:     "reta-and-hamd.firebasestorage.app",
       messagingSenderId: "220767743863",
       appId:             "1:220767743863:web:2ecd37bd5830a39ec1bb72"
-    }, "products-fund-app");
+    };
+    const pfApp  = getApps().find(a=>a.name==="products-fund-app")
+                   ?? initializeApp(PF_CFG, "products-fund-app");
     const pfAuth = getAuth(pfApp);
     const pfDb   = getFirestore(pfApp);
 
@@ -583,9 +605,12 @@
 
     onAuthStateChanged(pfAuth, user => {
       if (user) {
-        // عرض اسم المستخدم في الهيدر
+        // عرض اسم المستخدم: displayName → أول جزء من الإيميل
         const nameEl = document.getElementById("dash-user-name");
-        if (nameEl && user.displayName) nameEl.textContent = user.displayName;
+        if (nameEl) {
+          const name = user.displayName || (user.email ? user.email.split("@")[0] : "");
+          if (name) nameEl.textContent = name;
+        }
         loadProductsFund();
       }
     });
