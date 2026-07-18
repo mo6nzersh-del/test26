@@ -186,30 +186,26 @@ function buildWarehouseSection(wh, whProducts) {
 }
 
 function buildProductCardHTML(p) {
-  // أيقونة من قائمة ثابتة بناءً على اسم المنتج (لا صورة مطلوبة)
   const ICONS = ["📦","🏷️","🗃️","📋","🧺","🛒","📌","🗂️"];
   const icon = p.imageUrl
-    ? `<img style="width:22px;height:22px;object-fit:cover;border-radius:4px;vertical-align:middle" src="${p.imageUrl}" alt="" />`
+    ? `<img style="width:22px;height:22px;object-fit:cover;border-radius:4px" src="${p.imageUrl}" alt="" />`
     : ICONS[(p.name || "").charCodeAt(0) % ICONS.length] || "📦";
   return `
     <div class="wh-product-card${p.isVisiting ? " visiting" : ""}">
-      <div class="wpc-head">
-        <div class="wpc-name-wrap">
-          <span class="wpc-icon">${icon}</span>
-          <span class="wpc-name" title="${esc(p.name)}">${esc(p.name)}</span>
-          ${p.isVisiting ? `<span class="wh-product-visiting-badge" title="صنف زائر من مخزن آخر — نفس المعرّف الأصلي">زائر</span>` : ""}
-        </div>
+      <span class="wpc-icon">${icon}</span>
+      <div class="wpc-info">
+        <div class="wpc-name" title="${esc(p.name)}">${esc(p.name)}${p.isVisiting ? ` <span class="wh-product-visiting-badge" title="صنف زائر من مخزن آخر — نفس المعرّف الأصلي">زائر</span>` : ""}</div>
+        ${p.serialId ? `<div class="wpc-serial"># ${esc(p.serialId)}</div>` : ""}
+        ${p.description ? `<div class="wpc-desc">${esc(p.description)}</div>` : ""}
+      </div>
+      <div class="wpc-qty-badge">
+        <span class="wpc-qty-num">${fmtNum(p.quantity || 0)}</span>
+        <span class="wpc-qty-unit">${esc(p.quantityType || "")}</span>
+      </div>
+      <div class="wpc-right">
+        <div class="wpc-price">${p.price ? fmtMoney(p.price) : "—"}</div>
         <button type="button" class="wpc-edit-btn edit-prod-btn" data-prod-id="${p.id}">تعديل</button>
       </div>
-      <div class="wpc-mid">
-        <div class="wpc-qty">
-          <span class="wpc-qty-num">${fmtNum(p.quantity || 0)}</span>
-          <span class="wpc-qty-unit">${esc(p.quantityType || "")}</span>
-        </div>
-        <div class="wpc-price">${p.price ? fmtMoney(p.price) : "—"}</div>
-      </div>
-      ${p.description ? `<div class="wpc-desc">${esc(p.description)}</div>` : ""}
-      ${p.serialId ? `<div><span class="wpc-serial"># ${esc(p.serialId)}</span></div>` : ""}
     </div>`;
 }
 
@@ -710,19 +706,15 @@ function initLoadingForm() {
     const labelUnpaid = document.getElementById("pay-label-unpaid");
     const hint        = document.getElementById("pay-hint");
     if (isPaid) {
-      labelPaid.style.background   = "#e8f5e9";
-      labelPaid.style.color        = "#1a6b3a";
-      labelUnpaid.style.background = "#f0f0f0";
-      labelUnpaid.style.color      = "#888";
-      hint.style.color             = "#1a6b3a";
-      hint.textContent             = "سيُسجَّل دفع فوري — لن يُضاف دين على التاجر";
+      labelPaid.className   = "pay-opt pay-opt-paid sel-paid";
+      labelUnpaid.className = "pay-opt pay-opt-unpaid";
+      hint.style.color      = "#1a6b3a";
+      hint.textContent      = "سيُسجَّل دفع فوري — لن يُضاف دين على التاجر";
     } else {
-      labelUnpaid.style.background = "#fff4e5";
-      labelUnpaid.style.color      = "#a06a10";
-      labelPaid.style.background   = "#f0f0f0";
-      labelPaid.style.color        = "#888";
-      hint.style.color             = "#a06a10";
-      hint.textContent             = "سيُسجَّل دين على التاجر بقيمة الفاتورة";
+      labelUnpaid.className = "pay-opt pay-opt-unpaid sel-unpaid";
+      labelPaid.className   = "pay-opt pay-opt-paid";
+      hint.style.color      = "#a06a10";
+      hint.textContent      = "سيُسجَّل دين على التاجر بقيمة الفاتورة";
     }
   }
   document.getElementById("load-pay-paid").addEventListener("change", updatePayStyle);
