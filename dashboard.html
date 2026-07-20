@@ -86,85 +86,31 @@
         position: relative;
       }
 
-      /* على الشاشات العريضة: محتوى الأقسام يأخذ عرض مناسب */
-      @media (min-width: 640px) {
-        .float-card,
-        .period-wrap,
-        .sec-head,
-        .dash-grid,
-        .activity-wrap,
-        .shortcuts-head,
-        .shortcuts-grid {
-          max-width: 720px;
-          margin-left: auto;
-          margin-right: auto;
+      /* ═══ شاشات سطح المكتب: نمركز #app كاملاً ═══ */
+      @media (min-width: 900px) {
+        body { background: #dde3ee; }
+        #app {
+          max-width: 960px;
+          margin: 0 auto;
+          min-height: 100vh;
+          background: var(--bg);
+          box-shadow: 0 0 60px rgba(0,0,0,.18);
+          position: relative;
         }
-        .period-wrap {
-          padding-left: 24px;
-          padding-right: 24px;
-        }
-        .sec-head {
-          padding-left: 24px;
-          padding-right: 24px;
-        }
-        .shortcuts-head {
-          padding-left: 24px;
-          padding-right: 24px;
-        }
-        .dash-grid {
-          padding-left: 24px;
-          padding-right: 24px;
-          grid-template-columns: repeat(3, 1fr);
-        }
-        .dash-card.wide {
-          grid-column: 1 / -1;
-        }
-        .shortcuts-grid {
-          padding-left: 24px;
-          padding-right: 24px;
-          grid-template-columns: repeat(4, 1fr);
-        }
-        .float-card {
-          margin-left: auto;
-          margin-right: auto;
-          margin-top: -32px;
-          margin-bottom: 20px;
-        }
-        .activity-wrap {
-          margin-left: auto;
-          margin-right: auto;
-        }
-        .app-bar,
-        .user-row,
-        .hero-metric-card {
-          max-width: 720px;
-          margin-left: auto;
-          margin-right: auto;
-        }
-        .hero-metric-card {
-          margin-bottom: 0;
-        }
+        /* شبكة البطاقات: 3 أعمدة */
+        .dash-grid { grid-template-columns: repeat(3, 1fr); }
+        /* الاختصارات: 4 أعمدة */
+        .shortcuts-grid { grid-template-columns: repeat(4, 1fr); }
+        /* القائمة السفلية تتبع #app */
         .bottom-nav {
-          max-width: 720px;
+          position: sticky;
+          bottom: 0;
+          left: unset;
+          right: unset;
+          transform: none;
+          width: 100%;
+          border-radius: 0;
         }
-      }
-      @media (min-width: 1024px) {
-        .app-bar,
-        .user-row,
-        .hero-metric-card,
-        .float-card,
-        .period-wrap,
-        .sec-head,
-        .dash-grid,
-        .activity-wrap,
-        .shortcuts-head,
-        .shortcuts-grid {
-          max-width: 900px;
-        }
-        .dash-grid {
-          grid-template-columns: repeat(4, 1fr);
-        }
-        .bottom-nav { max-width: 900px; }
       }
 
       /* ═══ هيدر بطولي ═══ */
@@ -618,14 +564,12 @@
       .bottom-nav {
         position: fixed;
         bottom: 0; left: 0; right: 0;
-        max-width: 480px;
-        margin: 0 auto;
         background: var(--surface);
         border-top: 1px solid var(--border);
         display: flex;
         align-items: center;
         height: 68px;
-        padding: 0 8px;
+        padding: 0 4px;
         z-index: 100;
         box-shadow: 0 -4px 20px rgba(0,0,0,.08);
       }
@@ -745,6 +689,9 @@
     </symbol>
     <symbol id="ic-home" viewBox="0 0 24 24" fill="currentColor">
       <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+    </symbol>
+    <symbol id="ic-finance" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H7.1c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
     </symbol>
     <symbol id="ic-bell" viewBox="0 0 24 24" fill="currentColor">
       <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
@@ -1041,23 +988,29 @@
           </div>
           <span class="bottom-nav-label">الرئيسية</span>
         </a>
-        <a class="bottom-nav-item" href="/products.html">
-          <div class="bottom-nav-icon">
-            <svg width="22" height="22"><use href="#ic-box"/></svg>
-          </div>
-          <span class="bottom-nav-label">المنتجات</span>
-        </a>
         <a class="bottom-nav-item" href="/merchants.html">
           <div class="bottom-nav-icon">
             <svg width="22" height="22"><use href="#ic-handshake"/></svg>
           </div>
           <span class="bottom-nav-label">التجار</span>
         </a>
+        <a class="bottom-nav-item" href="/products.html">
+          <div class="bottom-nav-icon">
+            <svg width="22" height="22"><use href="#ic-box"/></svg>
+          </div>
+          <span class="bottom-nav-label">المنتجات</span>
+        </a>
         <a class="bottom-nav-item" href="/employees.html">
           <div class="bottom-nav-icon">
             <svg width="22" height="22"><use href="#ic-users"/></svg>
           </div>
           <span class="bottom-nav-label">الموظفون</span>
+        </a>
+        <a class="bottom-nav-item" href="/finance.html">
+          <div class="bottom-nav-icon">
+            <svg width="22" height="22"><use href="#ic-finance"/></svg>
+          </div>
+          <span class="bottom-nav-label">المالية</span>
         </a>
       </nav>
 
