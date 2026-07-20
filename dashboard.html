@@ -718,14 +718,14 @@
   })();
   </script>
 
-  <!-- ═══════ صندوق المنتجات — حساب مستقل (قيمة المخزون + مستحقات التجار) ═══════ -->
+  <!-- ═══════ صندوق المنتجات — يستخدم نفس تطبيق Firebase الافتراضي ═══════ -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // تجنّب خطأ "app already exists" إذا هيَّأه dashboard-DSedGtPY.js
-    import { getApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    // ─── نستخدم التطبيق الافتراضي الذي هيَّأه auth-guard مسبقاً ───
+    // لا ننشئ تطبيقاً ثانياً حتى لا ينفصل سياق المصادقة
     const PF_CFG = {
       apiKey:            "AIzaSyDQsaNVskKiV2cwPVlJDixpTD1S-Dhp7gs",
       authDomain:        "reta-and-hamd.firebaseapp.com",
@@ -734,16 +734,18 @@
       messagingSenderId: "220767743863",
       appId:             "1:220767743863:web:2ecd37bd5830a39ec1bb72"
     };
-    const pfApp  = getApps().find(a=>a.name==="products-fund-app")
-                   ?? initializeApp(PF_CFG, "products-fund-app");
+
+    // إذا لم يُهيَّأ بعد (حالة نادرة) نهيّئه كتطبيق افتراضي، وإلا نأخذه مباشرة
+    const pfApp = getApps().length > 0 ? getApp() : initializeApp(PF_CFG);
     const pfAuth = getAuth(pfApp);
     const pfDb   = getFirestore(pfApp);
 
     const pfFmt = n => new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(n||0)+" ج.م";
 
+    // ─── نستمع لحالة المصادقة على التطبيق الافتراضي ───
     onAuthStateChanged(pfAuth, user => {
       if (user) {
-        // عرض اسم المستخدم: displayName → أول جزء من الإيميل
+        // عرض اسم المستخدم
         const nameEl = document.getElementById("dash-user-name");
         if (nameEl) {
           const name = user.displayName || (user.email ? user.email.split("@")[0] : "");
@@ -789,7 +791,7 @@
         const heroEl = document.getElementById("hero-pf-total");
         if(heroEl) heroEl.textContent = pfFmt(inventoryValue+merchantDues);
       }catch(err){
-        console.error(err);
+        console.error("خطأ في تحميل صندوق المنتجات:", err);
         ["stat-pf-inventory","stat-pf-dues","stat-pf-total","hero-pf-total"].forEach(id=>{
           const el=document.getElementById(id); if(el) el.textContent="خطأ";
         });
