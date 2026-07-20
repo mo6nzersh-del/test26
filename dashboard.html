@@ -769,20 +769,22 @@
           return s+(Number(p.quantity)||0)*(Number(p.price)||0);
         }, 0);
 
-        // 2) مستحقات التجار = رصيد كل تاجر (موجب فقط)
+        // 2) مستحقات التجار — نفس منطق صفحة المالية تماماً
+        // merchantTransactions: type="out" = بيع (دين على التاجر) → رصيد سالب
+        // finance_transactions type="merchant": dir="in" = سداد → يُقلل الدين
+        // الرصيد السالب = التاجر مدين ← نجمع Math.max(0, -bal)
         const byMerchant = {};
         merTxSnap.docs.forEach(d=>{
           const t=d.data(); if(!t.merchantId) return;
-          const amt=(t.type==="out"?-1:1)*(Number(t.amount)||0);
-          byMerchant[t.merchantId]=(byMerchant[t.merchantId]||0)+amt;
+          byMerchant[t.merchantId]=(byMerchant[t.merchantId]||0)+(t.type==="out"?-1:1)*(Number(t.amount)||0);
         });
         finTxSnap.docs.forEach(d=>{
           const t=d.data();
-          if(t.type!=="merchant"||t._active===false||!t.merchantId) return;
-          const amt=(t.dir==="in"?1:-1)*(Number(t.amount)||0);
-          byMerchant[t.merchantId]=(byMerchant[t.merchantId]||0)+amt;
+          if(t.type!=="merchant"||!t.merchantId) return;
+          byMerchant[t.merchantId]=(byMerchant[t.merchantId]||0)+(t.dir==="in"?1:-1)*(Number(t.amount)||0);
         });
-        const merchantDues = Object.values(byMerchant).reduce((s,bal)=>s+Math.max(0,bal),0);
+        // الرصيد السالب = تاجر مدين ← نأخذ Math.max(0, -bal) كما في صفحة المالية
+        const merchantDues = Object.values(byMerchant).reduce((s,bal)=>s+Math.max(0,-bal),0);
 
         document.getElementById("stat-pf-inventory").textContent = pfFmt(inventoryValue);
         document.getElementById("stat-pf-dues").textContent      = pfFmt(merchantDues);
