@@ -1,1093 +1,1090 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1"/>
-  <title>الرئيسية — Ahmed And hamdy</title>
-  <meta name="robots" content="noindex,nofollow"/>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>الرئيسية - Ahmed And hamdy</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- ضمان الأرقام اللاتينية فقط -->
+    <script>
+    (function(){
+      var _NF=Intl.NumberFormat;
+      function patchLocale(l){
+        if(!l)return"ar-EG-u-nu-latn";
+        if(typeof l==="string")return l.includes("nu-")?l:l.replace(/^ar(-EG)?/,"ar-EG-u-nu-latn");
+        if(Array.isArray(l))return l.map(patchLocale);
+        return"ar-EG-u-nu-latn";
+      }
+      Intl.NumberFormat=function(l,o){return new _NF(patchLocale(l),o)};
+      Object.assign(Intl.NumberFormat,_NF);
+      Intl.NumberFormat.prototype=_NF.prototype;
+    })();
+    </script>
+    <script type="module" crossorigin src="/assets/dashboard-DSedGtPY.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/auth-guard-DMMO1gWE.js">
+    <link rel="modulepreload" crossorigin href="/assets/nav-C4LmEyvm.js">
+    <link rel="stylesheet" crossorigin href="/assets/auth-guard-C6CJ8_8i.css">
+    <style>
+      /* ══════════════════════════════════════
+         تصميم موبايل — أحمد وحمدي
+      ══════════════════════════════════════ */
 
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --grad-1: #4f46e5;
+        --grad-2: #7c3aed;
+        --grad-3: #6d28d9;
+        --accent:  #f59e0b;
+        --accent2: #10b981;
+        --surface: #ffffff;
+        --bg:      #f1f5f9;
+        --border:  #e2e8f0;
+        --ink:     #0f172a;
+        --muted:   #64748b;
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-soft: #eef2ff;
+        --danger:  #ef4444;
+        --warning: #f59e0b;
+        --success: #10b981;
+        --r-card:  16px;
+        --shadow:  0 2px 12px rgba(0,0,0,.08);
+        --shadow-lg: 0 8px 28px rgba(0,0,0,.14);
+      }
+      [data-theme="dark"] {
+        --surface: #1e1b4b;
+        --bg:      #0f0e2a;
+        --border:  #312e81;
+        --ink:     #f8fafc;
+        --muted:   #a5b4fc;
+        --primary-soft: #1e1b4b;
+      }
+
+      html, body { height: 100%; background: var(--bg); }
+
+      body {
+        font-family: 'Cairo', 'Segoe UI', sans-serif;
+        color: var(--ink);
+        direction: rtl;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+
+      /* إخفاء التوبار الأصلي دائماً */
+      #topbar { display: none !important; }
+
+      /* ═══ الصفحة الرئيسية ═══ */
+      .page {
+        max-width: 480px;
+        margin: 0 auto;
+        min-height: 100vh;
+        padding: 0 0 80px;
+        background: var(--bg);
+        position: relative;
+      }
+
+      /* ═══ هيدر بطولي ═══ */
+      .dash-hero {
+        background: linear-gradient(145deg, var(--grad-1) 0%, var(--grad-2) 55%, var(--grad-3) 100%);
+        padding: 0 0 52px;
+        position: relative;
+        overflow: hidden;
+      }
+      .dash-hero::before {
+        content: "";
+        position: absolute;
+        top: -80px; left: -80px;
+        width: 260px; height: 260px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.07);
+        pointer-events: none;
+      }
+      .dash-hero::after {
+        content: "";
+        position: absolute;
+        bottom: -60px; right: -40px;
+        width: 200px; height: 200px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.05);
+        pointer-events: none;
+      }
+
+      /* ─── شريط التطبيق العلوي ─── */
+      .app-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 18px 10px;
+        position: relative; z-index: 2;
+      }
+      .app-bar-brand {
+        display: flex; align-items: center; gap: 8px;
+      }
+      .app-bar-mark {
+        width: 36px; height: 36px;
+        border-radius: 10px;
+        background: rgba(255,255,255,.22);
+        border: 1.5px solid rgba(255,255,255,.3);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px; font-weight: 900; color: #fff;
+        flex-shrink: 0;
+      }
+      .app-bar-name {
+        font-size: 13px; font-weight: 900; color: #fff;
+        line-height: 1.2;
+        letter-spacing: -.2px;
+      }
+      .app-bar-sub {
+        font-size: 10px; opacity: .65; font-weight: 600;
+        margin-top: 1px;
+      }
+      .app-bar-actions {
+        display: flex; align-items: center; gap: 8px;
+      }
+      .app-bar-btn {
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.15);
+        border: 1.5px solid rgba(255,255,255,.25);
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; color: #fff;
+      }
+
+      /* ─── معلومات المستخدم ─── */
+      .user-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 18px 18px;
+        position: relative; z-index: 2;
+      }
+      .user-greeting { color: rgba(255,255,255,.75); font-size: 12px; font-weight: 600; }
+      .user-name-big {
+        font-size: 18px; font-weight: 900; color: #fff;
+        line-height: 1.2; margin-top: 2px;
+        max-width: 180px;
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      }
+      .user-avatar-wrap {
+        position: relative;
+      }
+      .user-avatar {
+        width: 52px; height: 52px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.2);
+        border: 2.5px solid rgba(255,255,255,.5);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 22px; color: #fff;
+        overflow: hidden;
+      }
+      .user-avatar-badge {
+        position: absolute;
+        bottom: 1px; left: 1px;
+        width: 14px; height: 14px;
+        border-radius: 50%;
+        background: var(--success);
+        border: 2px solid #fff;
+      }
+
+      /* ─── بطاقة المبلغ الرئيسي ─── */
+      .hero-metric-card {
+        margin: 0 16px;
+        background: rgba(255,255,255,.12);
+        border: 1.5px solid rgba(255,255,255,.2);
+        border-radius: 20px;
+        padding: 18px 20px 20px;
+        backdrop-filter: blur(10px);
+        position: relative; z-index: 2;
+      }
+      .hero-metric-label {
+        display: flex; align-items: center; gap: 8px;
+        font-size: 12px; font-weight: 700;
+        color: rgba(255,255,255,.8);
+        margin-bottom: 10px;
+      }
+      .hero-metric-label-icon {
+        width: 26px; height: 26px;
+        border-radius: 7px;
+        background: rgba(255,255,255,.2);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 13px;
+      }
+      .hero-metric-value {
+        font-size: 36px; font-weight: 900;
+        color: #fff;
+        letter-spacing: -1.5px;
+        line-height: 1;
+        margin-bottom: 6px;
+      }
+      .hero-metric-sub {
+        font-size: 11px; color: rgba(255,255,255,.6);
+        font-weight: 600;
+      }
+      .hero-metric-divider {
+        height: 1px;
+        background: rgba(255,255,255,.15);
+        margin: 14px 0;
+      }
+      .hero-metric-row {
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .hero-sub-item {}
+      .hero-sub-label {
+        font-size: 10px; color: rgba(255,255,255,.6);
+        font-weight: 600; margin-bottom: 3px;
+      }
+      .hero-sub-val {
+        font-size: 13px; font-weight: 800; color: #fff;
+        letter-spacing: -.3px;
+      }
+      .hero-sub-val.money { font-size: 12px; }
+
+      /* ═══ بطاقة عائمة (العدادات السريعة) ═══ */
+      .float-card {
+        margin: -32px 16px 20px;
+        background: var(--surface);
+        border-radius: 18px;
+        box-shadow: 0 8px 32px rgba(79,70,229,.2);
+        border: 1px solid var(--border);
+        position: relative; z-index: 5;
+        overflow: hidden;
+      }
+      .float-inner {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .float-item {
+        padding: 16px 8px 14px;
+        text-align: center;
+        position: relative;
+        transition: background .15s;
+      }
+      .float-item:active { background: var(--bg); }
+      .float-item + .float-item::before {
+        content: "";
+        position: absolute;
+        top: 20%; bottom: 20%;
+        right: 0; /* RTL: separator on right */
+        width: 1px;
+        background: var(--border);
+      }
+      .float-icon {
+        width: 40px; height: 40px;
+        border-radius: 12px;
+        margin: 0 auto 8px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 19px;
+      }
+      .fi-green  { background: #dcfce7; }
+      .fi-blue   { background: #dbeafe; }
+      .fi-orange { background: #ffedd5; }
+      .float-label {
+        font-size: 10px; color: var(--muted); font-weight: 700;
+        margin-bottom: 4px; line-height: 1.3;
+      }
+      .float-val {
+        font-size: 22px; font-weight: 900; color: var(--ink);
+        line-height: 1;
+      }
+
+      /* ═══ شريط الفترة ═══ */
+      .period-wrap {
+        padding: 0 16px 20px;
+      }
+      .period-scroll {
+        background: var(--surface);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        padding: 5px;
+        display: flex; gap: 4px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        box-shadow: var(--shadow);
+      }
+      .period-scroll::-webkit-scrollbar { display: none }
+      .period-scroll button {
+        flex: 0 0 auto;
+        padding: 8px 14px;
+        border: none; border-radius: 8px;
+        background: transparent;
+        font-family: inherit; font-size: 12.5px; font-weight: 700;
+        color: var(--muted); cursor: pointer;
+        transition: background .15s, color .15s;
+        white-space: nowrap;
+      }
+      .period-scroll button.active {
+        background: var(--primary);
+        color: #fff;
+        box-shadow: 0 3px 10px rgba(79,70,229,.35);
+      }
+
+      /* ═══ رأس القسم ═══ */
+      .sec-head {
+        display: flex; align-items: center; gap: 10px;
+        padding: 0 16px 12px;
+      }
+      .sec-icon {
+        width: 34px; height: 34px;
+        border-radius: 10px;
+        background: var(--primary-soft);
+        color: var(--primary-dark);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 16px; flex-shrink: 0;
+      }
+      .sec-title {
+        font-size: 15px; font-weight: 900; color: var(--ink);
+        letter-spacing: -.2px;
+      }
+
+      /* ═══ شبكة البطاقات ═══ */
+      .dash-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 0 16px 24px;
+      }
+      .dash-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--r-card);
+        padding: 16px 14px 16px;
+        box-shadow: var(--shadow);
+        display: flex; flex-direction: column;
+        position: relative;
+        overflow: hidden;
+        transition: transform .13s, box-shadow .13s;
+      }
+      .dash-card:active {
+        transform: scale(.97);
+        box-shadow: var(--shadow-lg);
+      }
+      .dash-card.wide { grid-column: 1 / -1; }
+      .dash-card.featured {
+        background: linear-gradient(135deg, #4f46e5 0%, #6d28d9 100%);
+        border-color: transparent;
+      }
+      .dash-card.featured .dash-card-label { color: rgba(255,255,255,.75); }
+      .dash-card.featured .dash-card-value { color: #fff; }
+      .dash-card.featured .card-bar { background: rgba(255,255,255,.3); }
+
+      .dash-card-head {
+        display: flex; align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .dash-card-icon {
+        width: 40px; height: 40px;
+        border-radius: 11px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 19px; flex-shrink: 0;
+      }
+      .dc-green  { background: #dcfce7; }
+      .dc-teal   { background: #ccfbf1; }
+      .dc-blue   { background: #dbeafe; }
+      .dc-gold   { background: #fef3c7; }
+      .dc-red    { background: #fee2e2; }
+      .dc-purple { background: #ede9fe; }
+      .dc-navy   { background: #e0e7ff; }
+      .dc-orange { background: #ffedd5; }
+      .dc-white  { background: rgba(255,255,255,.25); }
+
+      .dash-card-label {
+        font-size: 11px; font-weight: 700;
+        color: var(--muted); line-height: 1.4;
+        margin-top: 2px;
+      }
+      .dash-card-value {
+        font-size: 26px; font-weight: 900;
+        color: var(--ink); line-height: 1;
+        margin-bottom: 4px;
+      }
+      .dash-card-value.money {
+        font-size: 16px;
+        color: var(--primary-dark);
+      }
+      .dash-card.featured .dash-card-value.money { color: #fff; }
+      .card-bar {
+        height: 3px;
+        border-radius: 99px;
+        margin-top: 10px;
+        opacity: .55;
+      }
+      .bar-green  { background: #10b981; }
+      .bar-teal   { background: #14b8a6; }
+      .bar-blue   { background: #3b82f6; }
+      .bar-gold   { background: #f59e0b; }
+      .bar-red    { background: #ef4444; }
+      .bar-navy   { background: #6366f1; }
+      .bar-orange { background: #f97316; }
+      .bar-purple { background: #8b5cf6; }
+
+      /* ═══ قسم آخر العمليات ═══ */
+      .activity-wrap {
+        margin: 0 16px 24px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .activity-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 16px 16px 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      .activity-title-row {
+        display: flex; align-items: center; gap: 8px;
+        font-size: 14px; font-weight: 900; color: var(--ink);
+      }
+      .activity-badge {
+        background: var(--primary-soft);
+        color: var(--primary-dark);
+        font-size: 10px; font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 99px;
+      }
+      .activity-sub-text { font-size: 11px; color: var(--muted); font-weight: 600; }
+
+      #recent-activity-list {
+        display: flex; flex-direction: column;
+      }
+      .activity-item {
+        display: flex; align-items: center; gap: 12px;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        transition: background .12s;
+      }
+      .activity-item:last-child { border-bottom: none; }
+      .activity-item:active { background: var(--bg); }
+      .activity-icon {
+        flex: 0 0 auto; width: 40px; height: 40px;
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px;
+      }
+      .act-prod     { background: #ede9fe; }
+      .act-transfer { background: #dbeafe; }
+      .act-loading  { background: #ffedd5; }
+      .act-in       { background: #dcfce7; }
+      .act-out      { background: #fee2e2; }
+      .act-att      { background: #faf5ff; }
+      .activity-body { flex: 1 1 auto; min-width: 0; }
+      .activity-title {
+        font-weight: 800; font-size: 13px; color: var(--ink);
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .activity-sub {
+        font-size: 11px; color: var(--muted);
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        margin-top: 2px;
+      }
+      .activity-time {
+        flex: 0 0 auto; font-size: 10.5px; color: var(--muted);
+        white-space: nowrap; padding-inline-start: 6px;
+      }
+      .activity-panel .panel-head { display: none; }
+      #recent-activity-list .empty-state {
+        padding: 28px 16px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      /* ═══ روابط سريعة ═══ */
+      .shortcuts-head {
+        display: flex; align-items: center; gap: 8px;
+        padding: 0 16px 14px;
+        font-size: 15px; font-weight: 900; color: var(--ink);
+      }
+      .shortcuts-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        padding: 0 16px 24px;
+      }
+      .shortcut-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--r-card);
+        padding: 18px 10px 16px;
+        box-shadow: var(--shadow);
+        display: flex; flex-direction: column;
+        align-items: center; gap: 8px;
+        text-align: center; color: var(--ink);
+        text-decoration: none;
+        transition: transform .13s, box-shadow .13s;
+      }
+      .shortcut-card:active {
+        transform: scale(.95);
+        box-shadow: var(--shadow-lg);
+      }
+      .sc-icon {
+        width: 48px; height: 48px;
+        border-radius: 14px;
+        background: var(--primary-soft);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 22px;
+        transition: background .12s;
+      }
+      .sc-label { font-size: 12px; font-weight: 800; color: var(--ink); }
+
+      /* ═══ شريط التنقل السفلي ═══ */
+      .bottom-nav {
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        max-width: 480px;
+        margin: 0 auto;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        height: 68px;
+        padding: 0 8px;
+        z-index: 100;
+        box-shadow: 0 -4px 20px rgba(0,0,0,.08);
+      }
+      .bottom-nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        text-decoration: none;
+        padding: 6px 4px 2px;
+        border-radius: 12px;
+        transition: background .15s;
+        color: var(--muted);
+      }
+      .bottom-nav-item:active { background: var(--bg); }
+      .bottom-nav-item.active { color: var(--primary); }
+      .bottom-nav-icon {
+        width: 28px; height: 28px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px;
+        position: relative;
+      }
+      .bottom-nav-item.active .bottom-nav-icon::before {
+        content: "";
+        position: absolute;
+        top: -6px; left: 50%; transform: translateX(-50%);
+        width: 24px; height: 3px;
+        border-radius: 99px;
+        background: var(--primary);
+      }
+      .bottom-nav-label {
+        font-size: 10px; font-weight: 700;
+        white-space: nowrap;
+      }
+
+      /* ═══ تحسينات إضافية ═══ */
+      .custom-range {
+        display: none;
+        gap: 8px;
+        align-items: center;
+        margin-top: 10px;
+      }
+      .custom-range input[type="date"] {
+        flex: 1;
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 12px;
+        background: var(--surface);
+        color: var(--ink);
+      }
+      .custom-range .btn {
+        padding: 8px 14px;
+        border: none;
+        border-radius: 10px;
+        background: var(--primary);
+        color: #fff;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      /* ═══ تمرير ناعم ═══ */
+      html { scroll-behavior: smooth; }
+
+      /* ═══ تأثير الدخول ═══ */
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .float-card { animation: slideUp .4s ease both .1s; }
+      .period-wrap { animation: slideUp .4s ease both .15s; }
+      .dash-grid   { animation: slideUp .4s ease both .2s; }
+      .activity-wrap { animation: slideUp .4s ease both .25s; }
+      .shortcuts-grid { animation: slideUp .4s ease both .3s; }
+    </style>
+  </head>
+
+  <!-- ══ أيقونات SVG المشتركة ══ -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <symbol id="ic-user" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+    </symbol>
+    <symbol id="ic-users" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+    </symbol>
+    <symbol id="ic-box" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/>
+    </symbol>
+    <symbol id="ic-briefcase" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20 6h-2.18c.07-.44.18-.86.18-1 0-2.21-1.79-4-4-4s-4 1.79-4 4c0 .14.11.56.18 1H8c-1.11 0-1.99.89-1.99 2L6 19c0 1.11.89 2 2 2h12c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4c-.28 0-.5-.22-.5-.5C9.5 4.12 10.62 3 12 3s2.5 1.12 2.5 2.5c0 .28-.22.5-.5.5z"/>
+    </symbol>
+    <symbol id="ic-handshake" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M11 6H9L7 4H3L1 6v4l2 2h1v5h2v-5h1l2 2h2l1-1V8l-1-2zm0 5H9.41L7 8.59V6.83L8.83 5H9l2 3v3zM23 4h-4l-2 2h-2l-1 2v5l1 1h2l2-2h1v5h2v-5h1l2-2V6l-2-2zm0 5.17L20.17 12H19l-2-3V6h.17L19 4.83V9l-2 2.59V13h.59L20 11h1l2-1.83V9.17z"/>
+    </symbol>
+    <symbol id="ic-tag" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>
+    </symbol>
+    <symbol id="ic-chart" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/>
+    </symbol>
+    <symbol id="ic-store" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20 4H4v2l8 5 8-5V4zm0 14H4V8l8 5 8-5v10z"/>
+    </symbol>
+    <symbol id="ic-payment" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+    </symbol>
+    <symbol id="ic-flash" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M7 2v11h3v9l7-12h-4l4-8z"/>
+    </symbol>
+    <symbol id="ic-link" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+    </symbol>
+    <symbol id="ic-home" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+    </symbol>
+    <symbol id="ic-bell" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+    </symbol>
+    <symbol id="ic-search" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+    </symbol>
+  </svg>
+
+  <body>
+    <div id="app">
+      <header id="topbar" class="topbar"></header>
+
+      <main class="page">
+
+        <!-- ══ هيدر بطولي ══ -->
+        <div class="dash-hero">
+
+          <!-- شريط التطبيق العلوي -->
+          <div class="app-bar">
+            <div class="app-bar-brand">
+              <div class="app-bar-mark">AH</div>
+              <div>
+                <div class="app-bar-name">Ahmed & Hamdy</div>
+                <div class="app-bar-sub">نظام المحاسبة الداخلي</div>
+              </div>
+            </div>
+            <div class="app-bar-actions">
+              <div class="app-bar-btn">
+                <svg width="18" height="18"><use href="#ic-bell"/></svg>
+              </div>
+              <div class="app-bar-btn">
+                <svg width="18" height="18"><use href="#ic-search"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- معلومات المستخدم -->
+          <div class="user-row">
+            <div>
+              <div class="user-greeting">مرحباً بعودتك 👋</div>
+              <div class="user-name-big" id="dash-user-name">جارِ التحميل...</div>
+            </div>
+            <div class="user-avatar-wrap">
+              <div class="user-avatar">
+                <svg width="24" height="24"><use href="#ic-user"/></svg>
+              </div>
+              <div class="user-avatar-badge"></div>
+            </div>
+          </div>
+
+          <!-- بطاقة المبلغ الرئيسي -->
+          <div class="hero-metric-card">
+            <div class="hero-metric-label">
+              <div class="hero-metric-label-icon">
+                <svg width="14" height="14" style="color:#fff"><use href="#ic-briefcase"/></svg>
+              </div>
+              إجمالي صندوق المنتجات
+            </div>
+            <div class="hero-metric-value" id="hero-pf-total">جارِ التحميل...</div>
+            <div class="hero-metric-sub">قيمة المخزون + مستحقات التجار</div>
+            <div class="hero-metric-divider"></div>
+            <div class="hero-metric-row">
+              <div class="hero-sub-item">
+                <div class="hero-sub-label">قيمة المخزون</div>
+                <div class="hero-sub-val money" id="stat-pf-inventory">—</div>
+              </div>
+              <div class="hero-sub-item">
+                <div class="hero-sub-label">مستحقات التجار</div>
+                <div class="hero-sub-val money" id="stat-pf-dues">—</div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /dash-hero -->
+
+        <!-- ══ البطاقة العائمة: عدادات سريعة ══ -->
+        <div class="float-card">
+          <div class="float-inner">
+            <div class="float-item">
+              <div class="float-icon fi-green">
+                <svg width="20" height="20" style="color:#16a34a"><use href="#ic-box"/></svg>
+              </div>
+              <div class="float-label">المنتجات</div>
+              <div class="float-val" id="float-products-count">—</div>
+            </div>
+            <div class="float-item">
+              <div class="float-icon fi-blue">
+                <svg width="20" height="20" style="color:#1d4ed8"><use href="#ic-handshake"/></svg>
+              </div>
+              <div class="float-label">التجار</div>
+              <div class="float-val" id="float-merchants-count">—</div>
+            </div>
+            <div class="float-item">
+              <div class="float-icon fi-orange">
+                <svg width="20" height="20" style="color:#ea580c"><use href="#ic-user"/></svg>
+              </div>
+              <div class="float-label">الموظفون</div>
+              <div class="float-val" id="float-employees-count">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ شريط الفترة الزمنية ══ -->
+        <div class="period-wrap">
+          <div class="period-scroll" id="period-toggle">
+            <button type="button" class="active" data-period="today">اليوم</button>
+            <button type="button" data-period="week">آخر أسبوع</button>
+            <button type="button" data-period="2weeks">آخر أسبوعين</button>
+            <button type="button" data-period="month">آخر شهر</button>
+            <button type="button" data-period="custom">تاريخ مخصص</button>
+          </div>
+          <div class="custom-range" id="custom-range" style="display:none;margin-top:10px;display:none;gap:8px;align-items:center;">
+            <input type="date" id="range-from" />
+            <span style="color:var(--muted);font-size:12px;font-weight:700;">إلى</span>
+            <input type="date" id="range-to" />
+            <button type="button" class="btn small" id="range-apply-btn" style="padding:8px 14px;border:none;border-radius:10px;background:var(--primary);color:#fff;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;">تطبيق</button>
+          </div>
+        </div>
+
+        <!-- ══ قسم المنتجات ══ -->
+        <div class="sec-head">
+          <div class="sec-icon">
+            <svg width="17" height="17" style="color:var(--primary-dark)"><use href="#ic-box"/></svg>
+          </div>
+          <div class="sec-title">إحصائيات المنتجات</div>
+        </div>
+        <div class="dash-grid">
+          <div class="dash-card">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-green">
+                <svg width="20" height="20" style="color:#16a34a"><use href="#ic-tag"/></svg>
+              </div>
+              <div class="dash-card-label">عدد<br>المنتجات</div>
+            </div>
+            <div class="dash-card-value" id="stat-products-count">—</div>
+            <div class="card-bar bar-green"></div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-teal">
+                <svg width="20" height="20" style="color:#0d9488"><use href="#ic-chart"/></svg>
+              </div>
+              <div class="dash-card-label">الكمية<br>الإجمالية</div>
+            </div>
+            <div class="dash-card-value" id="stat-products-qty">—</div>
+            <div class="card-bar bar-teal"></div>
+          </div>
+          <div class="dash-card wide">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-navy">
+                <svg width="20" height="20" style="color:#4338ca"><use href="#ic-store"/></svg>
+              </div>
+              <div class="dash-card-label">قيمة المخزون الإجمالية</div>
+            </div>
+            <div class="dash-card-value money" id="stat-products-value">—</div>
+            <div class="card-bar bar-navy"></div>
+          </div>
+        </div>
+
+        <!-- ══ قسم صندوق المنتجات ══ -->
+        <div class="sec-head">
+          <div class="sec-icon">
+            <svg width="17" height="17" style="color:var(--primary-dark)"><use href="#ic-briefcase"/></svg>
+          </div>
+          <div class="sec-title">صندوق المنتجات</div>
+        </div>
+        <div class="dash-grid" id="products-fund-panel">
+          <div class="dash-card">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-navy">
+                <svg width="20" height="20" style="color:#4338ca"><use href="#ic-store"/></svg>
+              </div>
+              <div class="dash-card-label">قيمة المخزون<br>بالمخازن</div>
+            </div>
+            <div class="dash-card-value money" id="stat-pf-inventory-2">—</div>
+            <div class="card-bar bar-navy"></div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-gold">
+                <svg width="20" height="20" style="color:#d97706"><use href="#ic-handshake"/></svg>
+              </div>
+              <div class="dash-card-label">مستحقات<br>التجار</div>
+            </div>
+            <div class="dash-card-value money" id="stat-pf-dues-2">—</div>
+            <div class="card-bar bar-gold"></div>
+          </div>
+          <div class="dash-card wide featured">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-white">
+                <svg width="20" height="20" style="color:#fff"><use href="#ic-briefcase"/></svg>
+              </div>
+              <div class="dash-card-label" style="font-size:13px;font-weight:800;">إجمالي صندوق المنتجات</div>
+            </div>
+            <div class="dash-card-value money" id="stat-pf-total" style="font-size:20px;color:#fff;">—</div>
+            <div class="card-bar" style="background:rgba(255,255,255,.35);opacity:1;"></div>
+          </div>
+        </div>
+
+        <!-- ══ التجار والموظفون ══ -->
+        <div class="sec-head">
+          <div class="sec-icon">
+            <svg width="17" height="17" style="color:var(--primary-dark)"><use href="#ic-users"/></svg>
+          </div>
+          <div class="sec-title">التجار والموظفون</div>
+        </div>
+        <div class="dash-grid">
+          <div class="dash-card">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-blue">
+                <svg width="20" height="20" style="color:#1d4ed8"><use href="#ic-handshake"/></svg>
+              </div>
+              <div class="dash-card-label">عدد<br>التجار</div>
+            </div>
+            <div class="dash-card-value" id="stat-merchants-count">—</div>
+            <div class="card-bar bar-blue"></div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-orange">
+                <svg width="20" height="20" style="color:#ea580c"><use href="#ic-user"/></svg>
+              </div>
+              <div class="dash-card-label">عدد<br>الموظفين</div>
+            </div>
+            <div class="dash-card-value" id="stat-employees-count">—</div>
+            <div class="card-bar bar-orange"></div>
+          </div>
+          <div class="dash-card wide">
+            <div class="dash-card-head">
+              <div class="dash-card-icon dc-red">
+                <svg width="20" height="20" style="color:#dc2626"><use href="#ic-payment"/></svg>
+              </div>
+              <div class="dash-card-label" id="stat-payroll-label">الرواتب المستحقة</div>
+            </div>
+            <div class="dash-card-value money" id="stat-payroll">—</div>
+            <div class="card-bar bar-red"></div>
+          </div>
+        </div>
+
+        <!-- ══ آخر العمليات ══ -->
+        <div class="activity-wrap activity-panel">
+          <div class="activity-header">
+            <div class="activity-title-row">
+              <svg width="16" height="16" style="color:#f59e0b;flex-shrink:0"><use href="#ic-flash"/></svg>
+              آخر العمليات
+              <span class="activity-badge">حسب الفترة</span>
+            </div>
+            <div class="activity-sub-text">أحدث 12 عملية</div>
+          </div>
+          <!-- panel-head مخفي — تستخدمه activity-panel JS -->
+          <div class="panel-head" style="display:none"><h3></h3><p></p></div>
+          <div id="recent-activity-list">
+            <div class="empty-state">جارِ التحميل...</div>
+          </div>
+        </div>
+
+        <!-- ══ وصول سريع ══ -->
+        <div class="shortcuts-head">
+          <svg width="17" height="17" style="color:var(--primary-dark)"><use href="#ic-link"/></svg>
+          وصول سريع
+        </div>
+        <div class="shortcuts-grid">
+          <a class="shortcut-card" href="/products.html">
+            <div class="sc-icon">
+              <svg width="24" height="24" style="color:#16a34a"><use href="#ic-box"/></svg>
+            </div>
+            <div class="sc-label">المنتجات</div>
+          </a>
+          <a class="shortcut-card" href="/merchants.html">
+            <div class="sc-icon">
+              <svg width="24" height="24" style="color:#1d4ed8"><use href="#ic-handshake"/></svg>
+            </div>
+            <div class="sc-label">التجار</div>
+          </a>
+          <a class="shortcut-card" href="/employees.html">
+            <div class="sc-icon">
+              <svg width="24" height="24" style="color:#ea580c"><use href="#ic-users"/></svg>
+            </div>
+            <div class="sc-label">الموظفون</div>
+          </a>
+        </div>
+
+      </main><!-- /page -->
+
+      <!-- ══ شريط التنقل السفلي ══ -->
+      <nav class="bottom-nav">
+        <a class="bottom-nav-item active" href="/dashboard.html">
+          <div class="bottom-nav-icon">
+            <svg width="22" height="22"><use href="#ic-home"/></svg>
+          </div>
+          <span class="bottom-nav-label">الرئيسية</span>
+        </a>
+        <a class="bottom-nav-item" href="/products.html">
+          <div class="bottom-nav-icon">
+            <svg width="22" height="22"><use href="#ic-box"/></svg>
+          </div>
+          <span class="bottom-nav-label">المنتجات</span>
+        </a>
+        <a class="bottom-nav-item" href="/merchants.html">
+          <div class="bottom-nav-icon">
+            <svg width="22" height="22"><use href="#ic-handshake"/></svg>
+          </div>
+          <span class="bottom-nav-label">التجار</span>
+        </a>
+        <a class="bottom-nav-item" href="/employees.html">
+          <div class="bottom-nav-icon">
+            <svg width="22" height="22"><use href="#ic-users"/></svg>
+          </div>
+          <span class="bottom-nav-label">الموظفون</span>
+        </a>
+      </nav>
+
+    </div><!-- /app -->
+  </body>
+
+  <!-- ═══════ مزامنة البطاقة العائمة مع القيم المحسوبة ═══════ -->
   <script>
   (function(){
-    var _NF=Intl.NumberFormat;
-    function patchLocale(l){
-      if(!l)return"ar-EG-u-nu-latn";
-      if(typeof l==="string")return l.includes("nu-")?l:l.replace(/^ar(-EG)?/,"ar-EG-u-nu-latn");
-      if(Array.isArray(l))return l.map(patchLocale);
-      return"ar-EG-u-nu-latn";
+    // اسم المستخدم في الهيدر
+    function syncUserName(){
+      try {
+        const name = localStorage.getItem("ahDisplay") || localStorage.getItem("displayName") || "";
+        if(name) document.getElementById("dash-user-name").textContent = name;
+      } catch(e){}
     }
-    Intl.NumberFormat=function(l,o){return new _NF(patchLocale(l),o)};
-    Object.assign(Intl.NumberFormat,_NF);
-    Intl.NumberFormat.prototype=_NF.prototype;
+    syncUserName();
+    // مزامنة عداد البطاقة العائمة مع القيم الرئيسية عند تعبئتها
+    function mirrorVal(srcId, destId){
+      const src = document.getElementById(srcId);
+      const dest = document.getElementById(destId);
+      if(!src || !dest) return;
+      const obs = new MutationObserver(()=>{ dest.textContent = src.textContent; });
+      obs.observe(src, {childList:true, characterData:true, subtree:true});
+      if(src.textContent !== "—") dest.textContent = src.textContent;
+    }
+    window.addEventListener("DOMContentLoaded", ()=>{
+      mirrorVal("stat-products-count",  "float-products-count");
+      mirrorVal("stat-merchants-count", "float-merchants-count");
+      mirrorVal("stat-employees-count", "float-employees-count");
+      mirrorVal("stat-pf-total",        "hero-pf-total");
+      // مزامنة بطاقات صندوق المنتجات المكررة في الواجهة
+      mirrorVal("stat-pf-inventory",    "stat-pf-inventory-2");
+      mirrorVal("stat-pf-dues",         "stat-pf-dues-2");
+    });
   })();
   </script>
 
-  <script type="module" crossorigin src="/assets/dashboard-DSedGtPY.js"></script>
-  <link rel="modulepreload" crossorigin href="/assets/auth-guard-DMMO1gWE.js"/>
-  <link rel="modulepreload" crossorigin href="/assets/nav-C4LmEyvm.js"/>
-  <link rel="stylesheet" crossorigin href="/assets/auth-guard-C6CJ8_8i.css"/>
+  <!-- ═══════ صندوق المنتجات — يستخدم نفس تطبيق Firebase الافتراضي ═══════ -->
+  <script type="module">
+    import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  <style>
-  /* ════════════════════════════════════════════════
-     DESIGN TOKENS
-  ════════════════════════════════════════════════ */
-  :root {
-    --g900: #0d3520;
-    --g800: #145228;
-    --g700: #1b6b3a;
-    --g600: #2e8049;
-    --g500: #43a05f;
-    --g100: #e8f5ee;
-    --g50:  #f2faf5;
+    // ─── نستخدم التطبيق الافتراضي الذي هيَّأه auth-guard مسبقاً ───
+    const PF_CFG = {
+      apiKey:            "AIzaSyDQsaNVskKiV2cwPVlJDixpTD1S-Dhp7gs",
+      authDomain:        "reta-and-hamd.firebaseapp.com",
+      projectId:         "reta-and-hamd",
+      storageBucket:     "reta-and-hamd.firebasestorage.app",
+      messagingSenderId: "220767743863",
+      appId:             "1:220767743863:web:2ecd37bd5830a39ec1bb72"
+    };
 
-    --ink:    #0f1923;
-    --ink2:   #374151;
-    --muted:  #6b7280;
-    --border: #e5e7eb;
-    --bg:     #f8fafc;
-    --surface:#ffffff;
+    const pfApp = getApps().length > 0 ? getApp() : initializeApp(PF_CFG);
+    const pfAuth = getAuth(pfApp);
+    const pfDb   = getFirestore(pfApp);
 
-    --blue:   #1d4ed8;
-    --blue-s: #eff6ff;
-    --gold:   #b45309;
-    --gold-s: #fffbeb;
-    --red:    #b91c1c;
-    --red-s:  #fef2f2;
-    --teal:   #0d7377;
-    --teal-s: #f0fdfb;
-    --navy:   #1e3a5f;
-    --navy-s: #eff3fc;
-    --purple: #6d28d9;
-    --purple-s:#f5f3ff;
+    const pfFmt = n => new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(n||0)+" ج.م";
 
-    --shadow-sm: 0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.04);
-    --shadow-md: 0 4px 16px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.04);
-    --shadow-lg: 0 12px 36px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.06);
-    --r-sm: 10px;
-    --r-md: 14px;
-    --r-lg: 20px;
-    --r-xl: 26px;
-  }
+    // ─── نستمع لحالة المصادقة على التطبيق الافتراضي ───
+    onAuthStateChanged(pfAuth, user => {
+      if (user) {
+        const nameEl = document.getElementById("dash-user-name");
+        if (nameEl) {
+          const name = user.displayName || (user.email ? user.email.split("@")[0] : "");
+          if (name) nameEl.textContent = name;
+        }
+        loadProductsFund();
+      }
+    });
 
-  /* ════════ RESET / BASE ════════ */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    async function loadProductsFund(){
+      try{
+        const [prodSnap, merTxSnap, finTxSnap] = await Promise.all([
+          getDocs(collection(pfDb,"products")),
+          getDocs(collection(pfDb,"merchantTransactions")),
+          getDocs(collection(pfDb,"finance_transactions")),
+        ]);
 
-  body {
-    font-family: 'Cairo', var(--font-sans, sans-serif);
-    background: var(--bg);
-    color: var(--ink);
-    -webkit-font-smoothing: antialiased;
-  }
+        // 1) قيمة المخزون = كمية كل منتج × سعره
+        const inventoryValue = prodSnap.docs.reduce((s,d)=>{
+          const p=d.data();
+          return s+(Number(p.quantity)||0)*(Number(p.price)||0);
+        }, 0);
 
-  /* Hide topbar on mobile — dashboard only */
-  @media(max-width: 900px) { #topbar { display: none !important; } }
+        // 2) مستحقات التجار
+        const byMerchant = {};
+        merTxSnap.docs.forEach(d=>{
+          const t=d.data(); if(!t.merchantId) return;
+          byMerchant[t.merchantId]=(byMerchant[t.merchantId]||0)+(t.type==="out"?-1:1)*(Number(t.amount)||0);
+        });
+        finTxSnap.docs.forEach(d=>{
+          const t=d.data();
+          if(t._active===false||t.type!=="merchant"||!t.merchantId) return;
+          byMerchant[t.merchantId]=(byMerchant[t.merchantId]||0)+(t.dir==="in"?1:-1)*(Number(t.amount)||0);
+        });
+        const merchantDues = Object.values(byMerchant).reduce((s,bal)=>s+Math.max(0,-bal),0);
 
-  /* على الديسكتوب: البراند/المستخدم موجودان في التوبار — نخفيهم من الهيدر */
-  @media(min-width: 901px) { .dh-hero-top { display: none !important; } }
-
-  /* ════════ PAGE LAYOUT ════════ */
-  .page { padding: 0 !important; overflow-x: hidden; }
-
-  /* ════════════════════════════════════════════════
-     HERO BANNER — dark-slate + emerald accent
-  ════════════════════════════════════════════════ */
-  .dh-hero {
-    /* طبقة 1: تدرج داكن راقٍ بدل الأخضر الصمّاء */
-    background:
-      radial-gradient(ellipse 70% 60% at 110% -20%, rgba(52,211,153,.18) 0%, transparent 55%),
-      radial-gradient(ellipse 55% 50% at -10% 110%, rgba(16,185,129,.13) 0%, transparent 50%),
-      linear-gradient(145deg, #0a0f1e 0%, #0d1a2e 40%, #0f2318 80%, #091a12 100%);
-    padding: 22px 20px 70px;
-    position: relative;
-    overflow: hidden;
-    margin: -28px -24px 0;
-  }
-
-  /* نمط النقاط الخفي */
-  .dh-hero::before {
-    content: "";
-    position: absolute; inset: 0; z-index: 0;
-    background-image:
-      radial-gradient(circle, rgba(255,255,255,.06) 1px, transparent 1px);
-    background-size: 28px 28px;
-    pointer-events: none;
-  }
-  /* خط بريق أخضر علوي */
-  .dh-hero::after {
-    content: "";
-    position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent 0%, #34d399 30%, #10b981 60%, transparent 100%);
-    z-index: 3;
-  }
-
-  @media(max-width:900px)  { .dh-hero { margin: -16px -14px 0; padding: 18px 16px 66px; } }
-  @media(max-width:500px)  { .dh-hero { margin: -12px -10px 0; padding: 15px 14px 62px; } }
-
-  /* توهجات ملونة بدل الدوائر البيضاء المسطحة */
-  .dh-hero-blob {
-    position: absolute; border-radius: 50%; pointer-events: none;
-    filter: blur(60px); opacity: .55;
-  }
-  .dh-hero-blob:nth-child(1) {
-    width: 320px; height: 320px; top: -100px; right: -80px;
-    background: radial-gradient(circle, #059669 0%, transparent 70%);
-  }
-  .dh-hero-blob:nth-child(2) {
-    width: 260px; height: 260px; bottom: -100px; left: -60px;
-    background: radial-gradient(circle, #0d9488 0%, transparent 70%);
-  }
-  .dh-hero-blob:nth-child(3) {
-    width: 180px; height: 180px; top: 30%; left: 35%;
-    background: radial-gradient(circle, #1d4ed8 0%, transparent 70%);
-    opacity: .18; filter: blur(50px);
-  }
-
-  /* top row: brand + user */
-  .dh-hero-top {
-    display: flex; align-items: center; justify-content: space-between;
-    position: relative; z-index: 2; margin-bottom: 22px;
-  }
-  .dh-brand { display: flex; align-items: center; gap: 11px; }
-  .dh-brand-logo {
-    height: 38px; object-fit: contain;
-    border-radius: 10px;
-    background: rgba(255,255,255,.08);
-    padding: 4px 8px;
-    border: 1px solid rgba(52,211,153,.3);
-    box-shadow: 0 0 18px rgba(16,185,129,.2);
-  }
-  .dh-brand-name {
-    font-size: 15px; font-weight: 800; line-height: 1.2;
-    background: linear-gradient(90deg, #fff 0%, #a7f3d0 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .dh-brand-sub { font-size: 11px; color: rgba(255,255,255,.45); margin-top: 2px; }
-
-  .dh-user { display: flex; align-items: center; gap: 10px; }
-  .dh-user-info { text-align: right; }
-  .dh-user-name {
-    font-size: 12.5px; font-weight: 700; color: #fff;
-    max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
-  .dh-user-role { font-size: 10.5px; color: rgba(255,255,255,.4); margin-top: 1px; }
-  .dh-user-avatar {
-    width: 38px; height: 38px; border-radius: 50%;
-    background: linear-gradient(135deg, rgba(52,211,153,.25), rgba(16,185,129,.15));
-    border: 1.5px solid rgba(52,211,153,.4);
-    display: flex; align-items: center; justify-content: center;
-    color: #6ee7b7; flex-shrink: 0;
-    box-shadow: 0 0 14px rgba(16,185,129,.2);
-  }
-
-  /* KPI strip inside hero */
-  .dh-kpi-strip {
-    position: relative; z-index: 2;
-    display: grid; grid-template-columns: 1fr;
-    gap: 12px;
-  }
-  .dh-kpi {
-    background: rgba(255,255,255,.05);
-    border: 1px solid rgba(255,255,255,.1);
-    border-radius: var(--r-lg);
-    padding: 20px 22px;
-    backdrop-filter: blur(16px);
-    position: relative; overflow: hidden;
-  }
-  .dh-kpi.hero-kpi {
-    background: rgba(255,255,255,.06);
-    border: 1px solid rgba(52,211,153,.22);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,.08),
-      0 8px 32px rgba(0,0,0,.25);
-  }
-  .dh-kpi-label {
-    font-size: 11.5px; font-weight: 600; color: rgba(167,243,208,.8);
-    display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
-    text-transform: uppercase; letter-spacing: .6px;
-  }
-  .dh-kpi-value {
-    font-size: 38px; font-weight: 900; color: #fff; line-height: 1;
-    letter-spacing: -1px;
-    text-shadow: 0 2px 20px rgba(52,211,153,.25);
-  }
-  .dh-kpi.hero-kpi .dh-kpi-value { font-size: 42px; }
-  .dh-kpi-sub {
-    font-size: 11.5px; color: rgba(255,255,255,.38); margin-top: 7px;
-  }
-  /* خط سفلي بريّق */
-  .dh-kpi.hero-kpi::after {
-    content: "";
-    position: absolute; bottom: 0; right: 0; left: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(52,211,153,.35), transparent);
-  }
-  .dh-kpi-shine {
-    position: absolute; top: -30px; left: -30px;
-    width: 120px; height: 120px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(52,211,153,.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  /* ════════════════════════════════════════════════
-     FLOAT SUMMARY CARD
-  ════════════════════════════════════════════════ */
-  .dh-summary-card {
-    background: var(--surface);
-    border-radius: var(--r-xl);
-    box-shadow: var(--shadow-lg);
-    border: 1px solid var(--border);
-    margin: -44px 0 28px;
-    position: relative; z-index: 10;
-    overflow: hidden;
-    padding: 0 4px;
-  }
-  .dh-summary-inner {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-  }
-  .dh-sum-item {
-    padding: 18px 10px 16px;
-    text-align: center;
-    position: relative;
-    cursor: default;
-    transition: background .15s;
-  }
-  .dh-sum-item:hover { background: var(--g50); }
-  .dh-sum-item + .dh-sum-item::before {
-    content: ""; position: absolute; top: 20%; bottom: 20%; right: 0;
-    width: 1px; background: var(--border);
-  }
-  .dh-sum-icon {
-    width: 40px; height: 40px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 8px;
-  }
-  .dh-sum-label { font-size: 10.5px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
-  .dh-sum-val   { font-size: 22px; font-weight: 900; color: var(--ink); line-height: 1; }
-
-  /* ════════════════════════════════════════════════
-     CONTENT WRAPPER
-  ════════════════════════════════════════════════ */
-  .dh-content { padding: 0 20px 32px; }
-  @media(max-width:900px) { .dh-content { padding: 0 14px 28px; } }
-  @media(max-width:500px) { .dh-content { padding: 0 10px 24px; } }
-
-  /* ════════════════════════════════════════════════
-     PERIOD FILTER
-  ════════════════════════════════════════════════ */
-  .dh-filter-wrap { margin-bottom: 24px; }
-  .dh-filter-row {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    padding: 5px;
-    display: flex; gap: 4px; overflow-x: auto;
-    scrollbar-width: none; -webkit-overflow-scrolling: touch;
-    box-shadow: var(--shadow-sm);
-  }
-  .dh-filter-row::-webkit-scrollbar { display: none; }
-  .dh-filter-row button {
-    flex: 0 0 auto; padding: 8px 16px;
-    border: none; border-radius: var(--r-sm);
-    background: transparent; font-family: inherit;
-    font-size: 13px; font-weight: 700; color: var(--muted);
-    cursor: pointer; white-space: nowrap;
-    transition: background .15s, color .15s;
-  }
-  .dh-filter-row button:hover:not(.active) { background: var(--bg); color: var(--ink2); }
-  .dh-filter-row button.active {
-    background: var(--g700); color: #fff;
-    box-shadow: 0 3px 10px rgba(27,107,58,.35);
-  }
-  .custom-range {
-    display: flex; align-items: center; gap: 8px;
-    margin-top: 10px; flex-wrap: wrap;
-  }
-  .custom-range input[type=date] {
-    border: 1px solid var(--border); border-radius: var(--r-sm);
-    padding: 7px 10px; font-family: inherit; font-size: 13px;
-    color: var(--ink); background: var(--surface);
-    outline: none;
-  }
-  .custom-range input[type=date]:focus { border-color: var(--g600); }
-
-  /* ════════════════════════════════════════════════
-     SECTION HEADER
-  ════════════════════════════════════════════════ */
-  .dh-sec {
-    display: flex; align-items: center; justify-content: space-between;
-    margin: 28px 0 14px;
-  }
-  .dh-sec-left { display: flex; align-items: center; gap: 10px; }
-  .dh-sec-icon {
-    width: 34px; height: 34px; border-radius: var(--r-sm);
-    background: var(--g100); color: var(--g700);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .dh-sec-title  { font-size: 16px; font-weight: 900; color: var(--ink); }
-  .dh-sec-line   {
-    flex: 1; height: 1px; background: var(--border);
-    margin-inline-start: 10px;
-  }
-
-  /* ════════════════════════════════════════════════
-     KPI GRID CARDS
-  ════════════════════════════════════════════════ */
-  .dh-grid {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 12px; margin-bottom: 4px;
-  }
-  .dh-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
-  @media(max-width:500px) {
-    .dh-grid.cols-3 { grid-template-columns: 1fr 1fr; }
-  }
-
-  .dh-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-lg);
-    padding: 18px 18px 16px;
-    box-shadow: var(--shadow-sm);
-    position: relative; overflow: hidden;
-    transition: transform .14s, box-shadow .14s;
-    display: flex; flex-direction: column;
-  }
-  .dh-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-  .dh-card.span2 { grid-column: 1 / -1; }
-  .dh-card.accent {
-    background: linear-gradient(135deg, #f2faf5 0%, #e6f4ec 100%);
-    border-color: #c2dece;
-  }
-
-  /* top-right corner accent line */
-  .dh-card::after {
-    content: "";
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 3px; border-radius: var(--r-lg) var(--r-lg) 0 0;
-    opacity: 0; transition: opacity .15s;
-  }
-  .dh-card:hover::after { opacity: 1; }
-  .dh-card.c-green::after  { background: linear-gradient(90deg,#43a05f,#2e8049); }
-  .dh-card.c-teal::after   { background: linear-gradient(90deg,#0d7377,#14a085); }
-  .dh-card.c-navy::after   { background: linear-gradient(90deg,#1e3a5f,#2d5a8e); }
-  .dh-card.c-gold::after   { background: linear-gradient(90deg,#b45309,#d97706); }
-  .dh-card.c-blue::after   { background: linear-gradient(90deg,#1d4ed8,#3b82f6); }
-  .dh-card.c-red::after    { background: linear-gradient(90deg,#b91c1c,#ef4444); }
-  .dh-card.c-accent::after { background: linear-gradient(90deg,#1b6b3a,#43a05f); }
-
-  .dh-card-top {
-    display: flex; align-items: flex-start;
-    justify-content: space-between; margin-bottom: 14px;
-  }
-  .dh-card-icon {
-    width: 44px; height: 44px; border-radius: 13px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .ci-green  { background: #dcf5e4; color: #166534; }
-  .ci-teal   { background: #ccfbf1; color: #0f766e; }
-  .ci-navy   { background: #dbeafe; color: #1e40af; }
-  .ci-gold   { background: #fef3c7; color: #92400e; }
-  .ci-blue   { background: #eff6ff; color: #1d4ed8; }
-  .ci-red    { background: #fee2e2; color: #991b1b; }
-  .ci-purple { background: #ede9fe; color: #5b21b6; }
-
-  .dh-card-badge {
-    font-size: 10px; font-weight: 700;
-    padding: 3px 8px; border-radius: 99px;
-    letter-spacing: .3px;
-  }
-  .badge-up   { background: #dcfce7; color: #166534; }
-  .badge-info { background: var(--g100); color: var(--g700); }
-
-  .dh-card-label {
-    font-size: 12px; font-weight: 600; color: var(--muted);
-    line-height: 1.4; margin-bottom: 2px;
-  }
-  .dh-card-value {
-    font-size: 30px; font-weight: 900; color: var(--ink);
-    line-height: 1.05; letter-spacing: -0.5px;
-  }
-  .dh-card-value.money {
-    font-size: 20px; color: var(--g800); letter-spacing: 0;
-  }
-  .dh-card-value.money.big { font-size: 26px; }
-  .dh-card-sub {
-    font-size: 11.5px; color: var(--muted); margin-top: 6px;
-    display: flex; align-items: center; gap: 5px;
-  }
-
-  /* sparkline bar */
-  .dh-card-bar {
-    height: 4px; border-radius: 99px; margin-top: 14px;
-    background: var(--border); overflow: hidden;
-  }
-  .dh-card-bar-fill {
-    height: 100%; border-radius: 99px; width: 60%;
-    background: currentColor; opacity: .5;
-    animation: barGrow .6s ease both;
-  }
-  @keyframes barGrow { from { width:0; } }
-
-  /* ════════════════════════════════════════════════
-     PRODUCTS FUND HIGHLIGHT CARD
-  ════════════════════════════════════════════════ */
-  .dh-fund-card {
-    background: linear-gradient(135deg, #0f3d22 0%, #1b6b3a 100%);
-    border-radius: var(--r-xl);
-    padding: 22px 22px 20px;
-    color: #fff; position: relative; overflow: hidden;
-    box-shadow: 0 8px 32px rgba(27,107,58,.35);
-    margin-bottom: 4px;
-  }
-  .dh-fund-blob {
-    position: absolute; border-radius: 50%; pointer-events: none;
-    background: rgba(255,255,255,.06);
-  }
-  .dh-fund-blob:nth-child(1) { width:160px;height:160px; top:-50px;right:-40px; }
-  .dh-fund-blob:nth-child(2) { width:100px;height:100px; bottom:-30px;left:-20px; }
-  .dh-fund-top {
-    display: flex; align-items: center; justify-content: space-between;
-    position: relative; z-index: 1; margin-bottom: 18px;
-  }
-  .dh-fund-title {
-    font-size: 13px; font-weight: 700; opacity: .8;
-    display: flex; align-items: center; gap: 7px;
-  }
-  .dh-fund-tag {
-    background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25);
-    font-size: 10.5px; font-weight: 600; padding: 2px 9px;
-    border-radius: 99px; color: rgba(255,255,255,.85);
-  }
-  .dh-fund-main {
-    position: relative; z-index: 1;
-    font-size: 38px; font-weight: 900; line-height: 1;
-    letter-spacing: -1px; color: #fff; margin-bottom: 4px;
-  }
-  .dh-fund-sub {
-    font-size: 11.5px; opacity: .55; position: relative; z-index: 1;
-  }
-  .dh-fund-row {
-    position: relative; z-index: 1;
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 10px; margin-top: 18px;
-  }
-  .dh-fund-item {
-    background: rgba(255,255,255,.1);
-    border: 1px solid rgba(255,255,255,.15);
-    border-radius: var(--r-md); padding: 12px 14px;
-  }
-  .dh-fund-item-label {
-    font-size: 10.5px; opacity: .65; font-weight: 600; margin-bottom: 5px;
-    display: flex; align-items: center; gap: 5px;
-  }
-  .dh-fund-item-val {
-    font-size: 17px; font-weight: 800; color: #fff;
-  }
-
-  /* ════════════════════════════════════════════════
-     ACTIVITY FEED
-  ════════════════════════════════════════════════ */
-  .dh-activity {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-xl);
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 4px;
-  }
-  .dh-activity-head {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 18px 14px;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg);
-  }
-  .dh-activity-title {
-    font-size: 14.5px; font-weight: 800; color: var(--ink);
-    display: flex; align-items: center; gap: 8px;
-  }
-  .dh-activity-pill {
-    background: var(--g100); color: var(--g700);
-    font-size: 10.5px; font-weight: 700;
-    padding: 2px 9px; border-radius: 99px;
-  }
-  .dh-activity-sub { font-size: 11.5px; color: var(--muted); }
-
-  /* reuse existing activity-panel JS hooks */
-  .activity-panel .panel-head { display: none; }
-  #recent-activity-list { display: flex; flex-direction: column; }
-  .activity-item {
-    display: flex; align-items: center; gap: 13px;
-    padding: 13px 18px;
-    border-bottom: 1px solid var(--border);
-    transition: background .12s;
-  }
-  .activity-item:last-child { border-bottom: none; }
-  .activity-item:hover { background: var(--g50); }
-  .activity-icon {
-    flex: 0 0 auto; width: 40px; height: 40px;
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 17px;
-  }
-  .activity-icon.act-prod     { background: #eef2ff; }
-  .activity-icon.act-transfer { background: #eff6ff; }
-  .activity-icon.act-loading  { background: #fff7ed; }
-  .activity-icon.act-in       { background: #ecfdf5; }
-  .activity-icon.act-out      { background: #fef2f2; }
-  .activity-icon.act-att      { background: #f5f3ff; }
-  .activity-body { flex: 1 1 auto; min-width: 0; }
-  .activity-title {
-    font-weight: 700; font-size: 13px; color: var(--ink);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .activity-sub {
-    font-size: 11.5px; color: var(--muted); margin-top: 2px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .activity-time {
-    flex: 0 0 auto; font-size: 11px; color: var(--muted);
-    white-space: nowrap; padding-inline-start: 8px;
-  }
-  #recent-activity-list .empty-state {
-    padding: 36px 0; text-align: center;
-    font-size: 13px; color: var(--muted);
-  }
-  @media(max-width:640px) { .activity-sub { display: none; } }
-
-  /* ════════════════════════════════════════════════
-     QUICK ACCESS
-  ════════════════════════════════════════════════ */
-  .dh-nav-grid {
-    display: grid; grid-template-columns: repeat(3,1fr);
-    gap: 12px; margin-bottom: 8px;
-  }
-  .dh-nav-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-lg);
-    padding: 20px 12px 18px;
-    box-shadow: var(--shadow-sm);
-    display: flex; flex-direction: column;
-    align-items: center; gap: 10px;
-    text-align: center; color: var(--ink);
-    text-decoration: none;
-    transition: transform .14s, box-shadow .14s, border-color .14s;
-    position: relative; overflow: hidden;
-  }
-  .dh-nav-item::before {
-    content: ""; position: absolute; inset: 0;
-    background: var(--g50); opacity: 0; transition: opacity .14s;
-  }
-  .dh-nav-item:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--g500); }
-  .dh-nav-item:hover::before { opacity: 1; }
-  .dh-nav-icon {
-    width: 52px; height: 52px; border-radius: 16px;
-    display: flex; align-items: center; justify-content: center;
-    position: relative; z-index: 1; transition: transform .14s;
-  }
-  .dh-nav-item:hover .dh-nav-icon { transform: scale(1.08); }
-  .dh-nav-label { font-size: 13px; font-weight: 800; position: relative; z-index: 1; }
-  .dh-nav-desc  { font-size: 11px; color: var(--muted); line-height: 1.4; position: relative; z-index: 1; }
-
-  /* ════════════════════════════════════════════════
-     MOBILE RESPONSIVE
-  ════════════════════════════════════════════════ */
-  @media(max-width:900px) {
-    .dh-kpi.hero-kpi .dh-kpi-value { font-size:32px; }
-    .dh-kpi-value { font-size:26px; }
-    .dh-summary-card { margin: -40px 0 22px; }
-    .dh-fund-main { font-size:30px; }
-  }
-  @media(max-width:600px) {
-    .dh-kpi.hero-kpi .dh-kpi-value { font-size:26px; }
-    .dh-kpi-value { font-size:22px; }
-    .dh-kpi { padding: 15px 16px; }
-    .dh-card-value { font-size:24px; }
-    .dh-card-value.money { font-size:17px; }
-    .dh-card-value.money.big { font-size:21px; }
-    .dh-fund-main { font-size:26px; }
-    .dh-fund-row { grid-template-columns: 1fr; }
-    .dh-nav-grid { gap: 8px; }
-    .dh-nav-icon { width:44px;height:44px;border-radius:13px; }
-    .dh-nav-desc { display:none; }
-    .dh-summary-card { border-radius: var(--r-lg); }
-    .dh-sum-val { font-size:18px; }
-  }
-  @media(max-width:380px) {
-    .dh-nav-label { font-size:11.5px; }
-    .dh-card { padding: 14px 14px 13px; }
-    .dh-kpi.hero-kpi .dh-kpi-value { font-size:22px; }
-  }
-  </style>
-</head>
-
-<!-- SVG sprite -->
-<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
-  <symbol id="ic-user" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-  </symbol>
-  <symbol id="ic-users" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-  </symbol>
-  <symbol id="ic-box" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/>
-  </symbol>
-  <symbol id="ic-briefcase" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M20 6h-2.18c.07-.44.18-.86.18-1 0-2.21-1.79-4-4-4s-4 1.79-4 4c0 .14.11.56.18 1H8c-1.11 0-1.99.89-1.99 2L6 19c0 1.11.89 2 2 2h12c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4c-.28 0-.5-.22-.5-.5C9.5 4.12 10.62 3 12 3s2.5 1.12 2.5 2.5c0 .28-.22.5-.5.5z"/>
-  </symbol>
-  <symbol id="ic-handshake" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M11 6H9L7 4H3L1 6v4l2 2h1v5h2v-5h1l2 2h2l1-1V8l-1-2zm0 5H9.41L7 8.59V6.83L8.83 5H9l2 3v3zM23 4h-4l-2 2h-2l-1 2v5l1 1h2l2-2h1v5h2v-5h1l2-2V6l-2-2zm0 5.17L20.17 12H19l-2-3V6h.17L19 4.83V9l-2 2.59V13h.59L20 11h1l2-1.83V9.17z"/>
-  </symbol>
-  <symbol id="ic-tag" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>
-  </symbol>
-  <symbol id="ic-chart" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/>
-  </symbol>
-  <symbol id="ic-store" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M20 4H4v2l8 5 8-5V4zm0 14H4V8l8 5 8-5v10z"/>
-  </symbol>
-  <symbol id="ic-payment" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
-  </symbol>
-  <symbol id="ic-flash" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M7 2v11h3v9l7-12h-4l4-8z"/>
-  </symbol>
-  <symbol id="ic-link" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
-  </symbol>
-  <symbol id="ic-wallet" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M21 18v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1h-9a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9zm-9-2h10V8H12v8zm4-2.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
-  </symbol>
-  <symbol id="ic-trend" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
-  </symbol>
-  <symbol id="ic-inventory" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/>
-  </symbol>
-</svg>
-
-<body>
-<div id="app">
-  <header id="topbar" class="topbar"></header>
-  <main class="page">
-
-    <!-- ══════════════════════════════════════════
-         HERO
-    ══════════════════════════════════════════ -->
-    <div class="dh-hero">
-      <div class="dh-hero-blob"></div>
-      <div class="dh-hero-blob"></div>
-      <div class="dh-hero-blob"></div>
-
-      <!-- Brand + User row -->
-      <div class="dh-hero-top">
-        <div class="dh-brand">
-          <img src="https://i.imgur.com/NsN1HgC.png" alt="logo" class="dh-brand-logo"
-               onerror="this.style.display='none'">
-          <div>
-            <div class="dh-brand-name">Ahmed And hamdy</div>
-            <div class="dh-brand-sub">نظام المحاسبة الداخلي</div>
-          </div>
-        </div>
-        <div class="dh-user">
-          <div class="dh-user-info">
-            <div class="dh-user-name" id="dash-user-name">—</div>
-            <div class="dh-user-role">مستخدم النظام</div>
-          </div>
-          <div class="dh-user-avatar">
-            <svg width="19" height="19"><use href="#ic-user"/></svg>
-          </div>
-        </div>
-      </div>
-
-      <!-- KPI strip -->
-      <div class="dh-kpi-strip">
-        <!-- hero KPI -->
-        <div class="dh-kpi hero-kpi">
-          <div class="dh-kpi-shine"></div>
-          <div class="dh-kpi-label">
-            <svg width="14" height="14"><use href="#ic-briefcase"/></svg>
-            إجمالي صندوق المنتجات
-          </div>
-          <div class="dh-kpi-value" id="hero-pf-total">جارِ التحميل…</div>
-          <div class="dh-kpi-sub">قيمة المخزون + مستحقات التجار</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════
-         FLOATING SUMMARY
-    ══════════════════════════════════════════ -->
-    <div style="padding: 0 20px;">
-    <div class="dh-summary-card">
-      <div class="dh-summary-inner">
-        <div class="dh-sum-item">
-          <div class="dh-sum-icon" style="background:#dcf5e4;">
-            <svg width="22" height="22" style="color:#166534"><use href="#ic-box"/></svg>
-          </div>
-          <div class="dh-sum-label">المنتجات</div>
-          <div class="dh-sum-val" id="float-products-count">—</div>
-        </div>
-        <div class="dh-sum-item">
-          <div class="dh-sum-icon" style="background:#dbeafe;">
-            <svg width="22" height="22" style="color:#1e40af"><use href="#ic-handshake"/></svg>
-          </div>
-          <div class="dh-sum-label">التجار</div>
-          <div class="dh-sum-val" id="float-merchants-count">—</div>
-        </div>
-        <div class="dh-sum-item">
-          <div class="dh-sum-icon" style="background:#fef3c7;">
-            <svg width="22" height="22" style="color:#92400e"><use href="#ic-users"/></svg>
-          </div>
-          <div class="dh-sum-label">الموظفون</div>
-          <div class="dh-sum-val" id="float-employees-count">—</div>
-        </div>
-      </div>
-    </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════
-         MAIN CONTENT
-    ══════════════════════════════════════════ -->
-    <div class="dh-content">
-
-      <!-- ── فلتر الفترة ── -->
-      <div class="dh-filter-wrap">
-        <div class="dh-filter-row" id="period-toggle">
-          <button type="button" class="active" data-period="today">اليوم</button>
-          <button type="button" data-period="week">آخر أسبوع</button>
-          <button type="button" data-period="2weeks">آخر أسبوعين</button>
-          <button type="button" data-period="month">آخر شهر</button>
-          <button type="button" data-period="custom">تاريخ مخصص</button>
-        </div>
-        <div class="custom-range" id="custom-range" style="display:none">
-          <input type="date" id="range-from"/>
-          <span style="color:var(--muted);font-size:13px;">إلى</span>
-          <input type="date" id="range-to"/>
-          <button type="button" class="btn small" id="range-apply-btn">تطبيق</button>
-        </div>
-      </div>
-
-      <!-- ══ صندوق المنتجات — بطاقة بارزة ══ -->
-      <div class="dh-sec" style="margin-top:0;">
-        <div class="dh-sec-left">
-          <div class="dh-sec-icon">
-            <svg width="18" height="18"><use href="#ic-briefcase"/></svg>
-          </div>
-          <div class="dh-sec-title">صندوق المنتجات</div>
-        </div>
-        <div class="dh-sec-line"></div>
-      </div>
-
-      <!-- بطاقة إجمالي صندوق المنتجات المميزة -->
-      <div class="dh-fund-card" id="products-fund-panel">
-        <div class="dh-fund-blob"></div>
-        <div class="dh-fund-blob"></div>
-        <div class="dh-fund-top">
-          <div class="dh-fund-title">
-            <svg width="16" height="16"><use href="#ic-wallet"/></svg>
-            إجمالي صندوق المنتجات
-          </div>
-          <span class="dh-fund-tag">تلقائي</span>
-        </div>
-        <div class="dh-fund-main" id="stat-pf-total">—</div>
-        <div class="dh-fund-sub">قيمة المخزون + مستحقات التجار</div>
-        <div class="dh-fund-row">
-          <div class="dh-fund-item">
-            <div class="dh-fund-item-label">
-              <svg width="13" height="13"><use href="#ic-store"/></svg>
-              قيمة المخزون بالمخازن
-            </div>
-            <div class="dh-fund-item-val" id="stat-pf-inventory">—</div>
-          </div>
-          <div class="dh-fund-item">
-            <div class="dh-fund-item-label">
-              <svg width="13" height="13"><use href="#ic-handshake"/></svg>
-              مستحقات التجار
-            </div>
-            <div class="dh-fund-item-val" id="stat-pf-dues">—</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ══ المنتجات ══ -->
-      <div class="dh-sec">
-        <div class="dh-sec-left">
-          <div class="dh-sec-icon">
-            <svg width="18" height="18"><use href="#ic-box"/></svg>
-          </div>
-          <div class="dh-sec-title">المنتجات</div>
-        </div>
-        <div class="dh-sec-line"></div>
-      </div>
-
-      <div class="dh-grid">
-        <!-- عدد المنتجات -->
-        <div class="dh-card c-green">
-          <div class="dh-card-top">
-            <div class="dh-card-icon ci-green">
-              <svg width="22" height="22"><use href="#ic-tag"/></svg>
-            </div>
-            <span class="dh-card-badge badge-info">SKU</span>
-          </div>
-          <div class="dh-card-label">عدد المنتجات</div>
-          <div class="dh-card-value" id="stat-products-count">—</div>
-          <div class="dh-card-sub">
-            <svg width="12" height="12" style="color:#43a05f"><use href="#ic-trend"/></svg>
-            إجمالي الأصناف المُسجَّلة
-          </div>
-          <div class="dh-card-bar"><div class="dh-card-bar-fill" style="color:#43a05f;width:70%"></div></div>
-        </div>
-
-        <!-- الكمية الإجمالية -->
-        <div class="dh-card c-teal">
-          <div class="dh-card-top">
-            <div class="dh-card-icon ci-teal">
-              <svg width="22" height="22"><use href="#ic-chart"/></svg>
-            </div>
-            <span class="dh-card-badge badge-info">وحدة</span>
-          </div>
-          <div class="dh-card-label">الكمية الإجمالية بالمخزون</div>
-          <div class="dh-card-value" id="stat-products-qty">—</div>
-          <div class="dh-card-sub">مجموع كل الوحدات المتاحة</div>
-          <div class="dh-card-bar"><div class="dh-card-bar-fill" style="color:#0d7377;width:55%"></div></div>
-        </div>
-
-        <!-- قيمة المخزون -->
-        <div class="dh-card c-navy span2">
-          <div class="dh-card-top">
-            <div class="dh-card-icon ci-navy">
-              <svg width="22" height="22"><use href="#ic-store"/></svg>
-            </div>
-            <span class="dh-card-badge badge-info">ج.م</span>
-          </div>
-          <div class="dh-card-label">قيمة المخزون الإجمالية</div>
-          <div class="dh-card-value money big" id="stat-products-value">—</div>
-          <div class="dh-card-sub">الكمية × سعر البيع لكل منتج</div>
-          <div class="dh-card-bar"><div class="dh-card-bar-fill" style="color:#1e3a5f;width:80%"></div></div>
-        </div>
-      </div>
-
-      <!-- ══ التجار والموظفون ══ -->
-      <div class="dh-sec">
-        <div class="dh-sec-left">
-          <div class="dh-sec-icon">
-            <svg width="18" height="18"><use href="#ic-users"/></svg>
-          </div>
-          <div class="dh-sec-title">التجار والموظفون</div>
-        </div>
-        <div class="dh-sec-line"></div>
-      </div>
-
-      <div class="dh-grid">
-        <!-- التجار -->
-        <div class="dh-card c-blue">
-          <div class="dh-card-top">
-            <div class="dh-card-icon ci-navy">
-              <svg width="22" height="22"><use href="#ic-handshake"/></svg>
-            </div>
-            <span class="dh-card-badge badge-info">تاجر</span>
-          </div>
-          <div class="dh-card-label">عدد التجار</div>
-          <div class="dh-card-value" id="stat-merchants-count">—</div>
-          <div class="dh-card-sub">شركاء الأعمال المُسجَّلون</div>
-          <div class="dh-card-bar"><div class="dh-card-bar-fill" style="color:#1d4ed8;width:65%"></div></div>
-        </div>
-
-        <!-- الموظفون -->
-        <div class="dh-card c-gold">
-          <div class="dh-card-top">
-            <div class="dh-card-icon ci-gold">
-              <svg width="22" height="22"><use href="#ic-user"/></svg>
-            </div>
-            <span class="dh-card-badge badge-info">موظف</span>
-          </div>
-          <div class="dh-card-label">عدد الموظفين</div>
-          <div class="dh-card-value" id="stat-employees-count">—</div>
-          <div class="dh-card-sub">أعضاء الفريق النشطون</div>
-          <div class="dh-card-bar"><div class="dh-card-bar-fill" style="color:#b45309;width:45%"></div></div>
-        </div>
-
-        <!-- الرواتب المستحقة -->
-        <div class="dh-card c-red span2">
-          <div class="dh-card-top">
-            <div class="dh-card-icon ci-red">
-              <svg width="22" height="22"><use href="#ic-payment"/></svg>
-            </div>
-          </div>
-          <div class="dh-card-label" id="stat-payroll-label">الرواتب المستحقة</div>
-          <div class="dh-card-value money big" id="stat-payroll">—</div>
-          <div class="dh-card-sub">محسوب من سجلات الحضور والساعات</div>
-          <div class="dh-card-bar"><div class="dh-card-bar-fill" style="color:#b91c1c;width:50%"></div></div>
-        </div>
-      </div>
-
-      <!-- ══ آخر العمليات ══ -->
-      <div class="dh-sec">
-        <div class="dh-sec-left">
-          <div class="dh-sec-icon" style="background:#fffbeb;color:#92400e;">
-            <svg width="18" height="18"><use href="#ic-flash"/></svg>
-          </div>
-          <div class="dh-sec-title">آخر العمليات</div>
-        </div>
-        <div class="dh-sec-line"></div>
-      </div>
-
-      <div class="dh-activity activity-panel">
-        <div class="dh-activity-head">
-          <div class="dh-activity-title">
-            سجل النشاط
-            <span class="dh-activity-pill">حسب الفترة</span>
-          </div>
-          <div class="dh-activity-sub">أحدث 12 عملية</div>
-        </div>
-        <div class="panel-head" style="display:none"><h3></h3><p></p></div>
-        <div id="recent-activity-list">
-          <div class="empty-state">جارِ التحميل…</div>
-        </div>
-      </div>
-
-      <!-- ══ وصول سريع ══ -->
-      <div class="dh-sec">
-        <div class="dh-sec-left">
-          <div class="dh-sec-icon">
-            <svg width="18" height="18"><use href="#ic-link"/></svg>
-          </div>
-          <div class="dh-sec-title">وصول سريع</div>
-        </div>
-        <div class="dh-sec-line"></div>
-      </div>
-
-      <div class="dh-nav-grid">
-        <a class="dh-nav-item" href="/products.html">
-          <div class="dh-nav-icon" style="background:#dcf5e4;">
-            <svg width="26" height="26" style="color:#166534"><use href="#ic-box"/></svg>
-          </div>
-          <div class="dh-nav-label">المنتجات</div>
-          <div class="dh-nav-desc">المخازن والحركات</div>
-        </a>
-        <a class="dh-nav-item" href="/merchants.html">
-          <div class="dh-nav-icon" style="background:#dbeafe;">
-            <svg width="26" height="26" style="color:#1e40af"><use href="#ic-handshake"/></svg>
-          </div>
-          <div class="dh-nav-label">التجار</div>
-          <div class="dh-nav-desc">الحسابات والكشوفات</div>
-        </a>
-        <a class="dh-nav-item" href="/employees.html">
-          <div class="dh-nav-icon" style="background:#fef3c7;">
-            <svg width="26" height="26" style="color:#92400e"><use href="#ic-users"/></svg>
-          </div>
-          <div class="dh-nav-label">الموظفون</div>
-          <div class="dh-nav-desc">الرواتب والحضور</div>
-        </a>
-      </div>
-
-    </div><!-- /dh-content -->
-  </main>
-</div>
-</body>
-
-<!-- ═══════ مزامنة القيم المرآوية ═══════ -->
-<script>
-(function(){
-  function syncUserName(){
-    try {
-      const name = localStorage.getItem("ahDisplay") || localStorage.getItem("displayName") || "";
-      if(name) document.getElementById("dash-user-name").textContent = name;
-    } catch(e){}
-  }
-  syncUserName();
-
-  function mirrorVal(srcId, destId){
-    const src = document.getElementById(srcId);
-    const dest = document.getElementById(destId);
-    if(!src || !dest) return;
-    const obs = new MutationObserver(()=>{ dest.textContent = src.textContent; });
-    obs.observe(src, {childList:true, characterData:true, subtree:true});
-    if(src.textContent !== "—") dest.textContent = src.textContent;
-  }
-  window.addEventListener("DOMContentLoaded", ()=>{
-    mirrorVal("stat-products-count",  "float-products-count");
-    mirrorVal("stat-merchants-count", "float-merchants-count");
-    mirrorVal("stat-employees-count", "float-employees-count");
-    mirrorVal("stat-pf-total",        "hero-pf-total");
-  });
-})();
-</script>
-
-<!-- ═══════ صندوق المنتجات — Firebase ═══════ -->
-<script type="module">
-  import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, onAuthStateChanged }     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-  const PF_CFG = {
-    apiKey:            "AIzaSyDQsaNVskKiV2cwPVlJDixpTD1S-Dhp7gs",
-    authDomain:        "reta-and-hamd.firebaseapp.com",
-    projectId:         "reta-and-hamd",
-    storageBucket:     "reta-and-hamd.firebasestorage.app",
-    messagingSenderId: "220767743863",
-    appId:             "1:220767743863:web:2ecd37bd5830a39ec1bb72"
-  };
-
-  const pfApp  = getApps().length > 0 ? getApp() : initializeApp(PF_CFG);
-  const pfAuth = getAuth(pfApp);
-  const pfDb   = getFirestore(pfApp);
-  const pfFmt  = n => new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(n||0)+" ج.م";
-
-  onAuthStateChanged(pfAuth, user => {
-    if (!user) return;
-    const nameEl = document.getElementById("dash-user-name");
-    if (nameEl) {
-      const name = user.displayName || (user.email ? user.email.split("@")[0] : "");
-      if (name) nameEl.textContent = name;
+        document.getElementById("stat-pf-inventory").textContent = pfFmt(inventoryValue);
+        document.getElementById("stat-pf-dues").textContent      = pfFmt(merchantDues);
+        document.getElementById("stat-pf-total").textContent     = pfFmt(inventoryValue+merchantDues);
+        const heroEl = document.getElementById("hero-pf-total");
+        if(heroEl) heroEl.textContent = pfFmt(inventoryValue+merchantDues);
+      }catch(err){
+        console.error("خطأ في تحميل صندوق المنتجات:", err);
+        ["stat-pf-inventory","stat-pf-dues","stat-pf-total","hero-pf-total"].forEach(id=>{
+          const el=document.getElementById(id); if(el) el.textContent="خطأ";
+        });
+      }
     }
-    loadProductsFund();
-  });
-
-  async function loadProductsFund(){
-    try {
-      const [prodSnap, merTxSnap, finTxSnap] = await Promise.all([
-        getDocs(collection(pfDb,"products")),
-        getDocs(collection(pfDb,"merchantTransactions")),
-        getDocs(collection(pfDb,"finance_transactions")),
-      ]);
-
-      // 1) قيمة المخزون = كمية × سعر
-      const inventoryValue = prodSnap.docs.reduce((s,d)=>{
-        const p = d.data();
-        return s + (Number(p.quantity)||0) * (Number(p.price)||0);
-      }, 0);
-
-      // 2) مستحقات التجار — مطابق لمنطق صفحة المالية
-      const byMerchant = {};
-      merTxSnap.docs.forEach(d=>{
-        const t = d.data(); if(!t.merchantId) return;
-        byMerchant[t.merchantId] = (byMerchant[t.merchantId]||0) + (t.type==="out"?-1:1)*(Number(t.amount)||0);
-      });
-      finTxSnap.docs.forEach(d=>{
-        const t = d.data();
-        if(t._active===false || t.type!=="merchant" || !t.merchantId) return;
-        byMerchant[t.merchantId] = (byMerchant[t.merchantId]||0) + (t.dir==="in"?1:-1)*(Number(t.amount)||0);
-      });
-      const merchantDues = Object.values(byMerchant).reduce((s,bal)=>s+Math.max(0,-bal),0);
-
-      document.getElementById("stat-pf-inventory").textContent = pfFmt(inventoryValue);
-      document.getElementById("stat-pf-dues").textContent      = pfFmt(merchantDues);
-      document.getElementById("stat-pf-total").textContent     = pfFmt(inventoryValue + merchantDues);
-      const heroEl = document.getElementById("hero-pf-total");
-      if(heroEl) heroEl.textContent = pfFmt(inventoryValue + merchantDues);
-    } catch(err) {
-      console.error("خطأ في تحميل صندوق المنتجات:", err);
-      ["stat-pf-inventory","stat-pf-dues","stat-pf-total","hero-pf-total"].forEach(id=>{
-        const el = document.getElementById(id); if(el) el.textContent = "خطأ";
-      });
-    }
-  }
-</script>
+  </script>
 </html>
