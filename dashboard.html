@@ -28,14 +28,25 @@
     <style>
 
       /* ══════════════════════════════════════
-         الداشبورد الرئيسي — تصميم جديد
+         الداشبورد الرئيسي — تصميم محسّن
       ══════════════════════════════════════ */
 
-      /* ─── هيدر مع تدرج أخضر ─── */
+      /* ─── متغيرات ضوء/ظلام ─── */
+      :root {
+        --hero-from: #1b6b3a;
+        --hero-to:   #0d3d20;
+        --hero-mid:  #145228;
+        --card-shadow: 0 2px 12px rgba(0,0,0,.07);
+        --card-hover-shadow: 0 8px 28px rgba(0,0,0,.13);
+        --radius-card: 18px;
+        --radius-icon: 12px;
+      }
+
+      /* ─── هيدر بطولي ─── */
       .dash-hero {
-        background: linear-gradient(145deg, #1a5c35 0%, #0d3520 55%, #163d25 100%);
+        background: linear-gradient(150deg, var(--hero-from) 0%, var(--hero-mid) 50%, var(--hero-to) 100%);
         margin: -28px -24px 0;
-        padding: 22px 22px 56px;
+        padding: 20px 22px 60px;
         color: #fff;
         position: relative;
         overflow: hidden;
@@ -43,96 +54,119 @@
       .dash-hero::before {
         content: "";
         position: absolute;
-        top: -50px; left: -50px;
-        width: 220px; height: 220px;
+        top: -60px; right: -60px;
+        width: 240px; height: 240px;
         border-radius: 50%;
-        background: rgba(255,255,255,.05);
+        background: rgba(255,255,255,.06);
         pointer-events: none;
       }
       .dash-hero::after {
         content: "";
         position: absolute;
-        bottom: -70px; right: -30px;
-        width: 200px; height: 200px;
+        bottom: -80px; left: -40px;
+        width: 220px; height: 220px;
         border-radius: 50%;
-        background: rgba(255,255,255,.04);
+        background: rgba(255,255,255,.05);
         pointer-events: none;
       }
+      /* نقطة إضافية للعمق */
+      .dash-hero-dot {
+        position: absolute;
+        top: 50%; left: 38%;
+        width: 120px; height: 120px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.03);
+        pointer-events: none;
+        transform: translateY(-50%);
+      }
+
       .dash-hero-top {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
         position: relative; z-index: 1;
       }
+
+      /* اللوغو */
       .dash-brand {
         display: flex;
         align-items: center;
         gap: 10px;
       }
       .dash-brand-mark {
-        width: 38px; height: 38px;
-        border-radius: 11px;
-        background: rgba(255,255,255,.18);
-        border: 1.5px solid rgba(255,255,255,.3);
+        width: 42px; height: 42px;
+        border-radius: 13px;
+        background: rgba(255,255,255,.2);
+        border: 1.5px solid rgba(255,255,255,.35);
         display: flex; align-items: center; justify-content: center;
-        font-size: 17px; font-weight: 800; color: #fff;
+        font-size: 16px; font-weight: 900; color: #fff;
         letter-spacing: -1px;
         flex-shrink: 0;
+        backdrop-filter: blur(4px);
       }
       .dash-brand-name {
-        font-size: 15px; font-weight: 800;
-        color: #fff; line-height: 1.15;
+        font-size: 15.5px; font-weight: 900;
+        color: #fff; line-height: 1.2;
       }
       .dash-brand-sub {
-        font-size: 11px; opacity: .65; font-weight: 500;
-        margin-top: 1px;
+        font-size: 11px; opacity: .6; font-weight: 500;
+        margin-top: 2px;
       }
+
+      /* شريحة المستخدم */
       .dash-user-chip {
-        display: flex; align-items: center; gap: 8px;
+        display: flex; align-items: center; gap: 9px;
       }
       .dash-user-info { text-align: right; }
       .dash-user-name {
-        font-size: 12.5px; font-weight: 700; color: #fff;
-        max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        font-size: 13px; font-weight: 800; color: #fff;
+        max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
       }
       .dash-user-role {
-        font-size: 10.5px; opacity: .65; margin-top: 1px;
+        font-size: 10.5px; opacity: .6; margin-top: 1px;
       }
       .dash-user-avatar {
-        width: 38px; height: 38px;
+        width: 40px; height: 40px;
         border-radius: 50%;
-        background: rgba(255,255,255,.18);
-        border: 2px solid rgba(255,255,255,.35);
+        background: rgba(255,255,255,.2);
+        border: 2px solid rgba(255,255,255,.4);
         display: flex; align-items: center; justify-content: center;
-        font-size: 17px; color: #fff;
+        font-size: 18px; color: #fff;
         flex-shrink: 0; overflow: hidden;
+        backdrop-filter: blur(4px);
       }
 
-      /* ─── المقياس البطولي ─── */
+      /* ─── الرقم الرئيسي في الهيدر ─── */
       .dash-hero-metric {
         position: relative; z-index: 1;
+        background: rgba(255,255,255,.08);
+        border: 1px solid rgba(255,255,255,.18);
+        border-radius: 16px;
+        padding: 14px 18px 16px;
+        backdrop-filter: blur(6px);
       }
       .dash-hero-metric .metric-label {
-        font-size: 12.5px; font-weight: 600;
+        font-size: 12px; font-weight: 600;
         opacity: .75; margin-bottom: 6px;
         display: flex; align-items: center; gap: 6px;
+        letter-spacing: .2px;
       }
       .dash-hero-metric .metric-value {
-        font-size: 32px; font-weight: 900;
-        letter-spacing: -0.5px; line-height: 1.1;
+        font-size: 34px; font-weight: 900;
+        letter-spacing: -1px; line-height: 1.05;
         color: #fff;
       }
       .dash-hero-metric .metric-sub {
-        font-size: 11.5px; opacity: .6; margin-top: 5px;
+        font-size: 11.5px; opacity: .55; margin-top: 5px;
       }
 
-      /* ─── البطاقة العائمة فوق الهيدر ─── */
+      /* ─── البطاقة العائمة ─── */
       .dash-float-card {
         background: var(--surface);
         border-radius: 20px;
-        box-shadow: 0 10px 36px rgba(0,0,0,.13);
-        margin: -34px 4px 22px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.15);
+        margin: -36px 4px 24px;
         position: relative; z-index: 5;
         border: 1px solid var(--border);
         overflow: hidden;
@@ -142,34 +176,42 @@
         grid-template-columns: 1fr 1fr 1fr;
       }
       .dash-float-item {
-        padding: 14px 12px;
+        padding: 16px 10px;
         text-align: center;
         position: relative;
+        transition: background .15s;
       }
+      .dash-float-item:hover { background: var(--bg); }
       .dash-float-item:not(:last-child)::after {
         content: "";
         position: absolute;
-        top: 20%; bottom: 20%;
+        top: 18%; bottom: 18%;
         left: 0;
         width: 1px;
         background: var(--border);
       }
-      .dash-float-icon {
-        font-size: 20px; margin-bottom: 4px;
-        display: block;
+      .dash-float-icon-wrap {
+        width: 38px; height: 38px;
+        border-radius: 11px;
+        margin: 0 auto 6px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px;
       }
+      .dfi-green  { background: #e8f5e9; }
+      .dfi-blue   { background: #e3f2fd; }
+      .dfi-orange { background: #fff3e0; }
       .dash-float-label {
         font-size: 10.5px; color: var(--muted); font-weight: 600;
         margin-bottom: 3px; line-height: 1.3;
       }
       .dash-float-val {
-        font-size: 17px; font-weight: 900; color: var(--ink);
+        font-size: 20px; font-weight: 900; color: var(--ink);
         line-height: 1.1;
       }
 
       /* ─── شريط الفترة ─── */
       .dash-period-wrap {
-        margin-bottom: 22px;
+        margin-bottom: 24px;
       }
       .dash-period-scroll {
         background: var(--surface);
@@ -180,72 +222,89 @@
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
+        box-shadow: var(--card-shadow);
       }
       .dash-period-scroll::-webkit-scrollbar { display: none }
-      /* الأزرار تُوسَم بالكلاس القديم للـ JS + الجديد للتنسيق */
       .dash-period-scroll button {
         flex: 0 0 auto;
-        padding: 8px 14px;
+        padding: 8px 16px;
         border: none; border-radius: 8px;
         background: transparent;
         font-family: inherit; font-size: 13px; font-weight: 700;
         color: var(--muted); cursor: pointer;
-        transition: background .15s, color .15s;
+        transition: background .15s, color .15s, transform .1s;
         white-space: nowrap;
+      }
+      .dash-period-scroll button:hover:not(.active) {
+        background: var(--bg);
+        color: var(--ink);
       }
       .dash-period-scroll button.active {
         background: var(--primary);
         color: #fff;
-        box-shadow: 0 4px 10px rgba(47,111,79,.35);
+        box-shadow: 0 3px 10px rgba(26,93,58,.35);
       }
 
       /* ─── رأس القسم ─── */
       .dash-sec-head {
-        display: flex; align-items: center; gap: 9px;
-        margin: 0 0 12px;
+        display: flex; align-items: center; gap: 10px;
+        margin: 0 0 14px;
       }
       .dash-sec-icon {
-        width: 32px; height: 32px;
-        border-radius: 9px;
+        width: 34px; height: 34px;
+        border-radius: 10px;
         background: var(--primary-soft);
         color: var(--primary-dark);
         display: flex; align-items: center; justify-content: center;
-        font-size: 16px; flex-shrink: 0;
+        font-size: 17px; flex-shrink: 0;
       }
       .dash-sec-title {
-        font-size: 15px; font-weight: 800; color: var(--ink);
+        font-size: 15.5px; font-weight: 900; color: var(--ink);
+        letter-spacing: -.2px;
       }
 
       /* ─── شبكة البطاقات ─── */
       .dash-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-bottom: 22px;
+        gap: 12px;
+        margin-bottom: 28px;
       }
       .dash-card {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 15px;
-        padding: 14px 14px 16px;
-        box-shadow: 0 2px 8px rgba(0,0,0,.04);
+        border-radius: var(--radius-card);
+        padding: 16px 16px 18px;
+        box-shadow: var(--card-shadow);
         display: flex; flex-direction: column;
-        transition: transform .12s, box-shadow .12s;
+        transition: transform .13s, box-shadow .13s;
+        position: relative;
+        overflow: hidden;
+      }
+      .dash-card::before {
+        content: "";
+        position: absolute;
+        top: 0; right: 0;
+        width: 60px; height: 60px;
+        border-radius: 0 var(--radius-card) 0 60px;
+        opacity: .06;
+        pointer-events: none;
       }
       .dash-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 18px rgba(0,0,0,.08);
+        transform: translateY(-3px);
+        box-shadow: var(--card-hover-shadow);
       }
       .dash-card.wide { grid-column: 1 / -1; }
+
       .dash-card-head {
-        display: flex; align-items: center; gap: 8px;
-        margin-bottom: 11px;
+        display: flex; align-items: center; gap: 10px;
+        margin-bottom: 13px;
       }
       .dash-card-icon {
-        width: 40px; height: 40px;
-        border-radius: 11px;
+        width: 42px; height: 42px;
+        border-radius: var(--radius-icon);
         display: flex; align-items: center; justify-content: center;
-        font-size: 19px; flex-shrink: 0;
+        font-size: 20px; flex-shrink: 0;
       }
       .dc-green  { background: #e8f5e9; }
       .dc-teal   { background: #e0f7f4; }
@@ -257,104 +316,169 @@
       .dc-orange { background: #fff3e0; }
 
       .dash-card-label {
-        font-size: 11.5px; font-weight: 600;
+        font-size: 12px; font-weight: 700;
         color: var(--muted); line-height: 1.35;
       }
       .dash-card-value {
-        font-size: 26px; font-weight: 900;
+        font-size: 28px; font-weight: 900;
         color: var(--ink); line-height: 1.1;
       }
-      .dash-card-value.money { font-size: 17px; color: var(--primary-dark); }
-
-      /* ─── عناصر آخر العمليات (يُنشئها dashboard JS) ─── */
-      #recent-activity-list{display:flex;flex-direction:column;gap:2px;margin-top:4px}
-      .activity-item{display:flex;align-items:center;gap:12px;padding:10px 6px;border-bottom:1px solid var(--border)}
-      .activity-item:last-child{border-bottom:none}
-      .activity-icon{flex:0 0 auto;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--bg)}
-      .activity-icon.act-prod{background:#eef2ff}
-      .activity-icon.act-transfer{background:#eff6ff}
-      .activity-icon.act-loading{background:#fff7ed}
-      .activity-icon.act-in{background:#ecfdf5}
-      .activity-icon.act-out{background:#fef2f2}
-      .activity-icon.act-att{background:#f5f3ff}
-      .activity-body{flex:1 1 auto;min-width:0}
-      .activity-title{font-weight:700;font-size:13.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-      .activity-sub{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
-      .activity-time{flex:0 0 auto;font-size:11.5px;color:var(--muted);white-space:nowrap;padding-inline-start:6px}
-      #recent-activity-list .empty-state{padding:24px 0}
-      @media(max-width:640px){.activity-sub{display:none}}
+      .dash-card-value.money {
+        font-size: 18px;
+        color: var(--primary-dark);
+      }
+      /* شريط لوني رفيع أسفل كل بطاقة */
+      .dash-card-bar {
+        height: 3px;
+        border-radius: 99px;
+        margin-top: 12px;
+        opacity: .5;
+      }
+      .bar-green  { background: #4caf50; }
+      .bar-teal   { background: #26c6a2; }
+      .bar-blue   { background: #5c6bc0; }
+      .bar-gold   { background: #f9a825; }
+      .bar-red    { background: #ef5350; }
+      .bar-navy   { background: #5c7aad; }
+      .bar-orange { background: #fb8c00; }
 
       /* ─── آخر العمليات ─── */
+      #recent-activity-list {
+        display: flex; flex-direction: column; gap: 2px; margin-top: 4px;
+      }
+      .activity-item {
+        display: flex; align-items: center; gap: 12px;
+        padding: 11px 8px;
+        border-bottom: 1px solid var(--border);
+        transition: background .12s;
+        border-radius: 8px;
+      }
+      .activity-item:hover { background: var(--bg); }
+      .activity-item:last-child { border-bottom: none; }
+      .activity-icon {
+        flex: 0 0 auto; width: 40px; height: 40px;
+        border-radius: 11px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px; background: var(--bg);
+      }
+      .activity-icon.act-prod     { background: #eef2ff; }
+      .activity-icon.act-transfer { background: #eff6ff; }
+      .activity-icon.act-loading  { background: #fff7ed; }
+      .activity-icon.act-in       { background: #ecfdf5; }
+      .activity-icon.act-out      { background: #fef2f2; }
+      .activity-icon.act-att      { background: #f5f3ff; }
+      .activity-body { flex: 1 1 auto; min-width: 0; }
+      .activity-title {
+        font-weight: 700; font-size: 13.5px; color: var(--ink);
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .activity-sub {
+        font-size: 12px; color: var(--muted);
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        margin-top: 2px;
+      }
+      .activity-time {
+        flex: 0 0 auto; font-size: 11.5px; color: var(--muted);
+        white-space: nowrap; padding-inline-start: 6px;
+      }
+      #recent-activity-list .empty-state { padding: 28px 0; }
+      @media(max-width:640px) { .activity-sub { display: none; } }
+
       .dash-activity-wrap {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 16px;
-        box-shadow: 0 2px 8px rgba(0,0,0,.04);
-        margin-bottom: 22px;
+        border-radius: 18px;
+        padding: 18px 16px 14px;
+        box-shadow: var(--card-shadow);
+        margin-bottom: 28px;
       }
       .dash-activity-top {
         display: flex; align-items: center; justify-content: space-between;
-        margin-bottom: 12px;
+        margin-bottom: 14px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
       }
-      .dash-activity-title { font-size: 14.5px; font-weight: 800; color: var(--ink); }
-      .dash-activity-sub  { font-size: 12px; color: var(--muted); }
+      .dash-activity-title {
+        font-size: 15px; font-weight: 900; color: var(--ink);
+        display: flex; align-items: center; gap: 8px;
+      }
+      .dash-activity-badge {
+        background: var(--primary-soft);
+        color: var(--primary-dark);
+        font-size: 11px; font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 99px;
+      }
+      .dash-activity-sub { font-size: 12px; color: var(--muted); }
       /* إعادة استخدام activity-panel class للـ JS */
-      .activity-panel .panel-head { display: none }
+      .activity-panel .panel-head { display: none; }
 
       /* ─── روابط سريعة ─── */
+      .dash-shortcuts-head {
+        font-size: 15.5px; font-weight: 900; color: var(--ink);
+        margin-bottom: 14px;
+        display: flex; align-items: center; gap: 8px;
+      }
       .dash-shortcuts {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        margin-bottom: 24px;
+        gap: 12px;
+        margin-bottom: 28px;
       }
       .dash-shortcut {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 15px;
-        padding: 16px 10px 14px;
-        box-shadow: 0 2px 8px rgba(0,0,0,.04);
+        border-radius: 16px;
+        padding: 18px 10px 16px;
+        box-shadow: var(--card-shadow);
         display: flex; flex-direction: column;
-        align-items: center; gap: 8px;
+        align-items: center; gap: 9px;
         text-align: center; color: var(--ink);
         text-decoration: none;
-        transition: transform .12s, box-shadow .12s;
+        transition: transform .13s, box-shadow .13s, background .12s;
       }
-      .dash-shortcut:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.09) }
+      .dash-shortcut:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--card-hover-shadow);
+        background: var(--primary-soft);
+      }
       .dash-sc-icon {
-        width: 44px; height: 44px;
-        border-radius: 13px;
+        width: 48px; height: 48px;
+        border-radius: 14px;
         background: var(--primary-soft);
         display: flex; align-items: center; justify-content: center;
-        font-size: 21px;
+        font-size: 22px;
+        transition: background .12s;
       }
-      .dash-sc-label { font-size: 12px; font-weight: 700; }
-      .dash-sc-desc  { font-size: 10.5px; color: var(--muted); line-height: 1.35; }
+      .dash-shortcut:hover .dash-sc-icon {
+        background: rgba(26,93,58,.15);
+      }
+      .dash-sc-label { font-size: 12.5px; font-weight: 800; }
+      .dash-sc-desc  { font-size: 10.5px; color: var(--muted); line-height: 1.4; }
 
       /* ─── موبايل ─── */
-      @media(max-width:900px){
-        .dash-hero { margin:-16px -14px 0; padding:18px 16px 50px }
-        .dash-float-card { margin:-32px 6px 18px }
-        .dash-card-value { font-size:22px }
-        .dash-card-value.money { font-size:15px }
-        .dash-hero-metric .metric-value { font-size:27px }
-        .dash-float-val { font-size:15px }
-        .dash-float-label { font-size:10px }
+      @media(max-width:900px) {
+        .dash-hero { margin:-16px -14px 0; padding:18px 16px 56px; }
+        .dash-float-card { margin:-36px 6px 20px; }
+        .dash-card-value { font-size:24px; }
+        .dash-card-value.money { font-size:16px; }
+        .dash-hero-metric .metric-value { font-size:29px; }
+        .dash-float-val { font-size:18px; }
       }
-      @media(max-width:500px){
-        .dash-hero { margin:-12px -10px 0; padding:16px 14px 46px }
-        .dash-float-card { margin:-28px 4px 14px }
-        .dash-float-item { padding:12px 8px }
-        .dash-float-val { font-size:14px }
-        .dash-card-value { font-size:20px }
-        .dash-card-value.money { font-size:14px }
-        .dash-hero-metric .metric-value { font-size:24px }
-        .dash-shortcuts { grid-template-columns: repeat(3,1fr); gap:8px }
-        .dash-sc-icon { width:38px;height:38px;font-size:18px }
-        .dash-sc-label { font-size:11px }
-        .dash-sc-desc { display:none }
-        .dash-card { padding:12px 12px 14px }
+      @media(max-width:500px) {
+        .dash-hero { margin:-12px -10px 0; padding:16px 14px 52px; }
+        .dash-float-card { margin:-30px 4px 16px; }
+        .dash-float-item { padding:13px 6px; }
+        .dash-float-val { font-size:16px; }
+        .dash-card-value { font-size:22px; }
+        .dash-card-value.money { font-size:15px; }
+        .dash-hero-metric .metric-value { font-size:26px; }
+        .dash-shortcuts { grid-template-columns: repeat(3,1fr); gap:8px; }
+        .dash-sc-icon { width:42px; height:42px; font-size:20px; }
+        .dash-sc-label { font-size:11.5px; }
+        .dash-sc-desc { display:none; }
+        .dash-card { padding:14px 13px 16px; }
+        .dash-grid { gap:10px; }
       }
     </style>
   </head>
@@ -365,6 +489,7 @@
 
         <!-- ══ هيدر الداشبورد ══ -->
         <div class="dash-hero">
+          <div class="dash-hero-dot"></div>
           <div class="dash-hero-top">
             <div class="dash-brand">
               <div class="dash-brand-mark">أح</div>
@@ -382,8 +507,8 @@
             </div>
           </div>
           <div class="dash-hero-metric">
-            <div class="metric-label">📦 إجمالي صندوق المنتجات</div>
-            <div class="metric-value" id="hero-pf-total">—</div>
+            <div class="metric-label">💼 إجمالي صندوق المنتجات</div>
+            <div class="metric-value" id="hero-pf-total">جارِ التحميل...</div>
             <div class="metric-sub">قيمة المخزون + مستحقات التجار</div>
           </div>
         </div>
@@ -392,17 +517,17 @@
         <div class="dash-float-card">
           <div class="dash-float-inner">
             <div class="dash-float-item">
-              <span class="dash-float-icon">🏷️</span>
+              <div class="dash-float-icon-wrap dfi-green">📦</div>
               <div class="dash-float-label">المنتجات</div>
               <div class="dash-float-val" id="float-products-count">—</div>
             </div>
             <div class="dash-float-item">
-              <span class="dash-float-icon">🤝</span>
+              <div class="dash-float-icon-wrap dfi-blue">🤝</div>
               <div class="dash-float-label">التجار</div>
               <div class="dash-float-val" id="float-merchants-count">—</div>
             </div>
             <div class="dash-float-item">
-              <span class="dash-float-icon">👤</span>
+              <div class="dash-float-icon-wrap dfi-orange">👤</div>
               <div class="dash-float-label">الموظفون</div>
               <div class="dash-float-val" id="float-employees-count">—</div>
             </div>
@@ -426,7 +551,7 @@
           </div>
         </div>
 
-        <!-- ══ المنتجات ══ -->
+        <!-- ══ قسم المنتجات ══ -->
         <div class="dash-sec-head">
           <div class="dash-sec-icon">📦</div>
           <div class="dash-sec-title">المنتجات</div>
@@ -438,13 +563,15 @@
               <div class="dash-card-label">عدد المنتجات</div>
             </div>
             <div class="dash-card-value" id="stat-products-count">—</div>
+            <div class="dash-card-bar bar-green"></div>
           </div>
           <div class="dash-card">
             <div class="dash-card-head">
               <div class="dash-card-icon dc-teal">📊</div>
-              <div class="dash-card-label">الكمية الإجمالية بالمخزون</div>
+              <div class="dash-card-label">الكمية الإجمالية</div>
             </div>
             <div class="dash-card-value" id="stat-products-qty">—</div>
+            <div class="dash-card-bar bar-teal"></div>
           </div>
           <div class="dash-card wide">
             <div class="dash-card-head">
@@ -452,10 +579,11 @@
               <div class="dash-card-label">قيمة المخزون الإجمالية</div>
             </div>
             <div class="dash-card-value money" id="stat-products-value">—</div>
+            <div class="dash-card-bar bar-navy"></div>
           </div>
         </div>
 
-        <!-- ══ صندوق المنتجات ══ -->
+        <!-- ══ قسم صندوق المنتجات ══ -->
         <div class="dash-sec-head">
           <div class="dash-sec-icon">💼</div>
           <div class="dash-sec-title">صندوق المنتجات</div>
@@ -467,6 +595,7 @@
               <div class="dash-card-label">قيمة المخزون بالمخازن</div>
             </div>
             <div class="dash-card-value money" id="stat-pf-inventory">—</div>
+            <div class="dash-card-bar bar-navy"></div>
           </div>
           <div class="dash-card">
             <div class="dash-card-head">
@@ -474,13 +603,15 @@
               <div class="dash-card-label">مستحقات التجار</div>
             </div>
             <div class="dash-card-value money" id="stat-pf-dues">—</div>
+            <div class="dash-card-bar bar-gold"></div>
           </div>
-          <div class="dash-card wide">
+          <div class="dash-card wide" style="background:linear-gradient(135deg,#f0faf4 0%,#e8f5ee 100%);border-color:#b6ddc4;">
             <div class="dash-card-head">
               <div class="dash-card-icon dc-green">💼</div>
-              <div class="dash-card-label">إجمالي صندوق المنتجات</div>
+              <div class="dash-card-label" style="font-size:13px;font-weight:800;color:var(--primary-dark);">إجمالي صندوق المنتجات</div>
             </div>
-            <div class="dash-card-value money" id="stat-pf-total">—</div>
+            <div class="dash-card-value money" id="stat-pf-total" style="font-size:22px;">—</div>
+            <div class="dash-card-bar bar-green" style="opacity:.7;"></div>
           </div>
         </div>
 
@@ -496,6 +627,7 @@
               <div class="dash-card-label">عدد التجار</div>
             </div>
             <div class="dash-card-value" id="stat-merchants-count">—</div>
+            <div class="dash-card-bar bar-blue"></div>
           </div>
           <div class="dash-card">
             <div class="dash-card-head">
@@ -503,6 +635,7 @@
               <div class="dash-card-label">عدد الموظفين</div>
             </div>
             <div class="dash-card-value" id="stat-employees-count">—</div>
+            <div class="dash-card-bar bar-orange"></div>
           </div>
           <div class="dash-card wide">
             <div class="dash-card-head">
@@ -510,14 +643,18 @@
               <div class="dash-card-label" id="stat-payroll-label">الرواتب المستحقة</div>
             </div>
             <div class="dash-card-value money" id="stat-payroll">—</div>
+            <div class="dash-card-bar bar-red"></div>
           </div>
         </div>
 
         <!-- ══ آخر العمليات ══ -->
         <div class="dash-activity-wrap activity-panel">
           <div class="dash-activity-top">
-            <div class="dash-activity-title">⚡ آخر العمليات</div>
-            <div class="dash-activity-sub">حسب الفترة المحددة أعلاه</div>
+            <div class="dash-activity-title">
+              ⚡ آخر العمليات
+              <span class="dash-activity-badge">حسب الفترة</span>
+            </div>
+            <div class="dash-activity-sub">أحدث 12 عملية</div>
           </div>
           <!-- panel-head مخفي — تستخدمه activity-panel JS -->
           <div class="panel-head" style="display:none"><h3></h3><p></p></div>
@@ -527,6 +664,9 @@
         </div>
 
         <!-- ══ روابط سريعة ══ -->
+        <div class="dash-shortcuts-head">
+          🔗 وصول سريع
+        </div>
         <div class="dash-shortcuts">
           <a class="dash-shortcut" href="/products.html">
             <div class="dash-sc-icon">📦</div>
@@ -555,7 +695,6 @@
     // اسم المستخدم في الهيدر
     function syncUserName(){
       try {
-        // محاولة قراءة من localStorage أو cookie يضعه auth-guard
         const name = localStorage.getItem("ahDisplay") || localStorage.getItem("displayName") || "";
         if(name) document.getElementById("dash-user-name").textContent = name;
       } catch(e){}
@@ -566,11 +705,10 @@
       const src = document.getElementById(srcId);
       const dest = document.getElementById(destId);
       if(!src || !dest) return;
-      const obs = new MutationObserver(()=>{ dest.textContent = src.textContent });
+      const obs = new MutationObserver(()=>{ dest.textContent = src.textContent; });
       obs.observe(src, {childList:true, characterData:true, subtree:true});
       if(src.textContent !== "—") dest.textContent = src.textContent;
     }
-    // انتظر حتى يتهيأ DOM بالكامل ثم اربط القيم
     window.addEventListener("DOMContentLoaded", ()=>{
       mirrorVal("stat-products-count",  "float-products-count");
       mirrorVal("stat-merchants-count", "float-merchants-count");
