@@ -79,12 +79,92 @@
 
       /* ═══ الصفحة الرئيسية ═══ */
       .page {
-        max-width: 480px;
-        margin: 0 auto;
+        width: 100%;
         min-height: 100vh;
         padding: 0 0 80px;
         background: var(--bg);
         position: relative;
+      }
+
+      /* على الشاشات العريضة: محتوى الأقسام يأخذ عرض مناسب */
+      @media (min-width: 640px) {
+        .float-card,
+        .period-wrap,
+        .sec-head,
+        .dash-grid,
+        .activity-wrap,
+        .shortcuts-head,
+        .shortcuts-grid {
+          max-width: 720px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .period-wrap {
+          padding-left: 24px;
+          padding-right: 24px;
+        }
+        .sec-head {
+          padding-left: 24px;
+          padding-right: 24px;
+        }
+        .shortcuts-head {
+          padding-left: 24px;
+          padding-right: 24px;
+        }
+        .dash-grid {
+          padding-left: 24px;
+          padding-right: 24px;
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .dash-card.wide {
+          grid-column: 1 / -1;
+        }
+        .shortcuts-grid {
+          padding-left: 24px;
+          padding-right: 24px;
+          grid-template-columns: repeat(4, 1fr);
+        }
+        .float-card {
+          margin-left: auto;
+          margin-right: auto;
+          margin-top: -32px;
+          margin-bottom: 20px;
+        }
+        .activity-wrap {
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .app-bar,
+        .user-row,
+        .hero-metric-card {
+          max-width: 720px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .hero-metric-card {
+          margin-bottom: 0;
+        }
+        .bottom-nav {
+          max-width: 720px;
+        }
+      }
+      @media (min-width: 1024px) {
+        .app-bar,
+        .user-row,
+        .hero-metric-card,
+        .float-card,
+        .period-wrap,
+        .sec-head,
+        .dash-grid,
+        .activity-wrap,
+        .shortcuts-head,
+        .shortcuts-grid {
+          max-width: 900px;
+        }
+        .dash-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+        .bottom-nav { max-width: 900px; }
       }
 
       /* ═══ هيدر بطولي ═══ */
@@ -686,7 +766,10 @@
           <!-- شريط التطبيق العلوي -->
           <div class="app-bar">
             <div class="app-bar-brand">
-              <div class="app-bar-mark">AH</div>
+              <img src="/favicon.svg" alt="logo"
+                style="height:40px;width:40px;object-fit:contain;border-radius:10px;background:rgba(255,255,255,.2);padding:4px;border:1.5px solid rgba(255,255,255,.3);flex-shrink:0;"
+                onerror="this.style.display='none';document.getElementById('brand-fallback').style.display='flex'">
+              <div id="brand-fallback" style="display:none;width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.3);align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;flex-shrink:0;">AH</div>
               <div>
                 <div class="app-bar-name">Ahmed & Hamdy</div>
                 <div class="app-bar-sub">نظام المحاسبة الداخلي</div>
