@@ -170,6 +170,9 @@
     .filter-bar{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin-bottom:14px}
     .filter-bar .field{margin:0}
 
+    /* بطاقات الجوال — مخفية افتراضياً على الديسكتوب */
+    .mob-mer-list { display: none; }
+
     /* ══════════════════════════════════════════
        تخطيط ملف التاجر — الجوال (≤ 900px)
     ══════════════════════════════════════════ */
@@ -822,7 +825,7 @@ function openMerModal(mer){
     document.getElementById("merchant-email").value  =mer.email??"";
   } else {
     editMerId=null;
-    document.getElementById("merchant-modal-title").textContent="إضافة تاجر";
+    document.getElementById("merchant-modal-title").textContent="إضافة n�اجر";
   }
   document.getElementById("merchant-modal").classList.add("open");
 }
