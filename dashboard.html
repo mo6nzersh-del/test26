@@ -74,8 +74,11 @@
         overflow-x: hidden;
       }
 
-      /* إخفاء التوبار الأصلي دائماً */
+      /* إخفاء التوبار والنافبار القديمَين دائماً */
       #topbar { display: none !important; }
+      #bottom-nav { display: none !important; }
+      /* إلغاء الـ padding الذي يضيفه CSS القديم للنافبار القديم */
+      .page { padding-bottom: 0 !important; }
 
       /* ═══ الصفحة الرئيسية ═══ */
       .page {
