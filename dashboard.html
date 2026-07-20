@@ -456,6 +456,11 @@
       .dash-sc-label { font-size: 12.5px; font-weight: 800; }
       .dash-sc-desc  { font-size: 10.5px; color: var(--muted); line-height: 1.4; }
 
+      /* ─── إخفاء التوبار في الداشبورد على الموبايل فقط ─── */
+      @media(max-width:900px) {
+        #topbar { display: none !important; }
+      }
+
       /* ─── موبايل ─── */
       @media(max-width:900px) {
         .dash-hero { margin:-16px -14px 0; padding:18px 16px 56px; }
@@ -492,9 +497,11 @@
           <div class="dash-hero-dot"></div>
           <div class="dash-hero-top">
             <div class="dash-brand">
-              <div class="dash-brand-mark">أح</div>
+              <img src="https://i.imgur.com/NsN1HgC.png" alt="logo"
+                style="height:38px;object-fit:contain;border-radius:9px;background:rgba(255,255,255,.18);padding:3px 6px;border:1.5px solid rgba(255,255,255,.3);"
+                onerror="this.style.display='none'">
               <div>
-                <div class="dash-brand-name">أحمد وحمدي</div>
+                <div class="dash-brand-name">Ahmed And hamdy</div>
                 <div class="dash-brand-sub">نظام المحاسبة الداخلي</div>
               </div>
             </div>
@@ -778,9 +785,10 @@
           const t=d.data(); if(!t.merchantId) return;
           byMerchant[t.merchantId]=(byMerchant[t.merchantId]||0)+(t.type==="out"?-1:1)*(Number(t.amount)||0);
         });
+        // finance_transactions: نُقصي المحذوفات (_active===false) كما تفعل صفحة المالية
         finTxSnap.docs.forEach(d=>{
           const t=d.data();
-          if(t.type!=="merchant"||!t.merchantId) return;
+          if(t._active===false||t.type!=="merchant"||!t.merchantId) return;
           byMerchant[t.merchantId]=(byMerchant[t.merchantId]||0)+(t.dir==="in"?1:-1)*(Number(t.amount)||0);
         });
         // الرصيد السالب = تاجر مدين ← نأخذ Math.max(0, -bal) كما في صفحة المالية
