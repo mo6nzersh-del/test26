@@ -1,902 +1,1037 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>الرئيسية - Ahmed And hamdy</title>
-    <meta name="robots" content="noindex, nofollow" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <!-- ضمان الأرقام اللاتينية فقط -->
-    <script>
-    (function(){
-      var _NF=Intl.NumberFormat;
-      function patchLocale(l){
-        if(!l)return"ar-EG-u-nu-latn";
-        if(typeof l==="string")return l.includes("nu-")?l:l.replace(/^ar(-EG)?/,"ar-EG-u-nu-latn");
-        if(Array.isArray(l))return l.map(patchLocale);
-        return"ar-EG-u-nu-latn";
-      }
-      Intl.NumberFormat=function(l,o){return new _NF(patchLocale(l),o)};
-      Object.assign(Intl.NumberFormat,_NF);
-      Intl.NumberFormat.prototype=_NF.prototype;
-    })();
-    </script>
-    <script type="module" crossorigin src="/assets/dashboard-DSedGtPY.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/auth-guard-DMMO1gWE.js">
-    <link rel="modulepreload" crossorigin href="/assets/nav-C4LmEyvm.js">
-    <link rel="stylesheet" crossorigin href="/assets/auth-guard-C6CJ8_8i.css">
-    <style>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1"/>
+  <title>الرئيسية — Ahmed And hamdy</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 
-      /* ══════════════════════════════════════
-         الداشبورد الرئيسي — تصميم محسّن
-      ══════════════════════════════════════ */
-
-      /* ─── متغيرات ضوء/ظلام ─── */
-      :root {
-        --hero-from: #1b6b3a;
-        --hero-to:   #0d3d20;
-        --hero-mid:  #145228;
-        --card-shadow: 0 2px 12px rgba(0,0,0,.07);
-        --card-hover-shadow: 0 8px 28px rgba(0,0,0,.13);
-        --radius-card: 18px;
-        --radius-icon: 12px;
-      }
-
-      /* ─── هيدر بطولي ─── */
-      .dash-hero {
-        background: linear-gradient(150deg, var(--hero-from) 0%, var(--hero-mid) 50%, var(--hero-to) 100%);
-        margin: -28px -24px 0;
-        padding: 20px 22px 60px;
-        color: #fff;
-        position: relative;
-        overflow: hidden;
-      }
-      .dash-hero::before {
-        content: "";
-        position: absolute;
-        top: -60px; right: -60px;
-        width: 240px; height: 240px;
-        border-radius: 50%;
-        background: rgba(255,255,255,.06);
-        pointer-events: none;
-      }
-      .dash-hero::after {
-        content: "";
-        position: absolute;
-        bottom: -80px; left: -40px;
-        width: 220px; height: 220px;
-        border-radius: 50%;
-        background: rgba(255,255,255,.05);
-        pointer-events: none;
-      }
-      /* نقطة إضافية للعمق */
-      .dash-hero-dot {
-        position: absolute;
-        top: 50%; left: 38%;
-        width: 120px; height: 120px;
-        border-radius: 50%;
-        background: rgba(255,255,255,.03);
-        pointer-events: none;
-        transform: translateY(-50%);
-      }
-
-      .dash-hero-top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20px;
-        position: relative; z-index: 1;
-      }
-
-      /* اللوغو */
-      .dash-brand {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .dash-brand-mark {
-        width: 42px; height: 42px;
-        border-radius: 13px;
-        background: rgba(255,255,255,.2);
-        border: 1.5px solid rgba(255,255,255,.35);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 16px; font-weight: 900; color: #fff;
-        letter-spacing: -1px;
-        flex-shrink: 0;
-        backdrop-filter: blur(4px);
-      }
-      .dash-brand-name {
-        font-size: 15.5px; font-weight: 900;
-        color: #fff; line-height: 1.2;
-      }
-      .dash-brand-sub {
-        font-size: 11px; opacity: .6; font-weight: 500;
-        margin-top: 2px;
-      }
-
-      /* شريحة المستخدم */
-      .dash-user-chip {
-        display: flex; align-items: center; gap: 9px;
-      }
-      .dash-user-info { text-align: right; }
-      .dash-user-name {
-        font-size: 13px; font-weight: 800; color: #fff;
-        max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-      }
-      .dash-user-role {
-        font-size: 10.5px; opacity: .6; margin-top: 1px;
-      }
-      .dash-user-avatar {
-        width: 40px; height: 40px;
-        border-radius: 50%;
-        background: rgba(255,255,255,.2);
-        border: 2px solid rgba(255,255,255,.4);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 18px; color: #fff;
-        flex-shrink: 0; overflow: hidden;
-        backdrop-filter: blur(4px);
-      }
-
-      /* ─── الرقم الرئيسي في الهيدر ─── */
-      .dash-hero-metric {
-        position: relative; z-index: 1;
-        background: rgba(255,255,255,.08);
-        border: 1px solid rgba(255,255,255,.18);
-        border-radius: 16px;
-        padding: 14px 18px 16px;
-        backdrop-filter: blur(6px);
-      }
-      .dash-hero-metric .metric-label {
-        font-size: 12px; font-weight: 600;
-        opacity: .75; margin-bottom: 6px;
-        display: flex; align-items: center; gap: 6px;
-        letter-spacing: .2px;
-      }
-      .dash-hero-metric .metric-value {
-        font-size: 34px; font-weight: 900;
-        letter-spacing: -1px; line-height: 1.05;
-        color: #fff;
-      }
-      .dash-hero-metric .metric-sub {
-        font-size: 11.5px; opacity: .55; margin-top: 5px;
-      }
-
-      /* ─── البطاقة العائمة ─── */
-      .dash-float-card {
-        background: var(--surface);
-        border-radius: 20px;
-        box-shadow: 0 12px 40px rgba(0,0,0,.15);
-        margin: -36px 4px 24px;
-        position: relative; z-index: 5;
-        border: 1px solid var(--border);
-        overflow: hidden;
-      }
-      .dash-float-inner {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-      }
-      .dash-float-item {
-        padding: 16px 10px;
-        text-align: center;
-        position: relative;
-        transition: background .15s;
-      }
-      .dash-float-item:hover { background: var(--bg); }
-      .dash-float-item:not(:last-child)::after {
-        content: "";
-        position: absolute;
-        top: 18%; bottom: 18%;
-        left: 0;
-        width: 1px;
-        background: var(--border);
-      }
-      .dash-float-icon-wrap {
-        width: 38px; height: 38px;
-        border-radius: 11px;
-        margin: 0 auto 6px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 18px;
-      }
-      .dfi-green  { background: #e8f5e9; }
-      .dfi-blue   { background: #e3f2fd; }
-      .dfi-orange { background: #fff3e0; }
-      .dash-float-label {
-        font-size: 10.5px; color: var(--muted); font-weight: 600;
-        margin-bottom: 3px; line-height: 1.3;
-      }
-      .dash-float-val {
-        font-size: 20px; font-weight: 900; color: var(--ink);
-        line-height: 1.1;
-      }
-
-      /* ─── شريط الفترة ─── */
-      .dash-period-wrap {
-        margin-bottom: 24px;
-      }
-      .dash-period-scroll {
-        background: var(--surface);
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        padding: 5px;
-        display: flex; gap: 4px;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        box-shadow: var(--card-shadow);
-      }
-      .dash-period-scroll::-webkit-scrollbar { display: none }
-      .dash-period-scroll button {
-        flex: 0 0 auto;
-        padding: 8px 16px;
-        border: none; border-radius: 8px;
-        background: transparent;
-        font-family: inherit; font-size: 13px; font-weight: 700;
-        color: var(--muted); cursor: pointer;
-        transition: background .15s, color .15s, transform .1s;
-        white-space: nowrap;
-      }
-      .dash-period-scroll button:hover:not(.active) {
-        background: var(--bg);
-        color: var(--ink);
-      }
-      .dash-period-scroll button.active {
-        background: var(--primary);
-        color: #fff;
-        box-shadow: 0 3px 10px rgba(26,93,58,.35);
-      }
-
-      /* ─── رأس القسم ─── */
-      .dash-sec-head {
-        display: flex; align-items: center; gap: 10px;
-        margin: 0 0 14px;
-      }
-      .dash-sec-icon {
-        width: 34px; height: 34px;
-        border-radius: 10px;
-        background: var(--primary-soft);
-        color: var(--primary-dark);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 17px; flex-shrink: 0;
-      }
-      .dash-sec-title {
-        font-size: 15.5px; font-weight: 900; color: var(--ink);
-        letter-spacing: -.2px;
-      }
-
-      /* ─── شبكة البطاقات ─── */
-      .dash-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        margin-bottom: 28px;
-      }
-      .dash-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-card);
-        padding: 16px 16px 18px;
-        box-shadow: var(--card-shadow);
-        display: flex; flex-direction: column;
-        transition: transform .13s, box-shadow .13s;
-        position: relative;
-        overflow: hidden;
-      }
-      .dash-card::before {
-        content: "";
-        position: absolute;
-        top: 0; right: 0;
-        width: 60px; height: 60px;
-        border-radius: 0 var(--radius-card) 0 60px;
-        opacity: .06;
-        pointer-events: none;
-      }
-      .dash-card:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--card-hover-shadow);
-      }
-      .dash-card.wide { grid-column: 1 / -1; }
-
-      .dash-card-head {
-        display: flex; align-items: center; gap: 10px;
-        margin-bottom: 13px;
-      }
-      .dash-card-icon {
-        width: 42px; height: 42px;
-        border-radius: var(--radius-icon);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 20px; flex-shrink: 0;
-      }
-      .dc-green  { background: #e8f5e9; }
-      .dc-teal   { background: #e0f7f4; }
-      .dc-blue   { background: #e8eeff; }
-      .dc-gold   { background: #fdf3dc; }
-      .dc-red    { background: #fdecea; }
-      .dc-purple { background: #f0eeff; }
-      .dc-navy   { background: #e8ecf5; }
-      .dc-orange { background: #fff3e0; }
-
-      .dash-card-label {
-        font-size: 12px; font-weight: 700;
-        color: var(--muted); line-height: 1.35;
-      }
-      .dash-card-value {
-        font-size: 28px; font-weight: 900;
-        color: var(--ink); line-height: 1.1;
-      }
-      .dash-card-value.money {
-        font-size: 18px;
-        color: var(--primary-dark);
-      }
-      /* شريط لوني رفيع أسفل كل بطاقة */
-      .dash-card-bar {
-        height: 3px;
-        border-radius: 99px;
-        margin-top: 12px;
-        opacity: .5;
-      }
-      .bar-green  { background: #4caf50; }
-      .bar-teal   { background: #26c6a2; }
-      .bar-blue   { background: #5c6bc0; }
-      .bar-gold   { background: #f9a825; }
-      .bar-red    { background: #ef5350; }
-      .bar-navy   { background: #5c7aad; }
-      .bar-orange { background: #fb8c00; }
-
-      /* ─── آخر العمليات ─── */
-      #recent-activity-list {
-        display: flex; flex-direction: column; gap: 2px; margin-top: 4px;
-      }
-      .activity-item {
-        display: flex; align-items: center; gap: 12px;
-        padding: 11px 8px;
-        border-bottom: 1px solid var(--border);
-        transition: background .12s;
-        border-radius: 8px;
-      }
-      .activity-item:hover { background: var(--bg); }
-      .activity-item:last-child { border-bottom: none; }
-      .activity-icon {
-        flex: 0 0 auto; width: 40px; height: 40px;
-        border-radius: 11px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 18px; background: var(--bg);
-      }
-      .activity-icon.act-prod     { background: #eef2ff; }
-      .activity-icon.act-transfer { background: #eff6ff; }
-      .activity-icon.act-loading  { background: #fff7ed; }
-      .activity-icon.act-in       { background: #ecfdf5; }
-      .activity-icon.act-out      { background: #fef2f2; }
-      .activity-icon.act-att      { background: #f5f3ff; }
-      .activity-body { flex: 1 1 auto; min-width: 0; }
-      .activity-title {
-        font-weight: 700; font-size: 13.5px; color: var(--ink);
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      }
-      .activity-sub {
-        font-size: 12px; color: var(--muted);
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        margin-top: 2px;
-      }
-      .activity-time {
-        flex: 0 0 auto; font-size: 11.5px; color: var(--muted);
-        white-space: nowrap; padding-inline-start: 6px;
-      }
-      #recent-activity-list .empty-state { padding: 28px 0; }
-      @media(max-width:640px) { .activity-sub { display: none; } }
-
-      .dash-activity-wrap {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 18px 16px 14px;
-        box-shadow: var(--card-shadow);
-        margin-bottom: 28px;
-      }
-      .dash-activity-top {
-        display: flex; align-items: center; justify-content: space-between;
-        margin-bottom: 14px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid var(--border);
-      }
-      .dash-activity-title {
-        font-size: 15px; font-weight: 900; color: var(--ink);
-        display: flex; align-items: center; gap: 8px;
-      }
-      .dash-activity-badge {
-        background: var(--primary-soft);
-        color: var(--primary-dark);
-        font-size: 11px; font-weight: 700;
-        padding: 2px 8px;
-        border-radius: 99px;
-      }
-      .dash-activity-sub { font-size: 12px; color: var(--muted); }
-      /* إعادة استخدام activity-panel class للـ JS */
-      .activity-panel .panel-head { display: none; }
-
-      /* ─── روابط سريعة ─── */
-      .dash-shortcuts-head {
-        font-size: 15.5px; font-weight: 900; color: var(--ink);
-        margin-bottom: 14px;
-        display: flex; align-items: center; gap: 8px;
-      }
-      .dash-shortcuts {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-        margin-bottom: 28px;
-      }
-      .dash-shortcut {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 18px 10px 16px;
-        box-shadow: var(--card-shadow);
-        display: flex; flex-direction: column;
-        align-items: center; gap: 9px;
-        text-align: center; color: var(--ink);
-        text-decoration: none;
-        transition: transform .13s, box-shadow .13s, background .12s;
-      }
-      .dash-shortcut:hover {
-        transform: translateY(-4px);
-        box-shadow: var(--card-hover-shadow);
-        background: var(--primary-soft);
-      }
-      .dash-sc-icon {
-        width: 48px; height: 48px;
-        border-radius: 14px;
-        background: var(--primary-soft);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 22px;
-        transition: background .12s;
-      }
-      .dash-shortcut:hover .dash-sc-icon {
-        background: rgba(26,93,58,.15);
-      }
-      .dash-sc-label { font-size: 12.5px; font-weight: 800; }
-      .dash-sc-desc  { font-size: 10.5px; color: var(--muted); line-height: 1.4; }
-
-      /* ─── إخفاء التوبار في الداشبورد على الموبايل فقط ─── */
-      @media(max-width:900px) {
-        #topbar { display: none !important; }
-      }
-
-      /* ─── موبايل ─── */
-      @media(max-width:900px) {
-        .dash-hero { margin:-16px -14px 0; padding:18px 16px 56px; }
-        .dash-float-card { margin:-36px 6px 20px; }
-        .dash-card-value { font-size:24px; }
-        .dash-card-value.money { font-size:16px; }
-        .dash-hero-metric .metric-value { font-size:29px; }
-        .dash-float-val { font-size:18px; }
-      }
-      @media(max-width:500px) {
-        .dash-hero { margin:-12px -10px 0; padding:16px 14px 52px; }
-        .dash-float-card { margin:-30px 4px 16px; }
-        .dash-float-item { padding:13px 6px; }
-        .dash-float-val { font-size:16px; }
-        .dash-card-value { font-size:22px; }
-        .dash-card-value.money { font-size:15px; }
-        .dash-hero-metric .metric-value { font-size:26px; }
-        .dash-shortcuts { grid-template-columns: repeat(3,1fr); gap:8px; }
-        .dash-sc-icon { width:42px; height:42px; font-size:20px; }
-        .dash-sc-label { font-size:11.5px; }
-        .dash-sc-desc { display:none; }
-        .dash-card { padding:14px 13px 16px; }
-        .dash-grid { gap:10px; }
-      }
-    </style>
-  </head>
-  <!-- ══ تعريف أيقونات SVG المشتركة ══ -->
-  <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-    <!-- مستخدم -->
-    <symbol id="ic-user" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-    </symbol>
-    <!-- مجموعة مستخدمين -->
-    <symbol id="ic-users" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-    </symbol>
-    <!-- صندوق/منتج -->
-    <symbol id="ic-box" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/>
-    </symbol>
-    <!-- حقيبة/صندوق -->
-    <symbol id="ic-briefcase" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M20 6h-2.18c.07-.44.18-.86.18-1 0-2.21-1.79-4-4-4s-4 1.79-4 4c0 .14.11.56.18 1H8c-1.11 0-1.99.89-1.99 2L6 19c0 1.11.89 2 2 2h12c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4c-.28 0-.5-.22-.5-.5C9.5 4.12 10.62 3 12 3s2.5 1.12 2.5 2.5c0 .28-.22.5-.5.5z"/>
-    </symbol>
-    <!-- مصافحة/تجار -->
-    <symbol id="ic-handshake" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M11 6H9L7 4H3L1 6v4l2 2h1v5h2v-5h1l2 2h2l1-1V8l-1-2zm0 5H9.41L7 8.59V6.83L8.83 5H9l2 3v3zM23 4h-4l-2 2h-2l-1 2v5l1 1h2l2-2h1v5h2v-5h1l2-2V6l-2-2zm0 5.17L20.17 12H19l-2-3V6h.17L19 4.83V9l-2 2.59V13h.59L20 11h1l2-1.83V9.17z"/>
-    </symbol>
-    <!-- وسم/تاغ -->
-    <symbol id="ic-tag" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>
-    </symbol>
-    <!-- مخطط بياني -->
-    <symbol id="ic-chart" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/>
-    </symbol>
-    <!-- مخزن/متجر -->
-    <symbol id="ic-store" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M20 4H4v2l8 5 8-5V4zm0 14H4V8l8 5 8-5v10z"/>
-    </symbol>
-    <!-- دفع/رواتب -->
-    <symbol id="ic-payment" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
-    </symbol>
-    <!-- صاعقة/عمليات -->
-    <symbol id="ic-flash" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M7 2v11h3v9l7-12h-4l4-8z"/>
-    </symbol>
-    <!-- رابط سريع -->
-    <symbol id="ic-link" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
-    </symbol>
-  </svg>
-
-  <body>
-    <div id="app">
-      <header id="topbar" class="topbar"></header>
-      <main class="page">
-
-        <!-- ══ هيدر الداشبورد ══ -->
-        <div class="dash-hero">
-          <div class="dash-hero-dot"></div>
-          <div class="dash-hero-top">
-            <div class="dash-brand">
-              <img src="https://i.imgur.com/NsN1HgC.png" alt="logo"
-                style="height:38px;object-fit:contain;border-radius:9px;background:rgba(255,255,255,.18);padding:3px 6px;border:1.5px solid rgba(255,255,255,.3);"
-                onerror="this.style.display='none'">
-              <div>
-                <div class="dash-brand-name">Ahmed And hamdy</div>
-                <div class="dash-brand-sub">نظام المحاسبة الداخلي</div>
-              </div>
-            </div>
-            <div class="dash-user-chip">
-              <div class="dash-user-info">
-                <div class="dash-user-name" id="dash-user-name">—</div>
-                <div class="dash-user-role">مستخدم النظام</div>
-              </div>
-              <div class="dash-user-avatar">
-                <svg width="20" height="20"><use href="#ic-user"/></svg>
-              </div>
-            </div>
-          </div>
-          <div class="dash-hero-metric">
-            <div class="metric-label">
-              <svg width="15" height="15" style="opacity:.85"><use href="#ic-briefcase"/></svg>
-              إجمالي صندوق المنتجات
-            </div>
-            <div class="metric-value" id="hero-pf-total">جارِ التحميل...</div>
-            <div class="metric-sub">قيمة المخزون + مستحقات التجار</div>
-          </div>
-        </div>
-
-        <!-- ══ البطاقة العائمة: ملخص سريع ══ -->
-        <div class="dash-float-card">
-          <div class="dash-float-inner">
-            <div class="dash-float-item">
-              <div class="dash-float-icon-wrap dfi-green">
-                <svg width="20" height="20" style="color:#2e7d32"><use href="#ic-box"/></svg>
-              </div>
-              <div class="dash-float-label">المنتجات</div>
-              <div class="dash-float-val" id="float-products-count">—</div>
-            </div>
-            <div class="dash-float-item">
-              <div class="dash-float-icon-wrap dfi-blue">
-                <svg width="20" height="20" style="color:#1565c0"><use href="#ic-handshake"/></svg>
-              </div>
-              <div class="dash-float-label">التجار</div>
-              <div class="dash-float-val" id="float-merchants-count">—</div>
-            </div>
-            <div class="dash-float-item">
-              <div class="dash-float-icon-wrap dfi-orange">
-                <svg width="20" height="20" style="color:#e65100"><use href="#ic-user"/></svg>
-              </div>
-              <div class="dash-float-label">الموظفون</div>
-              <div class="dash-float-val" id="float-employees-count">—</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ══ شريط الفترة الزمنية ══ -->
-        <div class="dash-period-wrap">
-          <div class="dash-period-scroll" id="period-toggle">
-            <button type="button" class="active" data-period="today">اليوم</button>
-            <button type="button" data-period="week">آخر أسبوع</button>
-            <button type="button" data-period="2weeks">آخر أسبوعين</button>
-            <button type="button" data-period="month">آخر شهر</button>
-            <button type="button" data-period="custom">تاريخ مخصص</button>
-          </div>
-          <div class="custom-range" id="custom-range" style="display:none;margin-top:10px">
-            <input type="date" id="range-from" />
-            <span>إلى</span>
-            <input type="date" id="range-to" />
-            <button type="button" class="btn small" id="range-apply-btn">تطبيق</button>
-          </div>
-        </div>
-
-        <!-- ══ قسم المنتجات ══ -->
-        <div class="dash-sec-head">
-          <div class="dash-sec-icon">
-            <svg width="18" height="18" style="color:#1b6b3a"><use href="#ic-box"/></svg>
-          </div>
-          <div class="dash-sec-title">المنتجات</div>
-        </div>
-        <div class="dash-grid">
-          <div class="dash-card">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-green">
-                <svg width="22" height="22" style="color:#2e7d32"><use href="#ic-tag"/></svg>
-              </div>
-              <div class="dash-card-label">عدد المنتجات</div>
-            </div>
-            <div class="dash-card-value" id="stat-products-count">—</div>
-            <div class="dash-card-bar bar-green"></div>
-          </div>
-          <div class="dash-card">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-teal">
-                <svg width="22" height="22" style="color:#00695c"><use href="#ic-chart"/></svg>
-              </div>
-              <div class="dash-card-label">الكمية الإجمالية</div>
-            </div>
-            <div class="dash-card-value" id="stat-products-qty">—</div>
-            <div class="dash-card-bar bar-teal"></div>
-          </div>
-          <div class="dash-card wide">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-navy">
-                <svg width="22" height="22" style="color:#1a3a6b"><use href="#ic-store"/></svg>
-              </div>
-              <div class="dash-card-label">قيمة المخزون الإجمالية</div>
-            </div>
-            <div class="dash-card-value money" id="stat-products-value">—</div>
-            <div class="dash-card-bar bar-navy"></div>
-          </div>
-        </div>
-
-        <!-- ══ قسم صندوق المنتجات ══ -->
-        <div class="dash-sec-head">
-          <div class="dash-sec-icon">
-            <svg width="18" height="18" style="color:#1b6b3a"><use href="#ic-briefcase"/></svg>
-          </div>
-          <div class="dash-sec-title">صندوق المنتجات</div>
-        </div>
-        <div class="dash-grid" id="products-fund-panel">
-          <div class="dash-card">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-navy">
-                <svg width="22" height="22" style="color:#1a3a6b"><use href="#ic-store"/></svg>
-              </div>
-              <div class="dash-card-label">قيمة المخزون بالمخازن</div>
-            </div>
-            <div class="dash-card-value money" id="stat-pf-inventory">—</div>
-            <div class="dash-card-bar bar-navy"></div>
-          </div>
-          <div class="dash-card">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-gold">
-                <svg width="22" height="22" style="color:#b8860b"><use href="#ic-handshake"/></svg>
-              </div>
-              <div class="dash-card-label">مستحقات التجار</div>
-            </div>
-            <div class="dash-card-value money" id="stat-pf-dues">—</div>
-            <div class="dash-card-bar bar-gold"></div>
-          </div>
-          <div class="dash-card wide" style="background:linear-gradient(135deg,#f0faf4 0%,#e8f5ee 100%);border-color:#b6ddc4;">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-green">
-                <svg width="22" height="22" style="color:#1b6b3a"><use href="#ic-briefcase"/></svg>
-              </div>
-              <div class="dash-card-label" style="font-size:13px;font-weight:800;color:var(--primary-dark);">إجمالي صندوق المنتجات</div>
-            </div>
-            <div class="dash-card-value money" id="stat-pf-total" style="font-size:22px;">—</div>
-            <div class="dash-card-bar bar-green" style="opacity:.7;"></div>
-          </div>
-        </div>
-
-        <!-- ══ التجار والموظفون ══ -->
-        <div class="dash-sec-head">
-          <div class="dash-sec-icon">
-            <svg width="18" height="18" style="color:#1b6b3a"><use href="#ic-users"/></svg>
-          </div>
-          <div class="dash-sec-title">التجار والموظفون</div>
-        </div>
-        <div class="dash-grid">
-          <div class="dash-card">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-blue">
-                <svg width="22" height="22" style="color:#1565c0"><use href="#ic-handshake"/></svg>
-              </div>
-              <div class="dash-card-label">عدد التجار</div>
-            </div>
-            <div class="dash-card-value" id="stat-merchants-count">—</div>
-            <div class="dash-card-bar bar-blue"></div>
-          </div>
-          <div class="dash-card">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-orange">
-                <svg width="22" height="22" style="color:#e65100"><use href="#ic-user"/></svg>
-              </div>
-              <div class="dash-card-label">عدد الموظفين</div>
-            </div>
-            <div class="dash-card-value" id="stat-employees-count">—</div>
-            <div class="dash-card-bar bar-orange"></div>
-          </div>
-          <div class="dash-card wide">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-red">
-                <svg width="22" height="22" style="color:#c62828"><use href="#ic-payment"/></svg>
-              </div>
-              <div class="dash-card-label" id="stat-payroll-label">الرواتب المستحقة</div>
-            </div>
-            <div class="dash-card-value money" id="stat-payroll">—</div>
-            <div class="dash-card-bar bar-red"></div>
-          </div>
-        </div>
-
-        <!-- ══ آخر العمليات ══ -->
-        <div class="dash-activity-wrap activity-panel">
-          <div class="dash-activity-top">
-            <div class="dash-activity-title">
-              <svg width="16" height="16" style="color:#f59e0b;flex-shrink:0"><use href="#ic-flash"/></svg>
-              آخر العمليات
-              <span class="dash-activity-badge">حسب الفترة</span>
-            </div>
-            <div class="dash-activity-sub">أحدث 12 عملية</div>
-          </div>
-          <!-- panel-head مخفي — تستخدمه activity-panel JS -->
-          <div class="panel-head" style="display:none"><h3></h3><p></p></div>
-          <div id="recent-activity-list">
-            <div class="empty-state">جارِ التحميل...</div>
-          </div>
-        </div>
-
-        <!-- ══ روابط سريعة ══ -->
-        <div class="dash-shortcuts-head">
-          <svg width="17" height="17" style="color:var(--primary-dark)"><use href="#ic-link"/></svg>
-          وصول سريع
-        </div>
-        <div class="dash-shortcuts">
-          <a class="dash-shortcut" href="/products.html">
-            <div class="dash-sc-icon">
-              <svg width="24" height="24" style="color:#2e7d32"><use href="#ic-box"/></svg>
-            </div>
-            <div class="dash-sc-label">المنتجات</div>
-            <div class="dash-sc-desc">المخازن والحركات</div>
-          </a>
-          <a class="dash-shortcut" href="/merchants.html">
-            <div class="dash-sc-icon">
-              <svg width="24" height="24" style="color:#1565c0"><use href="#ic-handshake"/></svg>
-            </div>
-            <div class="dash-sc-label">التجار</div>
-            <div class="dash-sc-desc">الحسابات والكشوفات</div>
-          </a>
-          <a class="dash-shortcut" href="/employees.html">
-            <div class="dash-sc-icon">
-              <svg width="24" height="24" style="color:#e65100"><use href="#ic-users"/></svg>
-            </div>
-            <div class="dash-sc-label">الموظفون</div>
-            <div class="dash-sc-desc">الرواتب والحضور</div>
-          </a>
-        </div>
-
-      </main>
-    </div>
-  </body>
-
-  <!-- ═══════ مزامنة البطاقة العائمة مع القيم المحسوبة ═══════ -->
   <script>
   (function(){
-    // اسم المستخدم في الهيدر
-    function syncUserName(){
-      try {
-        const name = localStorage.getItem("ahDisplay") || localStorage.getItem("displayName") || "";
-        if(name) document.getElementById("dash-user-name").textContent = name;
-      } catch(e){}
+    var _NF=Intl.NumberFormat;
+    function patchLocale(l){
+      if(!l)return"ar-EG-u-nu-latn";
+      if(typeof l==="string")return l.includes("nu-")?l:l.replace(/^ar(-EG)?/,"ar-EG-u-nu-latn");
+      if(Array.isArray(l))return l.map(patchLocale);
+      return"ar-EG-u-nu-latn";
     }
-    syncUserName();
-    // مزامنة عداد البطاقة العائمة مع القيم الرئيسية عند تعبئتها
-    function mirrorVal(srcId, destId){
-      const src = document.getElementById(srcId);
-      const dest = document.getElementById(destId);
-      if(!src || !dest) return;
-      const obs = new MutationObserver(()=>{ dest.textContent = src.textContent; });
-      obs.observe(src, {childList:true, characterData:true, subtree:true});
-      if(src.textContent !== "—") dest.textContent = src.textContent;
-    }
-    window.addEventListener("DOMContentLoaded", ()=>{
-      mirrorVal("stat-products-count",  "float-products-count");
-      mirrorVal("stat-merchants-count", "float-merchants-count");
-      mirrorVal("stat-employees-count", "float-employees-count");
-      mirrorVal("stat-pf-total",        "hero-pf-total");
-    });
+    Intl.NumberFormat=function(l,o){return new _NF(patchLocale(l),o)};
+    Object.assign(Intl.NumberFormat,_NF);
+    Intl.NumberFormat.prototype=_NF.prototype;
   })();
   </script>
 
-  <!-- ═══════ صندوق المنتجات — يستخدم نفس تطبيق Firebase الافتراضي ═══════ -->
-  <script type="module">
-    import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <script type="module" crossorigin src="/assets/dashboard-DSedGtPY.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/auth-guard-DMMO1gWE.js"/>
+  <link rel="modulepreload" crossorigin href="/assets/nav-C4LmEyvm.js"/>
+  <link rel="stylesheet" crossorigin href="/assets/auth-guard-C6CJ8_8i.css"/>
 
-    // ─── نستخدم التطبيق الافتراضي الذي هيَّأه auth-guard مسبقاً ───
-    // لا ننشئ تطبيقاً ثانياً حتى لا ينفصل سياق المصادقة
-    const PF_CFG = {
-      apiKey:            "AIzaSyDQsaNVskKiV2cwPVlJDixpTD1S-Dhp7gs",
-      authDomain:        "reta-and-hamd.firebaseapp.com",
-      projectId:         "reta-and-hamd",
-      storageBucket:     "reta-and-hamd.firebasestorage.app",
-      messagingSenderId: "220767743863",
-      appId:             "1:220767743863:web:2ecd37bd5830a39ec1bb72"
-    };
+  <style>
+  /* ════════════════════════════════════════════════
+     DESIGN TOKENS
+  ════════════════════════════════════════════════ */
+  :root {
+    --g900: #0d3520;
+    --g800: #145228;
+    --g700: #1b6b3a;
+    --g600: #2e8049;
+    --g500: #43a05f;
+    --g100: #e8f5ee;
+    --g50:  #f2faf5;
 
-    // إذا لم يُهيَّأ بعد (حالة نادرة) نهيّئه كتطبيق افتراضي، وإلا نأخذه مباشرة
-    const pfApp = getApps().length > 0 ? getApp() : initializeApp(PF_CFG);
-    const pfAuth = getAuth(pfApp);
-    const pfDb   = getFirestore(pfApp);
+    --ink:    #0f1923;
+    --ink2:   #374151;
+    --muted:  #6b7280;
+    --border: #e5e7eb;
+    --bg:     #f8fafc;
+    --surface:#ffffff;
 
-    const pfFmt = n => new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(n||0)+" ج.م";
+    --blue:   #1d4ed8;
+    --blue-s: #eff6ff;
+    --gold:   #b45309;
+    --gold-s: #fffbeb;
+    --red:    #b91c1c;
+    --red-s:  #fef2f2;
+    --teal:   #0d7377;
+    --teal-s: #f0fdfb;
+    --navy:   #1e3a5f;
+    --navy-s: #eff3fc;
+    --purple: #6d28d9;
+    --purple-s:#f5f3ff;
 
-    // ─── نستمع لحالة المصادقة على التطبيق الافتراضي ───
-    onAuthStateChanged(pfAuth, user => {
-      if (user) {
-        // عرض اسم المستخدم
-        const nameEl = document.getElementById("dash-user-name");
-        if (nameEl) {
-          const name = user.displayName || (user.email ? user.email.split("@")[0] : "");
-          if (name) nameEl.textContent = name;
-        }
-        loadProductsFund();
-      }
-    });
+    --shadow-sm: 0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.04);
+    --shadow-md: 0 4px 16px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.04);
+    --shadow-lg: 0 12px 36px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.06);
+    --r-sm: 10px;
+    --r-md: 14px;
+    --r-lg: 20px;
+    --r-xl: 26px;
+  }
 
-    async function loadProductsFund(){
-      try{
-        const [prodSnap, merTxSnap, finTxSnap] = await Promise.all([
-          getDocs(collection(pfDb,"products")),
-          getDocs(collection(pfDb,"merchantTransactions")),
-          getDocs(collection(pfDb,"finance_transactions")),
-        ]);
+  /* ════════ RESET / BASE ════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        // 1) قيمة المخزون = كمية كل منتج × سعره
-        const inventoryValue = prodSnap.docs.reduce((s,d)=>{
-          const p=d.data();
-          return s+(Number(p.quantity)||0)*(Number(p.price)||0);
-        }, 0);
+  body {
+    font-family: 'Cairo', var(--font-sans, sans-serif);
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
 
-        // 2) مستحقات التجار — نفس منطق صفحة المالية تماماً
-        // merchantTransactions: type="out" = بيع (دين على التاجر) → رصيد سالب
-        // finance_transactions type="merchant": dir="in" = سداد → يُقلل الدين
-        // الرصيد السالب = التاجر مدين ← نجمع Math.max(0, -bal)
-        const byMerchant = {};
-        merTxSnap.docs.forEach(d=>{
-          const t=d.data(); if(!t.merchantId) return;
-          byMerchant[t.merchantId]=(byMerchant[t.merchantId]||0)+(t.type==="out"?-1:1)*(Number(t.amount)||0);
-        });
-        // finance_transactions: نُقصي المحذوفات (_active===false) كما تفعل صفحة المالية
-        finTxSnap.docs.forEach(d=>{
-          const t=d.data();
-          if(t._active===false||t.type!=="merchant"||!t.merchantId) return;
-          byMerchant[t.merchantId]=(byMerchant[t.merchantId]||0)+(t.dir==="in"?1:-1)*(Number(t.amount)||0);
-        });
-        // الرصيد السالب = تاجر مدين ← نأخذ Math.max(0, -bal) كما في صفحة المالية
-        const merchantDues = Object.values(byMerchant).reduce((s,bal)=>s+Math.max(0,-bal),0);
+  /* Hide topbar on mobile — dashboard only */
+  @media(max-width: 900px) { #topbar { display: none !important; } }
 
-        document.getElementById("stat-pf-inventory").textContent = pfFmt(inventoryValue);
-        document.getElementById("stat-pf-dues").textContent      = pfFmt(merchantDues);
-        document.getElementById("stat-pf-total").textContent     = pfFmt(inventoryValue+merchantDues);
-        // تحديث الهيدر البطولي مباشرةً
-        const heroEl = document.getElementById("hero-pf-total");
-        if(heroEl) heroEl.textContent = pfFmt(inventoryValue+merchantDues);
-      }catch(err){
-        console.error("خطأ في تحميل صندوق المنتجات:", err);
-        ["stat-pf-inventory","stat-pf-dues","stat-pf-total","hero-pf-total"].forEach(id=>{
-          const el=document.getElementById(id); if(el) el.textContent="خطأ";
-        });
-      }
+  /* ════════ PAGE LAYOUT ════════ */
+  .page { padding: 0 !important; overflow-x: hidden; }
+
+  /* ════════════════════════════════════════════════
+     HERO BANNER
+  ════════════════════════════════════════════════ */
+  .dh-hero {
+    background: linear-gradient(135deg, #0d3520 0%, #1b6b3a 45%, #145228 100%);
+    padding: 22px 20px 70px;
+    position: relative;
+    overflow: hidden;
+    margin: -28px -24px 0;
+  }
+  @media(max-width:900px)  { .dh-hero { margin: -16px -14px 0; padding: 18px 16px 66px; } }
+  @media(max-width:500px)  { .dh-hero { margin: -12px -10px 0; padding: 15px 14px 62px; } }
+
+  /* decorative blobs */
+  .dh-hero-blob {
+    position: absolute; border-radius: 50%; pointer-events: none;
+    background: rgba(255,255,255,.055);
+  }
+  .dh-hero-blob:nth-child(1) { width:280px;height:280px; top:-80px; right:-70px; }
+  .dh-hero-blob:nth-child(2) { width:200px;height:200px; bottom:-90px; left:-50px; }
+  .dh-hero-blob:nth-child(3) { width:130px;height:130px; top:50%; left:40%; transform:translateY(-50%); background:rgba(255,255,255,.03); }
+
+  /* top row: brand + user */
+  .dh-hero-top {
+    display: flex; align-items: center; justify-content: space-between;
+    position: relative; z-index: 2; margin-bottom: 22px;
+  }
+  .dh-brand { display: flex; align-items: center; gap: 10px; }
+  .dh-brand-logo {
+    height: 38px; object-fit: contain;
+    border-radius: 9px;
+    background: rgba(255,255,255,.15);
+    padding: 3px 7px;
+    border: 1.5px solid rgba(255,255,255,.28);
+  }
+  .dh-brand-name  { font-size: 15px; font-weight: 800; color: #fff; line-height: 1.2; }
+  .dh-brand-sub   { font-size: 11px; color: rgba(255,255,255,.6); margin-top: 1px; }
+
+  .dh-user { display: flex; align-items: center; gap: 9px; }
+  .dh-user-info { text-align: right; }
+  .dh-user-name  {
+    font-size: 12.5px; font-weight: 700; color: #fff;
+    max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .dh-user-role  { font-size: 10.5px; color: rgba(255,255,255,.55); margin-top: 1px; }
+  .dh-user-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(255,255,255,.18); border: 2px solid rgba(255,255,255,.38);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; flex-shrink: 0;
+  }
+
+  /* KPI strip inside hero */
+  .dh-kpi-strip {
+    position: relative; z-index: 2;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .dh-kpi {
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: var(--r-md);
+    padding: 14px 16px;
+    backdrop-filter: blur(8px);
+    position: relative; overflow: hidden;
+  }
+  .dh-kpi.hero-kpi {
+    grid-column: 1 / -1;
+    background: rgba(255,255,255,.14);
+    border-color: rgba(255,255,255,.22);
+  }
+  .dh-kpi-label {
+    font-size: 11.5px; font-weight: 600; color: rgba(255,255,255,.7);
+    display: flex; align-items: center; gap: 6px; margin-bottom: 7px;
+  }
+  .dh-kpi-value {
+    font-size: 30px; font-weight: 900; color: #fff; line-height: 1;
+    letter-spacing: -0.5px;
+  }
+  .dh-kpi.hero-kpi .dh-kpi-value { font-size: 36px; }
+  .dh-kpi-sub {
+    font-size: 11px; color: rgba(255,255,255,.5); margin-top: 5px;
+  }
+  .dh-kpi-shine {
+    position: absolute; top: -20px; left: -20px;
+    width: 80px; height: 80px; border-radius: 50%;
+    background: rgba(255,255,255,.06); pointer-events: none;
+  }
+
+  /* ════════════════════════════════════════════════
+     FLOAT SUMMARY CARD
+  ════════════════════════════════════════════════ */
+  .dh-summary-card {
+    background: var(--surface);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+    margin: -44px 0 28px;
+    position: relative; z-index: 10;
+    overflow: hidden;
+    padding: 0 4px;
+  }
+  .dh-summary-inner {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+  }
+  .dh-sum-item {
+    padding: 18px 10px 16px;
+    text-align: center;
+    position: relative;
+    cursor: default;
+    transition: background .15s;
+  }
+  .dh-sum-item:hover { background: var(--g50); }
+  .dh-sum-item + .dh-sum-item::before {
+    content: ""; position: absolute; top: 20%; bottom: 20%; right: 0;
+    width: 1px; background: var(--border);
+  }
+  .dh-sum-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 8px;
+  }
+  .dh-sum-label { font-size: 10.5px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+  .dh-sum-val   { font-size: 22px; font-weight: 900; color: var(--ink); line-height: 1; }
+
+  /* ════════════════════════════════════════════════
+     CONTENT WRAPPER
+  ════════════════════════════════════════════════ */
+  .dh-content { padding: 0 20px 32px; }
+  @media(max-width:900px) { .dh-content { padding: 0 14px 28px; } }
+  @media(max-width:500px) { .dh-content { padding: 0 10px 24px; } }
+
+  /* ════════════════════════════════════════════════
+     PERIOD FILTER
+  ════════════════════════════════════════════════ */
+  .dh-filter-wrap { margin-bottom: 24px; }
+  .dh-filter-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 5px;
+    display: flex; gap: 4px; overflow-x: auto;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    box-shadow: var(--shadow-sm);
+  }
+  .dh-filter-row::-webkit-scrollbar { display: none; }
+  .dh-filter-row button {
+    flex: 0 0 auto; padding: 8px 16px;
+    border: none; border-radius: var(--r-sm);
+    background: transparent; font-family: inherit;
+    font-size: 13px; font-weight: 700; color: var(--muted);
+    cursor: pointer; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .dh-filter-row button:hover:not(.active) { background: var(--bg); color: var(--ink2); }
+  .dh-filter-row button.active {
+    background: var(--g700); color: #fff;
+    box-shadow: 0 3px 10px rgba(27,107,58,.35);
+  }
+  .custom-range {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 10px; flex-wrap: wrap;
+  }
+  .custom-range input[type=date] {
+    border: 1px solid var(--border); border-radius: var(--r-sm);
+    padding: 7px 10px; font-family: inherit; font-size: 13px;
+    color: var(--ink); background: var(--surface);
+    outline: none;
+  }
+  .custom-range input[type=date]:focus { border-color: var(--g600); }
+
+  /* ════════════════════════════════════════════════
+     SECTION HEADER
+  ════════════════════════════════════════════════ */
+  .dh-sec {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 28px 0 14px;
+  }
+  .dh-sec-left { display: flex; align-items: center; gap: 10px; }
+  .dh-sec-icon {
+    width: 34px; height: 34px; border-radius: var(--r-sm);
+    background: var(--g100); color: var(--g700);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .dh-sec-title  { font-size: 16px; font-weight: 900; color: var(--ink); }
+  .dh-sec-line   {
+    flex: 1; height: 1px; background: var(--border);
+    margin-inline-start: 10px;
+  }
+
+  /* ════════════════════════════════════════════════
+     KPI GRID CARDS
+  ════════════════════════════════════════════════ */
+  .dh-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; margin-bottom: 4px;
+  }
+  .dh-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  @media(max-width:500px) {
+    .dh-grid.cols-3 { grid-template-columns: 1fr 1fr; }
+  }
+
+  .dh-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 18px 18px 16px;
+    box-shadow: var(--shadow-sm);
+    position: relative; overflow: hidden;
+    transition: transform .14s, box-shadow .14s;
+    display: flex; flex-direction: column;
+  }
+  .dh-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .dh-card.span2 { grid-column: 1 / -1; }
+  .dh-card.accent {
+    background: linear-gradient(135deg, #f2faf5 0%, #e6f4ec 100%);
+    border-color: #c2dece;
+  }
+
+  /* top-right corner accent line */
+  .dh-card::after {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; border-radius: var(--r-lg) var(--r-lg) 0 0;
+    opacity: 0; transition: opacity .15s;
+  }
+  .dh-card:hover::after { opacity: 1; }
+  .dh-card.c-green::after  { background: linear-gradient(90deg,#43a05f,#2e8049); }
+  .dh-card.c-teal::after   { background: linear-gradient(90deg,#0d7377,#14a085); }
+  .dh-card.c-navy::after   { background: linear-gradient(90deg,#1e3a5f,#2d5a8e); }
+  .dh-card.c-gold::after   { background: linear-gradient(90deg,#b45309,#d97706); }
+  .dh-card.c-blue::after   { background: linear-gradient(90deg,#1d4ed8,#3b82f6); }
+  .dh-card.c-red::after    { background: linear-gradient(90deg,#b91c1c,#ef4444); }
+  .dh-card.c-accent::after { background: linear-gradient(90deg,#1b6b3a,#43a05f); }
+
+  .dh-card-top {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; margin-bottom: 14px;
+  }
+  .dh-card-icon {
+    width: 44px; height: 44px; border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .ci-green  { background: #dcf5e4; color: #166534; }
+  .ci-teal   { background: #ccfbf1; color: #0f766e; }
+  .ci-navy   { background: #dbeafe; color: #1e40af; }
+  .ci-gold   { background: #fef3c7; color: #92400e; }
+  .ci-blue   { background: #eff6ff; color: #1d4ed8; }
+  .ci-red    { background: #fee2e2; color: #991b1b; }
+  .ci-purple { background: #ede9fe; color: #5b21b6; }
+
+  .dh-card-badge {
+    font-size: 10px; font-weight: 700;
+    padding: 3px 8px; border-radius: 99px;
+    letter-spacing: .3px;
+  }
+  .badge-up   { background: #dcfce7; color: #166534; }
+  .badge-info { background: var(--g100); color: var(--g700); }
+
+  .dh-card-label {
+    font-size: 12px; font-weight: 600; color: var(--muted);
+    line-height: 1.4; margin-bottom: 2px;
+  }
+  .dh-card-value {
+    font-size: 30px; font-weight: 900; color: var(--ink);
+    line-height: 1.05; letter-spacing: -0.5px;
+  }
+  .dh-card-value.money {
+    font-size: 20px; color: var(--g800); letter-spacing: 0;
+  }
+  .dh-card-value.money.big { font-size: 26px; }
+  .dh-card-sub {
+    font-size: 11.5px; color: var(--muted); margin-top: 6px;
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  /* sparkline bar */
+  .dh-card-bar {
+    height: 4px; border-radius: 99px; margin-top: 14px;
+    background: var(--border); overflow: hidden;
+  }
+  .dh-card-bar-fill {
+    height: 100%; border-radius: 99px; width: 60%;
+    background: currentColor; opacity: .5;
+    animation: barGrow .6s ease both;
+  }
+  @keyframes barGrow { from { width:0; } }
+
+  /* ════════════════════════════════════════════════
+     PRODUCTS FUND HIGHLIGHT CARD
+  ════════════════════════════════════════════════ */
+  .dh-fund-card {
+    background: linear-gradient(135deg, #0f3d22 0%, #1b6b3a 100%);
+    border-radius: var(--r-xl);
+    padding: 22px 22px 20px;
+    color: #fff; position: relative; overflow: hidden;
+    box-shadow: 0 8px 32px rgba(27,107,58,.35);
+    margin-bottom: 4px;
+  }
+  .dh-fund-blob {
+    position: absolute; border-radius: 50%; pointer-events: none;
+    background: rgba(255,255,255,.06);
+  }
+  .dh-fund-blob:nth-child(1) { width:160px;height:160px; top:-50px;right:-40px; }
+  .dh-fund-blob:nth-child(2) { width:100px;height:100px; bottom:-30px;left:-20px; }
+  .dh-fund-top {
+    display: flex; align-items: center; justify-content: space-between;
+    position: relative; z-index: 1; margin-bottom: 18px;
+  }
+  .dh-fund-title {
+    font-size: 13px; font-weight: 700; opacity: .8;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .dh-fund-tag {
+    background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25);
+    font-size: 10.5px; font-weight: 600; padding: 2px 9px;
+    border-radius: 99px; color: rgba(255,255,255,.85);
+  }
+  .dh-fund-main {
+    position: relative; z-index: 1;
+    font-size: 38px; font-weight: 900; line-height: 1;
+    letter-spacing: -1px; color: #fff; margin-bottom: 4px;
+  }
+  .dh-fund-sub {
+    font-size: 11.5px; opacity: .55; position: relative; z-index: 1;
+  }
+  .dh-fund-row {
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin-top: 18px;
+  }
+  .dh-fund-item {
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: var(--r-md); padding: 12px 14px;
+  }
+  .dh-fund-item-label {
+    font-size: 10.5px; opacity: .65; font-weight: 600; margin-bottom: 5px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .dh-fund-item-val {
+    font-size: 17px; font-weight: 800; color: #fff;
+  }
+
+  /* ════════════════════════════════════════════════
+     ACTIVITY FEED
+  ════════════════════════════════════════════════ */
+  .dh-activity {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 4px;
+  }
+  .dh-activity-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 18px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .dh-activity-title {
+    font-size: 14.5px; font-weight: 800; color: var(--ink);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .dh-activity-pill {
+    background: var(--g100); color: var(--g700);
+    font-size: 10.5px; font-weight: 700;
+    padding: 2px 9px; border-radius: 99px;
+  }
+  .dh-activity-sub { font-size: 11.5px; color: var(--muted); }
+
+  /* reuse existing activity-panel JS hooks */
+  .activity-panel .panel-head { display: none; }
+  #recent-activity-list { display: flex; flex-direction: column; }
+  .activity-item {
+    display: flex; align-items: center; gap: 13px;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+    transition: background .12s;
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-item:hover { background: var(--g50); }
+  .activity-icon {
+    flex: 0 0 auto; width: 40px; height: 40px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+  }
+  .activity-icon.act-prod     { background: #eef2ff; }
+  .activity-icon.act-transfer { background: #eff6ff; }
+  .activity-icon.act-loading  { background: #fff7ed; }
+  .activity-icon.act-in       { background: #ecfdf5; }
+  .activity-icon.act-out      { background: #fef2f2; }
+  .activity-icon.act-att      { background: #f5f3ff; }
+  .activity-body { flex: 1 1 auto; min-width: 0; }
+  .activity-title {
+    font-weight: 700; font-size: 13px; color: var(--ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .activity-sub {
+    font-size: 11.5px; color: var(--muted); margin-top: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .activity-time {
+    flex: 0 0 auto; font-size: 11px; color: var(--muted);
+    white-space: nowrap; padding-inline-start: 8px;
+  }
+  #recent-activity-list .empty-state {
+    padding: 36px 0; text-align: center;
+    font-size: 13px; color: var(--muted);
+  }
+  @media(max-width:640px) { .activity-sub { display: none; } }
+
+  /* ════════════════════════════════════════════════
+     QUICK ACCESS
+  ════════════════════════════════════════════════ */
+  .dh-nav-grid {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 12px; margin-bottom: 8px;
+  }
+  .dh-nav-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 20px 12px 18px;
+    box-shadow: var(--shadow-sm);
+    display: flex; flex-direction: column;
+    align-items: center; gap: 10px;
+    text-align: center; color: var(--ink);
+    text-decoration: none;
+    transition: transform .14s, box-shadow .14s, border-color .14s;
+    position: relative; overflow: hidden;
+  }
+  .dh-nav-item::before {
+    content: ""; position: absolute; inset: 0;
+    background: var(--g50); opacity: 0; transition: opacity .14s;
+  }
+  .dh-nav-item:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--g500); }
+  .dh-nav-item:hover::before { opacity: 1; }
+  .dh-nav-icon {
+    width: 52px; height: 52px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; z-index: 1; transition: transform .14s;
+  }
+  .dh-nav-item:hover .dh-nav-icon { transform: scale(1.08); }
+  .dh-nav-label { font-size: 13px; font-weight: 800; position: relative; z-index: 1; }
+  .dh-nav-desc  { font-size: 11px; color: var(--muted); line-height: 1.4; position: relative; z-index: 1; }
+
+  /* ════════════════════════════════════════════════
+     MOBILE RESPONSIVE
+  ════════════════════════════════════════════════ */
+  @media(max-width:900px) {
+    .dh-kpi.hero-kpi .dh-kpi-value { font-size:30px; }
+    .dh-kpi-value { font-size:24px; }
+    .dh-summary-card { margin: -40px 0 22px; }
+    .dh-fund-main { font-size:30px; }
+  }
+  @media(max-width:600px) {
+    .dh-kpi-strip { grid-template-columns: 1fr; }
+    .dh-kpi.hero-kpi { grid-column: auto; }
+    .dh-card-value { font-size:24px; }
+    .dh-card-value.money { font-size:17px; }
+    .dh-card-value.money.big { font-size:21px; }
+    .dh-fund-main { font-size:26px; }
+    .dh-fund-row { grid-template-columns: 1fr; }
+    .dh-nav-grid { gap: 8px; }
+    .dh-nav-icon { width:44px;height:44px;border-radius:13px; }
+    .dh-nav-desc { display:none; }
+    .dh-summary-card { border-radius: var(--r-lg); }
+    .dh-sum-val { font-size:18px; }
+  }
+  @media(max-width:380px) {
+    .dh-nav-label { font-size:11.5px; }
+    .dh-card { padding: 14px 14px 13px; }
+  }
+  </style>
+</head>
+
+<!-- SVG sprite -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="ic-user" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+  </symbol>
+  <symbol id="ic-users" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+  </symbol>
+  <symbol id="ic-box" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/>
+  </symbol>
+  <symbol id="ic-briefcase" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20 6h-2.18c.07-.44.18-.86.18-1 0-2.21-1.79-4-4-4s-4 1.79-4 4c0 .14.11.56.18 1H8c-1.11 0-1.99.89-1.99 2L6 19c0 1.11.89 2 2 2h12c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4c-.28 0-.5-.22-.5-.5C9.5 4.12 10.62 3 12 3s2.5 1.12 2.5 2.5c0 .28-.22.5-.5.5z"/>
+  </symbol>
+  <symbol id="ic-handshake" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M11 6H9L7 4H3L1 6v4l2 2h1v5h2v-5h1l2 2h2l1-1V8l-1-2zm0 5H9.41L7 8.59V6.83L8.83 5H9l2 3v3zM23 4h-4l-2 2h-2l-1 2v5l1 1h2l2-2h1v5h2v-5h1l2-2V6l-2-2zm0 5.17L20.17 12H19l-2-3V6h.17L19 4.83V9l-2 2.59V13h.59L20 11h1l2-1.83V9.17z"/>
+  </symbol>
+  <symbol id="ic-tag" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>
+  </symbol>
+  <symbol id="ic-chart" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/>
+  </symbol>
+  <symbol id="ic-store" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20 4H4v2l8 5 8-5V4zm0 14H4V8l8 5 8-5v10z"/>
+  </symbol>
+  <symbol id="ic-payment" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+  </symbol>
+  <symbol id="ic-flash" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M7 2v11h3v9l7-12h-4l4-8z"/>
+  </symbol>
+  <symbol id="ic-link" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+  </symbol>
+  <symbol id="ic-wallet" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M21 18v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1h-9a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9zm-9-2h10V8H12v8zm4-2.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+  </symbol>
+  <symbol id="ic-trend" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+  </symbol>
+  <symbol id="ic-inventory" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/>
+  </symbol>
+</svg>
+
+<body>
+<div id="app">
+  <header id="topbar" class="topbar"></header>
+  <main class="page">
+
+    <!-- ══════════════════════════════════════════
+         HERO
+    ══════════════════════════════════════════ -->
+    <div class="dh-hero">
+      <div class="dh-hero-blob"></div>
+      <div class="dh-hero-blob"></div>
+      <div class="dh-hero-blob"></div>
+
+      <!-- Brand + User row -->
+      <div class="dh-hero-top">
+        <div class="dh-brand">
+          <img src="https://i.imgur.com/NsN1HgC.png" alt="logo" class="dh-brand-logo"
+               onerror="this.style.display='none'">
+          <div>
+            <div class="dh-brand-name">Ahmed And hamdy</div>
+            <div class="dh-brand-sub">نظام المحاسبة الداخلي</div>
+          </div>
+        </div>
+        <div class="dh-user">
+          <div class="dh-user-info">
+            <div class="dh-user-name" id="dash-user-name">—</div>
+            <div class="dh-user-role">مستخدم النظام</div>
+          </div>
+          <div class="dh-user-avatar">
+            <svg width="19" height="19"><use href="#ic-user"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI strip -->
+      <div class="dh-kpi-strip">
+        <!-- hero KPI -->
+        <div class="dh-kpi hero-kpi">
+          <div class="dh-kpi-shine"></div>
+          <div class="dh-kpi-label">
+            <svg width="14" height="14"><use href="#ic-briefcase"/></svg>
+            إجمالي صندوق المنتجات
+          </div>
+          <div class="dh-kpi-value" id="hero-pf-total">جارِ التحميل…</div>
+          <div class="dh-kpi-sub">قيمة المخزون + مستحقات التجار</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         FLOATING SUMMARY
+    ══════════════════════════════════════════ -->
+    <div style="padding: 0 20px;">
+    <div class="dh-summary-card">
+      <div class="dh-summary-inner">
+        <div class="dh-sum-item">
+          <div class="dh-sum-icon" style="background:#dcf5e4;">
+            <svg width="22" height="22" style="color:#166534"><use href="#ic-box"/></svg>
+          </div>
+          <div class="dh-sum-label">المنتجات</div>
+          <div class="dh-sum-val" id="float-products-count">—</div>
+        </div>
+        <div class="dh-sum-item">
+          <div class="dh-sum-icon" style="background:#dbeafe;">
+            <svg width="22" height="22" style="color:#1e40af"><use href="#ic-handshake"/></svg>
+          </div>
+          <div class="dh-sum-label">التجار</div>
+          <div class="dh-sum-val" id="float-merchants-count">—</div>
+        </div>
+        <div class="dh-sum-item">
+          <div class="dh-sum-icon" style="background:#fef3c7;">
+            <svg width="22" height="22" style="color:#92400e"><use href="#ic-users"/></svg>
+          </div>
+          <div class="dh-sum-label">الموظفون</div>
+          <div class="dh-sum-val" id="float-employees-count">—</div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         MAIN CONTENT
+    ══════════════════════════════════════════ -->
+    <div class="dh-content">
+
+      <!-- ── فلتر الفترة ── -->
+      <div class="dh-filter-wrap">
+        <div class="dh-filter-row" id="period-toggle">
+          <button type="button" class="active" data-period="today">اليوم</button>
+          <button type="button" data-period="week">آخر أسبوع</button>
+          <button type="button" data-period="2weeks">آخر أسبوعين</button>
+          <button type="button" data-period="month">آخر شهر</button>
+          <button type="button" data-period="custom">تاريخ مخصص</button>
+        </div>
+        <div class="custom-range" id="custom-range" style="display:none">
+          <input type="date" id="range-from"/>
+          <span style="color:var(--muted);font-size:13px;">إلى</span>
+          <input type="date" id="range-to"/>
+          <button type="button" class="btn small" id="range-apply-btn">تطبيق</button>
+        </div>
+      </div>
+
+      <!-- ══ صندوق المنتجات — بطاقة بارزة ══ -->
+      <div class="dh-sec" style="margin-top:0;">
+        <div class="dh-sec-left">
+          <div class="dh-sec-icon">
+            <svg width="18" height="18"><use href="#ic-briefcase"/></svg>
+          </div>
+          <div class="dh-sec-title">صندوق المنتجات</div>
+        </div>
+        <div class="dh-sec-line"></div>
+      </div>
+
+      <!-- بطاقة إجمالي صندوق المنتجات المميزة -->
+      <div class="dh-fund-card" id="products-fund-panel">
+        <div class="dh-fund-blob"></div>
+        <div class="dh-fund-blob"></div>
+        <div class="dh-fund-top">
+          <div class="dh-fund-title">
+            <svg width="16" height="16"><use href="#ic-wallet"/></svg>
+            إجمالي صندوق المنتجات
+          </div>
+          <span class="dh-fund-tag">تلقائي</span>
+        </div>
+        <div class="dh-fund-main" id="stat-pf-total">—</div>
+        <div class="dh-fund-sub">قيمة المخزون + مستحقات التجار</div>
+        <div class="dh-fund-row">
+          <div class="dh-fund-item">
+            <div class="dh-fund-item-label">
+              <svg width="13" height="13"><use href="#ic-store"/></svg>
+              قيمة المخزون بالمخازن
+            </div>
+            <div class="dh-fund-item-val" id="stat-pf-inventory">—</div>
+          </div>
+          <div class="dh-fund-item">
+            <div class="dh-fund-item-label">
+              <svg width="13" height="13"><use href="#ic-handshake"/></svg>
+              مستحقات التجار
+            </div>
+            <div class="dh-fund-item-val" id="stat-pf-dues">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ المنتجات ══ -->
+      <div class="dh-sec">
+        <div class="dh-sec-left">
+          <div class="dh-sec-icon">
+            <svg width="18" height="18"><use href="#ic-box"/></svg>
+          </div>
+          <div class="dh-sec-title">المنتجات</div>
+        </div>
+        <div class="dh-sec-line"></div>
+      </div>
+
+      <div class="dh-grid">
+        <!-- عدد المنتجات -->
+        <div class="dh-card c-green">
+          <div class="dh-card-top">
+            <div class="dh-card-icon ci-green">
+              <svg width="22" height="22"><use href="#ic-tag"/></svg>
+            </div>
+            <span class="dh-card-badge badge-info">SKU</span>
+          </div>
+          <div class="dh-card-label">عدد المنتجات</div>
+          <div class="dh-card-value" id="stat-products-count">—</div>
+          <div class="dh-card-sub">
+            <svg width="12" height="12" style="color:#43a05f"><use href="#ic-trend"/></svg>
+            إجمالي الأصناف المُسجَّلة
+          </div>
+          <div class="dh-card-bar"><div class="dh-card-bar-fill" style="color:#43a05f;width:70%"></div></div>
+        </div>
+
+        <!-- الكمية الإجمالية -->
+        <div class="dh-card c-teal">
+          <div class="dh-card-top">
+            <div class="dh-card-icon ci-teal">
+              <svg width="22" height="22"><use href="#ic-chart"/></svg>
+            </div>
+            <span class="dh-card-badge badge-info">وحدة</span>
+          </div>
+          <div class="dh-card-label">الكمية الإجمالية بالمخزون</div>
+          <div class="dh-card-value" id="stat-products-qty">—</div>
+          <div class="dh-card-sub">مجموع كل الوحدات المتاحة</div>
+          <div class="dh-card-bar"><div class="dh-card-bar-fill" style="color:#0d7377;width:55%"></div></div>
+        </div>
+
+        <!-- قيمة المخزون -->
+        <div class="dh-card c-navy span2">
+          <div class="dh-card-top">
+            <div class="dh-card-icon ci-navy">
+              <svg width="22" height="22"><use href="#ic-store"/></svg>
+            </div>
+            <span class="dh-card-badge badge-info">ج.م</span>
+          </div>
+          <div class="dh-card-label">قيمة المخزون الإجمالية</div>
+          <div class="dh-card-value money big" id="stat-products-value">—</div>
+          <div class="dh-card-sub">الكمية × سعر البيع لكل منتج</div>
+          <div class="dh-card-bar"><div class="dh-card-bar-fill" style="color:#1e3a5f;width:80%"></div></div>
+        </div>
+      </div>
+
+      <!-- ══ التجار والموظفون ══ -->
+      <div class="dh-sec">
+        <div class="dh-sec-left">
+          <div class="dh-sec-icon">
+            <svg width="18" height="18"><use href="#ic-users"/></svg>
+          </div>
+          <div class="dh-sec-title">التجار والموظفون</div>
+        </div>
+        <div class="dh-sec-line"></div>
+      </div>
+
+      <div class="dh-grid">
+        <!-- التجار -->
+        <div class="dh-card c-blue">
+          <div class="dh-card-top">
+            <div class="dh-card-icon ci-navy">
+              <svg width="22" height="22"><use href="#ic-handshake"/></svg>
+            </div>
+            <span class="dh-card-badge badge-info">تاجر</span>
+          </div>
+          <div class="dh-card-label">عدد التجار</div>
+          <div class="dh-card-value" id="stat-merchants-count">—</div>
+          <div class="dh-card-sub">شركاء الأعمال المُسجَّلون</div>
+          <div class="dh-card-bar"><div class="dh-card-bar-fill" style="color:#1d4ed8;width:65%"></div></div>
+        </div>
+
+        <!-- الموظفون -->
+        <div class="dh-card c-gold">
+          <div class="dh-card-top">
+            <div class="dh-card-icon ci-gold">
+              <svg width="22" height="22"><use href="#ic-user"/></svg>
+            </div>
+            <span class="dh-card-badge badge-info">موظف</span>
+          </div>
+          <div class="dh-card-label">عدد الموظفين</div>
+          <div class="dh-card-value" id="stat-employees-count">—</div>
+          <div class="dh-card-sub">أعضاء الفريق النشطون</div>
+          <div class="dh-card-bar"><div class="dh-card-bar-fill" style="color:#b45309;width:45%"></div></div>
+        </div>
+
+        <!-- الرواتب المستحقة -->
+        <div class="dh-card c-red span2">
+          <div class="dh-card-top">
+            <div class="dh-card-icon ci-red">
+              <svg width="22" height="22"><use href="#ic-payment"/></svg>
+            </div>
+          </div>
+          <div class="dh-card-label" id="stat-payroll-label">الرواتب المستحقة</div>
+          <div class="dh-card-value money big" id="stat-payroll">—</div>
+          <div class="dh-card-sub">محسوب من سجلات الحضور والساعات</div>
+          <div class="dh-card-bar"><div class="dh-card-bar-fill" style="color:#b91c1c;width:50%"></div></div>
+        </div>
+      </div>
+
+      <!-- ══ آخر العمليات ══ -->
+      <div class="dh-sec">
+        <div class="dh-sec-left">
+          <div class="dh-sec-icon" style="background:#fffbeb;color:#92400e;">
+            <svg width="18" height="18"><use href="#ic-flash"/></svg>
+          </div>
+          <div class="dh-sec-title">آخر العمليات</div>
+        </div>
+        <div class="dh-sec-line"></div>
+      </div>
+
+      <div class="dh-activity activity-panel">
+        <div class="dh-activity-head">
+          <div class="dh-activity-title">
+            سجل النشاط
+            <span class="dh-activity-pill">حسب الفترة</span>
+          </div>
+          <div class="dh-activity-sub">أحدث 12 عملية</div>
+        </div>
+        <div class="panel-head" style="display:none"><h3></h3><p></p></div>
+        <div id="recent-activity-list">
+          <div class="empty-state">جارِ التحميل…</div>
+        </div>
+      </div>
+
+      <!-- ══ وصول سريع ══ -->
+      <div class="dh-sec">
+        <div class="dh-sec-left">
+          <div class="dh-sec-icon">
+            <svg width="18" height="18"><use href="#ic-link"/></svg>
+          </div>
+          <div class="dh-sec-title">وصول سريع</div>
+        </div>
+        <div class="dh-sec-line"></div>
+      </div>
+
+      <div class="dh-nav-grid">
+        <a class="dh-nav-item" href="/products.html">
+          <div class="dh-nav-icon" style="background:#dcf5e4;">
+            <svg width="26" height="26" style="color:#166534"><use href="#ic-box"/></svg>
+          </div>
+          <div class="dh-nav-label">المنتجات</div>
+          <div class="dh-nav-desc">المخازن والحركات</div>
+        </a>
+        <a class="dh-nav-item" href="/merchants.html">
+          <div class="dh-nav-icon" style="background:#dbeafe;">
+            <svg width="26" height="26" style="color:#1e40af"><use href="#ic-handshake"/></svg>
+          </div>
+          <div class="dh-nav-label">التجار</div>
+          <div class="dh-nav-desc">الحسابات والكشوفات</div>
+        </a>
+        <a class="dh-nav-item" href="/employees.html">
+          <div class="dh-nav-icon" style="background:#fef3c7;">
+            <svg width="26" height="26" style="color:#92400e"><use href="#ic-users"/></svg>
+          </div>
+          <div class="dh-nav-label">الموظفون</div>
+          <div class="dh-nav-desc">الرواتب والحضور</div>
+        </a>
+      </div>
+
+    </div><!-- /dh-content -->
+  </main>
+</div>
+</body>
+
+<!-- ═══════ مزامنة القيم المرآوية ═══════ -->
+<script>
+(function(){
+  function syncUserName(){
+    try {
+      const name = localStorage.getItem("ahDisplay") || localStorage.getItem("displayName") || "";
+      if(name) document.getElementById("dash-user-name").textContent = name;
+    } catch(e){}
+  }
+  syncUserName();
+
+  function mirrorVal(srcId, destId){
+    const src = document.getElementById(srcId);
+    const dest = document.getElementById(destId);
+    if(!src || !dest) return;
+    const obs = new MutationObserver(()=>{ dest.textContent = src.textContent; });
+    obs.observe(src, {childList:true, characterData:true, subtree:true});
+    if(src.textContent !== "—") dest.textContent = src.textContent;
+  }
+  window.addEventListener("DOMContentLoaded", ()=>{
+    mirrorVal("stat-products-count",  "float-products-count");
+    mirrorVal("stat-merchants-count", "float-merchants-count");
+    mirrorVal("stat-employees-count", "float-employees-count");
+    mirrorVal("stat-pf-total",        "hero-pf-total");
+  });
+})();
+</script>
+
+<!-- ═══════ صندوق المنتجات — Firebase ═══════ -->
+<script type="module">
+  import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged }     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const PF_CFG = {
+    apiKey:            "AIzaSyDQsaNVskKiV2cwPVlJDixpTD1S-Dhp7gs",
+    authDomain:        "reta-and-hamd.firebaseapp.com",
+    projectId:         "reta-and-hamd",
+    storageBucket:     "reta-and-hamd.firebasestorage.app",
+    messagingSenderId: "220767743863",
+    appId:             "1:220767743863:web:2ecd37bd5830a39ec1bb72"
+  };
+
+  const pfApp  = getApps().length > 0 ? getApp() : initializeApp(PF_CFG);
+  const pfAuth = getAuth(pfApp);
+  const pfDb   = getFirestore(pfApp);
+  const pfFmt  = n => new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(n||0)+" ج.م";
+
+  onAuthStateChanged(pfAuth, user => {
+    if (!user) return;
+    const nameEl = document.getElementById("dash-user-name");
+    if (nameEl) {
+      const name = user.displayName || (user.email ? user.email.split("@")[0] : "");
+      if (name) nameEl.textContent = name;
     }
-  </script>
+    loadProductsFund();
+  });
+
+  async function loadProductsFund(){
+    try {
+      const [prodSnap, merTxSnap, finTxSnap] = await Promise.all([
+        getDocs(collection(pfDb,"products")),
+        getDocs(collection(pfDb,"merchantTransactions")),
+        getDocs(collection(pfDb,"finance_transactions")),
+      ]);
+
+      // 1) قيمة المخزون = كمية × سعر
+      const inventoryValue = prodSnap.docs.reduce((s,d)=>{
+        const p = d.data();
+        return s + (Number(p.quantity)||0) * (Number(p.price)||0);
+      }, 0);
+
+      // 2) مستحقات التجار — مطابق لمنطق صفحة المالية
+      const byMerchant = {};
+      merTxSnap.docs.forEach(d=>{
+        const t = d.data(); if(!t.merchantId) return;
+        byMerchant[t.merchantId] = (byMerchant[t.merchantId]||0) + (t.type==="out"?-1:1)*(Number(t.amount)||0);
+      });
+      finTxSnap.docs.forEach(d=>{
+        const t = d.data();
+        if(t._active===false || t.type!=="merchant" || !t.merchantId) return;
+        byMerchant[t.merchantId] = (byMerchant[t.merchantId]||0) + (t.dir==="in"?1:-1)*(Number(t.amount)||0);
+      });
+      const merchantDues = Object.values(byMerchant).reduce((s,bal)=>s+Math.max(0,-bal),0);
+
+      document.getElementById("stat-pf-inventory").textContent = pfFmt(inventoryValue);
+      document.getElementById("stat-pf-dues").textContent      = pfFmt(merchantDues);
+      document.getElementById("stat-pf-total").textContent     = pfFmt(inventoryValue + merchantDues);
+      const heroEl = document.getElementById("hero-pf-total");
+      if(heroEl) heroEl.textContent = pfFmt(inventoryValue + merchantDues);
+    } catch(err) {
+      console.error("خطأ في تحميل صندوق المنتجات:", err);
+      ["stat-pf-inventory","stat-pf-dues","stat-pf-total","hero-pf-total"].forEach(id=>{
+        const el = document.getElementById(id); if(el) el.textContent = "خطأ";
+      });
+    }
+  }
+</script>
 </html>
