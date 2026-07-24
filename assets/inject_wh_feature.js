@@ -324,6 +324,19 @@ function _initAdjModal(){
           +" | \u0642\u0628\u0644: "+_num(qtyBefore)+" | \u0628\u0639\u062f: "+_num(qtyAfter),
         userEmail:email,
       }).catch(()=>{});
+      /* \u062a\u062d\u062f\u064a\u062b DOM \u0641\u0648\u0631\u0627\u064b \u062f\u0648\u0646 \u0625\u0639\u0627\u062f\u0629 \u062a\u062d\u0645\u064a\u0644 */
+      if(section){
+        section.querySelectorAll(".wh-product-card").forEach(function(card){
+          var editBtn=card.querySelector(".edit-prod-btn[data-prod-id=\\""+prodId+"\\"]")
+                    ||card.querySelector("[data-prod-id=\\""+prodId+"\\"]");
+          if(editBtn){
+            var qtyEl=card.querySelector(".wpc-qty-num");
+            if(qtyEl) qtyEl.textContent=_num(qtyAfter);
+          }
+        });
+      }
+      var selOpt=document.getElementById("wh-adj-product").selectedOptions[0];
+      if(selOpt) selOpt.dataset.qty=qtyAfter;
       _toast(type==="add"?"\u062a\u0645\u062a \u0627\u0644\u0625\u0636\u0627\u0641\u0629 \u0628\u0646\u062c\u0627\u062d \u2713":"\u062a\u0645 \u0627\u0644\u0627\u0633\u062a\u0647\u0644\u0627\u0643 \u0628\u0646\u062c\u0627\u062d \u2713");
       _closeAdj();
     }catch(err){
