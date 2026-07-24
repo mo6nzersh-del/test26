@@ -1044,19 +1044,21 @@ function _initAdjModal(){
       }).catch(()=>{});
 
       /* ── تحديث DOM فوراً دون إعادة تحميل ── */
-      const _section = document.querySelector('.warehouse-section[data-wh-id="'+whId+'"]');
-      if(_section){
-        _section.querySelectorAll('.wh-product-card').forEach(card=>{
-          const editBtn = card.querySelector('.edit-prod-btn[data-prod-id="'+prodId+'"]')
-                       || card.querySelector('[data-prod-id="'+prodId+'"]');
-          if(editBtn){
-            const qtyEl = card.querySelector('.wpc-qty-num');
-            if(qtyEl) qtyEl.textContent = _num(qtyAfter);
-          }
-        });
-      }
+      try{
+        const whSection = document.querySelector('.warehouse-section[data-wh-id="'+whId+'"]');
+        if(whSection){
+          whSection.querySelectorAll('.wh-product-card').forEach(function(card){
+            /* ابحث عن أي عنصر يحمل data-prod-id مطابق داخل البطاقة */
+            const marker = card.querySelector('[data-prod-id="'+prodId+'"]');
+            if(marker){
+              const qtyEl = card.querySelector('.wpc-qty-num');
+              if(qtyEl) qtyEl.textContent = _num(qtyAfter);
+            }
+          });
+        }
+      }catch(_e){ /* تحديث DOM اختياري — لا نوقف التنفيذ */ }
       /* تحديث data-qty على الـ option حتى يكون الفتح التالي صحيحاً */
-      if(opt) opt.dataset.qty = qtyAfter;
+      try{ if(opt) opt.dataset.qty = String(qtyAfter); }catch(_e){}
 
       _toast(type==="add"?"تمت الإضافة بنجاح ✓":"تم الاستهلاك بنجاح ✓");
       _closeAdj();
