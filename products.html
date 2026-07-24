@@ -872,18 +872,32 @@ let _logWhId  = null;
 let _logUnsub = null;
 
 /* ══════════════════════════════════
-   قراءة منتجات مخزن من Firestore
+   قراءة منتجات مخزن من الـ DOM
+   (المنتجات مرسومة بالفعل — لا نحتاج Firestore)
 ══════════════════════════════════ */
 function _loadWhProducts(warehouseId, cb){
-  const q = query(
-    collection(_db,"products"),
-    where("warehouseId","==",warehouseId),
-    orderBy("createdAt","asc")
-  );
-  const unsub = onSnapshot(q, snap=>{
-    unsub();
-    cb(snap.docs.map(d=>({id:d.id,...d.data()})));
-  }, err=>{ console.error(err); cb([]); });
+  const section = document.querySelector('.warehouse-section[data-wh-id="'+warehouseId+'"]');
+  if(!section){ cb([]); return; }
+  const prods = [];
+  section.querySelectorAll(".wh-product-card").forEach(card=>{
+    /* ابحث عن أي عنصر يحمل data-prod-id داخل البطاقة */
+    const marker = card.querySelector("[data-prod-id]");
+    if(!marker) return;
+    const prodId = marker.dataset.prodId;
+    if(!prodId) return;
+    /* الاسم: خذ النصوص المباشرة فقط (تجنب بادجات مثل "زائر") */
+    const nameEl = card.querySelector(".wpc-name");
+    let name = "";
+    if(nameEl) nameEl.childNodes.forEach(n=>{ if(n.nodeType===3) name+=n.textContent; });
+    name = name.trim() || nameEl?.textContent?.trim() || "?";
+    /* الكمية بأرقام لاتينية */
+    const qtyText = (card.querySelector(".wpc-qty-num")?.textContent||"0")
+                      .trim().replace(/,/g,"").replace(/[٠-٩]/g, d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d));
+    const qty = parseFloat(qtyText) || 0;
+    const unit = card.querySelector(".wpc-qty-unit")?.textContent?.trim() || "";
+    prods.push({ id:prodId, name, quantity:qty, quantityType:unit });
+  });
+  cb(prods);
 }
 
 /* ══════════════════════════════════
