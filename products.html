@@ -335,6 +335,14 @@
         }
       }
 
+      /* ══ spinner زر الحفظ ══ */
+      @keyframes whadj-spin{ to{transform:rotate(360deg)} }
+      .whadj-spinner{
+        display:inline-block;width:16px;height:16px;vertical-align:middle;
+        border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;
+        border-radius:50%;animation:whadj-spin .65s linear infinite;
+      }
+
       /* ══ مودال تعديل المخزون ══ */
       #wh-adjust-modal .adj-type-group{display:flex;gap:8px;margin-bottom:18px}
       #wh-adjust-modal .adj-type-btn{
@@ -821,9 +829,9 @@
 <script type="module">
 /* ════════════════════════════════════════════════════════════════════
    تعديل مخزون المخازن + سجل حركات كل مخزن
-   — Firebase CDN (app name "whadj" مستقل عن التطبيق الرئيسي)
+   — يستخدم Firebase app الرئيسي (نفس جلسة المستخدم المسجّل)
 ════════════════════════════════════════════════════════════════════ */
-import { initializeApp, getApps }
+import { initializeApp, getApps, getApp }
   from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import {
   getFirestore, collection, addDoc, onSnapshot,
@@ -832,7 +840,7 @@ import {
 import { getAuth }
   from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
-/* ── Firebase init ── */
+/* ── Firebase init: استخدم التطبيق الرئيسي إن وُجد، وإلا أنشئ واحداً ── */
 const FB_CFG = {
   apiKey:            "AIzaSyDQsaNVskKiV2cwPVlJDixpTD1S-Dhp7gs",
   authDomain:        "reta-and-hamd.firebaseapp.com",
@@ -841,8 +849,13 @@ const FB_CFG = {
   messagingSenderId: "220767743863",
   appId:             "1:220767743863:web:2ecd37bd5830a39ec1bb72",
 };
-const _existingApp = getApps().find(a => a.name === "whadj");
-const _app  = _existingApp || initializeApp(FB_CFG, "whadj");
+/* الأولوية: التطبيق الافتراضي [DEFAULT] → أي تطبيق موجود → تهيئة جديدة */
+const _app = (()=>{
+  const apps = getApps();
+  if(!apps.length) return initializeApp(FB_CFG);
+  const def = apps.find(a=>a.name==="[DEFAULT]");
+  return def || apps[0];
+})();
 const _db   = getFirestore(_app);
 const _auth = getAuth(_app);
 
@@ -1027,7 +1040,7 @@ function _initAdjModal(){
     }
 
     const btn=document.getElementById("wh-adj-submit-btn");
-    btn.disabled=true; btn.innerHTML='<span class="spinner"></span>';
+    btn.disabled=true; btn.innerHTML='<span class="whadj-spinner"></span> جارِ الحفظ…';
     try {
       /* اسم المخزن */
       const whSnap = await getDoc(doc(_db,"warehouses",whId));
@@ -1200,6 +1213,13 @@ document.addEventListener("DOMContentLoaded",()=>{
   _initAdjModal();
   _initLogModal();
   _watchContainer();
+
+  /* Escape يغلق أي مودال مفتوح */
+  document.addEventListener("keydown", e=>{
+    if(e.key!=="Escape") return;
+    if(document.getElementById("wh-adjust-modal").classList.contains("open")) _closeAdj();
+    if(document.getElementById("wh-log-modal").classList.contains("open"))    _closeLog();
+  });
 });
 </script>
 
