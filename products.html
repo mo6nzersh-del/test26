@@ -1119,18 +1119,25 @@ function _openLog(whId, section){
   const body=document.getElementById("wh-log-body");
   body.innerHTML='<div class="wh-log-empty">جارِ التحميل…</div>';
 
+  /* ملاحظة: تجنبنا orderBy مع where لأن ذلك يتطلب Composite Index في Firestore
+     — نجلب بـ where فقط ثم نرتب على الجهاز */
   const q=query(
     collection(_db,"warehouseAdjustments"),
-    where("warehouseId","==",whId),
-    orderBy("createdAt","desc")
+    where("warehouseId","==",whId)
   );
   _logUnsub=onSnapshot(q, snap=>{
-    if(snap.empty){
+    /* رتّب تنازلياً بـ createdAt على الجهاز */
+    const docs = snap.docs.slice().sort((a,b)=>{
+      const ta = a.data().createdAt?.toMillis?.() ?? 0;
+      const tb = b.data().createdAt?.toMillis?.() ?? 0;
+      return tb - ta;
+    });
+    if(docs.length===0){
       body.innerHTML='<div class="wh-log-empty">لا توجد حركات تعديل لهذا المخزن بعد</div>';
       return;
     }
-    let trows="", cards="", rowNum=snap.size;
-    snap.forEach(ds=>{
+    let trows="", cards="", rowNum=docs.length;
+    docs.forEach(ds=>{
       const d=ds.data();
       const seq="WA-"+String(rowNum).padStart(4,"0"); rowNum--;
       const bcls=d.type==="add"?"whadj-add":"whadj-consume";
