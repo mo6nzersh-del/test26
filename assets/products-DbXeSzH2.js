@@ -63,6 +63,24 @@ function fmtDateTimeLong(ts) {
   return d.toLocaleString("ar-EG", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
+/* select editable number values on interaction so typing replaces them immediately */
+function initNumberInputSelection() {
+  function selectIfEditableNumber(target) {
+    if (!(target instanceof HTMLInputElement) ||
+        target.type !== "number" ||
+        target.readOnly ||
+        target.disabled) return;
+    target.select();
+  }
+
+  document.addEventListener("focusin", event => {
+    selectIfEditableNumber(event.target);
+  });
+  document.addEventListener("click", event => {
+    selectIfEditableNumber(event.target);
+  });
+}
+
 /* serial ID: W{warehouseIndex}-{5-digit sequence} — always auto-generated */
 function generateSerial(warehouseId) {
   const idx = warehouses.findIndex(w => w.id === warehouseId);
@@ -75,6 +93,7 @@ function generateSerial(warehouseId) {
 /* ─── init ─── */
 initPage(user => {
   currentUser = user;
+  initNumberInputSelection();
   initTabs();
   initWarehouseContainerDelegation();
   initWarehouseModal();
