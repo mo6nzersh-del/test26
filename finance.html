@@ -2089,5 +2089,7 @@ async function saveTx(e){
     cntEl.textContent = `${ps.length} منتج — ${wh?.name??""}`;
   }
 </script>
+<style>#pg-ov{position:fixed;inset:0;z-index:9999;background:linear-gradient(145deg,#4f46e5,#7c3aed);opacity:0;pointer-events:none;transition:opacity .25s ease}#pg-ov.pg-on{opacity:1;pointer-events:all}</style>
+<script>(function(){var ov=document.createElement('div');ov.id='pg-ov';document.body.insertBefore(ov,document.body.firstChild);document.addEventListener('click',function(e){var a=e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href');if(!h||h.charAt(0)==='#'||h.indexOf('javascript')===0||a.target==='_blank')return;e.preventDefault();ov.classList.add('pg-on');setTimeout(function(){window.location.href=h;},260);},true);})();</script>
 </body>
 </html>
