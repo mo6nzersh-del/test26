@@ -321,6 +321,20 @@
       }
       .wh-log-btn:hover{background:var(--bg);border-color:var(--primary,#1a6b3a);color:var(--primary,#1a6b3a)}
 
+      /* ══ تجاوب أزرار المخزن على الهاتف ══ */
+      @media(max-width:600px){
+        .warehouse-section-header{flex-wrap:wrap;padding:10px 12px;gap:8px}
+        .warehouse-section-title{flex:1;min-width:0}
+        .warehouse-section-actions{
+          display:flex;flex-wrap:wrap;gap:6px;width:100%;
+        }
+        .wh-adj-btn, .wh-log-btn{
+          flex:1;justify-content:center;
+          font-size:.8rem;padding:9px 8px;border-radius:10px;
+          min-width:0;
+        }
+      }
+
       /* ══ مودال تعديل المخزون ══ */
       #wh-adjust-modal .adj-type-group{display:flex;gap:8px;margin-bottom:18px}
       #wh-adjust-modal .adj-type-btn{
@@ -1028,6 +1042,21 @@ function _initAdjModal(){
           +" | قبل: "+_num(qtyBefore)+" | بعد: "+_num(qtyAfter),
         userEmail:performedBy, createdAt:serverTimestamp()
       }).catch(()=>{});
+
+      /* ── تحديث DOM فوراً دون إعادة تحميل ── */
+      const _section = document.querySelector('.warehouse-section[data-wh-id="'+whId+'"]');
+      if(_section){
+        _section.querySelectorAll('.wh-product-card').forEach(card=>{
+          const editBtn = card.querySelector('.edit-prod-btn[data-prod-id="'+prodId+'"]')
+                       || card.querySelector('[data-prod-id="'+prodId+'"]');
+          if(editBtn){
+            const qtyEl = card.querySelector('.wpc-qty-num');
+            if(qtyEl) qtyEl.textContent = _num(qtyAfter);
+          }
+        });
+      }
+      /* تحديث data-qty على الـ option حتى يكون الفتح التالي صحيحاً */
+      if(opt) opt.dataset.qty = qtyAfter;
 
       _toast(type==="add"?"تمت الإضافة بنجاح ✓":"تم الاستهلاك بنجاح ✓");
       _closeAdj();
