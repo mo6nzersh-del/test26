@@ -330,35 +330,8 @@
         }
         .wh-adj-btn, .wh-log-btn{
           flex:1;justify-content:center;
-          font-size:.82rem;padding:10px 8px;border-radius:10px;
+          font-size:.8rem;padding:9px 8px;border-radius:10px;
           min-width:0;
-        }
-
-        /* ══ مودال تعديل المخزون على الهاتف ══ */
-        #wh-adjust-modal,
-        #wh-log-modal {
-          padding:0 !important;
-          align-items:flex-end !important; /* يظهر من الأسفل */
-        }
-        #wh-adjust-modal .modal-box {
-          max-width:100% !important;
-          width:100% !important;
-          border-radius:20px 20px 0 0 !important;
-          max-height:92vh;
-          overflow-y:auto;
-          padding-bottom:env(safe-area-inset-bottom, 12px);
-        }
-        #wh-log-modal .modal-box {
-          max-width:100% !important;
-          width:100% !important;
-          border-radius:20px 20px 0 0 !important;
-          max-height:90vh !important;
-        }
-        #wh-adjust-modal .adj-type-btn{
-          padding:10px 6px;font-size:.82rem;
-        }
-        #wh-adj-submit-btn{
-          width:100%;padding:13px;font-size:1rem;
         }
       }
 
@@ -1243,7 +1216,7 @@ function _initLogModal(){
 /* ══════════════════════════════════
    Bootstrap
 ══════════════════════════════════ */
-function _boot(){
+document.addEventListener("DOMContentLoaded",()=>{
   _initAdjModal();
   _initLogModal();
   _watchContainer();
@@ -1254,18 +1227,7 @@ function _boot(){
     if(document.getElementById("wh-adjust-modal").classList.contains("open")) _closeAdj();
     if(document.getElementById("wh-log-modal").classList.contains("open"))    _closeLog();
   });
-}
-
-/*
-  هام: type="module" مؤجَّل تلقائياً، لكن fetch الـ imports قد يستغرق وقتاً
-  (خاصةً على الهاتف بالشبكة البطيئة) وقد يكون DOMContentLoaded قد أُطلق بالفعل
-  — لذلك نتحقق من readyState أولاً
-*/
-if(document.readyState === "loading"){
-  document.addEventListener("DOMContentLoaded", _boot);
-} else {
-  _boot();
-}
+});
 </script>
 
 </body>
