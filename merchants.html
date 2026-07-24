@@ -825,7 +825,7 @@ function openMerModal(mer){
     document.getElementById("merchant-email").value  =mer.email??"";
   } else {
     editMerId=null;
-    document.getElementById("merchant-modal-title").textContent="إضافة ٪اجر";
+    document.getElementById("merchant-modal-title").textContent="إضافة تاجر";
   }
   document.getElementById("merchant-modal").classList.add("open");
 }
@@ -1197,7 +1197,7 @@ function _buildAllRows(){
   return all;
 }
 
-/* ── إحصائيات الفترة المn�لترة ── */
+/* ── إحصائيات الفترة المفلترة ── */
 function renderUnifiedStats(){
   // نستبعد حركات finance_transactions من نوع غير "merchant" (سلفة/سحب/إيداع/أخرى)
   // من حساب مستحقات التاجر — هي تظهر في السجل للاطّلاع فقط ولا تمثل ديناً عليه
@@ -1519,7 +1519,7 @@ function printStatement(){
   }
 
   /* بناء صفوف مع رصيد جارٍ */
-  let runBal=openingBalan�e;
+  let runBal=openingBalance;
   let totalIn=0,totalOut=0;
   const rows=all.map((t,idx)=>{
     const isIn=t.dir==="in";
@@ -1707,7 +1707,5 @@ function printStatement(){
 }
 
 </script>
-<style>#pg-ov{position:fixed;inset:0;z-index:9999;background:linear-gradient(145deg,#4f46e5,#7c3aed);opacity:0;pointer-events:none;transition:opacity .25s ease}#pg-ov.pg-on{opacity:1;pointer-events:all}</style>
-<script>(function(){var ov=document.createElement('div');ov.id='pg-ov';document.body.insertBefore(ov,document.body.firstChild);document.addEventListener('click',function(e){var a=e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href');if(!h||h.charAt(0)==='#'||h.indexOf('javascript')===0||a.target==='_blank')return;e.preventDefault();ov.classList.add('pg-on');setTimeout(function(){window.location.href=h;},260);},true);})();</script>
 </body>
 </html>
