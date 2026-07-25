@@ -120,7 +120,15 @@
     .mer-print-only{display:none!important}
     @media print{
       .mer-print-only{display:block!important} .mer-screen-only{display:none!important}
+      /* إخفاء كل شيء */
       body > *{display:none!important}
+      /* إخفاء صريح لعناصر position:fixed قد تتجاهل display:none في متصفحات الهاتف */
+      #page-loader{display:none!important;opacity:0!important;visibility:hidden!important}
+      #bottom-nav{display:none!important;opacity:0!important;visibility:hidden!important}
+      /* إعادة تعيين خلفية الصفحة */
+      html{background:#fff!important;background-image:none!important}
+      body{background:#fff!important;background-image:none!important;margin:0!important;padding:0!important}
+      /* إظهار نافذة العملية فقط */
       #tx-detail-modal{display:block!important;position:fixed!important;top:0;left:0;right:0;bottom:0;background:#fff!important;padding:0!important;overflow:visible!important}
       #tx-detail-modal .modal-box{box-shadow:none!important;border:none!important;max-height:none!important;overflow:visible!important;padding:0!important;border-radius:0!important;background:#fff!important;width:100%!important;max-width:100%!important}
       #tx-detail-modal .modal-box-header,#tx-detail-print-footer{display:none!important}
@@ -310,7 +318,12 @@
       *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
       #topbar,.page-header,.section-tabs,.back-link,.filter-bar,
       .btn,.row-actions,.modal-overlay{display:none!important}
-      body{background:#fff!important}
+      /* إخفاء صريح لعناصر position:fixed */
+      #page-loader{display:none!important;opacity:0!important;visibility:hidden!important}
+      #bottom-nav{display:none!important;opacity:0!important;visibility:hidden!important}
+      /* إعادة تعيين الخلفية */
+      html{background:#fff!important;background-image:none!important}
+      body{background:#fff!important;background-image:none!important}
       .page{max-width:100%!important;padding:10px 20px!important;margin:0!important}
       .panel{box-shadow:none!important;border:1.5px solid #ccc!important;
         margin-bottom:14px!important;page-break-inside:avoid}
