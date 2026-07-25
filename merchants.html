@@ -1719,9 +1719,6 @@ function printStatement(){
               :`<span class="hdr-badge">جميع الفترات</span>`}
           </div>
         </div>
-        ${fromVal?`<div style="font-size:10px;color:#777;margin-top:6px;padding-top:6px;border-top:1px dashed #ddd">
-          رصيد مرحّل قبل الفترة: <strong style="color:${openingBalance>=0?"#1a6b3a":"#b3432f"}">${fmtM(Math.abs(openingBalance))} ${openingBalance>=0?"(على التاجر)":"(دائن)"}</strong>
-        </div>`:""}
       </td>
     </tr>
     <tr class="col-hdr">
