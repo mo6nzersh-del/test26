@@ -120,19 +120,22 @@
     .mer-print-only{display:none!important}
     @media print{
       .mer-print-only{display:block!important} .mer-screen-only{display:none!important}
-      /* إخفاء كل شيء */
+      /* ── مشترك: إخفاء كل شيء + تنظيف الخلفية ── */
       body > *{display:none!important}
-      /* إخفاء صريح لعناصر position:fixed قد تتجاهل display:none في متصفحات الهاتف */
       #page-loader{display:none!important;opacity:0!important;visibility:hidden!important}
       #bottom-nav{display:none!important;opacity:0!important;visibility:hidden!important}
-      /* إعادة تعيين خلفية الصفحة */
       html{background:#fff!important;background-image:none!important}
       body{background:#fff!important;background-image:none!important;margin:0!important;padding:0!important}
-      /* إظهار نافذة العملية فقط */
-      #tx-detail-modal{display:block!important;position:fixed!important;top:0;left:0;right:0;bottom:0;background:#fff!important;padding:0!important;overflow:visible!important}
-      #tx-detail-modal .modal-box{box-shadow:none!important;border:none!important;max-height:none!important;overflow:visible!important;padding:0!important;border-radius:0!important;background:#fff!important;width:100%!important;max-width:100%!important}
-      #tx-detail-modal .modal-box-header,#tx-detail-print-footer{display:none!important}
-      @page{size:A4 portrait;margin:18mm 20mm 22mm 20mm}
+      /* ── طباعة تفاصيل الحركة (tx-print-mode) ── */
+      body.tx-print-mode #tx-detail-modal{display:block!important;position:fixed!important;top:0;left:0;right:0;bottom:0;background:#fff!important;padding:0!important;overflow:visible!important}
+      body.tx-print-mode #tx-detail-modal .modal-box{box-shadow:none!important;border:none!important;max-height:none!important;overflow:visible!important;padding:0!important;border-radius:0!important;background:#fff!important;width:100%!important;max-width:100%!important}
+      body.tx-print-mode #tx-detail-modal .modal-box-header,body.tx-print-mode #tx-detail-print-footer{display:none!important}
+      /* ── طباعة كشف الحساب (stmt-print-mode) ── */
+      body.stmt-print-mode #stmt-preview-modal{display:block!important;position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;background:#fff!important;padding:10mm 12mm!important;overflow:visible!important;z-index:9999!important}
+      body.stmt-print-mode #stmt-preview-modal .stmt-modal-box{box-shadow:none!important;border:none!important;max-height:none!important;overflow:visible!important;padding:0!important;border-radius:0!important;background:#fff!important;width:100%!important;max-width:100%!important;display:block!important}
+      body.stmt-print-mode #stmt-preview-modal .stmt-modal-header,body.stmt-print-mode #stmt-preview-footer{display:none!important}
+      body.stmt-print-mode #stmt-preview-content{overflow:visible!important;max-height:none!important}
+      @page{size:A4 portrait;margin:0}
       *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
       .doc-watermark{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-size:90px;font-weight:900;color:rgba(42,91,191,0.04);pointer-events:none;white-space:nowrap;z-index:0;letter-spacing:8px}
       .doc-outer-border{border:3px double #1a3a6b;border-radius:4px;position:relative;overflow:hidden}
@@ -318,10 +321,8 @@
       *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
       #topbar,.page-header,.section-tabs,.back-link,.filter-bar,
       .btn,.row-actions,.modal-overlay{display:none!important}
-      /* إخفاء صريح لعناصر position:fixed */
       #page-loader{display:none!important;opacity:0!important;visibility:hidden!important}
       #bottom-nav{display:none!important;opacity:0!important;visibility:hidden!important}
-      /* إعادة تعيين الخلفية */
       html{background:#fff!important;background-image:none!important}
       body{background:#fff!important;background-image:none!important}
       .page{max-width:100%!important;padding:10px 20px!important;margin:0!important}
@@ -329,6 +330,58 @@
         margin-bottom:14px!important;page-break-inside:avoid}
       .record-row{border:1px solid #eee!important;margin-bottom:4px;border-radius:6px}
       .delete-btn{display:none!important}
+    }
+
+    /* ══ كشف الحساب — أنماط الجدول داخل المودال ══ */
+    #stmt-preview-modal{display:none;position:fixed;inset:0;background:#0008;z-index:500;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
+    #stmt-preview-modal.open{display:flex}
+    .stmt-modal-box{background:#fff;border-radius:12px;width:100%;max-width:860px;margin:auto;display:flex;flex-direction:column;max-height:calc(100vh - 32px);box-shadow:0 20px 50px #00000050}
+    .stmt-modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #e0e0e0;flex-shrink:0}
+    .stmt-modal-header h3{margin:0;font-size:16px;font-weight:800}
+    #stmt-preview-content{overflow-y:auto;flex:1;padding:16px;background:#fafafa;border-radius:0 0 0 0}
+    #stmt-preview-footer{display:flex;gap:10px;padding:14px 20px;border-top:1px solid #e0e0e0;flex-shrink:0;background:#fff;border-radius:0 0 12px 12px}
+    /* الجدول نفسه */
+    #stmt-preview-content table{width:100%;border-collapse:collapse;table-layout:fixed;font-family:Cairo,Arial,sans-serif;direction:rtl;font-size:11.5px;color:#111;background:#fff}
+    #stmt-preview-content thead{display:table-header-group}
+    #stmt-preview-content tbody{display:table-row-group}
+    #stmt-preview-content tfoot{display:table-footer-group}
+    #stmt-preview-content .hdr-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding-bottom:10px;border-bottom:1.5px solid #1a3a6b;margin-bottom:8px}
+    #stmt-preview-content .hdr-brand{font-size:16px;font-weight:900;color:#1a3a6b;letter-spacing:.5px}
+    #stmt-preview-content .hdr-brand-sub{font-size:10px;color:#666;margin-top:2px}
+    #stmt-preview-content .hdr-nums{text-align:left;font-size:11px;min-width:160px}
+    #stmt-preview-content .hdr-nums div{display:flex;justify-content:space-between;gap:14px;margin-bottom:3px}
+    #stmt-preview-content .hdr-nums span{color:#777}
+    #stmt-preview-content .hdr-nums strong{color:#111}
+    #stmt-preview-content .hdr-bill{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0}
+    #stmt-preview-content .hdr-bill-left .lbl{font-size:9.5px;font-weight:700;color:#777;letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px}
+    #stmt-preview-content .hdr-bill-left .name{font-size:14px;font-weight:800;color:#111}
+    #stmt-preview-content .hdr-bill-left .detail{font-size:10px;color:#555;margin-top:2px}
+    #stmt-preview-content .hdr-badge{display:inline-block;background:#f0f4fa;border:1px solid #b0c0e0;border-radius:4px;padding:4px 14px;font-size:11px;font-weight:700;color:#1a3a6b;white-space:nowrap}
+    #stmt-preview-content .col-hdr th{background:#1a3a6b;color:#fff;padding:8px 10px;font-size:11px;font-weight:700;border:1px solid #1a3a6b;text-align:right;white-space:nowrap}
+    #stmt-preview-content .col-hdr th.num-col{text-align:center}
+    #stmt-preview-content tbody tr td{padding:7px 10px;border:1px solid #dde4f0;font-size:11.5px;vertical-align:middle}
+    #stmt-preview-content tbody tr:nth-child(even) td{background:#f7f9ff}
+    #stmt-preview-content td.num-col{text-align:center;color:#555;font-family:monospace;font-size:10.5px}
+    #stmt-preview-content td.amt-in{text-align:center;color:#1a6b3a;font-weight:700;font-family:monospace}
+    #stmt-preview-content td.amt-out{text-align:center;color:#b3432f;font-weight:700;font-family:monospace}
+    #stmt-preview-content td.amt-bal{text-align:center;font-weight:800;font-family:monospace}
+    #stmt-preview-content td.amt-bal.pos{color:#1a6b3a}
+    #stmt-preview-content td.amt-bal.neg{color:#b3432f}
+    #stmt-preview-content td.dash{text-align:center;color:#bbb}
+    #stmt-preview-content tr.opening td{background:#f0f4fa;font-weight:700;color:#1a3a6b;font-style:italic;border:1px solid #c8d4e8}
+    #stmt-preview-content tfoot tr td{background:#1a3a6b!important;color:#fff!important;font-weight:800;padding:9px 10px;border:1px solid #0d2550;font-size:12px}
+    #stmt-preview-content tfoot .f-lbl{font-size:11px}
+    #stmt-preview-content tfoot .f-val{text-align:center;font-family:monospace}
+    #stmt-preview-content .stmt-print-footer{margin-top:14px;padding-top:10px;border-top:1px dashed #ccc;display:flex;justify-content:space-between;font-size:10px;color:#999}
+    #stmt-preview-content .sig-wrap{text-align:center}
+    #stmt-preview-content .sig-line{width:100px;border-top:1px solid #555;margin-bottom:4px;margin:0 auto 4px}
+    @media(max-width:600px){
+      #stmt-preview-modal{padding:8px}
+      .stmt-modal-box{max-height:calc(100vh - 16px)}
+      #stmt-preview-content{padding:10px 6px;font-size:10px}
+      #stmt-preview-content table{font-size:9.5px}
+      #stmt-preview-content tbody tr td{padding:5px 6px}
+      #stmt-preview-content .col-hdr th{padding:6px 6px;font-size:9.5px}
     }
   
       /* ══ شاشة التحميل ══ */
@@ -584,6 +637,21 @@
   </div>
 </div>
 
+<!-- ═══════ نافذة معاينة كشف الحساب ═══════ -->
+<div id="stmt-preview-modal">
+  <div class="stmt-modal-box">
+    <div class="stmt-modal-header">
+      <h3 id="stmt-preview-title">كشف حساب</h3>
+      <button type="button" class="modal-close" id="stmt-preview-close">&times;</button>
+    </div>
+    <div id="stmt-preview-content"></div>
+    <div id="stmt-preview-footer">
+      <button type="button" class="btn" id="stmt-preview-print-btn">🖨️ طباعة</button>
+      <button type="button" class="btn outline" id="stmt-preview-close2">إغلاق</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════ Firebase ═══════ -->
 <script type="module">
 import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -704,6 +772,18 @@ function init(){
   // كشف الحساب + CSV
   document.getElementById("print-stmt-btn").addEventListener("click", printStatement);
   document.getElementById("export-csv-btn").addEventListener("click", exportLedgerCSV);
+
+  // ── مودال معاينة كشف الحساب ──
+  const stmtModal = document.getElementById("stmt-preview-modal");
+  function closeStmtModal(){ stmtModal.classList.remove("open"); }
+  document.getElementById("stmt-preview-close").addEventListener("click", closeStmtModal);
+  document.getElementById("stmt-preview-close2").addEventListener("click", closeStmtModal);
+  stmtModal.addEventListener("click", e => { if(e.target === stmtModal) closeStmtModal(); });
+  document.getElementById("stmt-preview-print-btn").addEventListener("click", () => {
+    document.body.classList.add("stmt-print-mode");
+    window.print();
+    setTimeout(() => document.body.classList.remove("stmt-print-mode"), 1500);
+  });
 }
 
 /* ── نافذة تفاصيل الحركة ── */
@@ -711,7 +791,11 @@ function setupDetailModal(){
   const modal=document.getElementById("tx-detail-modal"); if(!modal) return;
   document.getElementById("tx-detail-close").addEventListener("click",()=>modal.classList.remove("open"));
   document.getElementById("tx-detail-close2").addEventListener("click",()=>modal.classList.remove("open"));
-  document.getElementById("tx-detail-print-btn").addEventListener("click",()=>window.print());
+  document.getElementById("tx-detail-print-btn").addEventListener("click",()=>{
+    document.body.classList.add("tx-print-mode");
+    window.print();
+    setTimeout(()=>document.body.classList.remove("tx-print-mode"),1500);
+  });
   modal.addEventListener("click",e=>{ if(e.target===modal) modal.classList.remove("open"); });
 }
 
@@ -1606,80 +1690,8 @@ function printStatement(){
     return t.note||"حركة مباشرة";
   }
 
-  /* ── HTML الكامل لنافذة الطباعة ── */
-  const doc=`<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<title>كشف حساب — ${mer.name}</title>
-<style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  @page{size:A4 portrait;margin:0}
-  body{
-    font-family:'Cairo',Arial,sans-serif;direction:rtl;
-    color:#111;background:#fff;
-    padding:14mm 16mm 14mm 16mm;
-    font-size:11.5px;
-  }
-  /* ─── الترويسة المتكررة ─── */
-  table{width:100%;border-collapse:collapse;table-layout:fixed}
-  thead{display:table-header-group} /* يتكرر في كل صفحة */
-  tbody{display:table-row-group}
-  tfoot{display:table-footer-group}
-
-  /* رأس الترويسة */
-  .hdr-cell{padding-bottom:12px;border-bottom:2px solid #1a3a6b;margin-bottom:0}
-  .hdr-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding-bottom:10px;border-bottom:1.5px solid #1a3a6b;margin-bottom:8px}
-  .hdr-brand{font-size:18px;font-weight:900;color:#1a3a6b;letter-spacing:.5px}
-  .hdr-brand-sub{font-size:10px;color:#666;margin-top:2px}
-  .hdr-nums{text-align:left;font-size:11px;min-width:160px}
-  .hdr-nums div{display:flex;justify-content:space-between;gap:14px;margin-bottom:3px}
-  .hdr-nums span{color:#777}
-  .hdr-nums strong{color:#111}
-  /* قسم إلى */
-  .hdr-bill{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0}
-  .hdr-bill-left .lbl{font-size:9.5px;font-weight:700;color:#777;letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px}
-  .hdr-bill-left .name{font-size:14px;font-weight:800;color:#111}
-  .hdr-bill-left .detail{font-size:10px;color:#555;margin-top:2px}
-  .hdr-badge{display:inline-block;background:#f0f4fa;border:1px solid #b0c0e0;border-radius:4px;padding:4px 14px;font-size:11px;font-weight:700;color:#1a3a6b;white-space:nowrap}
-  /* رأس الأعمدة */
-  .col-hdr th{
-    background:#1a3a6b;color:#fff;
-    padding:8px 10px;font-size:11px;font-weight:700;
-    border:1px solid #1a3a6b;text-align:right;
-    white-space:nowrap;
-  }
-  .col-hdr th.num-col{text-align:center}
-  /* صفوف البيانات */
-  tbody tr td{padding:7px 10px;border:1px solid #dde4f0;font-size:11.5px;vertical-align:middle}
-  tbody tr:nth-child(even) td{background:#f7f9ff}
-  tbody tr:hover td{background:#eef2fb}
-  td.num-col{text-align:center;color:#555;font-family:monospace;font-size:10.5px}
-  td.amt-in{text-align:center;color:#1a6b3a;font-weight:700;font-family:monospace}
-  td.amt-out{text-align:center;color:#b3432f;font-weight:700;font-family:monospace}
-  td.amt-bal{text-align:center;font-weight:800;font-family:monospace}
-  td.amt-bal.pos{color:#1a6b3a}
-  td.amt-bal.neg{color:#b3432f}
-  td.dash{text-align:center;color:#bbb}
-  /* صف الرصيد الافتتاحي */
-  tr.opening td{background:#f0f4fa;font-weight:700;color:#1a3a6b;font-style:italic;border:1px solid #c8d4e8}
-  /* صف الإجمالي */
-  tfoot tr td{background:#1a3a6b!important;color:#fff!important;font-weight:800;padding:9px 10px;border:1px solid #0d2550;font-size:12px}
-  tfoot .f-lbl{font-size:11px}
-  tfoot .f-val{text-align:center;font-family:monospace}
-  /* تذييل الطباعة */
-  .print-footer{margin-top:18px;padding-top:10px;border-top:1px dashed #ccc;display:flex;justify-content:space-between;font-size:10px;color:#999}
-  .sig-wrap{text-align:center}
-  .sig-line{width:100px;border-top:1px solid #555;margin-bottom:4px}
-  /* لا url */
-  @media print{
-    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    body{padding:14mm 16mm}
-    a::after{content:"" !important}
-  }
-</style>
-</head>
-<body>
+  /* ── بناء محتوى الكشف (HTML داخلي فقط بدون wrapper) ── */
+  const innerHTML=`
 <table>
   <thead>
     <tr>
@@ -1721,7 +1733,6 @@ function printStatement(){
       <th style="width:17%" class="num-col">الرصيد</th>
     </tr>
   </thead>
-
   <tbody>
     ${fromVal&&openingBalance!==0?`<tr class="opening">
       <td class="num-col">—</td>
@@ -1740,7 +1751,6 @@ function printStatement(){
       <td class="amt-bal ${r.runBal>=0?"pos":"neg"}">${fmtM(Math.abs(r.runBal))}</td>
     </tr>`).join("")}
   </tbody>
-
   <tfoot>
     <tr>
       <td colspan="3" class="f-lbl">الإجمالي — ${rows.length} حركة${fromVal||toVal?" في الفترة المحددة":""}</td>
@@ -1750,24 +1760,21 @@ function printStatement(){
     </tr>
   </tfoot>
 </table>
-
-<div class="print-footer">
+<div class="stmt-print-footer">
   <div>طُبع بتاريخ: ${printNow}</div>
   <div class="sig-wrap">
     <div class="sig-line"></div>
     <div>التوقيع والختم</div>
   </div>
   <div>Ahmed And Hamdy — نظام المحاسبة الداخلي</div>
-</div>
-</body>
-</html>`;
+</div>`;
 
-  const w=window.open("","_blank","width=900,height=700");
-  if(!w){ toast("السماح بالنوافذ المنبثقة لطباعة الكشف",true); return; }
-  w.document.open();
-  w.document.write(doc);
-  w.document.close();
-  w.onload=()=>{ setTimeout(()=>w.print(),400); };
+  /* ── حقن المحتوى وفتح المودال ── */
+  document.getElementById("stmt-preview-title").textContent = "كشف حساب — " + mer.name;
+  document.getElementById("stmt-preview-content").innerHTML = innerHTML;
+  document.getElementById("stmt-preview-modal").classList.add("open");
+  // تمرير لأعلى عند كل فتح
+  setTimeout(()=>{ document.getElementById("stmt-preview-content").scrollTop = 0; }, 50);
 }
 
 </script>
