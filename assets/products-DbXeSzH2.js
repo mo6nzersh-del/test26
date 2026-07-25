@@ -189,7 +189,7 @@ function buildWarehouseSection(wh, whProducts) {
   const badge = whProducts.length > 0 ? `<span class="wh-count">${whProducts.length} منتج</span>` : "";
   section.innerHTML = `
     <div class="warehouse-section-header">
-      <div class="warehouse-section-title">🏪 ${esc(wh.name)} ${badge}</div>
+      <div class="warehouse-section-title"><span class="wh-title-icon">🏪</span> ${esc(wh.name)} ${badge}</div>
       <div class="warehouse-section-actions" style="display:flex;gap:8px">
         <button type="button" class="btn small" data-wh-add="${wh.id}">+ إضافة منتج</button>
       </div>
