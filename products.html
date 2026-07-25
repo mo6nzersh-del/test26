@@ -324,15 +324,33 @@
       /* ══ تجاوب أزرار المخزن على الهاتف ══ */
       @media(max-width:600px){
         .warehouse-section-header{flex-wrap:wrap;padding:10px 12px;gap:8px}
-        .warehouse-section-title{flex:1;min-width:0}
+        .warehouse-section-title{flex:1;min-width:0;font-size:.88rem}
         .warehouse-section-actions{
           display:flex;flex-wrap:wrap;gap:6px;width:100%;
         }
         .wh-adj-btn, .wh-log-btn{
           flex:1;justify-content:center;
-          font-size:.8rem;padding:9px 8px;border-radius:10px;
+          font-size:.78rem;padding:9px 8px;border-radius:10px;
           min-width:0;
         }
+        /* إخفاء الأيقونات على الهاتف */
+        .wh-title-icon,.btn-icon{display:none}
+        /* إخفاء عمود أيقونة المنتج وضبط الشبكة */
+        .wpc-icon{display:none}
+        .wh-product-card{
+          grid-template-columns:1fr auto auto;
+          padding:9px 12px;gap:5px 10px;
+        }
+        /* تصغير النصوص قليلاً */
+        .wpc-name{font-size:.82rem}
+        .wpc-serial{font-size:.62rem}
+        .wpc-desc{font-size:.65rem}
+        .wpc-qty-num{font-size:1.1rem!important}
+        .wpc-qty-unit{font-size:.58rem}
+        .wpc-qty-badge{padding:4px 8px;min-width:46px}
+        .wpc-price{font-size:.74rem}
+        .wpc-edit-btn{font-size:.64rem;padding:3px 7px}
+        .warehouse-section-title .wh-count{font-size:.72rem}
       }
 
       /* ══ spinner زر الحفظ ══ */
@@ -926,12 +944,12 @@ function _injectBtns(section){
 
   const adjBtn = document.createElement("button");
   adjBtn.type="button"; adjBtn.className="wh-adj-btn"; adjBtn.dataset.whId=whId;
-  adjBtn.innerHTML="⚡ تعديل مخزون";
+  adjBtn.innerHTML="<span class='btn-icon'>⚡</span> تعديل مخزون";
   adjBtn.title="إضافة أو استهلاك من هذا المخزن";
 
   const logBtn = document.createElement("button");
   logBtn.type="button"; logBtn.className="wh-log-btn"; logBtn.dataset.whId=whId;
-  logBtn.innerHTML="📋 سجل الحركات";
+  logBtn.innerHTML="<span class='btn-icon'>📋</span> سجل الحركات";
   logBtn.title="سجل حركات هذا المخزن";
 
   adjBtn.addEventListener("click", ()=>_openAdj(whId, section));
