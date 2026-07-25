@@ -1600,7 +1600,7 @@ function exportLedgerCSV(){
 
   const BOM="\uFEFF";
   const q=s=>`"${String(s||"").replace(/"/g,'""')}"`;
-  const header=["#","التاريخ","الرقم التسلسلي","البيان","النوع","دائن (له)","مدين (عليه)","الرصيد"].join(",");
+  const header=["#","التاريخ","الرقم التسلسلي","البيان","النوع","مدفوعات التاجر","مسحوبات التاجر","الرصيد"].join(",");
 
   let runBal=openingBal;
   const rows=[];
@@ -1728,8 +1728,8 @@ function printStatement(){
       <th style="width:9%" class="num-col">#</th>
       <th style="width:14%">التاريخ</th>
       <th style="width:32%">البيان</th>
-      <th style="width:14%" class="num-col">دائن (له)</th>
-      <th style="width:14%" class="num-col">مدين (عليه)</th>
+      <th style="width:14%" class="num-col">مدفوعات التاجر</th>
+      <th style="width:14%" class="num-col">مسحوبات التاجر</th>
       <th style="width:17%" class="num-col">الرصيد</th>
     </tr>
   </thead>
@@ -1740,7 +1740,7 @@ function printStatement(){
       <td>رصيد مرحّل من الفترة السابقة</td>
       <td class="dash">—</td>
       <td class="dash">—</td>
-      <td class="amt-bal ${openingBalance>=0?"pos":"neg"}">${fmtM(Math.abs(openingBalance))}</td>
+      <td class="amt-bal ${openingBalance>=0?"pos":"neg"}">${openingBalance<0?"-":""}${fmtM(Math.abs(openingBalance))}</td>
     </tr>`:""}
     ${rows.map(r=>`<tr>
       <td class="num-col">${r.idx}</td>
@@ -1748,7 +1748,7 @@ function printStatement(){
       <td>${r.note||srcLabel(r)}</td>
       <td class="${r.dir==="in"?"amt-in":"dash"}">${r.dir==="in"?fmtM(r.amount):"—"}</td>
       <td class="${r.dir==="out"?"amt-out":"dash"}">${r.dir==="out"?fmtM(r.amount):"—"}</td>
-      <td class="amt-bal ${r.runBal>=0?"pos":"neg"}">${fmtM(Math.abs(r.runBal))}</td>
+      <td class="amt-bal ${r.runBal>=0?"pos":"neg"}">${r.runBal<0?"-":""}${fmtM(Math.abs(r.runBal))}</td>
     </tr>`).join("")}
   </tbody>
   <tfoot>
@@ -1756,7 +1756,7 @@ function printStatement(){
       <td colspan="3" class="f-lbl">الإجمالي — ${rows.length} حركة${fromVal||toVal?" في الفترة المحددة":""}</td>
       <td class="f-val">${fmtM(totalIn)}</td>
       <td class="f-val">${fmtM(totalOut)}</td>
-      <td class="f-val">${fmtM(Math.abs(runBal))} ${runBal>=0?"(مدين)":"(دائن)"}</td>
+      <td class="f-val">${runBal<0?"-":""}${fmtM(Math.abs(runBal))} ${runBal>=0?"(مدين)":"(دائن)"}</td>
     </tr>
   </tfoot>
 </table>
