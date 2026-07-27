@@ -1,4 +1,4 @@
-import{r as initPage,u as updateDoc,a as docRef,d as db,s as serverTimestamp,b as addDoc,c as collection,q as query,o as orderBy,e as onSnapshot,f as deleteDoc,k as writeBatch,g as getDocs,w as where}from"./auth-guard-DMMO1gWE.js";
+import{r as initPage,u as updateDoc,a as docRef,d as db,s as serverTimestamp,b as addDoc,c as collection,q as query,o as orderBy,e as onSnapshot,f as deleteDoc,k as writeBatch}from"./auth-guard-DMMO1gWE.js";
 import{r as renderNav,s as showToast,f as formatDate}from"./nav-C4LmEyvm.js";
 import{f as compressImage}from"./image-utils-ix_Ztzsr.js";
 
@@ -869,36 +869,12 @@ function initLoadingForm() {
         createdAt: serverTimestamp(),
       });
       await batch.commit();
-      // ── حساب رصيد التاجر بعد الحركة (من كلا المجموعتين) ──
-      let merchantBalance = null;
-      try {
-        const [mSnap, fSnap] = await Promise.all([
-          getDocs(query(collection(db, "merchantTransactions"), where("merchantId", "==", merchantId))),
-          getDocs(query(collection(db, "finance_transactions"),  where("merchantId", "==", merchantId))),
-        ]);
-        let out = 0, inp = 0;
-        mSnap.forEach(d => {
-          const t = d.data();
-          if (t.type === "out") out += t.amount || 0;
-          else                  inp += t.amount || 0;
-        });
-        fSnap.forEach(d => {
-          const t = d.data();
-          if (t.type !== "merchant") return;
-          if (t.dir === "out") out += t.amount || 0;
-          else                 inp += t.amount || 0;
-        });
-        merchantBalance = out - inp; // موجب = التاجر مدين، سالب = دائن
-      } catch(e) { console.warn("balance calc:", e); }
-
       showInvoice({
         type: "loading", opId,
         warehouseName: wh?.name ?? "",
         merchantName: merchant?.name ?? "",
         lines: lineDetails, totalAmount, note,
         performedBy: currentUser?.email ?? "—",
-        paid: isPaid,
-        merchantBalance,
       });
       form.reset();
       loadLines = [{ id: ++loadLineCounter, productId: "", qty: 1, price: 0 }];
@@ -1262,28 +1238,8 @@ function showInvoice(data) {
       <!-- جسم الفاتورة (جدول + إجمالي) -->
       ${bodyHtml}
 
-      <!-- حالة الدفع (فاتورة بيع فقط) -->
-      ${data.type==="loading"&&data.paid!=null?`<div style="margin-bottom:10px">
-        <span style="display:inline-block;padding:3px 12px;border-radius:4px;font-size:12px;font-weight:700;border:1px solid;${data.paid?"background:#e8f5e9;color:#1a6b3a;border-color:#a5d6a7":"background:#fff8e1;color:#a06a10;border-color:#fcd34d"}">
-          ${data.paid?"✅ تم الدفع نقداً":"⏳ غير مدفوع — آجل"}
-        </span>
-      </div>`:""}
-
-      <!-- ملاحظة + رصيد التاجر في نفس السطر -->
-      ${(()=>{
-        const balFmt = data.merchantBalance!=null
-          ? new Intl.NumberFormat("ar-EG",{minimumFractionDigits:2,maximumFractionDigits:2}).format(Math.abs(data.merchantBalance))
-            + " ج.م" + (data.merchantBalance<0?" -":"")
-          : null;
-        const balPart = balFmt ? `<span style="margin-right:16px;font-weight:700;color:${data.merchantBalance!=null&&data.merchantBalance<0?"#1a6b3a":"#b3432f"}">رصيد التاجر: ${balFmt}</span>` : "";
-        if(data.note && balPart)
-          return `<div class="inv-doc-note">ملاحظة: ${esc(data.note)}${balPart}</div>`;
-        if(data.note)
-          return `<div class="inv-doc-note">ملاحظة: ${esc(data.note)}</div>`;
-        if(balPart)
-          return `<div class="inv-doc-note">${balPart}</div>`;
-        return "";
-      })()} 
+      <!-- ملاحظة -->
+      ${data.note?`<div class="inv-doc-note">ملاحظة: ${esc(data.note)}</div>`:""}
 
       <!-- تذييل -->
       <div class="inv-doc-footer">
