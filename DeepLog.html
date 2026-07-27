@@ -128,7 +128,7 @@
     .warehouse-row .wh-meta{font-size:12px;color:var(--muted)}
     .warehouse-row .wh-actions{display:flex;gap:8px}
 
-    /* ══ سلة المحذوفات ══ */
+    
     .trash-stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
     .trash-stat-pill{display:flex;align-items:center;gap:8px;background:var(--surface);border:1.5px solid var(--border);
       border-radius:10px;padding:10px 16px}
@@ -151,7 +151,7 @@
     .del-badge{display:inline-block;font-size:10.5px;font-weight:700;background:#fce8e5;color:#b3432f;
       border-radius:5px;padding:2px 7px}
 
-    /* ── خلية الوصف (div داخل td) ── */
+    
     .dl-desc-cell{
       font-size:13px;
       color:var(--muted);
@@ -164,7 +164,7 @@
       .dl-desc-cell{ max-width:110px; font-size:12px }
     }
 
-    /* ══ منيو التبويبات: يظهر حتى 900px (هاتف + تابلت + landscape) ══ */
+    
     @media (max-width:900px) {
       .section-tabs  { display:none!important }
       #mob-tab-bar   { display:block!important; margin-bottom:16px }
@@ -174,7 +174,7 @@
       #mob-tab-overlay { display:none!important }
     }
 
-    /* ══ منيو التبويبات للهاتف (مخفي على سطح المكتب) ══ */
+    
     #mob-tab-bar     { display:none }
     #mob-tab-overlay {
       display:none; position:fixed; inset:0;
@@ -229,22 +229,20 @@
     .mob-tab-item.mob-tab-red  { border-color:#b3432f; color:#b3432f; background:#fce8e5 }
     .mob-tab-item.mob-tab-red.mob-active  { background:#b3432f; color:#fff }
 
-    /* ══════════════════════════════════════════
-       تصميم متجاوب للهاتف والأجهزة الضعيفة
-       ══════════════════════════════════════════ */
+    
 
-    /* ── تقليل الحركة للأجهزة الضعيفة ── */
+    
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration:.01ms!important; transition-duration:.01ms!important }
     }
 
-    /* ── الهاتف: عام ── */
+    
     @media (max-width:640px) {
 
-      /* الصفحة: تقليل الحشو */
+      
       .page { padding:12px 10px 40px }
 
-      /* رأس الصفحة */
+      
       .dl-header {
         padding:12px 14px;
         gap:8px;
@@ -255,14 +253,14 @@
       .dl-header p  { font-size:12px }
       .dl-badge     { font-size:11px; padding:3px 10px }
 
-      /* ── (التبويبات تُخفى بمحور منفصل أدناه) ── */
+      
 
-      /* ── البانيل ── */
+      
       .panel { padding:14px 12px; margin-bottom:16px }
       .panel-header { flex-wrap:wrap; gap:6px }
       .panel-header h3 { font-size:15px }
 
-      /* ── الفلاتر: عمود كامل ── */
+      
       .filters-bar {
         flex-direction:column;
         align-items:stretch;
@@ -281,7 +279,7 @@
       .trash-filters .search-input { width:100% }
       .trash-filters .btn { width:100% }
 
-      /* ── الجداول: تمرير أفقي مع خط بصري ── */
+      
       .table-wrap {
         overflow-x:auto;
         -webkit-overflow-scrolling:touch;
@@ -292,7 +290,7 @@
       .data-table th { font-size:11.5px; padding:7px 8px }
       .data-table td { font-size:13px;  padding:8px }
 
-      /* ── المودال: يفتح من الأسفل ── */
+      
       .modal-overlay {
         align-items:flex-end;
         padding:0;
@@ -303,23 +301,23 @@
         max-height:93vh;
         border-radius:18px 18px 0 0;
         padding:20px 16px 28px;
-        /* مقبض بصري */
+        
         background-image:radial-gradient(circle at 50% 8px, var(--border) 3px, transparent 3px);
         background-size:100% 20px;
         background-repeat:no-repeat;
         padding-top:22px;
       }
 
-      /* ── محدد النوع: عمودان بدلاً من ثلاثة ── */
+      
       .type-selector { grid-template-columns:repeat(2,1fr) }
 
-      /* ── حقلا المبلغ والتاريخ: عمود واحد ── */
+      
       div[style*="grid-template-columns:1fr 1fr"] {
         display:grid!important;
         grid-template-columns:1fr!important;
       }
 
-      /* ── شبكة تفاصيل الحركة: عمود واحد ── */
+      
       .tx-detail-meta-grid {
         grid-template-columns:1fr;
         gap:8px;
@@ -327,7 +325,7 @@
       .tx-detail-amount-row { flex-direction:column; align-items:flex-start; gap:4px }
       .tx-detail-amount-val { font-size:19px }
 
-      /* ── صف المخزن ── */
+      
       .warehouse-row {
         flex-direction:column;
         align-items:flex-start;
@@ -336,7 +334,7 @@
       }
       .warehouse-row .wh-actions { width:100%; justify-content:flex-end }
 
-      /* ── سلة المحذوفات ── */
+      
       .trash-stats { gap:8px }
       .trash-stat-pill { flex:1; min-width:0 }
       .trash-restore-btn,
@@ -349,21 +347,21 @@
         margin-bottom:4px;
       }
 
-      /* ── أزرار الصفوف: أكبر للمس ── */
+      
       .row-actions button { padding:8px 10px; font-size:13px }
 
-      /* ── حقول النموذج ── */
+      
       .field input, .field select, .field textarea {
-        font-size:15px; /* يمنع تكبير iOS التلقائي */
+        font-size:15px; 
       }
 
-      /* ── stmt ── */
+      
       .stmt-grid { flex-direction:column }
       .stmt-field { min-width:0; width:100% }
       .stmt-summary { grid-template-columns:1fr 1fr }
       .stmt-card .v { font-size:15px }
 
-      /* ── أزرار الحفظ في النموذج ── */
+      
       #fin-form > div:last-child,
       #wh-op-form > div:last-child,
       #product-form > div:last-child {
@@ -376,21 +374,21 @@
         margin-right:0!important;
       }
 
-      /* ── أزرار طباعة / إغلاق التفاصيل ── */
+      
       #tx-detail-print-footer {
         flex-direction:column;
         gap:8px;
       }
       #tx-detail-print-footer .btn { width:100% }
 
-      /* ── حقول إنشاء الحساب ── */
+      
       #account-form {
         flex-direction:column;
       }
       #account-form .field { min-width:0; width:100% }
     }
 
-    /* ── شاشات صغيرة جداً (≤380px) ── */
+    
     @media (max-width:380px) {
       .dl-header h2   { font-size:15px }
       .section-tabs button { padding:7px 10px; font-size:12px }
@@ -402,13 +400,13 @@
       .stmt-summary   { grid-template-columns:1fr }
     }
 
-    /* ── تحسين الطباعة: إخفاء عناصر لا لزوم لها ── */
+    
     @media print {
       .section-tabs, .filters-bar, .trash-filters,
       .row-actions, .panel-header .btn { display:none!important }
     }
   
-      /* ══ شاشة التحميل ══ */
+      
       #page-loader {
         position: fixed; inset: 0; z-index: 9999;
         background: linear-gradient(145deg, #1a6b3a, #2d9f5f);
@@ -451,7 +449,7 @@
 </style>
 </head>
 <body>
-<!-- ══ شاشة التحميل ══ -->
+
 <div id="page-loader">
   <div class="pl-logo">
     <img src="https://i.imgur.com/NsN1HgC.png" alt="logo" class="pl-logo-img"
@@ -482,7 +480,7 @@
       <button type="button" id="tab-trash" style="background:linear-gradient(135deg,#b3432f,#e07070);color:#fff;border-color:#b3432f;font-weight:800">🗑️ سلة المحذوفات</button>
     </div>
 
-    <!-- ══ منيو التبويبات (هاتف فقط) ══ -->
+    
     <div id="mob-tab-bar">
       <button type="button" id="mob-tab-trigger" aria-haspopup="dialog">
         <span id="mob-tab-label">💰 الحركات المالية</span>
@@ -505,7 +503,7 @@
       </div>
     </div>
 
-    <!-- ══════════ TAB 1: FINANCE ══════════ -->
+    
     <div class="section-view active" id="view-finance">
       <div class="panel">
         <div class="panel-header"><h3>⚙️ إعدادات صندوق الكاش</h3></div>
@@ -556,7 +554,7 @@
       </div>
     </div>
 
-    <!-- ══════════ TAB 2: WAREHOUSE MOVEMENTS ══════════ -->
+    
     <div class="section-view" id="view-warehouse">
       <div class="panel">
         <div class="panel-header">
@@ -588,7 +586,7 @@
       </div>
     </div>
 
-    <!-- ══════════ TAB 3: UNIFIED STATEMENT ══════════ -->
+    
     <div class="section-view" id="view-statement">
       <div class="panel">
         <h3>كشف حساب موحّد</h3>
@@ -615,7 +613,7 @@
       </div>
     </div>
 
-    <!-- ══════════ TAB 4: WAREHOUSES & PRODUCTS ══════════ -->
+    
     <div class="section-view" id="view-inventory">
       <div class="panel">
         <div class="panel-header">
@@ -642,7 +640,7 @@
       </div>
     </div>
 
-    <!-- ══════════ TAB 5: THIS PAGE'S ACTIVITY LOG ══════════ -->
+    
     <div class="section-view" id="view-dlactivity">
       <div class="panel">
         <div class="panel-header">
@@ -661,9 +659,9 @@
       </div>
     </div>
 
-    <!-- ══════════ TAB 7: ACCOUNT MANAGEMENT ══════════ -->
+    
     <div class="section-view" id="view-accounts">
-      <!-- لوحة الاسم المستعار للمستخدم الحالي -->
+      
       <div class="panel" id="my-alias-panel">
         <div class="panel-header"><h3>✏️ اسمك المستعار</h3></div>
         <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">
@@ -727,7 +725,7 @@
       </div>
     </div>
 
-    <!-- ══════════ TAB 6: COMPREHENSIVE AUDIT LOG ══════════ -->
+    
     <div class="section-view" id="view-auditlog">
       <div class="panel">
         <div class="panel-header">
@@ -737,7 +735,7 @@
         <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">
           يسجَّل هنا كل إجراء (إضافة / تعديل / حذف) من <strong>جميع الصفحات</strong> — المالية، التجار، الموظفين، السجل الشامل — مع اسم المنفِّذ والتوقيت الدقيق.
         </p>
-        <!-- فلاتر -->
+        
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
           <select id="audit-filter-page" style="padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--surface)">
             <option value="">كل الصفحات</option>
@@ -773,7 +771,7 @@
         </div>
       </div>
     </div>
-    <!-- ══════════ TAB 8: سلة المحذوفات ══════════ -->
+    
     <div class="section-view" id="view-trash">
       <div class="panel">
         <div class="panel-header">
@@ -785,7 +783,7 @@
           <br /><strong style="color:#b3432f">ملاحظة:</strong> حركات المخازن والتحميل تُحذف نهائياً ولا يمكن استعادتها.
         </p>
 
-        <!-- إحصائيات سريعة -->
+        
         <div class="trash-stats">
           <div class="trash-stat-pill">
             <span class="tsp-ico">💰</span>
@@ -803,7 +801,7 @@
           </div>
         </div>
 
-        <!-- فلاتر -->
+        
         <div class="trash-filters">
           <select id="trash-filter-type" class="filter-select">
             <option value="">كل الأنواع</option>
@@ -822,7 +820,7 @@
           <button type="button" id="trash-reset-btn" class="btn outline small">إعادة ضبط</button>
         </div>
 
-        <!-- جدول الحركات المحذوفة -->
+        
         <div class="table-wrap">
           <table class="data-table">
             <thead>
@@ -847,7 +845,6 @@
   </main>
 </div>
 
-<!-- ═══════ نافذة تفاصيل الحركة المالية ═══════ -->
 <div class="modal-overlay" id="tx-detail-modal">
   <div class="modal-box" style="max-width:500px">
     <div class="modal-box-header">
@@ -862,7 +859,6 @@
   </div>
 </div>
 
-<!-- ═══════ نافذة إضافة / تعديل حركة مالية ═══════ -->
 <div class="modal-overlay" id="fin-modal">
   <div class="modal-box" style="max-width:520px">
     <div class="modal-box-header">
@@ -930,7 +926,6 @@
   </div>
 </div>
 
-<!-- ═══════ نافذة تعديل حركة مخزنية ═══════ -->
 <div class="modal-overlay" id="wh-op-modal">
   <div class="modal-box" style="max-width:460px">
     <div class="modal-box-header">
@@ -954,7 +949,6 @@
   </div>
 </div>
 
-<!-- ═══════ نافذة مخزن ═══════ -->
 <div class="modal-overlay" id="warehouse-modal">
   <div class="modal-box">
     <div class="modal-box-header"><h3 id="warehouse-modal-title">إضافة مخزن</h3>
@@ -968,7 +962,6 @@
   </div>
 </div>
 
-<!-- ═══════ نافذة منتج ═══════ -->
 <div class="modal-overlay" id="product-modal">
   <div class="modal-box">
     <div class="modal-box-header"><h3 id="product-modal-title">إضافة منتج</h3>
@@ -1012,7 +1005,6 @@
   </div>
 </div>
 
-<!-- ═══════ Firebase ═══════ -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -1034,7 +1026,6 @@ const app = initializeApp({
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
-/* تطبيق فرعي مستقل لإنشاء حسابات جديدة دون تسجيل خروج المستخدم الحالي */
 const secondaryApp = initializeApp({
   apiKey:            "AIzaSyDQsaNVskKiV2cwPVlJDixpTD1S-Dhp7gs",
   authDomain:        "reta-and-hamd.firebaseapp.com",
@@ -1051,7 +1042,6 @@ onAuthStateChanged(auth, user => {
   init();
 });
 
-/* ── أدوات مشتركة ── */
 const esc = t => { const d = document.createElement("div"); d.textContent = t ?? ""; return d.innerHTML; };
 const fmt = n => new Intl.NumberFormat("ar-EG-u-nu-latn", { maximumFractionDigits: 2 }).format(n || 0) + " ج.م";
 const fmtNum = n => new Intl.NumberFormat("ar-EG-u-nu-latn", { maximumFractionDigits: 3 }).format(n || 0);
@@ -1102,7 +1092,7 @@ function switchTab(key) {
   }
   tabs[key].btn.classList.add("active"); tabs[key].view.classList.add("active");
 
-  /* ── تحديث منيو الهاتف ── */
+  
   const MOB_LABELS = {
     finance:"💰 الحركات المالية", warehouse:"📦 حركات المخازن",
     statement:"📄 كشف الحساب الموحّد", inventory:"🏪 المخازن والمنتجات",
@@ -1116,13 +1106,11 @@ function switchTab(key) {
   });
 }
 
-/* ── الحالة العامة ── */
 let employees = [], merchants = [], warehouses = [], products = [];
 let allFinTx = [], allWhOps = [], allLoadOps = [];
 let pendingProductFile = null;
 let currentUser = null;
 
-/* ── الرصيد الافتتاحي لصندوق الكاش (تعديل حصري من هذه الصفحة) ── */
 async function loadOpeningBalance() {
   try {
     const snap = await getDoc(doc(db, "finance_settings", "main"));
@@ -1138,7 +1126,6 @@ async function saveOpeningBalance() {
   } catch (e) { console.error(e); toast("خطأ", true); }
 }
 
-/* سجل حركات خاص بهذه الصفحة فقط — مجموعة مستقلة عن سجل العمليات العام */
 async function logDlAction(action, details) {
   try {
     await addDoc(collection(db, "deeplogPageActivity"), {
@@ -1147,7 +1134,7 @@ async function logDlAction(action, details) {
       createdAt: serverTimestamp(),
     });
   } catch (err) { console.error("logDlAction failed", err); }
-  /* أيضاً: تسجيل في سجل المراقبة الشامل */
+  
   try {
     await addDoc(collection(db, "auditLog"), {
       action, entity: "—", page: "السجل الشامل",
@@ -1158,7 +1145,6 @@ async function logDlAction(action, details) {
   } catch (err) { console.error("auditLog write failed", err); }
 }
 
-/* ── سجل المراقبة الشامل (كل الصفحات) ── */
 let allAuditLogs = [];
 
 function loadAuditLog() {
@@ -1261,7 +1247,6 @@ function loadDlActivity() {
   }, err => { console.error(err); tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">حدث خطأ</div></td></tr>'; });
 }
 
-/* ضغط صورة المنتج قبل الحفظ (نفس منطق الواجهة الرئيسية) */
 function compressImage(file) {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -1283,7 +1268,6 @@ function compressImage(file) {
   });
 }
 
-/* رقم تسلسلي: W{ترتيب المخزن}-{رقم متسلسل من 5 خانات} — يُولَّد تلقائياً دائماً */
 function generateSerial(warehouseId) {
   const idx = warehouses.findIndex(w => w.id === warehouseId);
   const whNum = idx >= 0 ? idx + 1 : 1;
@@ -1353,12 +1337,12 @@ function setupMobTabs() {
     overlay.classList.contains("open") ? closeMenu() : openMenu()
   );
 
-  /* إغلاق بالضغط على الخلفية (خارج الـ sheet) */
+  
   overlay.addEventListener("click", e => {
     if (!sheet.contains(e.target)) closeMenu();
   });
 
-  /* اختيار تبويب */
+  
   document.querySelectorAll(".mob-tab-item").forEach(btn => {
     btn.addEventListener("click", () => {
       switchTab(btn.dataset.key);
@@ -1367,9 +1351,6 @@ function setupMobTabs() {
   });
 }
 
-/* ══════════════════════════════════════
-   بيانات أساسية
-══════════════════════════════════════ */
 function loadEmployees() {
   onSnapshot(collection(db, "employees"), snap => {
     employees = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -1418,9 +1399,6 @@ function loadProducts() {
   });
 }
 
-/* ══════════════════════════════════════
-   تبويب 1: الحركات المالية
-══════════════════════════════════════ */
 const TYPE_CFG = {
   advance:    { label: "سلفة موظف",        badge: "tb-advance",    dir: "out", fixed: true },
   withdrawal: { label: "سحب من الصندوق",  badge: "tb-withdrawal", dir: "out", fixed: true },
@@ -1687,7 +1665,6 @@ async function saveFinTx(e) {
   finally { btn.disabled = false; btn.textContent = "حفظ العملية"; }
 }
 
-/* ── نافذة تفاصيل الحركة المالية (تُفتح بالنقر على المعرّف) ── */
 const TYPE_ICONS = { advance: "👤", withdrawal: "📤", deposit: "📥", merchant: "🤝", other: "📝" };
 
 function setupTxDetailModal() {
@@ -1792,9 +1769,6 @@ function openTxDetail(t) {
   document.getElementById("tx-detail-modal").classList.add("open");
 }
 
-/* ══════════════════════════════════════
-   تبويب 2: حركات المخازن
-══════════════════════════════════════ */
 function loadWarehouseOps() {
   const q = query(collection(db, "warehouseOperations"), orderBy("createdAt", "desc"));
   onSnapshot(q, snap => { allWhOps = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderWhOpsTable(); }, err => console.error(err));
@@ -1893,7 +1867,6 @@ function openWhOpModal(col, id) {
 }
 function closeWhOpModal() { document.getElementById("wh-op-modal").classList.remove("open"); editWhOpCol = null; editWhOpId = null; }
 
-/* حذف حركة مخزنية مع إرجاع الكميات إلى أصلها */
 async function deleteWhOp(col, id) {
   if (!confirm("هل تريد حذف هذه الحركة؟ سيتم إرجاع الكميات المتأثرة إلى أصلها تلقائياً.")) return;
   try {
@@ -1906,10 +1879,10 @@ async function deleteWhOp(col, id) {
           const src = products.find(p => p.id === rec.productId);
           if (!src) missing.push(rec.productName || rec.productId);
           else batch.update(doc(db, "products", src.id), { quantity: (src.quantity || 0) + (rec.quantity || 0), updatedAt: serverTimestamp() });
-          // reverse the destination side too — must be found or we abort (see fallback below)
+          
           let dest = rec.destProductId ? products.find(p => p.id === rec.destProductId) : null;
           if (!dest) {
-            // legacy records (pre destProductId tracking): best-effort match by name+warehouse
+            
             dest = products.find(p => p.warehouseId === rec.toWarehouseId && p.name === (rec.productName || ""));
           }
           if (!dest) missing.push(`الصنف الهدف في ${rec.toWarehouseName || "المخزن الهدف"}`);
@@ -1943,9 +1916,6 @@ async function deleteWhOp(col, id) {
   } catch (err) { console.error(err); toast("حدث خطأ أثناء الحذف", true); }
 }
 
-/* ══════════════════════════════════════
-   تبويب 3: كشف الحساب الموحّد
-══════════════════════════════════════ */
 function refreshStatementEntityOptions() {
   const kind = document.getElementById("stmt-kind").value;
   const sel = document.getElementById("stmt-entity");
@@ -1990,7 +1960,7 @@ function renderStatement() {
       desc: t.description || (t.type === "advance" ? `سلفة — خصم ${t.deductMonth || ""}` : ""),
       dir: t.dir, amount: t.amount || 0,
     })).sort((a, b) => (a.date || "").localeCompare(b.date || ""));
-    // بالنسبة للموظف: in = مبالغ تصرف له، out = سلف/خصومات — الرصيد = in - out (ما تبقى له)
+    
     renderStatementRows(rows, `الموظف: ${emp?.name ?? ""} — الراتب الشهري: ${fmt(emp?.monthlySalary || 0)}`, "in", "out",
       "إجمالي ما دخل له", "إجمالي ما خرج (سلف)");
   } else {
@@ -2004,7 +1974,7 @@ function renderStatement() {
         date: t.date, label: "دفعة (مالية)", desc: t.description || "—", dir: t.dir, amount: t.amount || 0,
       }));
       const rows = [...direct, ...finRows].sort((a, b) => (a.date || "").localeCompare(b.date || ""));
-      // نفس اتفاقية صفحة التجار: in = مسحوبات التاجر (يدين بها)، out = مدفوعات التاجر، الرصيد = in - out
+      
       renderStatementRows(rows, `التاجر: ${merch?.name ?? ""}`, "in", "out",
         "مسحوبات (له علينا تسليمها/يدين بها)", "مدفوعات (سدّدها التاجر)");
     });
@@ -2042,9 +2012,6 @@ function renderStatementRows(rows, subtitle, inKey, outKey, inLabel, outLabel) {
   });
 }
 
-/* ══════════════════════════════════════
-   تبويب 4: المخازن والمنتجات
-══════════════════════════════════════ */
 function renderWarehousesList() {
   const container = document.getElementById("warehouses-list");
   if (!container) return;
@@ -2190,7 +2157,7 @@ function openProductModal(p) {
   const warehouseId = p?.warehouseId ?? document.getElementById("product-warehouse").value ?? "";
   document.getElementById("product-warehouse").value = warehouseId;
   document.getElementById("product-name").value = p?.name ?? "";
-  // الرقم التسلسلي يُولَّد تلقائياً دائماً؛ يُحفظ كما هو عند التعديل
+  
   document.getElementById("product-serial").value = p?.serialId || (warehouseId ? generateSerial(warehouseId) : "");
   document.getElementById("product-desc").value = p?.description ?? "";
   document.getElementById("product-quantity").value = p?.quantity ?? "";
@@ -2238,9 +2205,6 @@ async function deleteProduct(id) {
   catch (err) { console.error(err); toast("حدث خطأ", true); }
 }
 
-/* ══════════════════════════════════════
-   خريطة الأسماء المستعارة — email → alias
-══════════════════════════════════════ */
 let emailToAlias = {};
 function resolveAlias(email) {
   if (!email || email === "—") return email;
@@ -2253,16 +2217,13 @@ function loadEmailToAlias() {
       const { email, alias } = d.data();
       if (email && alias) emailToAlias[email] = alias;
     });
-    /* إعادة رسم السجلات التي تعتمد على الأسماء المستعارة */
+    
     renderAuditLog();
   });
 }
 
-/* ══════════════════════════════════════
-   إدارة الحسابات
-══════════════════════════════════════ */
 function loadAccounts() {
-  /* تعبئة حقل البريد في لوحة "اسمي المستعار" */
+  
   const myEmailEl = document.getElementById("my-alias-email");
   if (myEmailEl) myEmailEl.value = currentUser?.email ?? "";
 
@@ -2270,7 +2231,7 @@ function loadAccounts() {
     const rows = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
     document.getElementById("account-count").textContent = rows.length ? `${rows.length} حساب` : "";
 
-    /* تحديث حقل الاسم المستعار الحالي للمستخدم المسجّل */
+    
     const myRow = rows.find(r => r.email === currentUser?.email);
     const myAliasEl = document.getElementById("my-alias-input");
     if (myAliasEl && myRow?.alias && !myAliasEl._dirty) myAliasEl.value = myRow.alias;
@@ -2293,7 +2254,7 @@ function loadAccounts() {
         </td>
       </tr>`).join("");
 
-    /* event delegation — inline onclick لا يعمل في module scope */
+    
     tbody.querySelectorAll(".alias-edit-btn").forEach(btn => {
       btn.addEventListener("click", () => editAccountAlias(btn.dataset.docId, btn.dataset.alias));
     });
@@ -2315,7 +2276,7 @@ async function saveMyAlias() {
   const btn = document.getElementById("my-alias-save-btn");
   btn.disabled = true; btn.textContent = "جارِ الحفظ...";
   try {
-    /* بحث عن سجل المستخدم الحالي في appUsers */
+    
     const q = query(collection(db, "appUsers"), where("email", "==", currentUser.email));
     const snap = await new Promise((res, rej) => {
       const unsub = onSnapshot(q, s => { unsub(); res(s); }, rej);
@@ -2323,7 +2284,7 @@ async function saveMyAlias() {
     if (!snap.empty) {
       await updateDoc(snap.docs[0].ref, { alias });
     } else {
-      /* إنشاء سجل جديد لمن لم يُنشأ حسابه من هذه الصفحة (المدير مثلاً) */
+      
       await addDoc(collection(db, "appUsers"), {
         email: currentUser.email,
         name:  currentUser.displayName || "",
@@ -2338,9 +2299,6 @@ async function saveMyAlias() {
   finally { btn.disabled = false; btn.textContent = "💾 حفظ الاسم"; }
 }
 
-/* ══════════════════════════════════════
-   سلة المحذوفات — الحركات المالية المحذوفة
-══════════════════════════════════════ */
 let allDeletedFinTx = [];
 
 const TYPE_LABELS_TRASH = {
@@ -2352,8 +2310,7 @@ const TYPE_LABELS_TRASH = {
 };
 
 function loadTrash() {
-  /* نستمع إلى كل الحركات المالية ونُصفّي المحذوفة (_active===false) من جهة العميل
-     تجنباً للحاجة إلى فهرس مركّب في Firestore */
+  
   onSnapshot(collection(db, "finance_transactions"), snap => {
     allDeletedFinTx = snap.docs
       .map(d => ({ id: d.id, ...d.data() }))
@@ -2361,7 +2318,7 @@ function loadTrash() {
       .sort((a, b) => {
         const ta = a.deletedAt?.seconds ?? 0;
         const tb = b.deletedAt?.seconds ?? 0;
-        return tb - ta; /* الأحدث أولاً */
+        return tb - ta; 
       });
     renderTrash();
     setupTrashFilters();
@@ -2395,7 +2352,7 @@ function renderTrash() {
     );
   });
 
-  /* إحصائيات */
+  
   const total = allDeletedFinTx.reduce((s, t) => s + (Number(t.amount) || 0), 0);
   if (countEl)    countEl.textContent    = `${allDeletedFinTx.length} حركة محذوفة`;
   if (finCountEl) finCountEl.textContent = allDeletedFinTx.length;
@@ -2446,7 +2403,7 @@ function renderTrash() {
     tbody.appendChild(tr);
   });
 
-  /* ربط أزرار الاستعادة والحذف النهائي */
+  
   tbody.querySelectorAll(".trash-restore-btn").forEach(btn =>
     btn.addEventListener("click", () => restoreFinTx(btn.dataset.id, btn))
   );
@@ -2476,7 +2433,6 @@ function setupTrashFilters() {
   }
 }
 
-/* ── استعادة حركة مالية محذوفة ── */
 async function restoreFinTx(id, btn) {
   if (!id) return;
   if (!confirm("هل تريد استعادة هذه الحركة المالية وإعادتها للنظام؟")) return;
@@ -2490,7 +2446,7 @@ async function restoreFinTx(id, btn) {
       restoredBy: currentUser?.email ?? "—",
     });
     toast("✅ تمت استعادة الحركة بنجاح");
-    /* تسجيل في سجل المراقبة */
+    
     await addDoc(collection(db, "auditLog"), {
       action:    "استعادة",
       entity:    "حركة مالية",
@@ -2508,7 +2464,6 @@ async function restoreFinTx(id, btn) {
   }
 }
 
-/* ── حذف نهائي للحركة المالية (لا رجعة) ── */
 async function permanentlyDeleteFinTx(id, btn) {
   if (!id) return;
   if (!confirm("⚠️ هذا الإجراء نهائي ولا يمكن التراجع عنه!\n\nهل أنت متأكد من حذف هذه الحركة نهائياً من النظام؟")) return;
@@ -2547,7 +2502,7 @@ async function handleCreateAccount(e) {
   btn.disabled = true; btn.textContent = "جارِ الإنشاء...";
   try {
     await createUserWithEmailAndPassword(secondaryAuth, email, password);
-    await signOut(secondaryAuth); /* لضمان عدم بقاء جلسة نشطة على التطبيق الفرعي */
+    await signOut(secondaryAuth); 
     await addDoc(collection(db, "appUsers"), {
       email, name: name || "", alias: alias || "",
       createdBy: currentUser?.email ?? "—",
@@ -2574,7 +2529,6 @@ async function handleCreateAccount(e) {
 }
 </script>
 
-<!-- ══ مراقب شاشة التحميل ══ -->
 <script>
 (function(){
   var loader = document.getElementById("page-loader");
