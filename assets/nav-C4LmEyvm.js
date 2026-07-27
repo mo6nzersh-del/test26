@@ -31,7 +31,7 @@ function i(a,e){
       </div>
     </div>`;
   n("logout-btn");
-
+  // شريط التنقل السفلي
   let bn=document.getElementById("bottom-nav");
   if(!bn){bn=document.createElement("nav");bn.id="bottom-nav";document.body.appendChild(bn);}
   bn.innerHTML=`<div class="bot-nav-inner">${l.map(s=>`
