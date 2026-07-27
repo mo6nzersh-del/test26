@@ -1,16 +1,16 @@
 import{r as initPage,u as updateDoc,a as docRef,d as db,s as serverTimestamp,b as addDoc,c as collection,q as query,o as orderBy,e as onSnapshot,f as deleteDoc,k as writeBatch}from"./auth-guard-DMMO1gWE.js";
+import{getDocs,where}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 import{r as renderNav,s as showToast,f as formatDate}from"./nav-C4LmEyvm.js";
 import{f as compressImage}from"./image-utils-ix_Ztzsr.js";
 
 const BASE = "/";
 
-/* ─── alias map: email → اسم مستعار ─── */
 let emailToAlias = {};
 function resolveAlias(email) {
   if (!email || email === "—") return email;
   return emailToAlias[email] || email;
 }
-// يستمع إلى appUsers ويبني الخريطة فور أي تغيير
+
 onSnapshot(collection(db, "appUsers"), snap => {
   emailToAlias = {};
   snap.forEach(d => {
@@ -19,7 +19,6 @@ onSnapshot(collection(db, "appUsers"), snap => {
   });
 });
 
-/* ─── state ─── */
 let currentUser = null;
 let warehouses = [];
 let products = [];
@@ -29,20 +28,16 @@ let productsLoaded = false;
 let pendingProductFile = null;
 let editingProductId = null;
 
-// production form lines
 let prodInputLines = [];
 let prodOutputLines = [];
 let lineCounter = 0;
 
-// loading form lines
 let loadLines = [];
 let loadLineCounter = 0;
 
-// caches of full operation records, keyed by opId, for detail replay
 let movementsRecordsCache = {};
 let loadingRecordsCache = {};
 
-/* ─── helpers ─── */
 function esc(v) {
   const d = document.createElement("div");
   d.textContent = v ?? "";
@@ -63,7 +58,6 @@ function fmtDateTimeLong(ts) {
   return d.toLocaleString("ar-EG", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
-/* select editable number values on interaction so typing replaces them immediately */
 function initNumberInputSelection() {
   function selectIfEditableNumber(target) {
     if (!(target instanceof HTMLInputElement) ||
@@ -81,16 +75,14 @@ function initNumberInputSelection() {
   });
 }
 
-/* serial ID: W{warehouseIndex}-{5-digit sequence} — always auto-generated */
 function generateSerial(warehouseId) {
   const idx = warehouses.findIndex(w => w.id === warehouseId);
   const whNum = idx >= 0 ? idx + 1 : 1;
-  // count existing products in this warehouse (already loaded) + 1
+
   const count = products.filter(p => p.warehouseId === warehouseId).length + 1;
   return `W${whNum}-${String(count).padStart(5, "0")}`;
 }
 
-/* ─── init ─── */
 initPage(user => {
   currentUser = user;
   initNumberInputSelection();
@@ -113,9 +105,6 @@ initPage(user => {
   renderNav(`${BASE}products.html`, user);
 });
 
-/* ══════════════════════════════════════
-   TABS
-══════════════════════════════════════ */
 function initTabs() {
   const tabs = {
     movements: { btn: document.getElementById("tab-movements"),   view: document.getElementById("view-movements") },
@@ -135,9 +124,6 @@ function initTabs() {
   });
 }
 
-/* ══════════════════════════════════════
-   LOAD DATA
-══════════════════════════════════════ */
 function loadWarehouses() {
   const q = query(collection(db, "warehouses"), orderBy("createdAt", "asc"));
   onSnapshot(q, snap => {
@@ -165,9 +151,6 @@ function loadMerchants() {
   }, err => console.error(err));
 }
 
-/* ══════════════════════════════════════
-   WAREHOUSE SECTIONS
-══════════════════════════════════════ */
 function renderWarehousesContainer() {
   const container = document.getElementById("warehouses-container");
   if (!container) return;
@@ -232,7 +215,7 @@ function initWarehouseContainerDelegation() {
   const container = document.getElementById("warehouses-container");
   if (!container) return;
   container.addEventListener("click", e => {
-    // حذف المخازن أصبح متاحاً فقط من صفحة DeepLog
+
     const btn = e.target.closest("[data-wh-add],[data-prod-id]");
     if (!btn) return;
     if (btn.dataset.whAdd) { openProductModal(null, btn.dataset.whAdd); return; }
@@ -243,9 +226,6 @@ function initWarehouseContainerDelegation() {
   });
 }
 
-/* ══════════════════════════════════════
-   WAREHOUSE MODAL
-══════════════════════════════════════ */
 function initWarehouseModal() {
   const modal = document.getElementById("warehouse-modal");
   const form = document.getElementById("warehouse-form");
@@ -272,11 +252,6 @@ function initWarehouseModal() {
   });
 }
 
-/* حذف المخازن أصبح متاحاً فقط من صفحة DeepLog، ولا يمكن تنفيذه من هذه الصفحة */
-
-/* ══════════════════════════════════════
-   PRODUCT MODAL
-══════════════════════════════════════ */
 function initProductModal() {
   const modal = document.getElementById("product-modal");
   const fileInput = document.getElementById("product-image");
@@ -316,7 +291,7 @@ function openProductModal(product, warehouseId) {
     title.textContent = "تعديل المنتج";
     document.getElementById("product-id").value = product.id;
     document.getElementById("product-name").value = product.name || "";
-    // serial is always readonly – keep existing value when editing
+
     document.getElementById("product-serial").value = product.serialId || generateSerial(product.warehouseId || warehouseId);
     document.getElementById("product-desc").value = product.description || "";
     document.getElementById("product-quantity").value = product.quantity ?? "";
@@ -326,7 +301,7 @@ function openProductModal(product, warehouseId) {
   } else {
     title.textContent = "إضافة منتج";
     document.getElementById("product-id").value = "";
-    // always auto-generate serial for new products
+
     document.getElementById("product-serial").value = warehouseId ? generateSerial(warehouseId) : "";
   }
   modal.classList.add("open");
@@ -344,7 +319,7 @@ async function saveProduct() {
   const warehouseId = document.getElementById("product-warehouse-id").value;
   const serialId = document.getElementById("product-serial").value.trim();
   const description = document.getElementById("product-desc").value.trim();
-  // الكمية للعرض فقط في هذه الصفحة ولا يمكن تعديلها هنا — تُدار حصراً من DeepLog
+
   const quantity = editingProductId
     ? (products.find(p => p.id === editingProductId)?.quantity ?? 0)
     : 0;
@@ -381,11 +356,6 @@ async function saveProduct() {
   finally { submitBtn.disabled = false; submitBtn.textContent = "حفظ المنتج"; }
 }
 
-/* حذف المنتجات أصبح متاحاً فقط من صفحة DeepLog */
-
-/* ══════════════════════════════════════
-   SELECTS REFRESH
-══════════════════════════════  �═══════ */
 function refreshAllWarehouseSelects() {
   ["prod-from-wh","prod-to-wh","trans-from-wh","trans-to-wh","load-warehouse"].forEach(id => {
     const sel = document.getElementById(id);
@@ -414,9 +384,6 @@ function refreshMerchantSelects() {
   sel.value = prev;
 }
 
-/* ══════════════════════════════════════
-   OP TYPE SWITCHER (production / transfer)
-══════════════════════════════════════ */
 function initOpTypeSwitcher() {
   document.querySelectorAll(".op-type-btn").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -429,9 +396,6 @@ function initOpTypeSwitcher() {
   });
 }
 
-/* ══════════════════════════════════════
-   PRODUCTION FORM
-══════════════════════════════════════ */
 function initProductionForm() {
   prodInputLines = [{ id: ++lineCounter, productId: "", qty: 1 }];
   prodOutputLines = [{ id: ++lineCounter, productId: "", qty: 1 }];
@@ -470,7 +434,7 @@ function initProductionForm() {
       const toWh = warehouses.find(w => w.id === toWhId);
       const inputDetails = [];
       const outputDetails = [];
-      // deduct inputs from source
+
       validInputs.forEach(line => {
         const prod = products.find(p => p.id === line.productId);
         if (!prod) return;
@@ -478,7 +442,7 @@ function initProductionForm() {
         batch.update(docRef(db, "products", prod.id), { quantity: newQty, updatedAt: serverTimestamp() });
         inputDetails.push({ productId: prod.id, productName: prod.name, qty: line.qty, unit: prod.quantityType || "" });
       });
-      // add outputs to destination
+
       validOutputs.forEach(line => {
         const prod = products.find(p => p.id === line.productId);
         if (!prod) return;
@@ -486,7 +450,7 @@ function initProductionForm() {
         batch.update(docRef(db, "products", prod.id), { quantity: newQty, updatedAt: serverTimestamp() });
         outputDetails.push({ productId: prod.id, productName: prod.name, qty: line.qty, unit: prod.quantityType || "" });
       });
-      // log operation
+
       const opRef = docRef(collection(db, "warehouseOperations"));
       batch.set(opRef, {
         type: "production", opId,
@@ -496,7 +460,7 @@ function initProductionForm() {
         note, performedBy: currentUser?.email ?? "—",
         createdAt: serverTimestamp(),
       });
-      // activity log
+
       const logRef = docRef(collection(db, "activityLog"));
       batch.set(logRef, {
         type: "production",
@@ -506,7 +470,7 @@ function initProductionForm() {
         performedBy: currentUser?.email ?? "—",
         createdAt: serverTimestamp(),
       });
-      // سجل المراقبة الشامل (تظهر في صفحة السجل الشامل)
+
       const auditRef = docRef(collection(db, "auditLog"));
       batch.set(auditRef, {
         action: "إضافة", entity: "عملية إنتاج", page: "المنتجات",
@@ -574,9 +538,6 @@ function renderProdLines(direction) {
   });
 }
 
-/* ══════════════════════════════════════
-   TRANSFER FORM
-══════════════════════════════════════ */
 function initTransferForm() {
   const selFrom = document.getElementById("trans-from-wh");
   const selProd = document.getElementById("trans-product");
@@ -634,11 +595,11 @@ function initTransferForm() {
       const opId = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
       const fromWh = warehouses.find(w => w.id === fromWhId);
       const toWh = warehouses.find(w => w.id === toWhId);
-      // deduct from source
+
       batch.update(docRef(db, "products", srcProdId), { quantity: (srcProd.quantity || 0) - qty, updatedAt: serverTimestamp() });
       let destProdName = srcProd.name;
       let destProductIdFinal = destProdId || "";
-      // add to destination
+
       if (destProdId) {
         const destProd = products.find(p => p.id === destProdId);
         if (destProd) {
@@ -646,9 +607,7 @@ function initTransferForm() {
           batch.update(docRef(db, "products", destProdId), { quantity: (destProd.quantity || 0) + qty, updatedAt: serverTimestamp() });
         }
       } else {
-        // الصنف غير موجود في مخزن الوجهة: لا يُنشأ له رقم تسلسلي جديد،
-        // بل يُضاف كصنف "زائر" يحمل نفس معرّف المنتج الأصلي (نفس serialId) تبعًا لمخزنه الأصلي،
-        // لتجنّب تكرار نفس المنتج بمعرّفين مختلفين.
+
         const newRef = docRef(collection(db, "products"));
         destProductIdFinal = newRef.id;
         batch.set(newRef, {
@@ -660,7 +619,7 @@ function initTransferForm() {
           createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
         });
       }
-      // log operation
+
       const opRef = docRef(collection(db, "warehouseOperations"));
       batch.set(opRef, {
         type: "transfer", opId,
@@ -681,7 +640,7 @@ function initTransferForm() {
         performedBy: currentUser?.email ?? "—",
         createdAt: serverTimestamp(),
       });
-      // سجل المراقبة الشامل (تظهر في صفحة السجل الشامل)
+
       const auditRef = docRef(collection(db, "auditLog"));
       batch.set(auditRef, {
         action: "إضافة", entity: "عملية تحويل", page: "المنتجات",
@@ -705,9 +664,6 @@ function initTransferForm() {
   });
 }
 
-/* ══════════════════════════════════════
-   �OADING FORM (warehouse → merchant)
-══════════════════════════════════════ */
 function initLoadingForm() {
   loadLines = [{ id: ++loadLineCounter, productId: "", qty: 1, price: 0 }];
   renderLoadLines();
@@ -718,7 +674,6 @@ function initLoadingForm() {
     renderLoadLines();
   });
 
-  // تحديث المظهر البصري لخيار الدفع
   function updatePayStyle() {
     const isPaid = document.getElementById("load-pay-paid").checked;
     const labelPaid   = document.getElementById("pay-label-paid");
@@ -753,13 +708,31 @@ function initLoadingForm() {
     if (validLines.length === 0) { showToast("أضف صنفاً واحداً على الأقل", true); return; }
     submitBtn.disabled = true; submitBtn.innerHTML = '<span class="spinner"></span>';
     try {
+
+      let balanceBefore = 0;
+      try {
+        const [merTxSnap, finTxSnap] = await Promise.all([
+          getDocs(query(collection(db, "merchantTransactions"), where("merchantId", "==", merchantId))),
+          getDocs(query(collection(db, "finance_transactions"), where("merchantId", "==", merchantId), where("type", "==", "merchant"))),
+        ]);
+        const directBal = merTxSnap.docs.reduce((s, d) => {
+          const t = d.data();
+          return s + (t.type === "out" ? -t.amount : t.amount);
+        }, 0);
+        const finBal = finTxSnap.docs.reduce((s, d) => {
+          const t = d.data();
+          return s + (t.dir === "in" ? t.amount : -t.amount);
+        }, 0);
+        balanceBefore = directBal + finBal;
+      } catch (_balErr) {  }
+
       const batch = writeBatch(db);
       const opId = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
       const wh = warehouses.find(w => w.id === whId);
       const merchant = merchants.find(m => m.id === merchantId);
       const lineDetails = [];
       let totalAmount = 0;
-      // deduct quantities & build details
+
       for (const line of validLines) {
         const prod = products.find(p => p.id === line.productId);
         if (!prod) continue;
@@ -771,17 +744,22 @@ function initLoadingForm() {
         });
         lineDetails.push({ productId: prod.id, productName: prod.name, qty: line.qty, unit: prod.quantityType || "", price: line.price, total: lineTotal });
       }
-      // loading operation record
+
+      const balanceAfter = isPaid ? balanceBefore : balanceBefore - totalAmount;
+
       const opRef = docRef(collection(db, "loadingOperations"));
       batch.set(opRef, {
         type: "loading", opId,
         warehouseId: whId, warehouseName: wh?.name ?? "",
         merchantId, merchantName: merchant?.name ?? "",
         lines: lineDetails, totalAmount, note,
+        paid: isPaid,
+        balanceBefore,
+        balanceAfter,
         performedBy: currentUser?.email ?? "—",
         createdAt: serverTimestamp(),
       });
-      // write to merchantTransactions so it appears in the merchant account page
+
       const today = new Date().toISOString().slice(0, 10);
       const txId = `TL-${Date.now().toString(36).toUpperCase().slice(-6)}`;
       const txRef = docRef(collection(db, "merchantTransactions"));
@@ -789,7 +767,7 @@ function initLoadingForm() {
         merchantId,
         merchantName: merchant?.name ?? "",
         amount: totalAmount,
-        type: "out",  // بيع = يُثبَّت كـ"out" حتى يُعامَل كدين على التاجر (balance يصبح سالباً = مديون)
+        type: "out",
         note: `بيع من مخزن ${wh?.name ?? ""}${isPaid ? " — نقدي" : ""}${note ? " — " + note : ""}`,
         date: today,
         txId,
@@ -798,23 +776,23 @@ function initLoadingForm() {
         paid: isPaid,
         createdAt: serverTimestamp(),
       });
-      // إذا تم الدفع فوراً: أضف حركة دفع تلقائية في finance_transactions تُلغي الدين
+
       if (isPaid && totalAmount > 0) {
-        // قراءة الـ counter لتوليد finId تسلسلي صحيح (F-XXXX)
+
         const counterRef = docRef(db, "counters", "finance_trans");
         const counterSnap = await new Promise((res, rej) => {
           const unsub = onSnapshot(counterRef, snap => { unsub(); res(snap); }, rej);
         });
         const newSeq   = (counterSnap.exists() ? counterSnap.data().seq : 0) + 1;
         const payFinId = "F-" + String(newSeq).padStart(4, "0");
-        // تحديث الـ counter في نفس الـ batch
+
         batch.set(counterRef, { seq: newSeq }, { merge: true });
 
         const payTxId = `PY-${Date.now().toString(36).toUpperCase().slice(-6)}`;
         const payRef  = docRef(collection(db, "finance_transactions"));
         batch.set(payRef, {
           type: "merchant",
-          dir: "in",          // dir="in" = دفع من التاجر = يُقلّل الدين
+          dir: "in",
           amount: totalAmount,
           date: today,
           merchantId,
@@ -831,7 +809,7 @@ function initLoadingForm() {
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
         });
-        // يُسجَّل إيداع في الصندوق تلقائياً بنفس finId
+
         const cashRef = docRef(collection(db, "finance_transactions"));
         batch.set(cashRef, {
           type: "deposit",
@@ -850,7 +828,7 @@ function initLoadingForm() {
           updatedAt: serverTimestamp(),
         });
       }
-      // activity log
+
       const logRef = docRef(collection(db, "activityLog"));
       batch.set(logRef, {
         type: "loading",
@@ -860,7 +838,7 @@ function initLoadingForm() {
         performedBy: currentUser?.email ?? "—",
         createdAt: serverTimestamp(),
       });
-      // سجل المراقبة الشامل (تظهر في صفحة السجل الشامل)
+
       const auditRef = docRef(collection(db, "auditLog"));
       batch.set(auditRef, {
         action: "إضافة", entity: "عملية بيع", page: "المنتجات",
@@ -874,6 +852,9 @@ function initLoadingForm() {
         warehouseName: wh?.name ?? "",
         merchantName: merchant?.name ?? "",
         lines: lineDetails, totalAmount, note,
+        paid: isPaid,
+        balanceBefore,
+        balanceAfter,
         performedBy: currentUser?.email ?? "—",
       });
       form.reset();
@@ -928,9 +909,6 @@ function renderLoadLines() {
   });
 }
 
-/* ══════════════════════════════════════
-   RECORDS LISTS
-══════════════════════════════════════ */
 function loadMovementsRecords() {
   const container = document.getElementById("movements-records-list");
   const q = query(collection(db, "warehouseOperations"), orderBy("createdAt", "desc"));
@@ -995,7 +973,6 @@ function loadLoadingRecords() {
   }, err => { console.error(err); container.innerHTML = '<div class="empty-state">حدث خطأ</div>'; });
 }
 
-/* clicking a serial/op number anywhere replays that operation's exact invoice */
 function bindSerialLinks(container) {
   container.querySelectorAll(".op-serial-link[data-op-id]").forEach(el => {
     el.addEventListener("click", e => {
@@ -1010,11 +987,10 @@ function openOperationPreview(opId, kind, seqLabel) {
   const record = kind === "loading" ? loadingRecordsCache[opId] : movementsRecordsCache[opId];
   const finalRecord = record || movementsRecordsCache[opId] || loadingRecordsCache[opId];
   if (!finalRecord) { showDeletedOperationNotice(); return; }
-  // استخدم الرقم التسلسلي (OP-00006) نفسه المعروض في سجل العمليات بدلاً من جزء من opId
+
   showInvoice({ ...finalRecord, seqLabel: seqLabel || finalRecord.seqLabel });
 }
 
-/* تُعرض عند محاولة معاينة حركة تم حذفها بدلاً من إشعار عابر */
 function showDeletedOperationNotice() {
   const modal = document.getElementById("op-deleted-modal");
   if (modal) modal.classList.add("open");
@@ -1041,9 +1017,6 @@ function bindDeleteBtns(container, colName) {
   });
 }
 
-/* ══════════════════════════════════════
-   ACTIVITY LOG
-══════════════════════════════════════ */
 function loadActivityLog() {
   const tbody = document.getElementById("log-table-body");
   const mobList = document.getElementById("mob-log-list");
@@ -1075,7 +1048,6 @@ function loadActivityLog() {
         ? `data-op-id="${esc(d.opId)}" data-op-kind="${kind}" data-seq-label="${esc(seqLabel)}" title="عرض تفاصيل الحركة كما تمت"`
         : "";
 
-      // ── صف الجدول (سطح المكتب) ──
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>
@@ -1093,7 +1065,6 @@ function loadActivityLog() {
         <td class="log-time">${d.createdAt ? fmtDateTime(d.createdAt) : "—"}</td>`;
       tbody.appendChild(tr);
 
-      // ── بطاقة الهاتف ──
       if (mobList) {
         const card = document.createElement("div");
         card.className = "mob-log-card";
@@ -1114,7 +1085,7 @@ function loadActivityLog() {
         mobList.appendChild(card);
       }
     });
-    /* حذف سجلات النشاط أصبح متاحاً فقط من صفحة DeepLog */
+
     const bindPreview = root => root.querySelectorAll(".log-serial-link[data-op-id]").forEach(el => {
       el.addEventListener("click", () => openOperationPreview(el.dataset.opId, el.dataset.opKind, el.dataset.seqLabel));
     });
@@ -1123,9 +1094,6 @@ function loadActivityLog() {
   }, err => { console.error(err); tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state">حدث خطأ</div></td></tr>'; });
 }
 
-/* ══════════════════════════════════════
-   INVOICE MODAL
-══════════════════════════════════════ */
 function initInvoiceModal() {
   const modal = document.getElementById("invoice-modal");
   document.getElementById("invoice-modal-close").addEventListener("click", () => modal.classList.remove("open"));
@@ -1137,13 +1105,12 @@ function initInvoiceModal() {
 function showInvoice(data) {
   const modal = document.getElementById("invoice-modal");
   const content = document.getElementById("invoice-content");
-  // when replaying a past operation, show the moment it actually happened;
-  // when showing the invoice right after submitting a new one, show now.
+
   const now = data.createdAt
     ? fmtDateTimeLong(data.createdAt)
     : new Date().toLocaleString("ar-EG", { year:"numeric", month:"long", day:"numeric", hour:"2-digit", minute:"2-digit" });
   const isReplay = !!data.createdAt;
-  // اعرض الرقم التسلسلي نفسه من سجل العمليات (OP-00006) بدل جزء من opId
+
   const shortId = data.seqLabel || (data.opId ? data.opId.slice(0, 8).toUpperCase() : "—");
 
   let typeLabel = "", typeCls = "", bodyHtml = "", billToHtml = "";
@@ -1196,6 +1163,21 @@ function showInvoice(data) {
       <div class="inv-doc-bill-name">${esc(data.merchantName||"")}</div>
       <div class="inv-doc-bill-detail">من مخزن: ${esc(data.warehouseName||"")}</div>
     </div>`;
+
+    const paidLabel = data.paid === true
+      ? '<span style="color:#15803d;font-weight:800">✅ مدفوعة نقداً</span>'
+      : data.paid === false
+      ? '<span style="color:#a06a10;font-weight:800">⏳ غير مدفوعة — دَين على التاجر</span>'
+      : '<span style="color:#888">—</span>';
+
+    function fmtBal(v) {
+      if (typeof v !== "number") return '<span style="color:#888">—</span>';
+      const abs = fmtMoney(Math.abs(v));
+      if (v > 0) return `${abs} <span style="font-size:11px;color:#15803d;font-weight:700">(دائن)</span>`;
+      if (v < 0) return `${abs} <span style="font-size:11px;color:#b91c1c;font-weight:700">(مدين)</span>`;
+      return `${abs} <span style="font-size:11px;color:#888">(متعادل)</span>`;
+    }
+
     bodyHtml = `
       <table class="inv-doc-table">
         <thead><tr><th>الصنف</th><th style="text-align:center">الكمية</th><th style="text-align:center">سعر الوحدة</th><th style="text-align:center">الإجمالي</th></tr></thead>
@@ -1204,6 +1186,9 @@ function showInvoice(data) {
       <div class="inv-doc-total-wrap"><table class="inv-doc-total-table">
         <tr><td class="tot-lbl">المجموع الفرعي</td><td class="tot-val">${fmtMoney(data.totalAmount)}</td></tr>
         <tr><td class="tot-lbl"><strong>الإجمالي</strong></td><td class="tot-val"><strong>${fmtMoney(data.totalAmount)}</strong></td></tr>
+        <tr><td class="tot-lbl" style="border-top:2px solid #ddd;padding-top:10px">حالة الدفع</td><td class="tot-val" style="border-top:2px solid #ddd;padding-top:10px">${paidLabel}</td></tr>
+        <tr><td class="tot-lbl">رصيد التاجر قبل العملية</td><td class="tot-val">${fmtBal(data.balanceBefore)}</td></tr>
+        <tr style="background:#f0f9f4"><td class="tot-lbl"><strong>رصيد التاجر بعد العملية</strong></td><td class="tot-val"><strong>${fmtBal(data.balanceAfter)}</strong></td></tr>
       </table></div>`;
   }
 
@@ -1211,7 +1196,6 @@ function showInvoice(data) {
   const modalTitle = document.getElementById("invoice-modal-title") || document.querySelector("#invoice-modal .modal-box-header h3");
   if (modalTitle) modalTitle.textContent = isReplay ? "معاينة الحركة" : "فاتورة العملية";
 
-  // تحديد بادج نوع العملية
   const docTypeCls = data.type==="production"?"t-prod":data.type==="loading"?"t-load":"t-trans";
 
   content.innerHTML = `

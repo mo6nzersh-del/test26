@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="stylesheet" href="/assets/auth-guard-C6CJ8_8i.css" />
-  <!-- ضمان الأرقام اللاتينية فقط -->
+
   <script>
   (function(){
     var _NF=Intl.NumberFormat;
@@ -23,9 +23,7 @@
   })();
   </script>
   <style>
-    /* ══════════════════════════════════════════
-       سجل حركات التاجر — تخطيط سطح المكتب
-    ══════════════════════════════════════════ */
+
     .record-row{
       display:grid;
       grid-template-columns:auto 1fr auto auto;
@@ -39,7 +37,7 @@
     .record-main .title{font-size:14px;font-weight:600;color:var(--ink);
       white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .record-main .meta{font-size:12px;color:var(--muted);margin-top:2px}
-    /* العمود الأيسر: المبلغ + الرصيد + ID */
+
     .tx-right-col{grid-area:right;display:flex;flex-direction:column;
       align-items:flex-end;gap:3px;min-width:90px;text-align:left}
     .record-amount{font-size:15px;font-weight:800;white-space:nowrap}
@@ -50,17 +48,16 @@
     .bal-cell.bal-pos{color:var(--primary-dark,#2a5bbf)}
     .bal-cell.bal-neg{color:var(--danger,#b3432f)}
     .bal-cell.bal-na{font-size:10px;color:var(--muted);font-weight:600}
-    /* أزرار الحركة */
+
     .tx-actions-col{grid-area:acts;display:flex;flex-direction:column;
       align-items:center;gap:4px}
     .delete-btn{border:none;background:transparent;color:var(--muted);
       font-size:12px;padding:4px 8px;border-radius:6px;cursor:pointer}
     .delete-btn:hover{background:var(--danger-soft);color:var(--danger)}
-    /* بطاقات الإحصائيات (سطح المكتب) */
+
     .record-badge{display:inline-flex;align-items:center;justify-content:center;
       font-size:11.5px;font-weight:700;border-radius:6px;padding:3px 10px;white-space:nowrap}
 
-    /* ── بطاقات الإحصائيات ── */
     .mer-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:20px}
     .mer-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;
       padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,.07);transition:transform .12s,box-shadow .12s}
@@ -72,7 +69,6 @@
     .mer-stat.stat-out{background:linear-gradient(135deg,#fde8e5 0%,#fff4f2 100%);border-color:#f0b3a8}
     .mer-stat.stat-net{background:linear-gradient(135deg,#e8f0fb 0%,#f4f8ff 100%);border-color:#a8c2f0}
 
-    /* ── الصناديق الثلاثة قبل/بعد كل حركة (داخل السجل) ── */
     .tx-row-box3-toggle{border:none;background:transparent;color:var(--muted);
       font-size:13px;padding:4px 8px;border-radius:6px;cursor:pointer}
     .tx-row-box3-toggle:hover,.tx-row-box3-toggle.active{background:var(--primary-soft,#eef2fb);color:var(--primary-dark,#2a5bbf)}
@@ -84,7 +80,6 @@
     .tx-row-box3-detail .mer-stat .msv{font-size:19px;margin-bottom:0}
     .tx-row-box3-detail .mer-stat .msk{font-size:11.5px}
 
-    /* ── بادجات المالية ── */
     .type-badge{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px}
     .tb-advance{background:#e8f0fb;color:#2a5bbf}
     .tb-withdrawal{background:#fce8e5;color:#b3432f}
@@ -97,7 +92,7 @@
     .rec-id-link{color:var(--primary-dark,#2a5bbf)!important;background:var(--primary-soft,#eef2fb)!important;
       border-color:var(--primary,#4a7dd4)!important;cursor:pointer;text-decoration:underline;transition:opacity .15s}
     .rec-id-link:hover{opacity:.7}
-    /* ── نافذة تفاصيل الحركة ── */
+
     .tx-detail-box{direction:rtl;font-family:Cairo,sans-serif}
     .tx-detail-header{text-align:center;border-bottom:3px solid var(--primary);padding-bottom:16px;margin-bottom:18px}
     .tx-detail-mark{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--primary,#4a7dd4),var(--primary-dark,#2a5bbf));color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
@@ -120,17 +115,17 @@
     .mer-print-only{display:none!important}
     @media print{
       .mer-print-only{display:block!important} .mer-screen-only{display:none!important}
-      /* ── مشترك: إخفاء كل شيء + تنظيف الخلفية ── */
+
       body > *{display:none!important}
       #page-loader{display:none!important;opacity:0!important;visibility:hidden!important}
       #bottom-nav{display:none!important;opacity:0!important;visibility:hidden!important}
       html{background:#fff!important;background-image:none!important}
       body{background:#fff!important;background-image:none!important;margin:0!important;padding:0!important}
-      /* ── طباعة تفاصيل الحركة (tx-print-mode) ── */
+
       body.tx-print-mode #tx-detail-modal{display:block!important;position:fixed!important;top:0;left:0;right:0;bottom:0;background:#fff!important;padding:0!important;overflow:visible!important}
       body.tx-print-mode #tx-detail-modal .modal-box{box-shadow:none!important;border:none!important;max-height:none!important;overflow:visible!important;padding:0!important;border-radius:0!important;background:#fff!important;width:100%!important;max-width:100%!important}
       body.tx-print-mode #tx-detail-modal .modal-box-header,body.tx-print-mode #tx-detail-print-footer{display:none!important}
-      /* ── طباعة كشف الحساب (stmt-print-mode) ── */
+
       body.stmt-print-mode #stmt-preview-modal{display:block!important;position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;background:#fff!important;padding:10mm 12mm!important;overflow:visible!important;z-index:9999!important}
       body.stmt-print-mode #stmt-preview-modal .stmt-modal-box{box-shadow:none!important;border:none!important;max-height:none!important;overflow:visible!important;padding:0!important;border-radius:0!important;background:#fff!important;width:100%!important;max-width:100%!important;display:block!important}
       body.stmt-print-mode #stmt-preview-modal .stmt-modal-header,body.stmt-print-mode #stmt-preview-footer{display:none!important}
@@ -173,34 +168,26 @@
       .doc-bottom-barcode{font-family:monospace;font-size:9px;background:#e4eaf6;border-radius:3px;padding:2px 8px;border:1px solid #c8d0e4;letter-spacing:1px}
     }
 
-    /* ── روابط الأسماء القابلة للنقر ── */
     .link-cell{cursor:pointer;color:var(--primary-dark,#2a5bbf);font-weight:700}
     .link-cell:hover{text-decoration:underline}
 
-    /* ── فلتر بار ── */
     .filter-bar{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin-bottom:14px}
     .filter-bar .field{margin:0}
 
-    /* بطاقات الجوال — مخفية افتراضياً على الديسكتوب */
     .mob-mer-list { display: none; }
 
-    /* ══════════════════════════════════════════
-       تخطيط ملف التاجر — الجوال (≤ 900px)
-    ══════════════════════════════════════════ */
     @media(max-width:900px){
-      /* رأس صفحة التاجر */
+
       .detail-header{flex-direction:column;align-items:flex-start;gap:8px}
       .detail-info h2{font-size:20px}
       .info-grid{grid-template-columns:1fr 1fr;gap:8px}
 
-      /* بطاقات الإحصائيات الثلاث — عمود واحد */
       .mer-stats{grid-template-columns:1fr!important;gap:8px!important}
       .mer-stat{padding:14px 16px}
       .mer-stat .msv{font-size:22px}
       .mer-stat .msk{font-size:12px}
       .mer-stat .mss{font-size:11px}
 
-      /* رأس كشف الحساب — أزرار مرتبة */
       .panel-header{flex-direction:column;align-items:stretch;gap:10px}
       .panel-header h3{font-size:15px}
       .panel-header > div{display:grid!important;
@@ -208,16 +195,13 @@
       #add-fin-tx-btn{grid-column:1/-1;padding:10px 14px!important;
         font-size:13px!important;justify-content:center}
 
-      /* فلتر بار — تخلص من الـ padding الجانبي الزائد */
       .filter-bar{padding:0 12px 12px!important;gap:6px}
       .filter-bar .field{flex:1 1 130px}
       .filter-bar input[type=date]{font-size:12.5px;padding:7px 8px}
       .filter-bar .btn{padding:8px 10px;font-size:12px}
 
-      /* ══ قائمة التجار — إخفاء الجدول ══ */
       .table-wrap{display:none}
 
-      /* ══ بطاقات التجار على الهاتف ══ */
       .mob-mer-list{display:flex;flex-direction:column;gap:8px}
       .mob-mer-card{
         background:var(--surface);border:1px solid var(--border);
@@ -253,7 +237,6 @@
       }
       .mob-mer-btn-del{color:#b3432f;border-color:#f0b3a8;background:#fff5f5}
 
-      /* ══ صفوف الحركات — تخطيط بطاقة ══ */
       .records-list{display:flex;flex-direction:column;gap:8px;padding:10px 12px}
       .record-row{
         grid-template-columns:auto 1fr auto;
@@ -274,7 +257,7 @@
         overflow:visible;text-overflow:unset;
       }
       .record-main .meta{font-size:11px}
-      /* الصف السفلي: المبلغ + الرصيد + ID */
+
       .tx-right-col{
         grid-area:right;
         flex-direction:row;
@@ -286,12 +269,11 @@
       .record-amount{font-size:15px;font-weight:900}
       .bal-cell{font-size:10.5px}
       .tx-right-col .rec-id{font-size:9.5px;padding:1px 5px}
-      /* أزرار الحركة */
+
       .tx-actions-col{flex-direction:row;gap:4px;align-self:start}
       .tx-row-box3-toggle{padding:4px 8px;font-size:13px}
       .delete-btn{padding:4px 8px;font-size:12px}
 
-      /* نافذة تفاصيل الحركة الداخلية */
       .tx-row-box3-detail{padding:10px 12px 14px;border-radius:10px;margin:0 12px 8px}
       .tx-row-box3-detail .mer-stats{grid-template-columns:1fr!important}
       .tx-row-box3-detail .mer-stat{padding:10px 12px}
@@ -309,7 +291,6 @@
       .record-row{padding:9px 10px}
     }
 
-    /* ── toggle group ── */
     .toggle-group{display:flex;gap:0;border:1.5px solid var(--border);border-radius:8px;overflow:hidden}
     .toggle-group button{flex:1;border:none;background:var(--surface);padding:8px 18px;
       font-family:inherit;font-size:13.5px;font-weight:700;color:var(--muted);cursor:pointer;
@@ -332,7 +313,6 @@
       .delete-btn{display:none!important}
     }
 
-    /* ══ كشف الحساب — أنماط الجدول داخل المودال ══ */
     #stmt-preview-modal{display:none;position:fixed;inset:0;background:#0008;z-index:500;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
     #stmt-preview-modal.open{display:flex}
     .stmt-modal-box{background:#fff;border-radius:12px;width:100%;max-width:860px;margin:auto;display:flex;flex-direction:column;max-height:calc(100vh - 32px);box-shadow:0 20px 50px #00000050}
@@ -340,7 +320,7 @@
     .stmt-modal-header h3{margin:0;font-size:16px;font-weight:800}
     #stmt-preview-content{overflow-y:auto;flex:1;padding:16px;background:#fafafa;border-radius:0 0 0 0}
     #stmt-preview-footer{display:flex;gap:10px;padding:14px 20px;border-top:1px solid #e0e0e0;flex-shrink:0;background:#fff;border-radius:0 0 12px 12px}
-    /* الجدول نفسه */
+
     #stmt-preview-content table{width:100%;border-collapse:collapse;table-layout:fixed;font-family:Cairo,Arial,sans-serif;direction:rtl;font-size:11.5px;color:#111;background:#fff}
     #stmt-preview-content thead{display:table-header-group}
     #stmt-preview-content tbody{display:table-row-group}
@@ -383,8 +363,7 @@
       #stmt-preview-content tbody tr td{padding:5px 6px}
       #stmt-preview-content .col-hdr th{padding:6px 6px;font-size:9.5px}
     }
-  
-      /* ══ شاشة التحميل ══ */
+
       #page-loader {
         position: fixed; inset: 0; z-index: 9999;
         background: linear-gradient(145deg, #1a6b3a, #2d9f5f);
@@ -427,7 +406,7 @@
 </style>
 </head>
 <body>
-<!-- ══ شاشة التحميل ══ -->
+
 <div id="page-loader">
   <div class="pl-logo">
     <img src="https://i.imgur.com/NsN1HgC.png" alt="logo" class="pl-logo-img"
@@ -441,7 +420,6 @@
   <header id="topbar" class="topbar"></header>
   <main class="page">
 
-    <!-- ═══════ قائمة التجار ═══════ -->
     <div id="list-section">
       <div class="page-header">
         <div>
@@ -465,14 +443,13 @@
             </tbody>
           </table>
         </div>
-        <!-- بطاقات الهاتف (تظهر فقط على شاشات ≤ 900px) -->
+
         <div id="mob-mer-list" class="mob-mer-list" style="padding:12px">
           <div class="empty-state">جارِ التحميل...</div>
         </div>
       </div>
     </div>
 
-    <!-- ═══════ تفاصيل التاجر ═══════ -->
     <div id="detail-section" style="display:none">
       <span class="back-link" id="back-btn">→ العودة إلى قائمة التجار</span>
 
@@ -493,10 +470,8 @@
         </div>
       </div>
 
-      <!-- ── إحصائيات الحساب ── -->
       <div class="mer-stats" id="mer-unified-stats"></div>
 
-      <!-- ── كشف الحساب الموحد ── -->
       <div class="panel print-target">
         <div class="panel-header">
           <h3>كشف الحساب الموحد</h3>
@@ -534,7 +509,6 @@
   </main>
 </div>
 
-<!-- ═══════ نافذة إضافة دفعة مالية للتاجر ═══════ -->
 <div class="modal-overlay" id="fin-tx-modal">
   <div class="modal-box" style="max-width:440px">
     <div class="modal-box-header">
@@ -591,7 +565,6 @@
   </div>
 </div>
 
-<!-- ═══════ نافذة إضافة / تعديل تاجر ═══════ -->
 <div class="modal-overlay" id="merchant-modal">
   <div class="modal-box">
     <div class="modal-box-header">
@@ -621,7 +594,6 @@
   </div>
 </div>
 
-<!-- ═══════ نافذة تفاصيل الحركة المالية ═══════ -->
 <div class="modal-overlay" id="tx-detail-modal">
   <div class="modal-box" style="max-width:500px">
     <div class="modal-box-header">
@@ -637,7 +609,6 @@
   </div>
 </div>
 
-<!-- ═══════ نافذة معاينة كشف الحساب ═══════ -->
 <div id="stmt-preview-modal">
   <div class="stmt-modal-box">
     <div class="stmt-modal-header">
@@ -652,7 +623,6 @@
   </div>
 </div>
 
-<!-- ═══════ Firebase ═══════ -->
 <script type="module">
 import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut }
@@ -665,12 +635,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const app = initializeApp({
-  apiKey:            "AIzaSyDQsaNVskKiV2cwPVlJDixpTD1S-Dhp7gs",
-  authDomain:        "reta-and-hamd.firebaseapp.com",
-  projectId:         "reta-and-hamd",
-  storageBucket:     "reta-and-hamd.firebasestorage.app",
-  messagingSenderId: "220767743863",
-  appId:             "1:220767743863:web:2ecd37bd5830a39ec1bb72"
+  apiKey:            "AIzaSyCzBhGHQ7O9BDg5D5eFXrFLhCCauFPEkWQ",
+  authDomain:        "test-reta-e4928.firebaseapp.com",
+  projectId:         "test-reta-e4928",
+  storageBucket:     "test-reta-e4928.firebasestorage.app",
+  messagingSenderId: "686928049289",
+  appId:             "1:686928049289:web:f4e733cc58e0ef36e84258",
+  measurementId:     "G-T62EFF5591"
 });
 const auth = getAuth(app);
 const db   = getFirestore(app);
@@ -718,17 +689,15 @@ function renderNav(user){
     </a>`).join("")}</div>`;
 }
 
-/* ── حالة ── */
 let merchants      = [];
-let merchantTxs    = [];   // merchantTransactions (النظام الأصلي)
-let finTxs         = [];   // finance_transactions (الجديد)
-let activityOpMap  = {};   // opId → OP-XXXXX من سجل المنتجات
+let merchantTxs    = [];
+let finTxs         = [];
+let activityOpMap  = {};
 let currentMerId   = null;
 let editMerId      = null;
 let txDir          = "in";
 let merFinUnsub    = null;
 
-/* ── أدوات ── */
 const esc = t => { const d=document.createElement("div"); d.textContent=t??""; return d.innerHTML; };
 const fmt = n => new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(n||0)+" ج.م";
 const fmtDate = s => s ? new Date(s+"T00:00:00").toLocaleDateString("ar-EG-u-nu-latn",
@@ -749,16 +718,15 @@ function toast(msg,err=false){
 }
 
 function calcBalance(merId){
-  // الحركات المباشرة (merchantTransactions)
+
   const directBal=merchantTxs.filter(t=>t.merchantId===merId)
     .reduce((s,t)=>s+(t.type==="out"?-t.amount:t.amount),0);
-  // دفعات المالية (finance_transactions نوع تاجر فقط)
+
   const finBal=finTxs.filter(t=>t.merchantId===merId&&t.type==="merchant")
     .reduce((s,t)=>s+(t.dir==="in"?t.amount:-t.amount),0);
   return directBal+finBal;
 }
 
-/* ── تn�يئة ── */
 let pendingOpenId=new URLSearchParams(window.location.search).get("id");
 function init(){
   setupMerchantModal();
@@ -767,13 +735,12 @@ function init(){
   loadAllMerchantTxs();
   loadFinTxs();
   loadActivityOpMap();
-  // نافذة التفاصيل — مستقلة عن تحميل البيانات
+
   try{ setupDetailModal(); }catch(e){ console.warn("setupDetailModal:",e); }
-  // كشف الحساب + CSV
+
   document.getElementById("print-stmt-btn").addEventListener("click", printStatement);
   document.getElementById("export-csv-btn").addEventListener("click", exportLedgerCSV);
 
-  // ── مودال معاينة كشف الحساب ──
   const stmtModal = document.getElementById("stmt-preview-modal");
   function closeStmtModal(){ stmtModal.classList.remove("open"); }
   document.getElementById("stmt-preview-close").addEventListener("click", closeStmtModal);
@@ -786,7 +753,6 @@ function init(){
   });
 }
 
-/* ── نافذة تفاصيل الحركة ── */
 function setupDetailModal(){
   const modal=document.getElementById("tx-detail-modal"); if(!modal) return;
   document.getElementById("tx-detail-close").addEventListener("click",()=>modal.classList.remove("open"));
@@ -819,7 +785,6 @@ function amountInWords(n){
   let res=cv(whole)+" جنيه"; if(cents>0) res+=" و"+bH(cents)+" قرش"; return res;
 }
 
-/* ── حساب رصيد التاجر قبل وبعد حركة مالية معيّنة (لعرضه في المعاينة/الطباعة) ── */
 function calcMerchantBalanceBeforeAfter(tx){
   const merId=tx.merchantId; if(!merId) return null;
   const direct=merchantTxs.filter(x=>x.merchantId===merId).map(x=>({
@@ -954,7 +919,6 @@ function openTxDetail(t){
   document.getElementById("tx-detail-modal").classList.add("open");
 }
 
-/* ── نافذة التاجر ── */
 function setupMerchantModal(){
   const modal=document.getElementById("merchant-modal");
   document.getElementById("add-merchant-btn").addEventListener("click",()=>openMerModal(null));
@@ -979,7 +943,6 @@ function openMerModal(mer){
 }
 function closeMerModal(){ document.getElementById("merchant-modal").classList.remove("open"); editMerId=null; }
 
-/* ── سجل المراقبة الشامل ── */
 async function writeAuditLog(action, entity, details) {
   try {
     await addDoc(collection(db,"auditLog"),{
@@ -1014,7 +977,6 @@ async function saveMerchant(e){
   finally{ btn.disabled=false; btn.textContent="حفظ التاجر"; }
 }
 
-/* ── تحميل البيانات ── */
 function loadMerchants(){
   onSnapshot(collection(db,"merchants"),snap=>{
     merchants=snap.docs.map(d=>({id:d.id,...d.data()}));
@@ -1037,8 +999,7 @@ function loadAllMerchantTxs(){
 }
 
 function loadFinTxs(){
-  // نجلب كل حركات finance_transactions (وليس فقط type=="merchant") حتى تظهر
-  // أي حركة مرتبطة باسم تاجر (سلفة/سحب/إيداع/أخرى) داخل سجله هنا أيضاً
+
   onSnapshot(collection(db,"finance_transactions"),snap=>{
     finTxs=snap.docs.map(d=>({id:d.id,...d.data()})).filter(t=>t._active!==false);
     renderList();
@@ -1063,7 +1024,6 @@ function loadActivityOpMap(){
   },err=>{ console.error(err); });
 }
 
-/* ── قائمة التجار ── */
 function renderList(){
   const tbody=document.getElementById("merchants-tbody");
   const mobList=document.getElementById("mob-mer-list");
@@ -1077,7 +1037,6 @@ function renderList(){
   merchants.forEach(mer=>{
     const bal=calcBalance(mer.id);
 
-    // ── صف الجدول (سطح المكتب) ──
     const tr=document.createElement("tr");
     tr.innerHTML=`
       <td><span class="link-cell" data-id="${mer.id}">${esc(mer.name)}</span></td>
@@ -1090,7 +1049,6 @@ function renderList(){
       </div></td>`;
     tbody.appendChild(tr);
 
-    // ── بطاقة الهاتف ──
     const card=document.createElement("div");
     card.className="mob-mer-card";
     card.innerHTML=`
@@ -1110,14 +1068,12 @@ function renderList(){
     mobList.appendChild(card);
   });
 
-  // ── أحداث الجدول ──
   tbody.querySelectorAll(".link-cell").forEach(el=>el.addEventListener("click",()=>openDetail(el.dataset.id)));
   tbody.querySelectorAll(".edit").forEach(el=>el.addEventListener("click",()=>{
     const m=merchants.find(x=>x.id===el.dataset.id); if(m) openMerModal(m);
   }));
   tbody.querySelectorAll(".del").forEach(el=>el.addEventListener("click",()=>deleteMer(el.dataset.id)));
 
-  // ── أحداث بطاقات الهاتف ──
   mobList.querySelectorAll(".mob-mer-name-lnk,.mob-mer-btn-open").forEach(el=>
     el.addEventListener("click",()=>openDetail(el.dataset.id)));
   mobList.querySelectorAll(".mob-mer-btn-edit").forEach(el=>el.addEventListener("click",()=>{
@@ -1131,7 +1087,6 @@ async function deleteMer(id){
   const mer=merchants.find(m=>m.id===id);
   const merName=mer?.name??"التاجر";
 
-  // احسب عدد الحركات أولاً
   const [mSnap,fSnap]=await Promise.all([
     getDocs(query(collection(db,"merchantTransactions"),where("merchantId","==",id))),
     getDocs(query(collection(db,"finance_transactions"),where("merchantId","==",id))),
@@ -1143,30 +1098,28 @@ async function deleteMer(id){
   if(!confirm(msg)) return;
 
   try{
-    // Firebase writeBatch يقبل 500 عملية كحد أقصى لكل دفعة
+
     const CHUNK=490;
     const allDocs=[
       ...mSnap.docs.map(d=>d.ref),
       ...fSnap.docs.map(d=>d.ref),
     ];
-    // احذف الحركات على دفعات
+
     for(let i=0;i<allDocs.length;i+=CHUNK){
       const batch=writeBatch(db);
       allDocs.slice(i,i+CHUNK).forEach(ref=>batch.delete(ref));
       await batch.commit();
     }
-    // احذف التاجر نفسه
+
     await deleteDoc(doc(db,"merchants",id));
     toast(`تم حذف التاجر و ${allDocs.length} حركة مرتبطة به`);
     writeAuditLog("حذف","تاجر",`${merName} — ${allDocs.length} حركة`);
   }catch(err){ console.error(err); toast("خطأ أثناء الحذف",true); }
 }
 
-/* ── صفحة التفاصيل ── */
 function setupDetail(){
   document.getElementById("back-btn").addEventListener("click",backToList);
 
-  // فلاتر كشف الحساب
   document.getElementById("filter-apply-btn").addEventListener("click",refreshLedger);
   document.getElementById("filter-clear-btn").addEventListener("click",()=>{
     const now=new Date();
@@ -1175,9 +1128,6 @@ function setupDetail(){
     refreshLedger();
   });
 
-  // تصدير CSV
-
-  // نموذج الدفعة المالية
   setupFinTxModal();
 }
 
@@ -1190,7 +1140,7 @@ function openDetail(id){
   currentMerId=id;
   document.getElementById("list-section").style.display="none";
   document.getElementById("detail-section").style.display="block";
-  // ضبط الفلتر الافتراضي: أول يوم في الشهر الحالي → اليوم
+
   const now=new Date();
   document.getElementById("filter-from").value=new Date(now.getFullYear(),now.getMonth(),1).toISOString().slice(0,10);
   document.getElementById("filter-to").value=now.toISOString().slice(0,10);
@@ -1216,18 +1166,16 @@ function fillHeader(){
   balEl.style.color=bal>=0?"var(--primary-dark)":"var(--danger)";
 }
 
-/* ── helpers: parse date string or Firestore timestamp to seconds ── */
 function _toSecs(t){
   if(t.date) return new Date(t.date+"T00:00:00").getTime()/1000;
   return t.createdAt?.seconds??0;
 }
 function _toDateStr(t){
-  if(t.date) return t.date; // YYYY-MM-DD
+  if(t.date) return t.date;
   const d=t.createdAt?.toDate?.();
   return d?d.toISOString().slice(0,10):"";
 }
 
-/* ── نافذة إضافة دفعة مالية مباشرة من صفحة التاجر ── */
 function setupFinTxModal(){
   const modal=document.getElementById("fin-tx-modal");
   document.getElementById("fin-tx-modal-close").addEventListener("click",closeFinTxModal);
@@ -1249,7 +1197,7 @@ async function saveFinTx(e){
   e.preventDefault();
   const amount=Number(document.getElementById("fin-tx-amount").value);
   if(!amount||amount<=0){ toast("أدخل مبلغاً صحيحاً",true); return; }
-  // dir هنا يخص دفتر مستحقات التاجر فقط: out=تسديد (يقلل دينه) / in=زيادة دين
+
   const dir=document.querySelector('input[name="fin_dir"]:checked')?.value;
   if(!dir){ toast("حدد نوع الحركة",true); return; }
   const affectsCash=document.getElementById("fin-affect-cash").checked;
@@ -1269,7 +1217,6 @@ async function saveFinTx(e){
     const finId="F-"+String(seqNum).padStart(4,"0");
     const batch=writeBatch(db);
 
-    // 1) حركة على دفتر مستحقات التاجر (صندوق المنتجات) — دائماً
     const merRef=doc(collection(db,"finance_transactions"));
     batch.set(merRef,{
       type:"merchant", dir, amount, date,
@@ -1280,9 +1227,6 @@ async function saveFinTx(e){
       createdAt:serverTimestamp(), updatedAt:serverTimestamp(),
     });
 
-    // 2) مرآة على صندوق الكاش فقط إذا الحركة نقدية فعلياً
-    //    out (تسديد من التاجر) = فلوس دخلت الصندوق = deposit/in
-    //    in  (زيادة دين على التاجر) = فلوس خرجت من الصندوق = withdrawal/out
     if(affectsCash){
       const cashRef=doc(collection(db,"finance_transactions"));
       batch.set(cashRef,{
@@ -1305,7 +1249,6 @@ async function saveFinTx(e){
   finally{ btn.disabled=false; btn.textContent="حفظ الدفعة"; }
 }
 
-/* ── بناء قائمة الحركات الموحدة مع فلتر التاريخ ── */
 function _buildAllRows(){
   const fromVal=document.getElementById("filter-from").value;
   const toVal  =document.getElementById("filter-to").value;
@@ -1326,8 +1269,7 @@ function _buildAllRows(){
     sourcePage:t.sourcePage||"",
   }));
   const fin=finTxs.filter(t=>t.merchantId===currentMerId).map(t=>({
-    // أي حركة finance_transactions مرتبطة بهذا التاجر تظهر هنا، بغض النظر عن نوعها
-    // (دفعة تاجر / سلفة / سحب / إيداع / أخرى) — لكن فقط دفعات النوع "merchant" تُحتسب في رصيد مستحقاته
+
     _src: t.type==="merchant" ? "finance" : "finance-other",
     txType:t.type,
     seqId:t.finId||"—",
@@ -1345,21 +1287,18 @@ function _buildAllRows(){
   return all;
 }
 
-/* ── إحصائيات الفترة المفلترة ── */
 function renderUnifiedStats(){
-  // نستبعد حركات finance_transactions من نوع غير "merchant" (سلفة/سحب/إيداع/أخرى)
-  // من حساب مستحقات التاجر — هي تظهر في السجل للاطّلاع فقط ولا تمثل ديناً عليه
+
   const all=_buildAllRows().filter(t=>t._src!=="finance-other");
-  // الإحصائيات الكلية (بدون فلتر) للرصيد الحقيقي
+
   const allFull=[
     ...merchantTxs.filter(t=>t.merchantId===currentMerId).map(t=>({dir:t.type,amount:t.amount||0})),
     ...finTxs.filter(t=>t.merchantId===currentMerId&&t.type==="merchant").map(t=>({dir:t.dir,amount:t.amount||0})),
   ];
-  // dir="out" = بيع/تحميل = مسحوبات (ما أخذه التاجر)
-  // dir="in"  = دفعة/سداد = مدفوعات (ما دفعه التاجر)
+
   const salesAmt   =allFull.filter(t=>t.dir==="out").reduce((s,t)=>s+t.amount,0);
   const paymentsAmt=allFull.filter(t=>t.dir==="in") .reduce((s,t)=>s+t.amount,0);
-  const net=salesAmt-paymentsAmt; // موجب = التاجر مدين
+  const net=salesAmt-paymentsAmt;
 
   const filtSales   =all.filter(t=>t.dir==="out").reduce((s,t)=>s+t.amount,0);
   const filtPayments=all.filter(t=>t.dir==="in") .reduce((s,t)=>s+t.amount,0);
@@ -1397,7 +1336,6 @@ function renderUnifiedStats(){
     </div>`;
 }
 
-/* ── كشف الحساب ── */
 function renderUnifiedList(){
   const list=document.getElementById("unified-list"); if(!list) return;
   const all=_buildAllRows();
@@ -1407,12 +1345,10 @@ function renderUnifiedList(){
   }
   list.innerHTML="";
 
-  // ── حساب الرصيد الافتتاحي (ما قبل الفترة المفلترة) ──
   const fromVal=document.getElementById("filter-from").value;
   let openingBalance=0;
   if(fromVal){
-    // كل حركات مستحقات التاجر قبل تاريخ البداية (بدون فلتر) — لا نحتسب هنا حركات
-    // finance_transactions من نوع غير "merchant" (سلفة/سحب/إيداع/أخرى) لأنها لا تمثل ديناً على التاجر
+
     const allDirect=merchantTxs.filter(t=>t.merchantId===currentMerId);
     const allFin   =finTxs.filter(t=>t.merchantId===currentMerId&&t.type==="merchant");
     [...allDirect,...allFin].forEach(t=>{
@@ -1421,8 +1357,6 @@ function renderUnifiedList(){
     });
   }
 
-  // نحسب الرصيد التراكمي من الأقدم للأحدث ثم نعكس الترتيب للعرض
-  // (حركات finance-other لا تُغيّر رصيد مستحقات التاجر — تظهر فقط للاطّلاع)
   let runningBalance=openingBalance;
   const sorted=[...all].reverse();
   const balances=[];
@@ -1432,8 +1366,6 @@ function renderUnifiedList(){
   });
   balances.reverse();
 
-  // ── حساب الـ3 صناديق (مسحوبات/مدفوعات/مستحق) قبل وبعد كل حركة، على كامل تاريخ التاجر بلا فلتر ──
-  // (فقط الحركات التي تمثل ديناً حقيقياً على التاجر: تحميل/مباشرة + finance_transactions من نوع "merchant")
   const fullHist=[
     ...merchantTxs.filter(t=>t.merchantId===currentMerId).map(t=>({id:t.id,dir:t.type,amount:t.amount||0,dateSecs:_toSecs(t)})),
     ...finTxs.filter(t=>t.merchantId===currentMerId&&t.type==="merchant").map(t=>({id:t.id,dir:t.dir,amount:t.amount||0,dateSecs:t.date?new Date(t.date+"T00:00:00").getTime()/1000:0})),
@@ -1539,7 +1471,7 @@ function renderUnifiedList(){
       openTxDetail({
         id:       raw.id,
         type:     "merchant",
-        dir:      raw.type,           // "out"=دين / "in"=رصيد
+        dir:      raw.type,
         finId:    raw.txId || (raw.opId?raw.opId.slice(0,8).toUpperCase():"—"),
         date:     raw.date || "",
         amount:   raw.amount || 0,
@@ -1561,7 +1493,7 @@ function renderUnifiedList(){
         await deleteDoc(doc(db,"merchantTransactions",btn.dataset.id));
         writeAuditLog("حذف","حركة تاجر",`${mer?.name||"—"} — ${src==="loading"?"تحميل":"مباشرة"}`);
       } else {
-        // نحذف جميع السجلات التي تحمل نفس finId (السجل الأصل + المرآة الكاش إن وُجدت)
+
         const tx = finTxs.find(t=>t.id===btn.dataset.id);
         const finId = tx?.finId;
         const siblings = finId
@@ -1577,17 +1509,14 @@ function renderUnifiedList(){
   }));
 }
 
-/* ── تصدير CSV ── */
 function exportLedgerCSV(){
   const mer=merchants.find(m=>m.id===currentMerId);
   const fromVal=document.getElementById("filter-from").value;
   const toVal  =document.getElementById("filter-to").value;
 
-  // الحركات مرتبة تصاعدياً
   const all=_buildAllRows().slice().sort((a,b)=>a.dateSecs-b.dateSecs);
   if(!all.length){ toast("لا توجد بيانات للتصدير",true); return; }
 
-  // رصيد افتتاحي
   let openingBal=0;
   if(fromVal){
     [...merchantTxs.filter(t=>t.merchantId===currentMerId),
@@ -1605,7 +1534,6 @@ function exportLedgerCSV(){
   let runBal=openingBal;
   const rows=[];
 
-  // صف الرصيد الافتتاحي
   if(fromVal&&openingBal!==0){
     rows.push(["—",fromVal,"—",q("رصيد مرحّل"),"—","","",openingBal.toFixed(2)].join(","));
   }
@@ -1626,7 +1554,6 @@ function exportLedgerCSV(){
     ].join(","));
   });
 
-  // صف الإجمالي
   const totIn=all.filter(t=>t.dir==="in").reduce((s,t)=>s+t.amount,0);
   const totOut=all.filter(t=>t.dir==="out").reduce((s,t)=>s+t.amount,0);
   rows.push(["—","—","—",q("الإجمالي"),"",totIn.toFixed(2),totOut.toFixed(2),runBal.toFixed(2)].join(","));
@@ -1642,9 +1569,6 @@ function exportLedgerCSV(){
   toast("تم التصدير — "+all.length+" سجل");
 }
 
-/* ══════════════════════════════════════════════════
-   طباعة كشف حساب التاجر (ترويسة تتكرر في كل صفحة)
-══════════════════════════════════════════════════ */
 function printStatement(){
   const mer=merchants.find(m=>m.id===currentMerId);
   if(!mer){ toast("لا يوجد تاجر محدد",true); return; }
@@ -1652,10 +1576,8 @@ function printStatement(){
   const fromVal=document.getElementById("filter-from").value;
   const toVal  =document.getElementById("filter-to").value;
 
-  /* الحركات مرتبة تصاعدياً بالتاريخ */
   const all=_buildAllRows().slice().sort((a,b)=>a.dateSecs-b.dateSecs);
 
-  /* رصيد افتتاحي: كل ما قبل fromVal */
   let openingBalance=0;
   if(fromVal){
     [...merchantTxs.filter(t=>t.merchantId===currentMerId),
@@ -1666,7 +1588,6 @@ function printStatement(){
     });
   }
 
-  /* بناء صفوف مع رصيد جارٍ */
   let runBal=openingBalance;
   let totalIn=0,totalOut=0;
   const rows=all.map((t,idx)=>{
@@ -1676,13 +1597,11 @@ function printStatement(){
     return{...t,runBal,idx:idx+1};
   });
 
-  /* مساعدات تنسيق */
   const fmtD=s=>s?new Date(s+"T00:00:00").toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"short",day:"numeric"}):"—";
   const fmtM=n=>new Intl.NumberFormat("ar-EG-u-nu-latn",{minimumFractionDigits:2,maximumFractionDigits:2}).format(n||0)+" ج.م";
   const printNow=new Date().toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"long",day:"numeric"});
   const periodLabel=(fromVal||toVal)?`${fromVal?fmtD(fromVal):"البداية"}  —  ${toVal?fmtD(toVal):"اليوم"}`:"جميع الفترات";
 
-  /* تسمية نوع الحركة */
   function srcLabel(t){
     if(t._src==="loading") return"عملية بيع / تحميل";
     if(t._src==="finance") return t.dir==="out"?"تسديد مستحقات":"إضافة على الحساب";
@@ -1690,7 +1609,6 @@ function printStatement(){
     return t.note||"حركة مباشرة";
   }
 
-  /* ── بناء محتوى الكشف (HTML داخلي فقط بدون wrapper) ── */
   const innerHTML=`
 <table>
   <thead>
@@ -1766,17 +1684,15 @@ function printStatement(){
   <div>Ahmed And Hamdy — نظام المحاسبة الداخلي</div>
 </div>`;
 
-  /* ── حقن المحتوى وفتح المودال ── */
   document.getElementById("stmt-preview-title").textContent = "كشف حساب — " + mer.name;
   document.getElementById("stmt-preview-content").innerHTML = innerHTML;
   document.getElementById("stmt-preview-modal").classList.add("open");
-  // تمرير لأعلى عند كل فتح
+
   setTimeout(()=>{ document.getElementById("stmt-preview-content").scrollTop = 0; }, 50);
 }
 
 </script>
 
-<!-- ══ مراقب شاشة التحميل ══ -->
 <script>
 (function(){
   var loader = document.getElementById("page-loader");
