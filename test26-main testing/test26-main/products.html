@@ -1,0 +1,1264 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>المنتجات - Ahmed And hamdy</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- ضمان الأرقام اللاتينية فقط -->
+    <script>
+    (function(){
+      var _NF=Intl.NumberFormat;
+      function patchLocale(l){
+        if(!l)return"ar-EG-u-nu-latn";
+        if(typeof l==="string")return l.includes("nu-")?l:l.replace(/^ar(-EG)?/,"ar-EG-u-nu-latn");
+        if(Array.isArray(l))return l.map(patchLocale);
+        return"ar-EG-u-nu-latn";
+      }
+      Intl.NumberFormat=function(l,o){return new _NF(patchLocale(l),o)};
+      Object.assign(Intl.NumberFormat,_NF);
+      Intl.NumberFormat.prototype=_NF.prototype;
+    })();
+    </script>
+    <script type="module" crossorigin src="/assets/products-DbXeSzH2.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/auth-guard-DMMO1gWE.js">
+    <link rel="modulepreload" crossorigin href="/assets/nav-C4LmEyvm.js">
+    <link rel="modulepreload" crossorigin href="/assets/image-utils-ix_Ztzsr.js">
+    <link rel="stylesheet" crossorigin href="/assets/auth-guard-C6CJ8_8i.css">
+    <style>
+      /* ── Warehouse sections ── */
+      .warehouse-section{border:1px solid var(--border);border-radius:10px;margin-bottom:20px;overflow:hidden;background:var(--surface)}
+      .warehouse-section-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--bg);border-bottom:1px solid var(--border);gap:12px}
+      .warehouse-section-title{font-weight:700;font-size:1rem;color:var(--ink);display:flex;align-items:center;gap:8px}
+      .warehouse-section-title .wh-count{font-size:.78rem;font-weight:500;color:var(--muted);background:var(--border);border-radius:20px;padding:1px 9px}
+      .warehouse-section-body{padding:16px 18px}
+      /* ══ قائمة المنتجات — عرض صفوف أفقية ══ */
+      .wh-products-grid{display:flex;flex-direction:column;gap:0;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+      .wh-product-card{
+        display:grid;
+        grid-template-columns:2.4rem 1fr auto auto;
+        align-items:center;
+        gap:6px 14px;
+        padding:11px 16px;
+        background:var(--surface);
+        border-bottom:1px solid var(--border);
+        border-inline-start:3px solid var(--primary,#1a6b3a);
+        transition:background .12s;
+      }
+      .wh-product-card:last-child{border-bottom:none}
+      .wh-product-card:hover{background:var(--bg)}
+      .wh-product-card.visiting{border-inline-start-color:#d97706}
+      /* الأيقونة */
+      .wpc-icon{font-size:20px;text-align:center;line-height:1;flex-shrink:0}
+      /* المعلومات */
+      .wpc-info{min-width:0}
+      .wpc-name{font-weight:800;font-size:.91rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .wpc-serial{font-size:.68rem;font-family:monospace;font-weight:700;color:var(--muted);margin-top:1px}
+      .wpc-desc{font-size:.72rem;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      /* بادج الكمية */
+      .wpc-qty-badge{
+        display:flex;flex-direction:column;align-items:center;justify-content:center;
+        background:var(--primary-soft,#eef7f2);border-radius:8px;
+        padding:5px 10px;min-width:54px;text-align:center;flex-shrink:0;
+      }
+      .wpc-qty-num{font-size:1.05rem;font-weight:900;color:var(--ink);line-height:1.1}
+      .wpc-qty-unit{font-size:.64rem;font-weight:600;color:var(--muted);margin-top:1px;white-space:nowrap}
+      /* السعر والتعديل */
+      .wpc-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+      .wpc-price{font-size:.82rem;font-weight:700;color:var(--primary-dark,#1a6b3a);white-space:nowrap}
+      .wpc-edit-btn{
+        border:1px solid var(--border);border-radius:6px;
+        background:var(--surface);color:var(--muted);
+        font-family:inherit;font-size:.7rem;font-weight:700;
+        padding:3px 9px;cursor:pointer;white-space:nowrap;
+        transition:background .12s,color .12s;
+      }
+      .wpc-edit-btn:hover{background:var(--primary-soft);color:var(--primary-dark)}
+      .wh-empty-products{text-align:center;padding:20px 0;color:var(--muted);font-size:.86rem}
+      /* ══ خيارات حالة الدفع ══ */
+      .pay-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+      .pay-opt{
+        display:flex;align-items:center;gap:10px;
+        padding:13px 14px;border:2px solid var(--border);
+        border-radius:12px;cursor:pointer;background:var(--surface);
+        transition:border-color .15s,background .15s;
+      }
+      .pay-opt input[type="radio"]{display:none}
+      .pay-opt-icon{font-size:22px;flex-shrink:0;line-height:1}
+      .pay-opt-title{font-weight:800;font-size:.9rem;color:var(--ink)}
+      .pay-opt-sub{font-size:.72rem;color:var(--muted);margin-top:2px;line-height:1.4}
+      .pay-opt.sel-unpaid{border-color:#d97706;background:#fffbeb}
+      .pay-opt.sel-unpaid .pay-opt-title{color:#a06a10}
+      .pay-opt.sel-paid{border-color:var(--primary,#1a6b3a);background:#f0faf4}
+      .pay-opt.sel-paid .pay-opt-title{color:var(--primary-dark,#1a6b3a)}
+      @media(max-width:500px){.pay-options{grid-template-columns:1fr}}
+      /* ── op-type toggle ── */
+      .op-type-group{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+      .op-type-btn{flex:1;min-width:120px;padding:12px 10px;border:2px solid var(--border);border-radius:10px;background:var(--surface);font-family:inherit;font-weight:700;font-size:.88rem;color:var(--muted);cursor:pointer;text-align:center;transition:all .15s}
+      .op-type-btn:hover{border-color:var(--primary);color:var(--primary-dark);background:var(--primary-soft)}
+      .op-type-btn.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary-dark)}
+      /* ── op forms ── */
+      .op-form-section{display:none}
+      .op-form-section.active{display:block}
+      .items-lines-block{background:var(--bg);border-radius:10px;padding:12px;margin-bottom:12px}
+      .items-lines-block h4{margin:0 0 10px;font-size:.85rem;color:var(--muted)}
+      .prod-line-row{display:grid;grid-template-columns:2fr 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
+      .prod-line-row .line-hint{grid-column:1/-1;font-size:.75rem;color:var(--primary-dark);font-weight:600;padding:2px 4px}
+      .prod-line-row .remove-line{background:var(--danger-soft);color:var(--danger);border:none;border-radius:7px;padding:7px 11px;font-weight:700;font-size:.8rem;cursor:pointer}
+      /* ══════════════════════════════════════
+         فاتورة احترافية — تصميم جديد
+      ══════════════════════════════════════ */
+      .inv-doc{font-family:Cairo,sans-serif;direction:rtl;max-width:680px;margin:0 auto;color:#111;background:#fff}
+      /* رأس الفاتورة */
+      .inv-doc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:14px;margin-bottom:14px;border-bottom:2px solid #222}
+      .inv-doc-logo-wrap{display:flex;flex-direction:column;gap:3px}
+      .inv-doc-logo{width:90px;height:54px;object-fit:contain;border:1.5px dashed #bbb;border-radius:6px;padding:4px;background:#f8f8f8}
+      .inv-doc-brand{font-size:16px;font-weight:800;color:#111;margin-top:6px}
+      .inv-doc-brand-sub{font-size:11px;color:#777;margin-top:1px}
+      /* أرقام الفاتورة */
+      .inv-doc-nums{text-align:left;min-width:170px}
+      .inv-doc-num-row{display:flex;justify-content:space-between;gap:16px;font-size:12.5px;margin-bottom:5px}
+      .inv-doc-num-row span{color:#777}
+      .inv-doc-num-row strong{color:#111;font-weight:700}
+      /* قسم "إلى" */
+      .inv-doc-bill{margin-bottom:16px}
+      .inv-doc-bill-label{font-size:10.5px;font-weight:700;color:#777;letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px}
+      .inv-doc-bill-name{font-size:14.5px;font-weight:800;color:#111;margin-bottom:2px}
+      .inv-doc-bill-detail{font-size:12px;color:#555;line-height:1.65}
+      /* بادج النوع */
+      .inv-doc-type-badge{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;padding:3px 10px;margin-bottom:12px;border:1px solid}
+      .inv-doc-type-badge.t-prod{background:#eef2ff;color:#3730a3;border-color:#c7d2fe}
+      .inv-doc-type-badge.t-load{background:#fdf4e3;color:#92400e;border-color:#fcd34d}
+      .inv-doc-type-badge.t-trans{background:#e8f0fb;color:#1e40af;border-color:#bfdbfe}
+      /* جدول الفاتورة */
+      .inv-doc-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:0}
+      .inv-doc-table th{text-align:right;padding:9px 12px;background:#f5f5f5;font-size:12px;font-weight:700;color:#444;border:1px solid #ddd}
+      .inv-doc-table td{padding:9px 12px;border:1px solid #e0e0e0;vertical-align:middle;color:#111}
+      .inv-doc-table tr:nth-child(even) td{background:#fafafa}
+      /* إجمالي */
+      .inv-doc-total-wrap{border:1px solid #ddd;border-top:none;display:flex;justify-content:flex-end}
+      .inv-doc-total-table{border-collapse:collapse;min-width:260px}
+      .inv-doc-total-table td{padding:8px 12px;border-top:1px solid #e0e0e0;font-size:13px}
+      .inv-doc-total-table tr:last-child td{background:#f5f5f5;font-weight:800;font-size:14px;color:#111;border-top:2px solid #222}
+      .inv-doc-total-table .tot-lbl{color:#555}
+      .inv-doc-total-table .tot-val{text-align:left;font-family:monospace}
+      /* ملاحظة */
+      .inv-doc-note{margin-top:14px;padding:10px 14px;background:#f9f9f9;border-right:3px solid #bbb;font-size:12px;color:#555;border-radius:0 4px 4px 0}
+      /* تذييل */
+      .inv-doc-footer{margin-top:26px;padding-top:12px;border-top:1px dashed #ccc;display:flex;align-items:flex-end;justify-content:space-between;font-size:11px;color:#aaa}
+      .inv-doc-sig-line{width:110px;border-top:1px solid #666;margin-bottom:4px}
+      .inv-doc-sig{text-align:center;font-size:11px;color:#777}
+      /* توافق مع الكود القديم */
+      .invoice-type-badge{display:inline-block;padding:5px 14px;border-radius:999px;font-size:12.5px;font-weight:700;margin-bottom:14px}
+      .inv-prod{background:var(--primary-soft);color:var(--primary-dark)}
+      .inv-transfer{background:#e8f0fb;color:#2a5bbf}
+      .inv-load{background:#fdf4e3;color:#a06a10}
+      /* ── record badges ── */
+      .record-badge.production{background:var(--primary-soft);color:var(--primary-dark)}
+      .record-badge.transfer{background:#e8f0fb;color:#2a5bbf}
+      .record-badge.loading{background:#fdf4e3;color:#a06a10}
+      /* ── log table ── */
+      .log-table{width:100%;border-collapse:collapse}
+      .log-table th{text-align:right;font-size:12px;color:var(--muted);font-weight:700;padding:8px 12px;border-bottom:2px solid var(--border);background:var(--bg)}
+      .log-table td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+      .log-table tbody tr:hover td{background:var(--bg)}
+      .log-table tr:last-child td{border-bottom:none}
+      .log-badge{display:inline-block;padding:3px 10px;border-radius:7px;font-size:11px;font-weight:700;white-space:nowrap}
+      .log-prod{background:var(--primary-soft);color:var(--primary-dark)}
+      .log-transfer{background:#e8f0fb;color:#2a5bbf}
+      .log-load{background:#fdf4e3;color:#a06a10}
+      .log-time{font-size:11px;color:var(--muted);font-family:monospace}
+      /* ── بطاقات سجل العمليات على الهاتف ── */
+      .mob-log-list{display:none}
+      /* ── clickable serial numbers → operation preview ── */
+      .log-serial-link{transition:opacity .15s}
+      .log-serial-link:hover{opacity:.75}
+      .op-serial-link{display:inline-block;font-family:monospace;font-size:11px;font-weight:700;
+        color:var(--primary-dark);background:var(--primary-soft);border-radius:5px;padding:2px 7px;
+        margin-inline-start:6px;cursor:pointer;text-decoration:underline;white-space:nowrap;
+        transition:opacity .15s}
+      .op-serial-link:hover{opacity:.75}
+      .wh-product-visiting-badge{display:inline-block;font-size:10px;font-weight:700;color:#92620a;
+        background:#fdf1d6;border:1px solid #f0d99b;border-radius:5px;padding:1px 6px;
+        margin-inline-start:4px;vertical-align:middle}
+      /* ── prod/load line rows styling ── */
+      .prod-line-row select,
+      .prod-line-row input[type="number"]{
+        width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;
+        font-family:inherit;font-size:.88rem;background:var(--surface);color:var(--ink);
+        outline:none;transition:border-color .15s;box-sizing:border-box;
+      }
+      .prod-line-row select:focus,
+      .prod-line-row input[type="number"]:focus{border-color:var(--primary)}
+      .remove-line{background:var(--danger-soft)!important;color:var(--danger)!important;
+        border:none!important;border-radius:7px!important;padding:8px 12px!important;
+        font-weight:700!important;font-size:.8rem!important;cursor:pointer!important;
+        white-space:nowrap!important}
+      .remove-line:disabled{opacity:.4;cursor:not-allowed!important}
+      /* ══ تجاوب الهاتف والشاشات المتوسطة ══ */
+      @media(max-width:900px){
+        /* المخازن */
+        .warehouse-section-header{padding:11px 14px}
+        .warehouse-section-body{padding:12px 14px}
+        .wh-products-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px}
+        .wpc-qty-num{font-size:1.4rem}
+        /* سجل العمليات */
+        #log-table-wrap{display:none}
+        .mob-log-list{
+          display:flex;flex-direction:column;gap:8px;padding:12px;
+        }
+        .mob-log-card{
+          background:var(--surface);border:1px solid var(--border);
+          border-radius:12px;padding:12px 14px;
+          display:flex;flex-direction:column;gap:8px;
+          box-shadow:0 1px 4px rgba(0,0,0,.05);
+        }
+        .mlc-head{display:flex;align-items:center;gap:8px}
+        .mlc-serial{
+          font-family:monospace;font-size:11px;font-weight:700;
+          background:var(--bg);border:1px solid var(--border);
+          border-radius:5px;padding:2px 7px;color:var(--muted);white-space:nowrap;
+        }
+        .mlc-serial.clickable{
+          color:var(--primary-dark);background:var(--primary-soft);
+          border-color:var(--primary);cursor:pointer;text-decoration:underline;
+          transition:opacity .15s;
+        }
+        .mlc-serial.clickable:hover{opacity:.75}
+        .mlc-summary{font-size:13px;font-weight:700;color:var(--ink);line-height:1.4}
+        .mlc-details{font-size:11.5px;color:var(--muted);line-height:1.4;margin-top:2px}
+        .mlc-foot{
+          display:flex;align-items:center;justify-content:space-between;
+          gap:8px;padding-top:7px;border-top:1px solid var(--border);
+        }
+        .mlc-by{font-size:11.5px;color:var(--muted);font-weight:600}
+        .mlc-time{font-size:11px;color:var(--muted);font-family:monospace;white-space:nowrap}
+      }
+      /* ── print styles ── */
+      @media print{
+        @page{size:A4 portrait;margin:0}
+        /* إخفاء كل شيء */
+        body > *{display:none!important}
+        /* إخفاء صريح لعناصر position:fixed قد تتجاهل display:none في بعض متصفحات الهاتف */
+        #page-loader{display:none!important;opacity:0!important;visibility:hidden!important}
+        #bottom-nav{display:none!important;opacity:0!important;visibility:hidden!important}
+        .modal-overlay:not(#invoice-modal){display:none!important}
+        /* إعادة تعيين خلفية الصفحة بالكامل */
+        html{background:#fff!important;background-image:none!important}
+        body{
+          background:#fff!important;background-image:none!important;
+          margin:0!important;padding:0!important;
+        }
+        /* إظهار نافذة الفاتورة فقط */
+        #invoice-modal{
+          display:block!important;position:fixed!important;
+          top:0!important;left:0!important;right:0!important;bottom:0!important;
+          background:#fff!important;padding:14mm 16mm!important;
+          overflow:visible!important;z-index:9999!important;
+          box-sizing:border-box!important;
+        }
+        #invoice-modal .modal-box{
+          box-shadow:none!important;max-height:none!important;
+          border:none!important;padding:0!important;
+          overflow:visible!important;background:#fff!important;
+          width:100%!important;max-width:100%!important;
+        }
+        #invoice-modal .modal-overlay-bg{display:none!important}
+        #invoice-modal .modal-box-header,
+        #receipt-print-btn-outer{display:none!important}
+        #invoice-content{display:block!important}
+        *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      }
+    
+      /* ══ شاشة التحميل ══ */
+      #page-loader {
+        position: fixed; inset: 0; z-index: 9999;
+        background: linear-gradient(145deg, #1a6b3a, #2d9f5f);
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        gap: 20px;
+        transition: opacity .35s ease;
+      }
+      #page-loader.pl-hide { opacity: 0; pointer-events: none; }
+      .pl-logo {
+        width: 90px; height: 90px; border-radius: 22px;
+        background: rgba(255,255,255,.18);
+        border: 2px solid rgba(255,255,255,.35);
+        display: flex; align-items: center; justify-content: center;
+        overflow: hidden;
+      }
+      .pl-logo-img {
+        width: 100%; height: 100%;
+        object-fit: contain;
+        padding: 10px;
+      }
+      .pl-logo-fallback {
+        display: none;
+        font-size: 26px; font-weight: 900; color: #fff;
+        letter-spacing: 1px;
+      }
+      .pl-spinner {
+        width: 36px; height: 36px;
+        border: 3.5px solid rgba(255,255,255,.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: pl-spin .75s linear infinite;
+      }
+      @keyframes pl-spin { to { transform: rotate(360deg); } }
+      .pl-text {
+        color: rgba(255,255,255,.8);
+        font-size: 14px; font-weight: 600;
+        letter-spacing: .3px;
+      }
+
+      /* ══ أزرار تعديل المخزون وسجل الحركات ══ */
+      .wh-adj-btn {
+        display:inline-flex;align-items:center;gap:5px;
+        padding:6px 13px;border:none;border-radius:8px;
+        background:var(--primary,#1a6b3a);color:#fff;
+        font-family:inherit;font-size:.8rem;font-weight:700;
+        cursor:pointer;white-space:nowrap;
+        transition:background .13s,transform .1s;
+      }
+      .wh-adj-btn:hover{background:#155c31;transform:translateY(-1px)}
+      .wh-adj-btn:active{transform:translateY(0)}
+      .wh-log-btn {
+        display:inline-flex;align-items:center;gap:5px;
+        padding:6px 13px;border:1.5px solid var(--border);border-radius:8px;
+        background:var(--surface);color:var(--ink);
+        font-family:inherit;font-size:.8rem;font-weight:700;
+        cursor:pointer;white-space:nowrap;
+        transition:background .13s,border-color .13s;
+      }
+      .wh-log-btn:hover{background:var(--bg);border-color:var(--primary,#1a6b3a);color:var(--primary,#1a6b3a)}
+
+      /* ══ تجاوب أزرار المخزن على الهاتف ══ */
+      @media(max-width:600px){
+        .warehouse-section-header{flex-wrap:wrap;padding:10px 12px;gap:8px}
+        .warehouse-section-title{flex:1;min-width:0;font-size:.88rem}
+        .warehouse-section-actions{
+          display:flex;flex-wrap:wrap;gap:6px;width:100%;
+        }
+        .wh-adj-btn, .wh-log-btn{
+          flex:1;justify-content:center;
+          font-size:.78rem;padding:9px 8px;border-radius:10px;
+          min-width:0;
+        }
+        /* إخفاء الأيقونات على الهاتف */
+        .wh-title-icon,.btn-icon{display:none}
+        /* إخفاء عمود أيقونة المنتج وضبط الشبكة */
+        .wpc-icon{display:none}
+        .wh-product-card{
+          grid-template-columns:1fr auto auto;
+          padding:9px 12px;gap:5px 10px;
+        }
+        /* تصغير النصوص قليلاً */
+        .wpc-name{font-size:.82rem}
+        .wpc-serial{font-size:.62rem}
+        .wpc-desc{font-size:.65rem}
+        .wpc-qty-num{font-size:1.1rem!important}
+        .wpc-qty-unit{font-size:.58rem}
+        .wpc-qty-badge{padding:4px 8px;min-width:46px}
+        .wpc-price{font-size:.74rem}
+        .wpc-edit-btn{font-size:.64rem;padding:3px 7px}
+        .warehouse-section-title .wh-count{font-size:.72rem}
+      }
+
+      /* ══ spinner زر الحفظ ══ */
+      @keyframes whadj-spin{ to{transform:rotate(360deg)} }
+      .whadj-spinner{
+        display:inline-block;width:16px;height:16px;vertical-align:middle;
+        border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;
+        border-radius:50%;animation:whadj-spin .65s linear infinite;
+      }
+
+      /* ══ مودال تعديل المخزون ══ */
+      #wh-adjust-modal .adj-type-group{display:flex;gap:8px;margin-bottom:18px}
+      #wh-adjust-modal .adj-type-btn{
+        flex:1;padding:12px 10px;border:2px solid var(--border);border-radius:10px;
+        background:var(--surface);font-family:inherit;font-weight:700;font-size:.88rem;
+        color:var(--muted);cursor:pointer;text-align:center;transition:all .15s;
+      }
+      #wh-adjust-modal .adj-type-btn.add.active{border-color:#1a6b3a;background:#f0faf4;color:#1a6b3a}
+      #wh-adjust-modal .adj-type-btn.consume.active{border-color:#dc2626;background:#fff5f5;color:#dc2626}
+      #wh-adjust-modal .adj-type-btn:hover{border-color:var(--primary,#1a6b3a)}
+
+      /* ══ مودال سجل حركات المخزن ══ */
+      .wh-log-empty{text-align:center;padding:28px;color:var(--muted);font-size:.9rem}
+      .wh-adj-table{width:100%;border-collapse:collapse}
+      .wh-adj-table th{
+        text-align:right;font-size:11.5px;color:var(--muted);font-weight:700;
+        padding:9px 14px;border-bottom:2px solid var(--border);background:var(--bg);
+        white-space:nowrap;
+      }
+      .wh-adj-table td{
+        padding:10px 14px;border-bottom:1px solid var(--border);
+        font-size:13px;vertical-align:middle;
+      }
+      .wh-adj-table tbody tr:hover td{background:var(--bg)}
+      .wh-adj-table tr:last-child td{border-bottom:none}
+      .whadj-badge{
+        display:inline-block;padding:3px 10px;border-radius:7px;
+        font-size:11.5px;font-weight:700;white-space:nowrap;
+      }
+      .whadj-add{background:#dcfce7;color:#15803d}
+      .whadj-consume{background:#fee2e2;color:#dc2626}
+      .whadj-bal{display:flex;align-items:center;gap:6px;font-size:12px;white-space:nowrap}
+      .whadj-bal-before{color:var(--muted);font-weight:600}
+      .whadj-bal-arrow{color:var(--muted);font-size:10px}
+      .whadj-bal-after{font-weight:800;color:var(--ink)}
+      .whadj-txid{
+        font-family:monospace;font-size:11px;font-weight:700;
+        background:var(--bg);border:1px solid var(--border);
+        border-radius:5px;padding:2px 7px;color:var(--muted);
+        white-space:nowrap;cursor:default;
+      }
+      @media(max-width:700px){
+        #wh-log-modal .wh-adj-table-wrap{display:none}
+        #wh-log-modal .wh-adj-cards{display:flex!important}
+      }
+      .wh-adj-cards{display:none;flex-direction:column;gap:8px;padding:12px}
+      .wh-adj-card{
+        background:var(--surface);border:1px solid var(--border);
+        border-radius:12px;padding:12px 14px;
+        box-shadow:0 1px 4px rgba(0,0,0,.05);
+      }
+      .wh-adj-card-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+      .wh-adj-card-body{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px}
+      .wh-adj-card-bal{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:4px}
+      .wh-adj-card-foot{
+        display:flex;align-items:center;justify-content:space-between;
+        padding-top:7px;border-top:1px solid var(--border);
+        font-size:11px;color:var(--muted);
+      }
+</style>
+  </head>
+  <body>
+    <!-- ══ شاشة التحميل ══ -->
+<div id="page-loader">
+  <div class="pl-logo">
+    <img src="https://i.imgur.com/NsN1HgC.png" alt="logo" class="pl-logo-img"
+      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <span class="pl-logo-fallback">AH</span>
+  </div>
+  <div class="pl-spinner"></div>
+  <div class="pl-text">جارِ التحميل…</div>
+</div>
+<div id="app">
+      <header id="topbar" class="topbar"></header>
+      <main class="page">
+        <div class="page-header">
+          <div>
+            <h2>المنتجات والمخازن</h2>
+            <p>الحركات بين المخازن، التحميل للتجار، وإدارة البضائع</p>
+          </div>
+        </div>
+
+        <div class="section-tabs">
+          <button type="button" class="active" id="tab-movements">الحركات</button>
+          <button type="button" id="tab-loading">عمليات البيع</button>
+          <button type="button" id="tab-warehouses">المخازن والبضائع</button>
+          <button type="button" id="tab-log">سجل العمليات</button>
+        </div>
+
+        <!-- ══════════ TAB 1: MOVEMENTS (production + transfer) ══════════ -->
+        <div class="section-view active" id="view-movements">
+          <div class="panel">
+            <h3>نوع العملية</h3>
+            <div class="op-type-group">
+              <button type="button" class="op-type-btn active" id="op-btn-production" data-op="production">
+                🏭 إنتاج<br><small style="font-weight:400">استهلاك مواد وإنتاج بضائع</small>
+              </button>
+              <button type="button" class="op-type-btn" id="op-btn-transfer" data-op="transfer">
+                🔄 تحويل بين مخازن<br><small style="font-weight:400">نقل صنف من مخزن لآخر</small>
+              </button>
+            </div>
+
+            <!-- PRODUCTION form -->
+            <div class="op-form-section active" id="form-production">
+              <form id="production-form">
+                <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+                  <div class="field" style="margin-bottom:0">
+                    <label for="prod-from-wh">مخزن المواد الخام (المصدر)</label>
+                    <select id="prod-from-wh" required><option value="">اختر مخزناً</option></select>
+                  </div>
+                  <div class="field" style="margin-bottom:0">
+                    <label for="prod-to-wh">مخزن الإنتاج (الهدف)</label>
+                    <select id="prod-to-wh" required><option value="">اختر مخزناً</option></select>
+                  </div>
+                </div>
+                <!-- Input items (deducted from source) -->
+                <div class="items-lines-block">
+                  <h4>⬇ المواد المستهلكة (تُخصم من مخزن المصدر)</h4>
+                  <div id="prod-input-lines"></div>
+                  <button type="button" class="btn small ghost" id="prod-add-input-btn">+ إضافة مادة</button>
+                </div>
+                <!-- Output items (added to destination) -->
+                <div class="items-lines-block">
+                  <h4>⬆ المنتجات الناتجة (تُضاف لمخزن الإنتاج)</h4>
+                  <div id="prod-output-lines"></div>
+                  <button type="button" class="btn small ghost" id="prod-add-output-btn">+ إضافة منتج ناتج</button>
+                </div>
+                <div class="field">
+                  <label for="prod-note">ملاحظات (اختياري)</label>
+                  <input type="text" id="prod-note" placeholder="مثال: دفعة إنتاج رقم 5" />
+                </div>
+                <button type="submit" class="btn" id="production-submit-btn">تنفيذ عملية الإنتاج</button>
+              </form>
+            </div>
+
+            <!-- TRANSFER form -->
+            <div class="op-form-section" id="form-transfer">
+              <form id="transfer-form">
+                <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+                  <div class="field" style="margin-bottom:0">
+                    <label for="trans-from-wh">من مخزن</label>
+                    <select id="trans-from-wh" required><option value="">اختر مخزناً</option></select>
+                  </div>
+                  <div class="field" style="margin-bottom:0">
+                    <label for="trans-to-wh">إلى مخزن</label>
+                    <select id="trans-to-wh" required><option value="">اختر مخزناً</option></select>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="trans-product">الصنف المحوّل</label>
+                  <select id="trans-product" required><option value="">اختر صنفاً من المخزن المصدر</option></select>
+                </div>
+                <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:14px">
+                  <div class="field" style="margin-bottom:0">
+                    <label for="trans-qty">الكمية</label>
+                    <input type="number" id="trans-qty" min="0.01" step="0.01" value="1" required />
+                  </div>
+                  <div class="field" style="margin-bottom:0">
+                    <label for="trans-dest-product">الصنف في المخزن الهدف (اختياري)</label>
+                    <select id="trans-dest-product"><option value="">إنشاء صنف جديد تلقائياً</option></select>
+                  </div>
+                </div>
+                <div class="field" style="margin-top:14px">
+                  <label for="trans-note">ملاحظات (اختياري)</label>
+                  <input type="text" id="trans-note" placeholder="سبب التحويل..." />
+                </div>
+                <button type="submit" class="btn" id="transfer-submit-btn">تنفيذ التحويل</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- سجل سريع مكرر — تم إخفاؤه، السجل الكامل موجود فقط في تبويب "سجل العمليات" -->
+          <div class="panel" style="display:none">
+            <h3>سجل الحركات بين المخازن</h3>
+            <div class="records-list" id="movements-records-list">
+              <div class="empty-state">جارِ التحميل...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ TAB 2: LOADING (warehouse → merchant) ══════════ -->
+        <div class="section-view" id="view-loading">
+          <div class="panel">
+            <h3>إرسال بضائع إلى تاجر</h3>
+            <p style="color:var(--muted);font-size:.87rem;margin:-8px 0 16px">تُخصم الكميات من المخزن وتُسجَّل كأموال مطلوبة من التاجر</p>
+            <form id="loading-form">
+              <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+                <div class="field" style="margin-bottom:0">
+                  <label for="load-warehouse">المخزن المصدر</label>
+                  <select id="load-warehouse" required><option value="">اختر مخزناً</option></select>
+                </div>
+                <div class="field" style="margin-bottom:0">
+                  <label for="load-merchant">التاجر</label>
+                  <select id="load-merchant" required><option value="">اختر تاجراً</option></select>
+                </div>
+              </div>
+              <div class="items-lines-block">
+                <h4>البضائع المرسلة</h4>
+                <div id="load-lines"></div>
+                <button type="button" class="btn small ghost" id="load-add-line-btn">+ إضافة صنف</button>
+              </div>
+              <div class="field">
+                <label for="load-note">ملاحظات (اختياري)</label>
+                <input type="text" id="load-note" placeholder="مثال: دفعة يوليو..." />
+              </div>
+              <!-- حالة الدفع -->
+              <div class="field" style="margin-bottom:18px">
+                <label style="display:block;margin-bottom:10px;font-weight:700;font-size:.93rem">حالة الدفع</label>
+                <div class="pay-options">
+                  <label class="pay-opt pay-opt-unpaid sel-unpaid" id="pay-label-unpaid">
+                    <input type="radio" name="load_payment" value="unpaid" id="load-pay-unpaid" checked />
+                    <span class="pay-opt-icon">⏳</span>
+                    <div>
+                      <div class="pay-opt-title">غير مدفوع</div>
+                      <div class="pay-opt-sub">يُسجَّل دين على التاجر</div>
+                    </div>
+                  </label>
+                  <label class="pay-opt pay-opt-paid" id="pay-label-paid">
+                    <input type="radio" name="load_payment" value="paid" id="load-pay-paid" />
+                    <span class="pay-opt-icon">✅</span>
+                    <div>
+                      <div class="pay-opt-title">تم الدفع</div>
+                      <div class="pay-opt-sub">لا يُضاف دين على التاجر</div>
+                    </div>
+                  </label>
+                </div>
+                <p id="pay-hint" style="margin:8px 0 0;font-size:.82rem;color:#a06a10">سيُسجَّل دين على التاجر بقيمة الفاتورة</p>
+              </div>
+              <button type="submit" class="btn" id="loading-submit-btn">تنفيذ عملية البيع</button>
+            </form>
+          </div>
+
+          <!-- سجل سريع مكرر — تم إخفاؤه، السجل الكامل موجود فقط في تبويب "سجل العمليات" -->
+          <div class="panel" style="display:none">
+            <h3>سجل عمليات البيع</h3>
+            <div class="records-list" id="loading-records-list">
+              <div class="empty-state">جارِ التحميل...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ TAB 3: WAREHOUSES & PRODUCTS ══════════ -->
+        <div class="section-view" id="view-warehouses">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>المخازن</h3>
+              <button type="button" class="btn small" id="add-warehouse-btn">+ إضافة مخزن</button>
+            </div>
+            <div id="warehouses-container">
+              <div class="empty-state">جارِ التحميل...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ TAB 4: ACTIVITY LOG ══════════ -->
+        <div class="section-view" id="view-log">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>سجل جميع العمليات</h3>
+              <span id="log-count" style="color:var(--muted);font-size:.85rem"></span>
+            </div>
+            <div class="table-wrap" id="log-table-wrap">
+              <table class="log-table">
+                <thead>
+                  <tr>
+                    <th style="width:60px">#</th>
+                    <th>النوع</th>
+                    <th>التفاصيل</th>
+                    <th>من قِبَل</th>
+                    <th>التاريخ والوقت</th>
+                  </tr>
+                </thead>
+                <tbody id="log-table-body">
+                  <tr><td colspan="5"><div class="empty-state">جارِ التحميل...</div></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- بطاقات الهاتف للسجل (≤900px) -->
+            <div id="mob-log-list" class="mob-log-list">
+              <div class="empty-state">جارِ التحميل...</div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+    <!-- ══════════ PRODUCT MODAL ══════════ -->
+    <div class="modal-overlay" id="product-modal">
+      <div class="modal-box">
+        <div class="modal-box-header">
+          <h3 id="product-modal-title">إضافة منتج</h3>
+          <button type="button" class="modal-close" id="product-modal-close">&times;</button>
+        </div>
+        <form id="product-form">
+          <input type="hidden" id="product-id" />
+          <input type="hidden" id="product-warehouse-id" />
+          <div class="field">
+            <label for="product-name">اسم المنتج <span style="color:#dc2626">*</span></label>
+            <input type="text" id="product-name" required placeholder="مثال: أرز بسمتي" />
+          </div>
+          <div class="field">
+            <label for="product-serial">رقم التعريف التسلسلي</label>
+            <input type="text" id="product-serial" placeholder="يُولَّد تلقائياً" readonly
+              style="background:var(--bg);color:var(--muted);cursor:not-allowed;font-family:monospace;font-weight:700" />
+          </div>
+          <div class="field">
+            <label>صورة المنتج (اختياري)</label>
+            <label class="file-drop" id="file-drop-label">
+              <span id="file-drop-text">اضغط لاختيار صورة</span>
+              <img id="image-preview" style="display:none;max-height:110px;object-fit:contain;margin-top:8px" />
+            </label>
+            <input type="file" id="product-image" accept="image/*" style="display:none" />
+          </div>
+          <div class="field">
+            <label for="product-desc">الوصف</label>
+            <input type="text" id="product-desc" placeholder="وصف مختصر للمنتج" />
+          </div>
+          <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px">
+            <div class="field" style="margin-bottom:0">
+              <label for="product-quantity">الكمية المتوفرة <span style="font-weight:400;color:var(--muted)">(للعرض فقط — تُعدَّل من DeepLog)</span></label>
+              <input type="number" id="product-quantity" min="0" step="0.01" placeholder="0" readonly
+                style="background:var(--bg);color:var(--muted);cursor:not-allowed" />
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label for="product-qty-type">نوع الكمية</label>
+              <select id="product-qty-type">
+                <option value="قطعة">قطعة</option>
+                <option value="حبة">حبة</option>
+                <option value="كيلوغرام">كيلوغرام</option>
+                <option value="جرام">جرام</option>
+                <option value="طن">طن</option>
+                <option value="لتر">لتر</option>
+                <option value="متر">متر</option>
+                <option value="صندوق">صندوق</option>
+                <option value="كرتون">كرتون</option>
+                <option value="باكيت">باكيت</option>
+                <option value="رول">رول</option>
+                <option value="عنصر">عنصر</option>
+                <option value="وحدة">وحدة</option>
+                <option value="زجاجة">زجاجة</option>
+                <option value="علبة">علبة</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin-top:12px">
+            <label for="product-price">السعر (ج.م)</label>
+            <input type="number" id="product-price" min="0" step="0.01" placeholder="0.00" />
+          </div>
+          <button type="submit" class="btn" id="product-submit-btn">حفظ المنتج</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ══════════ WAREHOUSE MODAL ══════════ -->
+    <div class="modal-overlay" id="warehouse-modal">
+      <div class="modal-box">
+        <div class="modal-box-header">
+          <h3>إضافة مخزن</h3>
+          <button type="button" class="modal-close" id="warehouse-modal-close">&times;</button>
+        </div>
+        <form id="warehouse-form">
+          <div class="field">
+            <label for="warehouse-name">اسم المخزن</label>
+            <input type="text" id="warehouse-name" required placeholder="مثال: مخزن المواد الخام" />
+          </div>
+          <button type="submit" class="btn" id="warehouse-submit-btn">حفظ المخزن</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ══════════ DELETED OPERATION NOTICE MODAL ══════════ -->
+    <div class="modal-overlay" id="op-deleted-modal">
+      <div class="modal-box">
+        <div class="modal-box-header">
+          <h3>حركة محذوفة</h3>
+          <button type="button" class="modal-close" id="op-deleted-modal-close">&times;</button>
+        </div>
+        <div style="text-align:center;padding:18px 6px">
+          <div style="font-size:38px;margin-bottom:10px">🗑️</div>
+          <div style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px">تم حذف هذه الحركة</div>
+          <div style="font-size:13px;color:var(--muted)">تفاصيل هذه العملية غير متوفرة حالياً لأنها حُذفت من السجل، لذلك لا يمكن معاينتها.</div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:6px">
+          <button type="button" class="btn secondary" id="op-deleted-close-btn2" style="width:100%">إغلاق</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ INVOICE MODAL ══════════ -->
+    <div class="modal-overlay" id="invoice-modal">
+      <div class="modal-box wide">
+        <div class="modal-box-header">
+          <h3 id="invoice-modal-title">فاتورة العملية</h3>
+          <button type="button" class="modal-close" id="invoice-modal-close">&times;</button>
+        </div>
+        <div id="invoice-content" class="invoice-box"></div>
+        <div style="display:flex;gap:10px;margin-top:18px" id="receipt-print-btn-outer">
+          <button type="button" class="btn" id="invoice-print-btn">🖨 طباعة</button>
+          <button type="button" class="btn secondary" id="invoice-close-btn2">إغلاق</button>
+        </div>
+      </div>
+    </div>
+
+  
+<!-- ══ مراقب شاشة التحميل ══ -->
+<script>
+(function(){
+  var loader = document.getElementById("page-loader");
+  var app    = document.getElementById("app");
+  if (!loader || !app) return;
+  function hideLdr(){
+    loader.classList.add("pl-hide");
+    setTimeout(function(){ loader.style.display = "none"; }, 380);
+  }
+  var obs = new MutationObserver(function(){
+    if (app.style.visibility !== "hidden"){
+      hideLdr(); obs.disconnect();
+    }
+  });
+  obs.observe(app, { attributes: true, attributeFilter: ["style"] });
+  setTimeout(function(){
+    obs.disconnect(); hideLdr();
+    if (app.style.visibility === "hidden") app.style.visibility = "visible";
+  }, 3500);
+})();
+</script>
+
+
+    <!-- ══ مودال تعديل مخزون المخزن ══ -->
+    <div class="modal-overlay" id="wh-adjust-modal">
+      <div class="modal-box" style="max-width:440px">
+        <div class="modal-box-header">
+          <h3 id="wh-adj-modal-title">تعديل مخزون</h3>
+          <button type="button" class="modal-close" id="wh-adj-close">&times;</button>
+        </div>
+        <form id="wh-adj-form">
+          <input type="hidden" id="wh-adj-wh-id" />
+          <div class="adj-type-group">
+            <button type="button" class="adj-type-btn add active" data-type="add" id="adj-btn-add">
+              ➕ إضافة<br><small style="font-weight:400">زيادة كمية في المخزن</small>
+            </button>
+            <button type="button" class="adj-type-btn consume" data-type="consume" id="adj-btn-consume">
+              ➖ استهلاك<br><small style="font-weight:400">خصم كمية من المخزن</small>
+            </button>
+          </div>
+          <input type="hidden" id="wh-adj-type" value="add" />
+          <div class="field">
+            <label for="wh-adj-product">الصنف <span style="color:#dc2626">*</span></label>
+            <select id="wh-adj-product" required>
+              <option value="">اختر صنفاً</option>
+            </select>
+          </div>
+          <div id="wh-adj-current-wrap" style="margin:-6px 0 14px;font-size:12.5px;color:var(--muted);display:none">
+            الكمية الحالية: <strong id="wh-adj-current-qty" style="color:var(--ink)">—</strong>
+          </div>
+          <div class="field">
+            <label for="wh-adj-qty">الكمية <span style="color:#dc2626">*</span></label>
+            <input type="number" id="wh-adj-qty" min="0.001" step="0.001" value="1" required />
+          </div>
+          <div class="field">
+            <label for="wh-adj-note">ملاحظة (اختياري)</label>
+            <input type="text" id="wh-adj-note" placeholder="مثال: جرد شهري، تلف، كسر..." />
+          </div>
+          <button type="submit" class="btn" id="wh-adj-submit-btn">تنفيذ التعديل</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ══ مودال سجل حركات المخزن ══ -->
+    <div class="modal-overlay" id="wh-log-modal">
+      <div class="modal-box" style="max-width:760px;max-height:88vh;display:flex;flex-direction:column">
+        <div class="modal-box-header" style="flex-shrink:0">
+          <h3 id="wh-log-modal-title">سجل حركات المخزن</h3>
+          <button type="button" class="modal-close" id="wh-log-close">&times;</button>
+        </div>
+        <div style="overflow-y:auto;flex:1;padding:0" id="wh-log-body">
+          <div class="wh-log-empty">جارِ التحميل…</div>
+        </div>
+      </div>
+    </div>
+
+
+<script type="module">
+/* ════════════════════════════════════════════════════════════════════
+   تعديل مخزون المخازن + سجل حركات كل مخزن
+   — يستخدم Firebase app الرئيسي (نفس جلسة المستخدم المسجّل)
+════════════════════════════════════════════════════════════════════ */
+import { initializeApp, getApps, getApp }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, onSnapshot,
+  query, where, orderBy, doc, updateDoc, serverTimestamp, getDoc
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getAuth }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+/* ── Firebase init: استخدم التطبيق الرئيسي إن وُجد، وإلا أنشئ واحداً ── */
+const FB_CFG = {
+  apiKey:            "AIzaSyDQsaNVskKiV2cwPVlJDixpTD1S-Dhp7gs",
+  authDomain:        "reta-and-hamd.firebaseapp.com",
+  projectId:         "reta-and-hamd",
+  storageBucket:     "reta-and-hamd.firebasestorage.app",
+  messagingSenderId: "220767743863",
+  appId:             "1:220767743863:web:2ecd37bd5830a39ec1bb72",
+};
+/* الأولوية: التطبيق الافتراضي [DEFAULT] → أي تطبيق موجود → تهيئة جديدة */
+const _app = (()=>{
+  const apps = getApps();
+  if(!apps.length) return initializeApp(FB_CFG);
+  const def = apps.find(a=>a.name==="[DEFAULT]");
+  return def || apps[0];
+})();
+const _db   = getFirestore(_app);
+const _auth = getAuth(_app);
+
+/* ── helpers ── */
+function _esc(v){ const d=document.createElement("div"); d.textContent=v??""; return d.innerHTML; }
+function _num(v){ return new Intl.NumberFormat("ar-EG",{maximumFractionDigits:3}).format(v||0); }
+function _dt(ts){
+  const d = ts?.toDate ? ts.toDate() : (ts instanceof Date ? ts : new Date(ts));
+  return d.toLocaleString("ar-EG",{year:"numeric",month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
+}
+function _txId(){ return "WA-"+Date.now().toString(36).toUpperCase()+"-"+Math.random().toString(36).slice(2,7).toUpperCase(); }
+function _toast(msg, err){
+  const t = document.createElement("div");
+  t.style.cssText="position:fixed;bottom:80px;right:50%;transform:translateX(50%);z-index:9999;"
+    +"padding:10px 20px;border-radius:10px;font-family:Cairo,sans-serif;font-weight:700;font-size:14px;"
+    +"background:"+(err?"#dc2626":"#1a6b3a")+";color:#fff;box-shadow:0 4px 20px rgba(0,0,0,.2);"
+    +"pointer-events:none;";
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 3200);
+}
+
+/* ── state ── */
+let _adjWhId  = null;
+let _adjType  = "add";
+let _logWhId  = null;
+let _logUnsub = null;
+
+/* ══════════════════════════════════
+   قراءة منتجات مخزن من الـ DOM
+   (المنتجات مرسومة بالفعل — لا نحتاج Firestore)
+══════════════════════════════════ */
+function _loadWhProducts(warehouseId, cb){
+  const section = document.querySelector('.warehouse-section[data-wh-id="'+warehouseId+'"]');
+  if(!section){ cb([]); return; }
+  const prods = [];
+  section.querySelectorAll(".wh-product-card").forEach(card=>{
+    /* ابحث عن أي عنصر يحمل data-prod-id داخل البطاقة */
+    const marker = card.querySelector("[data-prod-id]");
+    if(!marker) return;
+    const prodId = marker.dataset.prodId;
+    if(!prodId) return;
+    /* الاسم: خذ النصوص المباشرة فقط (تجنب بادجات مثل "زائر") */
+    const nameEl = card.querySelector(".wpc-name");
+    let name = "";
+    if(nameEl) nameEl.childNodes.forEach(n=>{ if(n.nodeType===3) name+=n.textContent; });
+    name = name.trim() || nameEl?.textContent?.trim() || "?";
+    /* الكمية بأرقام لاتينية */
+    const qtyText = (card.querySelector(".wpc-qty-num")?.textContent||"0")
+                      .trim().replace(/,/g,"").replace(/[٠-٩]/g, d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d));
+    const qty = parseFloat(qtyText) || 0;
+    const unit = card.querySelector(".wpc-qty-unit")?.textContent?.trim() || "";
+    prods.push({ id:prodId, name, quantity:qty, quantityType:unit });
+  });
+  cb(prods);
+}
+
+/* ══════════════════════════════════
+   حقن الأزرار في رأس كل مخزن
+══════════════════════════════════ */
+function _injectBtns(section){
+  if(section.dataset.adjInjected) return;
+  section.dataset.adjInjected="1";
+  const whId = section.dataset.whId;
+  if(!whId) return;
+  const actDiv = section.querySelector(".warehouse-section-actions");
+  if(!actDiv) return;
+
+  const adjBtn = document.createElement("button");
+  adjBtn.type="button"; adjBtn.className="wh-adj-btn"; adjBtn.dataset.whId=whId;
+  adjBtn.innerHTML="<span class='btn-icon'>⚡</span> تعديل مخزون";
+  adjBtn.title="إضافة أو استهلاك من هذا المخزن";
+
+  const logBtn = document.createElement("button");
+  logBtn.type="button"; logBtn.className="wh-log-btn"; logBtn.dataset.whId=whId;
+  logBtn.innerHTML="<span class='btn-icon'>📋</span> سجل الحركات";
+  logBtn.title="سجل حركات هذا المخزن";
+
+  adjBtn.addEventListener("click", ()=>_openAdj(whId, section));
+  logBtn.addEventListener("click", ()=>_openLog(whId, section));
+
+  actDiv.prepend(logBtn);
+  actDiv.prepend(adjBtn);
+}
+
+function _watchContainer(){
+  const c = document.getElementById("warehouses-container");
+  if(!c){ setTimeout(_watchContainer,400); return; }
+  c.querySelectorAll(".warehouse-section").forEach(_injectBtns);
+  new MutationObserver(muts=>{
+    muts.forEach(m=>m.addedNodes.forEach(n=>{
+      if(n.nodeType!==1) return;
+      if(n.classList?.contains("warehouse-section")) _injectBtns(n);
+      n.querySelectorAll?.(".warehouse-section").forEach(_injectBtns);
+    }));
+  }).observe(c,{childList:true,subtree:true});
+}
+
+/* ══════════════════════════════════
+   مودال تعديل المخزون
+══════════════════════════════════ */
+function _openAdj(whId, section){
+  _adjWhId = whId;
+  const whName = _whNameFromSection(section);
+  document.getElementById("wh-adj-modal-title").textContent = "تعديل مخزون — " + whName;
+  document.getElementById("wh-adj-wh-id").value = whId;
+  document.getElementById("wh-adj-form").reset();
+  document.getElementById("wh-adj-qty").value="1";
+  document.getElementById("wh-adj-current-wrap").style.display="none";
+  _setAdjType("add");
+
+  const prodSel = document.getElementById("wh-adj-product");
+  prodSel.innerHTML='<option value="">جارِ التحميل…</option>';
+  document.getElementById("wh-adjust-modal").classList.add("open");
+
+  _loadWhProducts(whId, prods=>{
+    prodSel.innerHTML='<option value="">اختر صنفاً</option>';
+    if(prods.length===0){
+      prodSel.innerHTML='<option value="">لا توجد منتجات في هذا المخزن</option>';
+    } else {
+      prods.forEach(p=>{
+        const o=document.createElement("option");
+        o.value=p.id; o.dataset.qty=p.quantity??0;
+        o.dataset.unit=p.quantityType||""; o.dataset.name=p.name||"";
+        o.textContent=p.name+" ("+_num(p.quantity||0)+" "+(p.quantityType||"")+")";
+        prodSel.appendChild(o);
+      });
+    }
+  });
+}
+
+function _setAdjType(t){
+  _adjType=t;
+  document.getElementById("wh-adj-type").value=t;
+  document.getElementById("adj-btn-add").classList.toggle("active",t==="add");
+  document.getElementById("adj-btn-consume").classList.toggle("active",t==="consume");
+}
+
+function _closeAdj(){
+  document.getElementById("wh-adjust-modal").classList.remove("open");
+  _adjWhId=null;
+}
+
+function _initAdjModal(){
+  const modal = document.getElementById("wh-adjust-modal");
+  document.getElementById("wh-adj-close").addEventListener("click",_closeAdj);
+  modal.addEventListener("click",e=>{ if(e.target===modal) _closeAdj(); });
+
+  document.querySelectorAll(".adj-type-btn").forEach(btn=>{
+    btn.addEventListener("click",()=>_setAdjType(btn.dataset.type));
+  });
+
+  document.getElementById("wh-adj-product").addEventListener("change",()=>{
+    const opt=document.getElementById("wh-adj-product").selectedOptions[0];
+    const wrap=document.getElementById("wh-adj-current-wrap");
+    if(opt?.value){
+      document.getElementById("wh-adj-current-qty").textContent=
+        _num(opt.dataset.qty||0)+" "+(opt.dataset.unit||"");
+      wrap.style.display="block";
+    } else { wrap.style.display="none"; }
+  });
+
+  document.getElementById("wh-adj-form").addEventListener("submit", async e=>{
+    e.preventDefault();
+    const whId   = document.getElementById("wh-adj-wh-id").value;
+    const prodId = document.getElementById("wh-adj-product").value;
+    const qty    = Number(document.getElementById("wh-adj-qty").value)||0;
+    const note   = document.getElementById("wh-adj-note").value.trim();
+    const type   = _adjType;
+    if(!prodId){ _toast("اختر صنفاً",true); return; }
+    if(qty<=0){ _toast("أدخل كمية صحيحة",true); return; }
+
+    const opt    = document.getElementById("wh-adj-product").selectedOptions[0];
+    const qtyBefore = Number(opt?.dataset.qty||0);
+    const qtyAfter  = type==="add" ? qtyBefore+qty : Math.max(0,qtyBefore-qty);
+    const prodName  = opt?.dataset.name||"";
+    const prodUnit  = opt?.dataset.unit||"";
+
+    if(type==="consume" && qty>qtyBefore){
+      _toast("الكمية المطلوبة ("+_num(qty)+") أكبر من المتوفر ("+_num(qtyBefore)+")",true);
+      return;
+    }
+
+    const btn=document.getElementById("wh-adj-submit-btn");
+    btn.disabled=true; btn.innerHTML='<span class="whadj-spinner"></span> جارِ الحفظ…';
+    try {
+      /* اسم المخزن */
+      const whSnap = await getDoc(doc(_db,"warehouses",whId));
+      const whName = whSnap.exists() ? whSnap.data().name : whId;
+
+      const performedBy = _auth.currentUser?.email || "—";
+      const tid = _txId();
+
+      await updateDoc(doc(_db,"products",prodId),{
+        quantity: qtyAfter, updatedAt: serverTimestamp()
+      });
+
+      await addDoc(collection(_db,"warehouseAdjustments"),{
+        warehouseId:whId, warehouseName:whName,
+        productId:prodId, productName:prodName, productUnit:prodUnit,
+        type, qty, qtyBefore, qtyAfter,
+        note, txId:tid,
+        performedBy, createdAt:serverTimestamp()
+      });
+
+      await addDoc(collection(_db,"auditLog"),{
+        action: type==="add"?"إضافة":"استهلاك",
+        entity:"تعديل مخزون", page:"المنتجات",
+        details:(type==="add"?"إضافة ":"استهلاك ")+_num(qty)+" "+prodUnit
+          +" من "+prodName+" في "+whName
+          +" | قبل: "+_num(qtyBefore)+" | بعد: "+_num(qtyAfter),
+        userEmail:performedBy, createdAt:serverTimestamp()
+      }).catch(()=>{});
+
+      /* ── تحديث DOM فوراً دون إعادة تحميل ── */
+      try{
+        const whSection = document.querySelector('.warehouse-section[data-wh-id="'+whId+'"]');
+        if(whSection){
+          whSection.querySelectorAll('.wh-product-card').forEach(function(card){
+            /* ابحث عن أي عنصر يحمل data-prod-id مطابق داخل البطاقة */
+            const marker = card.querySelector('[data-prod-id="'+prodId+'"]');
+            if(marker){
+              const qtyEl = card.querySelector('.wpc-qty-num');
+              if(qtyEl) qtyEl.textContent = _num(qtyAfter);
+            }
+          });
+        }
+      }catch(_e){ /* تحديث DOM اختياري — لا نوقف التنفيذ */ }
+      /* تحديث data-qty على الـ option حتى يكون الفتح التالي صحيحاً */
+      try{ if(opt) opt.dataset.qty = String(qtyAfter); }catch(_e){}
+
+      _toast(type==="add"?"تمت الإضافة بنجاح ✓":"تم الاستهلاك بنجاح ✓");
+      _closeAdj();
+    } catch(err){
+      console.error(err); _toast("حدث خطأ أثناء الحفظ",true);
+    } finally {
+      btn.disabled=false; btn.textContent="تنفيذ التعديل";
+    }
+  });
+}
+
+/* ══════════════════════════════════
+   مودال سجل حركات المخزن
+══════════════════════════════════ */
+function _whNameFromSection(section){
+  const titleEl = section.querySelector(".warehouse-section-title");
+  if(!titleEl) return "المخزن";
+  // النص الأول (Node نصي مباشر) بعد الأيقونة
+  let name="";
+  titleEl.childNodes.forEach(n=>{ if(n.nodeType===3) name+=n.textContent; });
+  return name.replace("🏪","").trim() || titleEl.textContent.replace("🏪","").replace(/d+ منتج/,"").trim();
+}
+
+function _openLog(whId, section){
+  _logWhId=whId;
+  const whName=_whNameFromSection(section);
+  document.getElementById("wh-log-modal-title").textContent="📋 سجل حركات — "+whName;
+  document.getElementById("wh-log-modal").classList.add("open");
+  if(_logUnsub){ _logUnsub(); _logUnsub=null; }
+
+  const body=document.getElementById("wh-log-body");
+  body.innerHTML='<div class="wh-log-empty">جارِ التحميل…</div>';
+
+  /* ملاحظة: تجنبنا orderBy مع where لأن ذلك يتطلب Composite Index في Firestore
+     — نجلب بـ where فقط ثم نرتب على الجهاز */
+  const q=query(
+    collection(_db,"warehouseAdjustments"),
+    where("warehouseId","==",whId)
+  );
+  _logUnsub=onSnapshot(q, snap=>{
+    /* رتّب تنازلياً بـ createdAt على الجهاز */
+    const docs = snap.docs.slice().sort((a,b)=>{
+      const ta = a.data().createdAt?.toMillis?.() ?? 0;
+      const tb = b.data().createdAt?.toMillis?.() ?? 0;
+      return tb - ta;
+    });
+    if(docs.length===0){
+      body.innerHTML='<div class="wh-log-empty">لا توجد حركات تعديل لهذا المخزن بعد</div>';
+      return;
+    }
+    let trows="", cards="", rowNum=docs.length;
+    docs.forEach(ds=>{
+      const d=ds.data();
+      const seq="WA-"+String(rowNum).padStart(4,"0"); rowNum--;
+      const bcls=d.type==="add"?"whadj-add":"whadj-consume";
+      const blbl=d.type==="add"?"➕ إضافة":"➖ استهلاك";
+      const ts=d.createdAt?_dt(d.createdAt):"—";
+      const qtyStr=_num(d.qty)+" "+_esc(d.productUnit||"");
+      const bef=_num(d.qtyBefore||0)+" "+_esc(d.productUnit||"");
+      const aft=_num(d.qtyAfter||0)+" "+_esc(d.productUnit||"");
+      const afterColor=d.type==="add"?"#15803d":"#dc2626";
+      const noteHtml=d.note?'<br><span style="font-size:11px;color:var(--muted)">📝 '+_esc(d.note)+'</span>':"";
+      const txLabel=d.txId||seq;
+
+      trows+=`<tr>
+        <td><span class="whadj-txid">${_esc(txLabel)}</span></td>
+        <td><span class="whadj-badge ${bcls}">${blbl}</span></td>
+        <td style="font-weight:700;color:var(--ink)">${_esc(d.productName||"—")}</td>
+        <td style="font-weight:800">${qtyStr}</td>
+        <td>
+          <div class="whadj-bal">
+            <span class="whadj-bal-before">${bef}</span>
+            <span class="whadj-bal-arrow">&rarr;</span>
+            <span class="whadj-bal-after" style="color:${afterColor}">${aft}</span>
+          </div>
+        </td>
+        <td style="font-size:11.5px;color:var(--muted);font-family:monospace;white-space:nowrap">${ts}</td>
+      </tr>`;
+
+      cards+=`<div class="wh-adj-card">
+        <div class="wh-adj-card-head">
+          <span class="whadj-txid">${_esc(txLabel)}</span>
+          <span class="whadj-badge ${bcls}">${blbl}</span>
+        </div>
+        <div class="wh-adj-card-body">${_esc(d.productName||"—")}: ${qtyStr}${noteHtml}</div>
+        <div class="wh-adj-card-bal">
+          <span>قبل:</span><strong>${bef}</strong>
+          <span style="margin:0 4px">&rarr;</span>
+          <span>بعد:</span><strong style="color:${afterColor}">${aft}</strong>
+        </div>
+        <div class="wh-adj-card-foot">
+          <span>👤 ${_esc(d.performedBy||"—")}</span>
+          <span style="font-family:monospace">${ts}</span>
+        </div>
+      </div>`;
+    });
+
+    body.innerHTML=`
+      <div class="wh-adj-table-wrap" style="overflow-x:auto">
+        <table class="wh-adj-table">
+          <thead><tr>
+            <th>معرّف الحركة</th>
+            <th>النوع</th>
+            <th>المنتج</th>
+            <th>الكمية</th>
+            <th>الرصيد قبل → بعد</th>
+            <th>الوقت</th>
+          </tr></thead>
+          <tbody>${trows}</tbody>
+        </table>
+      </div>
+      <div class="wh-adj-cards">${cards}</div>`;
+  }, err=>{ console.error(err); body.innerHTML='<div class="wh-log-empty">حدث خطأ أثناء تحميل السجل</div>'; });
+}
+
+function _closeLog(){
+  document.getElementById("wh-log-modal").classList.remove("open");
+  if(_logUnsub){ _logUnsub(); _logUnsub=null; }
+  _logWhId=null;
+}
+
+function _initLogModal(){
+  const modal=document.getElementById("wh-log-modal");
+  document.getElementById("wh-log-close").addEventListener("click",_closeLog);
+  modal.addEventListener("click",e=>{ if(e.target===modal) _closeLog(); });
+}
+
+/* ══════════════════════════════════
+   Bootstrap
+══════════════════════════════════ */
+document.addEventListener("DOMContentLoaded",()=>{
+  _initAdjModal();
+  _initLogModal();
+  _watchContainer();
+
+  /* Escape يغلق أي مودال مفتوح */
+  document.addEventListener("keydown", e=>{
+    if(e.key!=="Escape") return;
+    if(document.getElementById("wh-adjust-modal").classList.contains("open")) _closeAdj();
+    if(document.getElementById("wh-log-modal").classList.contains("open"))    _closeLog();
+  });
+});
+</script>
+
+</body>
+</html>
