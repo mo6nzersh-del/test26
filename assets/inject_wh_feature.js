@@ -4,11 +4,17 @@ const fs = require("fs");
 
 const NEW_SCRIPT = `
 <script type="module">
+/* ════════════════════════════════════════════════════════════════════
+   تعديل مخزون المخازن + سجل حركات كل مخزن
+   — REST API فقط (لا يتطلب Firebase SDK منفصلاً)
+   — المنتجات تُقرأ من الـ DOM مباشرةً
+════════════════════════════════════════════════════════════════════ */
 
 const _PROJECT = "reta-and-hamd";
 const _API_KEY = "AIzaSyDQsaNVskKiV2cwPVlJDixpTD1S-Dhp7gs";
 const _BASE    = "https://firestore.googleapis.com/v1/projects/" + _PROJECT + "/databases/(default)/documents";
 
+/* ── helpers ── */
 function _esc(v){ const d=document.createElement("div"); d.textContent=v??""; return d.innerHTML; }
 function _num(v){ return new Intl.NumberFormat("ar-EG",{maximumFractionDigits:3}).format(v||0); }
 function _dt(ts){
@@ -26,6 +32,9 @@ function _toast(msg,err){
   t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),3200);
 }
 
+/* ════════════════════════════════════
+   Firebase ID Token من IndexedDB
+════════════════════════════════════ */
 async function _getToken(){
   return new Promise(resolve=>{
     try{
@@ -79,6 +88,9 @@ async function _getUserEmail(){
   });
 }
 
+/* ════════════════════════════════════
+   Firestore REST Helpers
+════════════════════════════════════ */
 function _encVal(v){
   if(v===null||v===undefined) return{nullValue:null};
   if(typeof v==="boolean")    return{booleanValue:v};
@@ -143,6 +155,10 @@ async function _restQuery(col,filters,orderField){
     .map(r=>({id:_docId(r.document.name),..._decFields(r.document.fields)}));
 }
 
+/* ════════════════════════════════════
+   قراءة المنتجات من الـ DOM
+   (مرسومة بالفعل — لا تحتاج Firestore)
+════════════════════════════════════ */
 function _loadWhProducts(warehouseId,cb){
   const section=document.querySelector('.warehouse-section[data-wh-id="'+warehouseId+'"]');
   if(!section){cb([]);return;}
@@ -151,12 +167,12 @@ function _loadWhProducts(warehouseId,cb){
     const btn=card.querySelector(".edit-prod-btn[data-prod-id]");
     if(!btn) return;
     const prodId=btn.dataset.prodId;
-    
+    // الاسم: نصوص مباشرة فقط (تجنب بادج "زائر")
     const nameEl=card.querySelector(".wpc-name");
     let name="";
     if(nameEl) nameEl.childNodes.forEach(n=>{if(n.nodeType===3) name+=n.textContent;});
     name=name.trim();
-    
+    // الكمية بأرقام لاتينية (بسبب الـ locale patch في الصفحة)
     const qtyText=(card.querySelector(".wpc-qty-num")?.textContent||"0").trim().replace(/,/g,"");
     const qty=parseFloat(qtyText)||0;
     const unit=card.querySelector(".wpc-qty-unit")?.textContent?.trim()||"";
@@ -165,8 +181,12 @@ function _loadWhProducts(warehouseId,cb){
   cb(prods);
 }
 
+/* ── state ── */
 let _adjWhId=null,_adjType="add",_logWhId=null;
 
+/* ════════════════════════════════════
+   حقن أزرار التعديل والسجل في كل مخزن
+════════════════════════════════════ */
 function _whName(section){
   const el=section.querySelector(".warehouse-section-title");
   if(!el) return "\u0627\u0644\u0645\u062e\u0632\u0646";
@@ -212,6 +232,9 @@ function _watchContainer(){
   }).observe(c,{childList:true,subtree:true});
 }
 
+/* ════════════════════════════════════
+   مودال تعديل المخزون
+════════════════════════════════════ */
 function _setAdjType(t){
   _adjType=t;
   document.getElementById("wh-adj-type").value=t;
@@ -301,7 +324,7 @@ function _initAdjModal(){
           +" | \u0642\u0628\u0644: "+_num(qtyBefore)+" | \u0628\u0639\u062f: "+_num(qtyAfter),
         userEmail:email,
       }).catch(()=>{});
-      
+      /* تحديث DOM فوراً دون إعادة تحميل */
       try{
         if(section){
           section.querySelectorAll('.wh-product-card').forEach(function(card){
@@ -328,6 +351,9 @@ function _initAdjModal(){
   });
 }
 
+/* ════════════════════════════════════
+   مودال سجل حركات المخزن
+════════════════════════════════════ */
 function _closeLog(){
   document.getElementById("wh-log-modal").classList.remove("open");
   _logWhId=null;
@@ -400,6 +426,9 @@ function _initLogModal(){
   modal.addEventListener("click",e=>{if(e.target===modal)_closeLog();});
 }
 
+/* ════════════════════════════════════
+   Bootstrap
+════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded",()=>{
   _initAdjModal();
   _initLogModal();
@@ -408,9 +437,12 @@ document.addEventListener("DOMContentLoaded",()=>{
 <\/script>
 `;
 
+// Read current file
 const filePath = "attached_assets/products_1784907068814.html";
 let html = fs.readFileSync(filePath, "utf8");
 
+// Find and replace the old script module we added
+// It starts with the comment about "وادج" and ends with </script>
 const OLD_START = '<script type="module">\n/* ════════════════════════════════════════════════════════════════════\n   تعديل مخزون المخازن + سجل حركات كل مخزن\n   — Firebase CDN';
 const OLD_END   = '<\/script>\n</body>';
 
@@ -418,18 +450,20 @@ const startIdx = html.indexOf(OLD_START);
 if (startIdx === -1) {
   console.error("ERROR: Could not find old script start marker!");
   console.log("Trying alternative search...");
-  
+  // Try to find it differently
   const alt = html.indexOf('<script type="module">\n/* ════');
   console.log("Alt search result:", alt);
   process.exit(1);
 }
 
+// Find the </script> after the start
 const endIdx = html.indexOf("</script>", startIdx);
 if (endIdx === -1) {
   console.error("ERROR: Could not find script end!");
   process.exit(1);
 }
 
+// Replace old script with new one
 const newHtml = html.slice(0, startIdx) + NEW_SCRIPT + "\n" + html.slice(endIdx + "</script>".length);
 
 fs.writeFileSync(filePath, newHtml, "utf8");

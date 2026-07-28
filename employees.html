@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="stylesheet" href="/assets/auth-guard-C6CJ8_8i.css" />
-  
+  <!-- ضمان الأرقام اللاتينية فقط -->
   <script>
   (function(){
     var _NF=Intl.NumberFormat;
@@ -23,13 +23,13 @@
   })();
   </script>
   <style>
-    
+    /* ── شريط التنقل بين الأشهر ── */
     .month-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;
       background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
       box-shadow:var(--shadow);padding:14px 20px;margin-bottom:16px}
     .month-label{font-size:18px;font-weight:800;color:var(--primary-dark);flex:1;text-align:center}
 
-    
+    /* ── أزرار الحالة ── */
     .status-group{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
     .status-btn{border:1.5px solid var(--border);background:var(--surface);border-radius:8px;
       padding:5px 11px;font-family:inherit;font-size:12px;font-weight:600;color:var(--muted);
@@ -42,13 +42,13 @@
     .s-paid:hover,.s-paid.active{background:#e8f0fb;color:#2a5bbf;border-color:#7aa0e0}
     .s-unpaid:hover,.s-unpaid.active{background:#fdf4e3;color:#a06a10;border-color:#d4a854}
 
-    
+    /* تلوين الصفوف */
     .cal-row:has(.s-present.active){background:#f5fcf7}
     .cal-row:has(.s-absent.active){background:#fdf5f4}
     .cal-row:has(.s-paid.active){background:#f4f7fd}
     .cal-row:has(.s-unpaid.active){background:#fefaf3}
 
-    
+    /* ── جدول التقويم ── */
     .attendance-calendar{width:100%;border-collapse:collapse}
     .attendance-calendar th{text-align:right;font-size:12.5px;font-weight:700;color:var(--muted);
       padding:9px 10px;border-bottom:2px solid var(--border);background:var(--bg)}
@@ -60,23 +60,23 @@
     .cal-day-name{font-size:11.5px;color:var(--muted);margin-right:3px}
     .cal-day-date{font-size:11px;color:var(--muted);margin-right:6px;font-family:monospace,Cairo,sans-serif;direction:ltr;display:inline-block}
 
-    
+    /* معرف السجل */
     .rec-id{font-size:11px;color:var(--muted);font-weight:700;background:var(--bg);
       border:1px solid var(--border);border-radius:6px;padding:2px 7px;white-space:nowrap;
       font-family:monospace,Cairo,sans-serif}
 
-    
+    /* زر حذف صغير */
     .del-att-btn{border:none;background:transparent;color:var(--muted);font-size:13px;
       padding:4px 7px;border-radius:7px;cursor:pointer;flex-shrink:0}
     .del-att-btn:hover{background:var(--danger-soft);color:var(--danger)}
 
-    
+    /* تلميح */
     .cal-hint{display:flex;align-items:center;gap:10px;padding:10px 14px;margin-bottom:12px;
       background:var(--primary-soft);border-radius:10px;font-size:12.5px;color:var(--primary-dark);
       font-weight:600}
     .cal-hint svg{flex-shrink:0}
 
-    
+    /* ── ملخص الراتب ── */
     .chip-present{background:#e7f5ec}
     .chip-absent{background:#fce8e5}
     .chip-paid{background:#e8f0fb}
@@ -89,7 +89,7 @@
     .chip-net .v{color:#fff}
     .salary-big{font-size:26px;font-weight:800}
 
-    
+    /* ── تبويب السلف ── */
     .fin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px}
     .fin-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
       padding:14px 16px;box-shadow:var(--shadow)}
@@ -101,7 +101,7 @@
     .fin-stat .sv{font-size:19px;font-weight:800;color:var(--ink)}
     .fin-stat .ss{font-size:11px;color:var(--muted);margin-top:2px}
 
-    
+    /* بادج نوع المعاملة */
     .type-badge{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px}
     .tb-advance{background:#e8f0fb;color:#2a5bbf}
     .tb-withdrawal{background:#fce8e5;color:#b3432f}
@@ -111,7 +111,7 @@
     .dir-out{color:#b3432f;font-weight:700}
     .dir-in{color:#1a6b3a;font-weight:700}
 
-    
+    /* ── سجل العمليات في الحركات المالية ── */
     .audit-log{margin-top:5px;font-size:10.5px}
     .audit-log summary{cursor:pointer;color:var(--muted);list-style:none;
       display:inline-flex;align-items:center;gap:4px;padding:2px 6px;
@@ -125,7 +125,7 @@
     .audit-entry-action{font-weight:700;color:var(--ink);font-size:10.5px}
     .audit-entry-by{color:var(--muted);font-size:10px}
 
-    
+    /* ── حالة صرف الراتب ── */
     .pay-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;
       padding:13px 18px;border-radius:10px;border:2px solid var(--border);
       background:var(--surface);margin-bottom:12px}
@@ -138,30 +138,32 @@
     .pay-badge.unpaid{color:#8a6010}
     .pay-meta{font-size:11.5px;color:var(--muted)}
 
-    
+    /* ── عناصر الطباعة ── */
     .print-only{display:none}
     .screen-only{display:table-cell}
 
-    
+    /* ══════════════════════════════
+       تنسيق الشاشات الصغيرة (موبايل)
+    ══════════════════════════════ */
     @media (max-width:640px){
-      
+      /* شريط التنقل بين الأشهر */
       .month-nav{padding:9px 10px;gap:6px;margin-bottom:10px}
       .month-label{font-size:13px}
       .month-nav .btn{padding:5px 10px;font-size:11.5px}
 
-      
+      /* شريط تأكيد صرف الراتب */
       .pay-bar{flex-direction:column;align-items:flex-start;gap:8px;
         padding:10px 12px;margin-bottom:10px}
       .pay-bar .btn{width:100%;justify-content:center}
       .pay-badge{font-size:12.5px}
       .pay-meta{font-size:10.5px}
 
-      
+      /* ملخص الراتب */
       .salary-big{font-size:20px}
       .chip-net{padding:12px 14px}
       .chip-net .k{font-size:11.5px}
 
-      
+      /* تقويم الحضور */
       .cal-hint{font-size:11px;padding:8px 10px;gap:7px}
       .cal-day-cell{min-width:0}
       .cal-day-num{font-size:13px;width:18px}
@@ -170,28 +172,28 @@
       .cal-row td{padding:5px 6px}
       .attendance-calendar th{padding:6px 6px;font-size:11px}
 
-      
+      /* أزرار الحالة */
       .status-btn{padding:4px 7px;font-size:11px;border-radius:7px}
       .status-group{gap:3px}
 
-      
+      /* رأس تفاصيل الموظف */
       .detail-header{gap:10px}
 
-      
+      /* إحصائيات السلف */
       .fin-stats{grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
       .fin-stat{padding:10px 12px}
       .fin-stat .sv{font-size:16px}
       .fin-stat .sk{font-size:11px}
       .fin-stat .ss{font-size:10px}
 
-      
+      /* جدول الحركات المالية — تصغير */
       .type-badge{font-size:10px;padding:1px 6px}
       .rec-id{font-size:10px;padding:1px 5px}
       .row-actions{gap:4px}
       .row-actions button{font-size:11px;padding:3px 8px}
       .audit-log summary{font-size:10px;padding:2px 5px}
 
-      
+      /* بطاقة العمل */
       .id-card{border-radius:12px}
       .id-card-hdr{padding:10px 12px;gap:8px}
       .id-card-hdr-name{font-size:13px}
@@ -212,7 +214,8 @@
       .id-card-ftr-seal{font-size:9.5px}
     }
 
-    
+
+    /* ── بطاقة العمل الاحترافية ── */
     .id-card{background:#fff;border-radius:16px;overflow:hidden;max-width:480px;
       box-shadow:0 8px 36px rgba(0,0,0,.16);border:1px solid #dde8e2;font-family:Cairo,sans-serif}
     .id-card-hdr{background:linear-gradient(135deg,#0d2618 0%,#1a4a2e 55%,#2c6648 100%);
@@ -259,7 +262,7 @@
     .id-card-ftr-bar{width:3px;background:#2f6f4f;border-radius:1.5px}
     .id-card-ftr-seal{font-size:10px;color:#1a4a2e;font-weight:800}
 
-    
+    /* ── قسيمة الراتب (مخفية في الشاشة - للطباعة) ── */
     #payslip-print{display:none}
 
     @media print{
@@ -280,7 +283,7 @@
       .detail-info p{font-size:11px!important;margin:1px 0 0}
       .detail-avatar{width:40px!important;height:40px!important}
 
-      
+      /* ── كشف الحضور مضغوط في صفحة واحدة ── */
       .panel{box-shadow:none!important;border:1px solid #ccc!important;margin-bottom:6px!important}
       .panel:not(.print-target){display:none!important}
       .panel-header{padding:6px 10px!important}
@@ -299,7 +302,7 @@
       .st-unpaid_leave{color:#a06a10;background:#fdf4e3}
       .print-rec-id{font-size:9px;color:#888;font-family:monospace}
 
-      
+      /* ── قسيمة الراتب ── */
       #payslip-print{display:block!important;margin-bottom:8px;page-break-after:always}
       .ps-wrap{font-family:Cairo,sans-serif;font-size:11.5px;color:#111;border:1.5px solid #bbb;border-radius:8px;overflow:hidden;margin-bottom:6px}
       .ps-header{display:flex;justify-content:space-between;align-items:center;
@@ -334,7 +337,7 @@
         font-size:10.5px;color:#555;border-top:1px solid #ddd;background:#fafafa}
       .ps-footer span{border-top:1px solid #999;padding-top:4px;min-width:120px;text-align:center}
 
-      
+      /* بطاقة العمل في الطباعة */
       .id-card{max-width:100%!important;background:#fff!important;
         border:1px solid #ccc!important;page-break-inside:avoid}
       .id-card-hdr{background:linear-gradient(135deg,#0d2618,#1a4a2e,#2c6648)!important}
@@ -342,11 +345,11 @@
       .id-card-ftr-bar{background:#2f6f4f!important}
     }
 
-    
+    /* ── روابط الأسماء القابلة للنقر ── */
     .link-cell{cursor:pointer;color:var(--primary-dark,#2a5bbf);font-weight:700}
     .link-cell:hover{text-decoration:underline}
   
-      
+      /* ══ شاشة التحميل ══ */
       #page-loader {
         position: fixed; inset: 0; z-index: 9999;
         background: linear-gradient(145deg, #1a6b3a, #2d9f5f);
@@ -389,7 +392,7 @@
 </style>
 </head>
 <body>
-
+<!-- ══ شاشة التحميل ══ -->
 <div id="page-loader">
   <div class="pl-logo">
     <img src="https://i.imgur.com/NsN1HgC.png" alt="logo" class="pl-logo-img"
@@ -403,7 +406,7 @@
   <header id="topbar" class="topbar"></header>
   <main class="page">
 
-    
+    <!-- ═══════ قائمة الموظفين ═══════ -->
     <div id="list-section">
       <div class="page-header">
         <div>
@@ -430,7 +433,7 @@
       </div>
     </div>
 
-    
+    <!-- ═══════ تفاصيل الموظف ═══════ -->
     <div id="detail-section" style="display:none">
       <span class="back-link" id="back-btn">→ العودة إلى القائمة</span>
 
@@ -455,14 +458,14 @@
         <button type="button" id="tab-id">بطاقة العمل</button>
       </div>
 
-      
+      <!-- ── تبويب الحضور ── -->
       <div class="section-view active" id="view-att">
         <div class="month-nav print-hide">
           <button type="button" class="btn small outline" id="prev-btn">→ السابق</button>
           <span id="month-label" class="month-label"></span>
           <button type="button" class="btn small outline" id="next-btn">التالي ←</button>
         </div>
-        
+        <!-- شريط تأكيد صرف الراتب -->
         <div id="pay-status-bar" class="print-hide"></div>
 
         <div class="panel" id="salary-panel">
@@ -472,7 +475,7 @@
           </div>
           <div class="info-grid" id="salary-summary"></div>
         </div>
-        
+        <!-- قسيمة الراتب للطباعة -->
         <div id="payslip-print"></div>
 
         <div class="panel print-target">
@@ -487,7 +490,7 @@
         </div>
       </div>
 
-      
+      <!-- ── تبويب السلف والحركات المالية ── -->
       <div class="section-view" id="view-fin">
         <div class="fin-stats" id="fin-stats"></div>
 
@@ -516,7 +519,7 @@
         </div>
       </div>
 
-      
+      <!-- ── تبويب بطاقة العمل ── -->
       <div class="section-view" id="view-id">
         <div class="panel print-target">
           <div class="panel-header print-hide">
@@ -524,7 +527,7 @@
             <button type="button" class="btn small outline" onclick="window.print()">🖨️ طباعة البطاقة</button>
           </div>
           <div class="id-card">
-            
+            <!-- رأس البطاقة -->
             <div class="id-card-hdr">
               <img src="https://i.imgur.com/NsN1HgC.png" class="id-card-hdr-logo" alt="شعار"
                    onerror="this.style.display='none'" />
@@ -534,9 +537,9 @@
               </div>
               <div class="id-card-hdr-badge">بطاقة عمل رسمية</div>
             </div>
-            
+            <!-- جسم البطاقة -->
             <div class="id-card-body">
-              
+              <!-- عمود الصورة -->
               <div class="id-card-photo-col">
                 <div class="id-card-photo-circle">
                   <img id="card-photo" src="" alt="" class="id-card-photo-img" style="display:none" />
@@ -544,7 +547,7 @@
                 </div>
                 <div class="id-card-photo-label">موظف</div>
               </div>
-              
+              <!-- عمود البيانات -->
               <div class="id-card-info-col">
                 <div>
                   <div class="id-card-emp-name" id="card-name">—</div>
@@ -564,7 +567,7 @@
                 </div>
               </div>
             </div>
-            
+            <!-- تذييل البطاقة -->
             <div class="id-card-ftr">
               <span class="id-card-ftr-date">تاريخ الإصدار: <span id="card-issue-date"></span></span>
               <div class="id-card-ftr-bars">
@@ -590,6 +593,7 @@
   </main>
 </div>
 
+<!-- ═══════ نافذة إضافة / تعديل موظف ═══════ -->
 <div class="modal-overlay" id="emp-modal">
   <div class="modal-box">
     <div class="modal-box-header">
@@ -631,6 +635,7 @@
   </div>
 </div>
 
+<!-- ═══════ نافذة تعديل يوم حضور ═══════ -->
 <div class="modal-overlay" id="att-modal">
   <div class="modal-box" style="max-width:380px">
     <div class="modal-box-header">
@@ -649,6 +654,7 @@
   </div>
 </div>
 
+<!-- ═══════ نافذة إضافة / تعديل سلفة أو حركة مالية ═══════ -->
 <div class="modal-overlay" id="adv-modal">
   <div class="modal-box" style="max-width:440px">
     <div class="modal-box-header">
@@ -684,7 +690,7 @@
         </div>
       </div>
 
-      
+      <!-- شهر الخصم من الراتب (للسلفة فقط) -->
       <div class="field" id="adv-deduct-month-field" style="display:none">
         <label for="adv-deduct-month">شهر الخصم من الراتب *</label>
         <select id="adv-deduct-month" style="margin-top:4px">
@@ -728,7 +734,7 @@
   .adv-type-opt .ico{font-size:20px;line-height:1}
   .adv-type-opt .sub{font-size:10.5px;color:var(--muted);font-weight:500}
   .adv-type-opt input{position:absolute;opacity:0;pointer-events:none}
-  
+  /* ── نافذة تفاصيل الحركة ── */
   .tx-detail-box{direction:rtl;font-family:Cairo,sans-serif}
   .tx-detail-header{text-align:center;border-bottom:3px solid var(--primary);padding-bottom:16px;margin-bottom:18px}
   .tx-detail-mark{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--primary,#4a7dd4),var(--primary-dark,#2a5bbf));color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
@@ -793,6 +799,7 @@
   }
 </style>
 
+<!-- ═══════ نافذة تفاصيل الحركة المالية ═══════ -->
 <div class="modal-overlay" id="tx-detail-modal">
   <div class="modal-box" style="max-width:500px">
     <div class="modal-box-header">
@@ -807,6 +814,7 @@
   </div>
 </div>
 
+<!-- ═══════ Firebase + المنطق ═══════ -->
 <script type="module">
 import { initializeApp }       from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut }
@@ -881,6 +889,7 @@ function renderNav(user) {
     </a>`).join("")}</div>`;
 }
 
+/* ── حالة عامة ── */
 let employees     = [];
 let dailyAtt      = [];
 let empFinTxs     = [];
@@ -889,8 +898,8 @@ let photoFile     = null;
 let editEmpId     = null;
 let attUnsub      = null;
 let finUnsub      = null;
-let payUnsub      = null;   
-let salaryPayRec  = null;   
+let payUnsub      = null;   // مستمع حالة صرف الراتب
+let salaryPayRec  = null;   // null=جارِ التحميل | false=لم يُصرف | object=تم الصرف
 let calYear       = new Date().getFullYear();
 let calMonth      = new Date().getMonth();
 const pendingDays = new Set();
@@ -898,11 +907,12 @@ let attModalDate  = null;
 let attModalRecId = null;
 let advEditId     = null;
 
+/* ── بناء قائمة شهر الخصم (12 شهراً قادماً ابتداءً من الشهر الحالي) ── */
 function buildDeductMonthSelect(currentVal=""){
   const sel=document.getElementById("adv-deduct-month"); if(!sel) return;
   const now=new Date();
   const curY=now.getFullYear(), curM=now.getMonth();
-  
+  // بناء 12 شهراً قادماً ابتداءً من الشهر الحالي
   const opts=[];
   for(let i=0;i<12;i++){
     const d=new Date(curY,curM+i,1);
@@ -913,7 +923,7 @@ function buildDeductMonthSelect(currentVal=""){
     });
   }
   sel.innerHTML='<option value="">— اختر شهر الخصم —</option>';
-  
+  // إذا كانت القيمة المحفوظة شهراً قديماً خارج النطاق، أضفه مع تنبيه
   if(currentVal&&!opts.find(o=>o.val===currentVal)){
     const [y,m]=currentVal.split("-").map(Number);
     const oldLabel=new Date(y,m-1,1).toLocaleDateString(LATN,{month:"long",year:"numeric"});
@@ -928,12 +938,14 @@ function buildDeductMonthSelect(currentVal=""){
     if(currentVal===val) o.selected=true;
     sel.appendChild(o);
   });
-  
+  // افتراضي: الشهر الحالي إن لم تُحدَّد قيمة
   if(!currentVal) sel.value=opts[0].val;
 }
 
-const esc = t => { const d=document.createElement("div"); d.textContent=t??""; return d.innerHTML; };
 
+/* ── أدوات ── */
+const esc = t => { const d=document.createElement("div"); d.textContent=t??""; return d.innerHTML; };
+/* دائماً أرقام إنجليزية مع نصوص عربية */
 const LATN = "ar-EG-u-nu-latn";
 const fmt = n => new Intl.NumberFormat(LATN,{maximumFractionDigits:2}).format(n||0)+" ج.م";
 const localDate = d => {
@@ -954,6 +966,7 @@ function toast(msg,err=false){
   t._timer=setTimeout(()=>{ t.className="toast"; },2600);
 }
 
+/* ── معرّفات تسلسلية ── */
 async function nextAttId(){
   const cRef=doc(db,"counters","employees_att");
   let seqNum=1;
@@ -975,6 +988,7 @@ async function nextFinId(){
   return "F-"+String(seqNum).padStart(4,"0");
 }
 
+/* ── TYPE config for finance ── */
 const FIN_TYPE_CFG = {
   advance:   { label:"سلفة",    badge:"tb-advance",    dir:"out" },
   withdrawal:{ label:"سحب",     badge:"tb-withdrawal", dir:"out" },
@@ -989,6 +1003,9 @@ const ADV_TYPE_TO_FIN = {
   other:     { type:"other",      dir:"out" },
 };
 
+/* ─────────────────────────────────
+   تهيئة
+───────────────────────────────── */
 let pendingOpenId=new URLSearchParams(window.location.search).get("id");
 function init(){
   setupEmpModal();
@@ -999,6 +1016,7 @@ function init(){
   loadEmployees();
 }
 
+/* ── نافذة تفاصيل الحركة ── */
 function setupDetailModal(){
   const modal=document.getElementById("tx-detail-modal"); if(!modal) return;
   document.getElementById("tx-detail-close").addEventListener("click",()=>modal.classList.remove("open"));
@@ -1108,6 +1126,7 @@ function openTxDetail(t){
   document.getElementById("tx-detail-modal").classList.add("open");
 }
 
+/* ── سجل المراقبة الشامل ── */
 async function writeAuditLog(action, entity, details) {
   try {
     await addDoc(collection(db,"auditLog"),{
@@ -1118,6 +1137,7 @@ async function writeAuditLog(action, entity, details) {
   } catch(err){ console.error("auditLog write failed",err); }
 }
 
+/* ── نافذة الموظف ── */
 function setupEmpModal(){
   const modal=document.getElementById("emp-modal");
   document.getElementById("add-employee-btn").addEventListener("click",()=>openEmpModal(null));
@@ -1194,6 +1214,7 @@ async function saveEmployee(e){
   finally{ btn.disabled=false; btn.textContent="حفظ الموظف"; }
 }
 
+/* ── نافذة الحضور ── */
 const STATUSES=[
   {key:"present",    label:"✅  حضور",             cls:"s-present", desc:"يُحسب في الراتب"},
   {key:"absent",     label:"❌  غائب",             cls:"s-absent",  desc:"يُخصم من الراتب"},
@@ -1243,6 +1264,7 @@ async function deleteAttRecord(){
   }catch(err){ console.error(err); toast("خطأ أثناء الحذف",true); }
 }
 
+/* ── نافذة السلفة / الحركة المالية ── */
 function setupAdvModal(){
   const modal=document.getElementById("adv-modal");
   document.getElementById("add-adv-btn").addEventListener("click",()=>openAdvModal(null));
@@ -1252,7 +1274,7 @@ function setupAdvModal(){
   document.getElementById("adv-del-btn").addEventListener("click",deleteAdvTx);
   document.getElementById("adv-form").addEventListener("submit",saveAdvTx);
 
-  
+  // إظهار / إخفاء حقل شهر الخصم عند تغيير نوع العملية
   document.querySelectorAll('input[name="adv_type"]').forEach(r=>{
     r.addEventListener("change",()=>{
       const isAdv=r.value==="advance"&&r.checked;
@@ -1275,7 +1297,7 @@ function openAdvModal(tx){
     document.getElementById("adv-amount").value=tx.amount??"";
     document.getElementById("adv-date").value=tx.date??"";
     document.getElementById("adv-desc").value=tx.description??"";
-    
+    // اختيار النوع
     const advType = tx.type==="advance"?"advance"
       : tx.type==="withdrawal"||tx.type==="other"&&tx.dir==="out" ? "other_out"
       : tx.type==="deposit"||tx.type==="other"&&tx.dir==="in"  ? "other_in"
@@ -1291,10 +1313,10 @@ function openAdvModal(tx){
     document.getElementById("adv-del-btn").style.display="inline-flex";
   } else {
     document.getElementById("adv-modal-title").textContent="إضافة سلفة / حركة مالية";
-    
+    // اختيار افتراضي: سلفة
     const radio=document.querySelector('input[name="adv_type"][value="advance"]');
     if(radio) radio.checked=true;
-    buildDeductMonthSelect(); 
+    buildDeductMonthSelect(); // يملأ القائمة بالشهر الحالي والقادم
     document.getElementById("adv-deduct-month-field").style.display="block";
   }
   document.getElementById("adv-modal").classList.add("open");
@@ -1308,7 +1330,7 @@ async function saveAdvTx(e){
   const amount=Number(document.getElementById("adv-amount").value);
   if(!amount||amount<=0){ toast("أدخل مبلغاً صحيحاً",true); return; }
 
-  
+  // التحقق من شهر الخصم عند إضافة سلفة
   const deductMonth=advType==="advance"?document.getElementById("adv-deduct-month").value:"";
   if(advType==="advance"&&!deductMonth){ toast("حدد شهر الخصم من الراتب",true); return; }
 
@@ -1370,6 +1392,7 @@ async function deleteAdvTx(){
   }catch(err){ console.error(err); toast("خطأ أثناء الحذف",true); }
 }
 
+/* ── تحميل الموظفين ── */
 function loadEmployees(){
   onSnapshot(collection(db,"employees"),snap=>{
     employees=snap.docs.map(d=>({id:d.id,...d.data()}));
@@ -1425,6 +1448,7 @@ async function deleteEmp(id){
   catch(err){ console.error(err); toast("خطأ أثناء الحذف",true); }
 }
 
+/* ── صفحة التفاصيل ── */
 function setupDetail(){
   document.getElementById("back-btn").addEventListener("click",backToList);
   document.getElementById("tab-att").addEventListener("click",()=>switchTab("att"));
@@ -1496,21 +1520,23 @@ function fillIdCard(){
     {year:"numeric",month:"long",day:"numeric"});
 }
 
+/* ── التنقل بين الأشهر ── */
 function changeMonth(delta){
   calMonth+=delta;
   if(calMonth>11){ calMonth=0; calYear++; }
   if(calMonth<0) { calMonth=11; calYear--; }
-  
+  // إعادة تعيين حالة الصرف قبل تحميل الشهر الجديد
   salaryPayRec=null;
   if(payUnsub){ payUnsub(); payUnsub=null; }
   loadMonthAtt();
 }
 
+/* ── تحميل الحضور ── */
 function loadMonthAtt(){
   if(!currentEmpId) return;
   document.getElementById("month-label").textContent=arabicMonth(calMonth,calYear);
   document.getElementById("cal-title").textContent=`تقويم الحضور — ${arabicMonth(calMonth,calYear)}`;
-  loadSalaryPayStatus();   
+  loadSalaryPayStatus();   // تحميل حالة صرف الراتب لهذا الشهر
   if(attUnsub){ attUnsub(); attUnsub=null; }
   const first=`${calYear}-${String(calMonth+1).padStart(2,"0")}-01`;
   const last=localDate(new Date(calYear,calMonth+1,0));
@@ -1535,6 +1561,11 @@ function loadMonthAtt(){
   });
 }
 
+/* ─────────────────────────────────
+   تأكيد صرف الراتب
+───────────────────────────────── */
+
+/* تحميل حالة صرف الشهر الحالي من Firestore */
 function loadSalaryPayStatus(){
   if(!currentEmpId) return;
   if(payUnsub){ payUnsub(); payUnsub=null; }
@@ -1548,6 +1579,7 @@ function loadSalaryPayStatus(){
   },err=>{ console.error(err); salaryPayRec=false; renderPayStatus(); });
 }
 
+/* رسم شريط حالة الصرف */
 function renderPayStatus(){
   const bar=document.getElementById("pay-status-bar"); if(!bar) return;
   const monthLabel=arabicMonth(calMonth,calYear);
@@ -1583,6 +1615,7 @@ function renderPayStatus(){
   }
 }
 
+/* تأكيد صرف الراتب */
 async function markSalaryPaid(){
   if(!currentEmpId) return;
   const monthLabel=arabicMonth(calMonth,calYear);
@@ -1602,16 +1635,17 @@ async function markSalaryPaid(){
     });
     toast(`✅ تم تأكيد صرف راتب ${monthLabel}`);
     writeAuditLog("صرف راتب","راتب موظف",`${emp?.name||"—"} — ${monthLabel}${emp?.monthlySalary?" — "+emp.monthlySalary+" ج.م":""}`);
-    
+    // انتقال تلقائي للشهر التالي بعد لحظة
     setTimeout(()=>changeMonth(+1), 1400);
   }catch(err){
     console.error(err);
     toast("خطأ أثناء الحفظ",true);
-    
+    // إعادة الزر لحالته الطبيعية عند الخطأ
     renderPayStatus();
   }
 }
 
+/* إلغاء تأكيد الصرف */
 async function unmarkSalaryPaid(){
   if(!currentEmpId) return;
   const monthLabel=arabicMonth(calMonth,calYear);
@@ -1625,6 +1659,7 @@ async function unmarkSalaryPaid(){
   }catch(err){ console.error(err); toast("خطأ أثناء الحذف",true); }
 }
 
+/* ── تحميل الحركات المالية للموظف ── */
 function loadEmpFinance(){
   if(!currentEmpId) return;
   if(finUnsub){ finUnsub(); finUnsub=null; }
@@ -1635,7 +1670,7 @@ function loadEmpFinance(){
       .sort((a,b)=> b.date>a.date?1:b.date<a.date?-1:0);
     renderEmpFinStats();
     renderEmpFinTxs();
-    renderSalary(); 
+    renderSalary(); // تحديث ملخص الراتب عند تغيير السلف
   },err=>{ console.error(err); });
 }
 
@@ -1662,6 +1697,7 @@ function renderEmpFinStats(){
     </div>`;
 }
 
+/* تنسيق Timestamp لعرض التاريخ والساعة */
 function fmtTS(ts){
   if(!ts?.toDate) return "—";
   return ts.toDate().toLocaleString(LATN,{
@@ -1738,6 +1774,7 @@ function renderEmpFinTxs(){
   }));
 }
 
+/* ── رسم التقويم ── */
 const DAY_NAMES=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
 const STATUS_LABELS={present:"حضور",absent:"غائب",paid_leave:"إجازة براتب",unpaid_leave:"إجازة بدون راتب"};
 
@@ -1815,6 +1852,7 @@ function renderCalendar(){
     }));
 }
 
+/* ── تعيين حالة اليوم ── */
 async function setDay(dateStr,newStatus,_rid){
   if(!currentEmpId||pendingDays.has(dateStr)) return;
   pendingDays.add(dateStr);
@@ -1853,6 +1891,7 @@ async function setDay(dateStr,newStatus,_rid){
   }
 }
 
+/* ── ملخص الراتب ── */
 function renderSalary(){
   const el=document.getElementById("salary-summary"); if(!el) return;
   const emp=employees.find(e=>e.id===currentEmpId);
@@ -1874,7 +1913,7 @@ function renderSalary(){
   const net=Math.max(0, grossNet - deduct - totalAdvDeduct);
   const monthLabel=arabicMonth(calMonth,calYear);
 
-  
+  // ── ملخص شاشة ──
   const advRow=totalAdvDeduct>0
     ?`<div class="info-chip chip-deduct"><div class="k">👤 خصم السلف (${advCount} سلفة)</div><div class="v">${fmt(totalAdvDeduct)}</div></div>`:"";
   el.innerHTML=`
@@ -1893,7 +1932,7 @@ function renderSalary(){
       ${totalAdvDeduct>0?`<div style="font-size:12px;opacity:.75;margin-top:4px">(${fmt(grossNet)} − ${fmt(deduct)} − ${fmt(totalAdvDeduct)} = ${fmt(net)})</div>`:""}
     </div>`;
 
-  
+  // ── قسيمة الراتب للطباعة ──
   const pp=document.getElementById("payslip-print"); if(!pp) return;
   const absentDeduct=absent*dailyRate;
   const unpaidDeduct=unpaid*dailyRate;
@@ -1965,6 +2004,7 @@ function renderSalary(){
 }
 </script>
 
+<!-- ══ مراقب شاشة التحميل ══ -->
 <script>
 (function(){
   var loader = document.getElementById("page-loader");
