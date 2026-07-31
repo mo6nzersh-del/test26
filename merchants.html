@@ -1140,12 +1140,14 @@ function openTxDetail(t){
     </table></div>`;
 
   // قسم الرصيد قبل/بعد (خاص بالتجار)
+  const fBal=n=>n<0?"-"+fNAbs(n):fNAbs(n);
   let balSectionHtml = "";
   if(balCtx){
     balSectionHtml = `
       <div style="margin:12px 0 4px;font-size:13px;direction:rtl">
-        <div>الرصيد السابق: ${fNAbs(balCtx.before)}</div>
-        <div>الرصيد بعد الحركة الحالية: ${fNAbs(balCtx.after)}</div>
+        <div>💰 المبلغ المستحق على هذا التاجر</div>
+        <div>الرصيد السابق المستحقات: ${fBal(balCtx.before)}</div>
+        <div>الرصيد بعد الحركة الحالية: ${fBal(balCtx.after)}</div>
       </div>`;
   }
 
