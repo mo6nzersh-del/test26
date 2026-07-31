@@ -56,6 +56,36 @@
     .delete-btn{border:none;background:transparent;color:var(--muted);
       font-size:12px;padding:4px 8px;border-radius:6px;cursor:pointer}
     .delete-btn:hover{background:var(--danger-soft);color:var(--danger)}
+
+    /* ── مودال تأكيد حذف التحميل ── */
+    #ldcm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);
+      z-index:9900;align-items:center;justify-content:center;padding:16px}
+    #ldcm-overlay.open{display:flex}
+    .ldcm-box{background:#fff;border-radius:16px;width:100%;max-width:480px;
+      box-shadow:0 24px 60px rgba(0,0,0,.32);overflow:hidden;
+      animation:ldcmIn .18s cubic-bezier(.34,1.26,.64,1)}
+    @keyframes ldcmIn{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+    .ldcm-header{background:linear-gradient(135deg,#c0392b 0%,#e74c3c 100%);
+      padding:16px 20px;display:flex;align-items:center;gap:12px}
+    .ldcm-header-icon{font-size:26px;line-height:1;flex-shrink:0}
+    .ldcm-header h3{margin:0;color:#fff;font-size:15px;font-weight:800;line-height:1.3}
+    .ldcm-header p{margin:4px 0 0;color:rgba(255,255,255,.82);font-size:12px}
+    .ldcm-body{padding:16px 20px 4px}
+    .ldcm-subtitle{font-size:13px;color:#555;margin:0 0 12px;font-weight:600}
+    .ldcm-lines{display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;padding-bottom:4px}
+    .ldcm-line{background:#f7f9fc;border:1px solid #e0e8f0;border-radius:10px;
+      padding:11px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .ldcm-line-name{font-size:13px;font-weight:700;color:#1a1a2e;flex:1;
+      min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .ldcm-qty-row{display:flex;align-items:center;gap:7px;flex-shrink:0;direction:ltr}
+    .ldcm-qty-before{background:#fde8e5;color:#b3432f;font-size:12px;font-weight:800;
+      padding:3px 10px;border-radius:6px;white-space:nowrap;border:1px solid #f0b3a8}
+    .ldcm-arrow{color:#999;font-size:16px;font-weight:900}
+    .ldcm-qty-after{background:#e7f5ec;color:#1a6b3a;font-size:12px;font-weight:800;
+      padding:3px 10px;border-radius:6px;white-space:nowrap;border:1px solid #a8dbb7}
+    .ldcm-footer{padding:14px 20px 16px;border-top:1px solid #eee;
+      display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+    .ldcm-no-lines{font-size:13px;color:#888;padding:8px 0}
     /* بطاقات الإحصائيات (سطح المكتب) */
     .record-badge{display:inline-flex;align-items:center;justify-content:center;
       font-size:11.5px;font-weight:700;border-radius:6px;padding:3px 10px;white-space:nowrap}
@@ -652,6 +682,27 @@
   </div>
 </div>
 
+<!-- ═══════ مودال تأكيد حذف التحميل ═══════ -->
+<div id="ldcm-overlay">
+  <div class="ldcm-box">
+    <div class="ldcm-header">
+      <span class="ldcm-header-icon">⚠️</span>
+      <div>
+        <h3>تأكيد حذف معاملة التحميل</h3>
+        <p>سيتم إعادة الكميات التالية إلى المخزن تلقائياً</p>
+      </div>
+    </div>
+    <div class="ldcm-body">
+      <div class="ldcm-subtitle">تأثير الحذف على المخزن:</div>
+      <div class="ldcm-lines" id="ldcm-lines"></div>
+    </div>
+    <div class="ldcm-footer">
+      <button type="button" class="btn" id="ldcm-confirm-btn">✅ تأكيد الحذف وإعادة الكميات</button>
+      <button type="button" class="btn outline" id="ldcm-cancel-btn">إلغاء</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════ Firebase ═══════ -->
 <script type="module">
 import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -659,7 +710,7 @@ import { getAuth, onAuthStateChanged, signOut }
                             from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, collection, doc,
-  addDoc, updateDoc, deleteDoc, getDocs,
+  addDoc, updateDoc, deleteDoc, getDocs, getDoc,
   query, where, orderBy, onSnapshot,
   serverTimestamp, runTransaction, writeBatch, increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -746,6 +797,49 @@ function toast(msg,err=false){
   t.className=`toast show${err?" error-toast":""}`;
   clearTimeout(t._timer);
   t._timer=setTimeout(()=>{ t.className="toast"; },2600);
+}
+
+/* ── مودال تأكيد حذف التحميل المخصص ── */
+function showLoadingDeleteConfirm(lines, productsMap){
+  return new Promise(resolve=>{
+    const overlay=document.getElementById("ldcm-overlay");
+    const linesDiv=document.getElementById("ldcm-lines");
+    const fmtN=n=>new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:3}).format(n||0);
+    if(!lines.length){
+      linesDiv.innerHTML='<div class="ldcm-no-lines">لا توجد أصناف مرتبطة بهذه العملية</div>';
+    } else {
+      linesDiv.innerHTML=lines.map(l=>{
+        const cur=productsMap[l.productId]?.quantity??0;
+        const unit=esc(l.unit||productsMap[l.productId]?.quantityType||"");
+        const after=cur+(l.qty||0);
+        return `
+          <div class="ldcm-line">
+            <div class="ldcm-line-name">📦 ${esc(l.productName||"—")}</div>
+            <div class="ldcm-qty-row">
+              <span class="ldcm-qty-before">${fmtN(cur)} ${unit}</span>
+              <span class="ldcm-arrow">→</span>
+              <span class="ldcm-qty-after">${fmtN(after)} ${unit}</span>
+            </div>
+          </div>`;
+      }).join("");
+    }
+    overlay.classList.add("open");
+    const confirmBtn=document.getElementById("ldcm-confirm-btn");
+    const cancelBtn=document.getElementById("ldcm-cancel-btn");
+    function cleanup(result){
+      overlay.classList.remove("open");
+      confirmBtn.removeEventListener("click",onConfirm);
+      cancelBtn.removeEventListener("click",onCancel);
+      overlay.removeEventListener("click",onBackdrop);
+      resolve(result);
+    }
+    const onConfirm=()=>cleanup(true);
+    const onCancel=()=>cleanup(false);
+    const onBackdrop=e=>{ if(e.target===overlay) cleanup(false); };
+    confirmBtn.addEventListener("click",onConfirm);
+    cancelBtn.addEventListener("click",onCancel);
+    overlay.addEventListener("click",onBackdrop);
+  });
 }
 
 function calcBalance(merId){
@@ -1550,34 +1644,34 @@ function renderUnifiedList(){
     }));
   list.querySelectorAll(".delete-btn").forEach(btn=>btn.addEventListener("click",async()=>{
     const src=btn.dataset.src;
-    const isLoading=src==="loading";
-    const msg=isLoading
-      ?"هل تريد حذف هذه المعاملة وإعادة الكميات المسحوبة إلى المخزن تلقائياً؟"
-      :"هل تريد حذف هذه الحركة؟";
-    if(!confirm(msg)) return;
     try{
       const mer=merchants.find(m=>m.id===currentMerId);
       if(src==="loading"){
-        // جلب بيانات الحركة للحصول على opId
+        // ── جلب بيانات التحميل لعرضها في المودال ──
         const rawTx=merchantTxs.find(t=>t.id===btn.dataset.id);
         const opId=rawTx?.opId;
         if(opId){
-          // جلب سجل التحميل من loadingOperations
           const snap=await getDocs(query(collection(db,"loadingOperations"),where("opId","==",opId)));
           if(!snap.empty){
             const loadOp=snap.docs[0].data();
             const loadOpId=snap.docs[0].id;
+            // جلب الكميات الحالية لكل منتج لعرضها في المودال
+            const productsMap={};
+            await Promise.all((loadOp.lines||[]).filter(l=>l.productId).map(async l=>{
+              const pdoc=await getDoc(doc(db,"products",l.productId));
+              if(pdoc.exists()) productsMap[l.productId]={quantity:pdoc.data().quantity||0,quantityType:pdoc.data().quantityType||""};
+            }));
+            // ── عرض المودال المخصص مع الكميات قبل/بعد ──
+            const confirmed=await showLoadingDeleteConfirm(loadOp.lines||[], productsMap);
+            if(!confirmed) return;
+            // ── تنفيذ الحذف وإعادة الكميات ──
             const batch=writeBatch(db);
-            // إعادة الكميات إلى المخزن
             (loadOp.lines||[]).forEach(line=>{
               if(line.productId && (line.qty||0)>0)
                 batch.update(doc(db,"products",line.productId),{quantity:increment(line.qty),updatedAt:serverTimestamp()});
             });
-            // حذف سجل التحميل
             batch.delete(doc(db,"loadingOperations",loadOpId));
-            // حذف حركة التاجر
             batch.delete(doc(db,"merchantTransactions",btn.dataset.id));
-            // إذا كانت مدفوعة فوراً، نُلغي حركات الدفع التلقائية المرتبطة
             if(rawTx?.paid){
               const finSnap=await getDocs(query(collection(db,"finance_transactions"),where("opId","==",opId)));
               finSnap.forEach(fd=>{
@@ -1589,25 +1683,26 @@ function renderUnifiedList(){
             writeAuditLog("حذف","حركة تحميل تاجر",`${mer?.name||"—"} — opId:${opId} — تمت إعادة الكميات`);
             toast("تم الحذف وأُعيدت الكميات إلى المخزن ✅");
           } else {
-            // لم يُعثر على سجل التحميل — نحذف الحركة المالية فقط
+            if(!confirm("لم يُعثر على سجل التحميل الأصلي. هل تريد حذف الحركة فقط؟")) return;
             await deleteDoc(doc(db,"merchantTransactions",btn.dataset.id));
             writeAuditLog("حذف","حركة تاجر",`${mer?.name||"—"} — تحميل (لم يُعثر على سجل التحميل)`);
-            toast("تم الحذف (لم يُعثر على سجل التحميل الأصلي — الكميات لم تُعَد)");
+            toast("تم الحذف (الكميات لم تُعَد — السجل الأصلي غير موجود)");
           }
         } else {
-          // لا يوجد opId — نحذف الحركة فقط
+          if(!confirm("هل تريد حذف هذه الحركة؟")) return;
           await deleteDoc(doc(db,"merchantTransactions",btn.dataset.id));
           writeAuditLog("حذف","حركة تاجر",`${mer?.name||"—"} — تحميل بدون opId`);
           toast("تم الحذف");
         }
         return;
       } else if(src==="direct"){
+        if(!confirm("هل تريد حذف هذه الحركة؟")) return;
         await deleteDoc(doc(db,"merchantTransactions",btn.dataset.id));
         writeAuditLog("حذف","حركة تاجر",`${mer?.name||"—"} — مباشرة`);
         toast("تم الحذف");
         return;
       } else {
-        // نحذف جميع السجلات التي تحمل نفس finId (السجل الأصل + المرآة الكاش إن وُجدت)
+        if(!confirm("هل تريد حذف هذه الحركة المالية؟")) return;
         const tx = finTxs.find(t=>t.id===btn.dataset.id);
         const finId = tx?.finId;
         const siblings = finId
