@@ -785,20 +785,26 @@
   var loader = document.getElementById("page-loader");
   var app    = document.getElementById("app");
   if (!loader || !app) return;
+  var _done = false;
   function hideLdr(){
+    if (_done) return;
+    _done = true;
+    // تأكد من أن الصفحة قابلة للنقر فوراً
+    if (app.style.visibility === "hidden") app.style.visibility = "visible";
     loader.classList.add("pl-hide");
-    setTimeout(function(){ loader.style.display = "none"; }, 380);
+    setTimeout(function(){
+      // إزالة كاملة من تدفق الصفحة حتى لا يعيق النقر
+      loader.style.display    = "none";
+      loader.style.visibility = "hidden";
+      loader.style.pointerEvents = "none";
+    }, 360);
   }
   var obs = new MutationObserver(function(){
-    if (app.style.visibility !== "hidden"){
-      hideLdr(); obs.disconnect();
-    }
+    if (app.style.visibility !== "hidden"){ hideLdr(); obs.disconnect(); }
   });
   obs.observe(app, { attributes: true, attributeFilter: ["style"] });
-  setTimeout(function(){
-    obs.disconnect(); hideLdr();
-    if (app.style.visibility === "hidden") app.style.visibility = "visible";
-  }, 3500);
+  // الحد الأقصى 1 ثانية
+  setTimeout(function(){ obs.disconnect(); hideLdr(); }, 1000);
 })();
 </script>
 
