@@ -1278,8 +1278,8 @@ function showInvoice(data) {
     const _balSection = _rawBef !== undefined ? `
       <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:12px;direction:rtl;font-size:13px;line-height:2">
         <div style="font-weight:700">المبلغ المستحق على التاجر — ${esc(data.merchantName||"")}</div>
-        <div>الحساب قبل الطلب الحالي: <strong>${_fmtBal(_rawBef)}</strong></div>
-        <div>الحساب بعد الطلب الحالي: <strong>${_fmtBal(_rawAft ?? 0)}</strong></div>
+        <div>الحساب قبل الطلب: <strong>${_fmtBal(_rawBef)}</strong></div>
+        <div>الحساب بعد الطلب: <strong>${_fmtBal(_rawAft ?? 0)}</strong></div>
       </div>` : "";
     bodyHtml = `
       <table class="inv-doc-table">
