@@ -1142,23 +1142,10 @@ function openTxDetail(t){
   // قسم الرصيد قبل/بعد (خاص بالتجار)
   let balSectionHtml = "";
   if(balCtx){
-    const bCls = balCtx.before <= 0 ? "debt" : "credit";
-    const aCls = balCtx.after  <= 0 ? "debt" : "credit";
-    const bNote = balCtx.before <= 0 ? "مديونية" : "دائن";
-    const aNote = balCtx.after  <= 0 ? "مديونية" : "دائن";
     balSectionHtml = `
-      <div class="doc-bal-section" style="margin:16px 0 8px">
-        <div class="doc-bal-cell before">
-          <div class="doc-bal-cell-lbl">الرصيد السابق</div>
-          <div class="doc-bal-cell-val ${bCls}">${fNAbs(balCtx.before)}</div>
-          <div class="doc-bal-cell-note">${bNote}</div>
-        </div>
-        <div class="doc-bal-arrow">→</div>
-        <div class="doc-bal-cell after">
-          <div class="doc-bal-cell-lbl">الرصيد الحالي</div>
-          <div class="doc-bal-cell-val ${aCls}">${fNAbs(balCtx.after)}</div>
-          <div class="doc-bal-cell-note">${aNote}</div>
-        </div>
+      <div style="margin:12px 0 4px;font-size:13px;direction:rtl">
+        <div>الرصيد السابق: ${fNAbs(balCtx.before)}</div>
+        <div>الرصيد بعد الحركة الحالية: ${fNAbs(balCtx.after)}</div>
       </div>`;
   }
 
