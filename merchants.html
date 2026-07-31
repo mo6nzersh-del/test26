@@ -169,35 +169,6 @@
     .doc-bal-cell-val.credit{color:#1a6b3a}
     .doc-bal-cell-note{font-size:8.5px;color:#777;margin-top:2px}
     .doc-bal-arrow{display:flex;align-items:center;justify-content:center;padding:0 10px;font-size:13px;font-weight:900;color:#888;background:#f0f4fa;flex-shrink:0;border-inline:1px solid #c8d4e8}
-    /* ══ فاتورة احترافية — نفس تصميم صفحة المنتجات ══ */
-    .inv-doc{font-family:Cairo,sans-serif;direction:rtl;max-width:680px;margin:0 auto;color:#111;background:#fff}
-    .inv-doc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:14px;margin-bottom:14px;border-bottom:2px solid #222}
-    .inv-doc-logo-wrap{display:flex;flex-direction:column;gap:3px}
-    .inv-doc-brand{font-size:16px;font-weight:800;color:#111;margin-top:6px}
-    .inv-doc-brand-sub{font-size:11px;color:#777;margin-top:1px}
-    .inv-doc-nums{text-align:left;min-width:170px}
-    .inv-doc-num-row{display:flex;justify-content:space-between;gap:16px;font-size:12.5px;margin-bottom:5px}
-    .inv-doc-num-row span{color:#777}
-    .inv-doc-num-row strong{color:#111;font-weight:700}
-    .inv-doc-bill{margin-bottom:16px}
-    .inv-doc-bill-label{font-size:10.5px;font-weight:700;color:#777;letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px}
-    .inv-doc-bill-name{font-size:14.5px;font-weight:800;color:#111;margin-bottom:2px}
-    .inv-doc-bill-detail{font-size:12px;color:#555;line-height:1.65}
-    .inv-doc-type-badge{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;padding:3px 10px;margin-bottom:12px;border:1px solid}
-    .inv-doc-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:0}
-    .inv-doc-table th{text-align:right;padding:9px 12px;background:#f5f5f5;font-size:12px;font-weight:700;color:#444;border:1px solid #ddd}
-    .inv-doc-table td{padding:9px 12px;border:1px solid #e0e0e0;vertical-align:middle;color:#111}
-    .inv-doc-table tr:nth-child(even) td{background:#fafafa}
-    .inv-doc-total-wrap{border:1px solid #ddd;border-top:none;display:flex;justify-content:flex-end}
-    .inv-doc-total-table{border-collapse:collapse;min-width:260px}
-    .inv-doc-total-table td{padding:8px 12px;border-top:1px solid #e0e0e0;font-size:13px}
-    .inv-doc-total-table tr:last-child td{background:#f5f5f5;font-weight:800;font-size:14px;color:#111;border-top:2px solid #222}
-    .inv-doc-total-table .tot-lbl{color:#555}
-    .inv-doc-total-table .tot-val{text-align:left;font-family:monospace}
-    .inv-doc-note{margin-top:14px;padding:10px 14px;background:#f9f9f9;border-right:3px solid #bbb;font-size:12px;color:#555;border-radius:0 4px 4px 0}
-    .inv-doc-footer{margin-top:26px;padding-top:12px;border-top:1px dashed #ccc;display:flex;align-items:flex-end;justify-content:space-between;font-size:11px;color:#aaa}
-    .inv-doc-sig-line{width:110px;border-top:1px solid #666;margin-bottom:4px}
-    .inv-doc-sig{text-align:center;font-size:11px;color:#777}
     .mer-print-only{display:none!important}
     @media print{
       .mer-print-only{display:block!important} .mer-screen-only{display:none!important}
@@ -208,10 +179,9 @@
       html{background:#fff!important;background-image:none!important}
       body{background:#fff!important;background-image:none!important;margin:0!important;padding:0!important}
       /* ── طباعة تفاصيل الحركة (tx-print-mode) ── */
-      body.tx-print-mode #tx-detail-modal{display:block!important;position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;background:#fff!important;padding:14mm 16mm!important;overflow:visible!important;z-index:9999!important;box-sizing:border-box!important}
+      body.tx-print-mode #tx-detail-modal{display:block!important;position:fixed!important;top:0;left:0;right:0;bottom:0;background:#fff!important;padding:0!important;overflow:visible!important}
       body.tx-print-mode #tx-detail-modal .modal-box{box-shadow:none!important;border:none!important;max-height:none!important;overflow:visible!important;padding:0!important;border-radius:0!important;background:#fff!important;width:100%!important;max-width:100%!important}
       body.tx-print-mode #tx-detail-modal .modal-box-header,body.tx-print-mode #tx-detail-print-footer{display:none!important}
-      body.tx-print-mode #tx-detail-content{display:block!important}
       /* ── طباعة كشف الحساب (stmt-print-mode) ── */
       body.stmt-print-mode #stmt-preview-modal{display:block!important;position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;background:#fff!important;padding:10mm 12mm!important;overflow:visible!important;z-index:9999!important}
       body.stmt-print-mode #stmt-preview-modal .stmt-modal-box{box-shadow:none!important;border:none!important;max-height:none!important;overflow:visible!important;padding:0!important;border-radius:0!important;background:#fff!important;width:100%!important;max-width:100%!important;display:block!important}
@@ -1091,106 +1061,67 @@ function openTxDetail(t){
   else if(t.type==="merchant") partyRow=`<div class="dm-item"><div class="dm-label">التاجر</div><div class="dm-val">${eS(party)}</div></div>`;
   else if(t.partyName) partyRow=`<div class="dm-item"><div class="dm-label">الجهة</div><div class="dm-val">${eS(party)}</div></div>`;
   if(t.sourcePage) partyRow+=`<div class="dm-item"><div class="dm-label">أُضيفت من صفحة</div><div class="dm-val">${eS(t.sourcePage)}</div></div>`;
-  // ── بناء فاتورة المعاينة/الطباعة بتصميم صفحة المنتجات ──
-  const printNow = new Date().toLocaleString("ar-EG-u-nu-latn", {year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});
-
-  // تحديد نوع وتصنيف الحركة
-  let typeLabel, typeBadgeStyle;
-  if(t.type==="merchant"){
-    typeLabel = t.dir==="out" ? "سند قبض — تسديد مستحقات" : "سند صرف — زيادة دين على التاجر";
-    typeBadgeStyle = t.dir==="out"
-      ? "background:#f0faf4;color:#1a6b3a;border-color:#86efac"
-      : "background:#fff5f5;color:#b91c1c;border-color:#fca5a5";
-  } else {
-    typeLabel = cfg.label + (t.dir==="in" ? " — إيداع" : " — سحب");
-    typeBadgeStyle = "background:#fdf4e3;color:#92400e;border-color:#fcd34d";
-  }
-
-  // قسم بيانات الطرف
-  const billToHtml = `<div class="inv-doc-bill">
-    <div class="inv-doc-bill-label">${t.type==="merchant"?"التاجر":t.type==="advance"?"الموظف":"الجهة"}</div>
-    <div class="inv-doc-bill-name">${eS(party)}</div>
-    <div class="inv-doc-bill-detail">${
-      t.type==="merchant"
-        ? (t.dir==="out" ? "تسديد مستحقات — يُقلّص الدين المستحق" : "زيادة دين على التاجر")
-        : (t.dir==="in" ? "إيداع في الصندوق" : "سحب من الصندوق")
-    }${t.sourcePage ? " · أُضيفت من صفحة " + eS(t.sourcePage) : ""}</div>
+  const printDate=new Date().toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"long",day:"numeric"});
+  document.getElementById("tx-detail-content").innerHTML=`
+  <div class="mer-screen-only">
+    <div class="tx-detail-header">
+      <div class="tx-detail-mark">${icon}</div>
+      <div class="tx-detail-company">Ahmed And hamdy</div>
+      <div class="tx-detail-subtitle">نظام المحاسبة الداخلي</div>
+      <div class="tx-detail-id-row"><span class="tx-detail-id-badge">${eS(t.finId||"—")}</span></div>
+      <div style="margin-top:8px"><span class="type-badge ${cfg.badge}">${eS(cfg.label)}</span></div>
+    </div>
+    <div class="tx-detail-meta-grid">
+      <div class="dm-item"><div class="dm-label">التاريخ</div><div class="dm-val">${eS(fD(t.date))}</div></div>
+      <div class="dm-item"><div class="dm-label">${t.type==="merchant"?"نوع الحركة":"الاتجاه"}</div><div class="dm-val ${dirClass}">${t.type==="merchant"?(t.dir==="out"?"← تسديد مستحقات":"← زيادة دين"):(t.dir==="in"?"← إيداع":"← سحب")}</div></div>
+      ${partyRow}
+    </div>
+    <div class="tx-detail-amount-row">
+      <div class="tx-detail-amount-label">المبلغ الإجمالي</div>
+      <div class="tx-detail-amount-val ${t.dir==="in"?"in":"out"}">${fN(t.amount)}</div>
+    </div>
+    ${screenBalHTML}
+    ${t.description?`<div class="tx-detail-desc-box"><strong>📝 الوصف / الملاحظات</strong>${eS(t.description)}</div>`:""}
+    <div class="tx-detail-footer"><span>رقم الحركة: ${eS(t.finId||"—")}</span><span>نظام Ahmed And hamdy © ${new Date().getFullYear()}</span></div>
+  </div>
+  <div class="doc-page mer-print-only" style="display:none">
+    <div class="doc-watermark">Ahmed And hamdy</div>
+    <div class="doc-outer-border"><div class="doc-inner-border">
+      <div class="doc-top-bar">
+        <div class="doc-top-bar-left"><div class="doc-doc-title">سند ${t.dir==="in"?"قبض":"صرف"}</div></div>
+        <div class="doc-top-bar-center"><div class="doc-company-name">Ahmed And hamdy</div><div class="doc-company-sub">نظام المحاسبة الداخلي</div></div>
+        <div><div class="doc-serial-badge">${eS(t.finId||"—")}</div></div>
+      </div>
+      <div class="doc-body">
+        <div class="doc-type-ribbon">
+          <span class="doc-type-icon">${icon}</span>
+          <span class="doc-type-name">${eS(cfg.label)}</span>
+          <span class="doc-type-dir ${t.dir==="in"?"in":"out"}">${t.dir==="in"?"إيداع في الصندوق ↓":"سحب من الصندوق ↑"}</span>
+        </div>
+        <table class="doc-info-table">${infoRows.join("")}</table>
+        <div class="doc-amount-section">
+          <div>
+            <div class="doc-amount-label">إجمالي مبلغ ${t.dir==="in"?"الإيداع":"السحب"}</div>
+            <div class="doc-amount-words">فقط ${amountInWords(t.amount)} لا غير</div>
+          </div>
+          <div class="doc-amount-number ${t.dir==="in"?"in":"out"}">${fN(t.amount)}</div>
+        </div>
+        ${printBalHTML}
+        ${t.description?`<div class="doc-desc-section"><div class="doc-desc-lbl">البيان / الملاحظات</div><div class="doc-desc-val">${eS(t.description)}</div></div>`:""}
+        <div class="doc-sigs">
+          <div class="doc-sig-box"><div class="sig-label">المحاسب / المُعِدّ</div><div class="sig-line"></div><div class="sig-name">الاسم والتوقيع</div></div>
+          <div class="doc-sig-box"><div class="sig-label">${t.type==="merchant"?"التاجر / المستلم":t.type==="advance"?"الموظف / المستلم":"الجهة المعنية"}</div><div class="sig-line"></div><div class="sig-name">${eS(party!=="—"?party:"الاسم والتوقيع")}</div></div>
+          <div class="doc-sig-box"><div class="sig-label">المدير المفوّض</div><div class="sig-line"></div><div class="sig-name">الاسم والتوقيع والختم</div></div>
+        </div>
+      </div>
+      <div class="doc-bottom-bar">
+        <div>تاريخ الطباعة: ${printDate}</div>
+        <div class="doc-bottom-barcode">${eS(t.finId||"—")} — Ahmed And hamdy</div>
+        <div>هذا المستند صادر من نظام المحاسبة الداخلي</div>
+      </div>
+    </div></div>
   </div>`;
-
-  // جسم الفاتورة — جدول المبلغ والبيانات
-  const descRow = t.description ? `<tr><td>البيان / الملاحظات</td><td style="text-align:left">${eS(t.description)}</td></tr>` : "";
-  const bodyHtml = `
-    <table class="inv-doc-table">
-      <thead><tr><th>البيان</th><th style="text-align:left">القيمة</th></tr></thead>
-      <tbody>
-        <tr>
-          <td>المبلغ</td>
-          <td style="text-align:left;font-weight:800;font-family:monospace;font-size:14px;color:${t.dir==="out"?"#1a6b3a":"#b91c1c"}">${fN(t.amount)}</td>
-        </tr>
-        <tr>
-          <td>نوع الحركة</td>
-          <td style="text-align:left">${eS(t.type==="merchant"?(t.dir==="out"?"تسديد مستحقات":"زيادة دين على التاجر"):cfg.label)}</td>
-        </tr>
-        ${t.type==="advance"&&t.deductMonth ? `<tr><td>شهر الخصم</td><td style="text-align:left">${eS(fM(t.deductMonth))}</td></tr>` : ""}
-        ${descRow}
-      </tbody>
-    </table>
-    <div class="inv-doc-total-wrap"><table class="inv-doc-total-table">
-      <tr><td class="tot-lbl"><strong>الإجمالي</strong></td><td class="tot-val" style="color:${t.dir==="out"?"#1a6b3a":"#b91c1c"}"><strong>${fN(t.amount)}</strong></td></tr>
-    </table></div>`;
-
-  // قسم الرصيد قبل/بعد (خاص بالتجار)
-  const fBal=n=>n<0?"-"+fNAbs(n):fNAbs(n);
-  let balSectionHtml = "";
-  if(balCtx){
-    balSectionHtml = `
-      <div style="margin:12px 0 4px;font-size:13px;direction:rtl">
-        <div>💰 المبلغ المستحق على هذا التاجر</div>
-        <div>الرصيد السابق المستحقات: ${fBal(balCtx.before)}</div>
-        <div>الرصيد بعد الحركة الحالية: ${fBal(balCtx.after)}</div>
-      </div>`;
-  }
-
-  document.getElementById("tx-detail-content").innerHTML = `
-    <div class="inv-doc">
-      <!-- رأس الفاتورة -->
-      <div class="inv-doc-head">
-        <div class="inv-doc-logo-wrap">
-          <div class="inv-doc-brand">Ahmed And Hamdy</div>
-          <div class="inv-doc-brand-sub">نظام المحاسبة الداخلي</div>
-        </div>
-        <div class="inv-doc-nums">
-          <div class="inv-doc-num-row"><span>رقم الحركة</span><strong>${eS(t.finId||"—")}</strong></div>
-          <div class="inv-doc-num-row"><span>التاريخ</span><strong>${eS(fD(t.date))}</strong></div>
-          <div class="inv-doc-num-row"><span>نوع العملية</span><strong>${eS(cfg.label)}</strong></div>
-        </div>
-      </div>
-
-      <!-- نوع الحركة — بادج -->
-      <span class="inv-doc-type-badge" style="${typeBadgeStyle}">${eS(typeLabel)}</span>
-
-      <!-- بيانات الطرف -->
-      ${billToHtml}
-
-      <!-- جدول المبلغ -->
-      ${bodyHtml}
-
-      <!-- الرصيد السابق والحالي -->
-      ${balSectionHtml}
-
-      <!-- تذييل -->
-      <div class="inv-doc-footer">
-        <div>طُبع بتاريخ: ${printNow}</div>
-        <div class="inv-doc-sig">
-          <div class="inv-doc-sig-line"></div>
-          <div>التوقيع والختم</div>
-        </div>
-      </div>
-    </div>`;
-
-  // إخفاء صندوق الرصيد القديم المنفصل (أصبح مدمجاً في الفاتورة)
-  const balBox = document.getElementById("tx-detail-balance-box");
-  if(balBox){ balBox.style.display="none"; balBox.innerHTML=""; }
+  renderTxBalanceBox(t);
   document.getElementById("tx-detail-modal").classList.add("open");
 }
 
@@ -1459,10 +1390,7 @@ function fillHeader(){
 /* ── helpers: parse date string or Firestore timestamp to seconds ── */
 function _toSecs(t){
   if(t.date) return new Date(t.date+"T00:00:00").getTime()/1000;
-  // Firestore Timestamp: .toMillis() أو .seconds
-  if(t.createdAt?.toMillis) return t.createdAt.toMillis()/1000;
-  if(t.createdAt?.seconds)  return t.createdAt.seconds;
-  return 0;
+  return t.createdAt?.seconds??0;
 }
 function _toDateStr(t){
   if(t.date) return t.date; // YYYY-MM-DD
@@ -2085,7 +2013,7 @@ function printStatement(){
   setTimeout(function(){
     obs.disconnect(); hideLdr();
     if (app.style.visibility === "hidden") app.style.visibility = "visible";
-  }, 1000);
+  }, 3500);
 })();
 </script>
 
