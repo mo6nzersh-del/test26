@@ -856,6 +856,9 @@ function initLoadingForm() {
         type: "loading",
         summary: `بيع: ${wh?.name ?? ""} → ${merchant?.name ?? ""}`,
         details: `${lineDetails.length} صنف — إجمالي: ${fmtMoney(totalAmount)}`,
+        amount: totalAmount,
+        merchantId,
+        merchantName: merchant?.name ?? "",
         opId, note,
         performedBy: currentUser?.email ?? "—",
         createdAt: serverTimestamp(),
@@ -1056,11 +1059,31 @@ function loadActivityLog() {
       if (mobList) mobList.innerHTML = '<div class="empty-state">لا توجد عمليات مسجلة بعد</div>';
       return;
     }
+
+    // ── جمع السجلات (مرتبة أحدث أولاً من الاستعلام) ──
+    const allDocs = snap.docs.map(ds => ({ _id: ds.id, ...ds.data() }));
+
+    // ── حساب رصيد المستحقات التراكمي من الأقدم للأحدث ──
+    // (نعكس للحصول على الأقدم أولاً، ثم نحسب، ثم نعرض من الأحدث)
+    const fmtBal = n => {
+      const abs = new Intl.NumberFormat("ar-EG-u-nu-latn", { maximumFractionDigits: 2 }).format(Math.abs(n || 0)) + " ج.م";
+      return n < 0 ? "-" + abs : abs;
+    };
+    let runBal = 0;
+    const balMap = {};
+    [...allDocs].reverse().forEach(d => {
+      if (d.type === "loading" && d.amount) {
+        const before = runBal;
+        runBal -= d.amount; // كل بيع يزيد الدين على التاجر (الرصيد يصبح أكثر سلبية)
+        balMap[d._id] = { before, after: runBal };
+      }
+    });
+
     tbody.innerHTML = "";
     if (mobList) mobList.innerHTML = "";
-    let rowNum = snap.size;
-    snap.forEach(docSnap => {
-      const d = docSnap.data();
+    let rowNum = allDocs.length;
+
+    allDocs.forEach(d => {
       const badgeMap = { production: ["log-prod","إنتاج"], transfer: ["log-transfer","تحويل"], loading: ["log-load","بيع"] };
       const [cls, label] = badgeMap[d.type] ?? ["log-prod", d.type];
       const seqLabel = `OP-${String(rowNum).padStart(5, "0")}`;
@@ -1074,6 +1097,15 @@ function loadActivityLog() {
       const opAttrs = canPreview
         ? `data-op-id="${esc(d.opId)}" data-op-kind="${kind}" data-seq-label="${esc(seqLabel)}" title="عرض تفاصيل الحركة كما تمت"`
         : "";
+
+      // ── خلية الرصيد قبل/بعد (للبيع فقط) ──
+      const bal = balMap[d._id];
+      const balHtml = bal
+        ? `<div style="font-size:12px;direction:rtl;line-height:1.7">
+            <div>قبل: ${fmtBal(bal.before)}</div>
+            <div>بعد: ${fmtBal(bal.after)}</div>
+           </div>`
+        : `<span style="color:var(--muted);font-size:12px">—</span>`;
 
       // ── صف الجدول (سطح المكتب) ──
       const tr = document.createElement("tr");
@@ -1089,6 +1121,7 @@ function loadActivityLog() {
           <div style="font-weight:700;font-size:13px">${esc(d.summary || "")}</div>
           <div style="font-size:12px;color:var(--muted)">${esc(d.details || "")}${d.note ? ` — <em>${esc(d.note)}</em>` : ""}</div>
         </td>
+        <td>${balHtml}</td>
         <td style="font-size:12.5px">${esc(resolveAlias(d.performedBy) || "—")}</td>
         <td class="log-time">${d.createdAt ? fmtDateTime(d.createdAt) : "—"}</td>`;
       tbody.appendChild(tr);
@@ -1098,6 +1131,11 @@ function loadActivityLog() {
         const card = document.createElement("div");
         card.className = "mob-log-card";
         const detailsTxt = [d.details, d.note ? `(${d.note})` : ""].filter(Boolean).join(" — ");
+        const balCardHtml = bal
+          ? `<div style="font-size:12px;color:var(--muted);margin-top:4px;direction:rtl">
+               المستحق قبل: ${fmtBal(bal.before)} &nbsp;|&nbsp; بعد: ${fmtBal(bal.after)}
+             </div>`
+          : "";
         card.innerHTML = `
           <div class="mlc-head">
             <span class="mlc-serial${canPreview ? " clickable log-serial-link" : ""}" ${opAttrs}>${seqLabel}</span>
@@ -1106,6 +1144,7 @@ function loadActivityLog() {
           <div>
             <div class="mlc-summary">${esc(d.summary || "")}</div>
             ${detailsTxt ? `<div class="mlc-details">${esc(detailsTxt)}</div>` : ""}
+            ${balCardHtml}
           </div>
           <div class="mlc-foot">
             <span class="mlc-by">👤 ${esc(resolveAlias(d.performedBy) || "—")}</span>
@@ -1120,7 +1159,7 @@ function loadActivityLog() {
     });
     bindPreview(tbody);
     if (mobList) bindPreview(mobList);
-  }, err => { console.error(err); tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state">حدث خطأ</div></td></tr>'; });
+  }, err => { console.error(err); tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state">حدث خطأ</div></td></tr>'; });
 }
 
 /* ══════════════════════════════════════
