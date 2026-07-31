@@ -1018,9 +1018,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, collection, doc,
-  addDoc, updateDoc, deleteDoc, getDoc, setDoc,
+  addDoc, updateDoc, deleteDoc, getDoc, setDoc, getDocs,
   query, where, orderBy, onSnapshot, writeBatch,
-  serverTimestamp, runTransaction, deleteField
+  serverTimestamp, runTransaction, deleteField, increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const app = initializeApp({
@@ -1928,12 +1928,25 @@ async function deleteWhOp(col, id) {
       if (rec) {
         const missing = [];
         const batch = writeBatch(db);
-        (rec.lines || []).forEach(l => { const p = products.find(x => x.id === l.productId); if (!p) missing.push(l.productName || l.productId); else batch.update(doc(db, "products", p.id), { quantity: (p.quantity || 0) + (l.qty || 0), updatedAt: serverTimestamp() }); });
+        // إعادة الكميات إلى المخزن
+        (rec.lines || []).forEach(l => { const p = products.find(x => x.id === l.productId); if (!p) missing.push(l.productName || l.productId); else batch.update(doc(db, "products", p.id), { quantity: increment(l.qty || 0), updatedAt: serverTimestamp() }); });
         if (missing.length) { toast("تعذّر إرجاع الكميات — الأصناف التالية غير موجودة: " + missing.join("، ") + ". لم يتم حذف الحركة.", true); return; }
+        // حذف سجل التحميل
         batch.delete(doc(db, "loadingOperations", id));
+        // حذف حركة التاجر المرتبطة تلقائياً إن وُجدت
+        if (rec.opId) {
+          const merSnap = await getDocs(query(collection(db, "merchantTransactions"), where("opId", "==", rec.opId)));
+          merSnap.forEach(md => batch.delete(doc(db, "merchantTransactions", md.id)));
+          // إذا كانت مدفوعة، نُلغي حركات الدفع التلقائية المرتبطة
+          const isPaidRec = merSnap.docs.some(md => md.data().paid);
+          if (isPaidRec) {
+            const finSnap = await getDocs(query(collection(db, "finance_transactions"), where("opId", "==", rec.opId)));
+            finSnap.forEach(fd => { if (fd.data()._active !== false) batch.update(doc(db, "finance_transactions", fd.id), { _active: false, deletedAt: serverTimestamp() }); });
+          }
+        }
         await batch.commit();
-        toast("تم الحذف — الكميات أُرجعت. ملاحظة: راجع حساب التاجر إذا كانت هناك حركة مالية مرتبطة (opId: " + (rec.opId || "—") + ")", true);
-        logDlAction("حذف حركة تحميل", `opId: ${rec.opId || "—"}`);
+        toast("تم الحذف وأُعيدت الكميات إلى المخزن ✅");
+        logDlAction("حذف حركة تحميل", `opId: ${rec.opId || "—"} — تمت إعادة الكميات وحذف حركة التاجر`);
         return;
       }
       await deleteDoc(doc(db, "loadingOperations", id));
