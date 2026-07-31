@@ -661,7 +661,7 @@ import {
   getFirestore, collection, doc,
   addDoc, updateDoc, deleteDoc, getDocs,
   query, where, orderBy, onSnapshot,
-  serverTimestamp, runTransaction, writeBatch
+  serverTimestamp, runTransaction, writeBatch, increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const app = initializeApp({
@@ -1552,14 +1552,60 @@ function renderUnifiedList(){
     const src=btn.dataset.src;
     const isLoading=src==="loading";
     const msg=isLoading
-      ?"حذف هذه المعاملة لن يُعيد الكميات للمخزن. هل تريد المتابعة؟"
+      ?"هل تريد حذف هذه المعاملة وإعادة الكميات المسحوبة إلى المخزن تلقائياً؟"
       :"هل تريد حذف هذه الحركة؟";
     if(!confirm(msg)) return;
     try{
       const mer=merchants.find(m=>m.id===currentMerId);
-      if(src==="direct"||src==="loading"){
+      if(src==="loading"){
+        // جلب بيانات الحركة للحصول على opId
+        const rawTx=merchantTxs.find(t=>t.id===btn.dataset.id);
+        const opId=rawTx?.opId;
+        if(opId){
+          // جلب سجل التحميل من loadingOperations
+          const snap=await getDocs(query(collection(db,"loadingOperations"),where("opId","==",opId)));
+          if(!snap.empty){
+            const loadOp=snap.docs[0].data();
+            const loadOpId=snap.docs[0].id;
+            const batch=writeBatch(db);
+            // إعادة الكميات إلى المخزن
+            (loadOp.lines||[]).forEach(line=>{
+              if(line.productId && (line.qty||0)>0)
+                batch.update(doc(db,"products",line.productId),{quantity:increment(line.qty),updatedAt:serverTimestamp()});
+            });
+            // حذف سجل التحميل
+            batch.delete(doc(db,"loadingOperations",loadOpId));
+            // حذف حركة التاجر
+            batch.delete(doc(db,"merchantTransactions",btn.dataset.id));
+            // إذا كانت مدفوعة فوراً، نُلغي حركات الدفع التلقائية المرتبطة
+            if(rawTx?.paid){
+              const finSnap=await getDocs(query(collection(db,"finance_transactions"),where("opId","==",opId)));
+              finSnap.forEach(fd=>{
+                if(fd.data()._active!==false)
+                  batch.update(doc(db,"finance_transactions",fd.id),{_active:false,deletedAt:serverTimestamp()});
+              });
+            }
+            await batch.commit();
+            writeAuditLog("حذف","حركة تحميل تاجر",`${mer?.name||"—"} — opId:${opId} — تمت إعادة الكميات`);
+            toast("تم الحذف وأُعيدت الكميات إلى المخزن ✅");
+          } else {
+            // لم يُعثر على سجل التحميل — نحذف الحركة المالية فقط
+            await deleteDoc(doc(db,"merchantTransactions",btn.dataset.id));
+            writeAuditLog("حذف","حركة تاجر",`${mer?.name||"—"} — تحميل (لم يُعثر على سجل التحميل)`);
+            toast("تم الحذف (لم يُعثر على سجل التحميل الأصلي — الكميات لم تُعَد)");
+          }
+        } else {
+          // لا يوجد opId — نحذف الحركة فقط
+          await deleteDoc(doc(db,"merchantTransactions",btn.dataset.id));
+          writeAuditLog("حذف","حركة تاجر",`${mer?.name||"—"} — تحميل بدون opId`);
+          toast("تم الحذف");
+        }
+        return;
+      } else if(src==="direct"){
         await deleteDoc(doc(db,"merchantTransactions",btn.dataset.id));
-        writeAuditLog("حذف","حركة تاجر",`${mer?.name||"—"} — ${src==="loading"?"تحميل":"مباشرة"}`);
+        writeAuditLog("حذف","حركة تاجر",`${mer?.name||"—"} — مباشرة`);
+        toast("تم الحذف");
+        return;
       } else {
         // نحذف جميع السجلات التي تحمل نفس finId (السجل الأصل + المرآة الكاش إن وُجدت)
         const tx = finTxs.find(t=>t.id===btn.dataset.id);
@@ -1571,8 +1617,8 @@ function renderUnifiedList(){
         siblings.forEach(s=>batch.update(doc(db,"finance_transactions",s.id),{_active:false,deletedAt:serverTimestamp()}));
         await batch.commit();
         writeAuditLog("حذف","حركة مالية للتاجر",`${mer?.name||"—"} — ${tx?.finId||"—"} (${siblings.length} سجل)`);
+        toast("تم الحذف");
       }
-      toast("تم الحذف");
     }catch(err){ console.error(err); toast("خطأ",true); }
   }));
 }
