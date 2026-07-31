@@ -1136,12 +1136,12 @@ function loadActivityLog() {
       // رصيد التاجر للعرض في صف السجل
       const _rBalBef = d.merchantBalanceBefore ?? (d.opId && loadingRecordsCache[d.opId]?.merchantBalanceBefore);
       const _rBalAft = d.merchantBalanceAfter  ?? (d.opId && loadingRecordsCache[d.opId]?.merchantBalanceAfter);
-      const _rOwedBef = _rBalBef !== undefined ? Math.max(0, -_rBalBef) : undefined;
-      const _rOwedAft = _rBalAft !== undefined ? Math.max(0, -_rBalAft) : undefined;
-      const _balCell = (d.type === "loading" && _rOwedBef !== undefined)
+      // رقم سالب = دين (يُعرض مع -)، موجب = رصيد دائن (بدون علامة)
+      const _fmtR = v => v < 0 ? `-${fmtMoney(-v)}` : fmtMoney(v);
+      const _balCell = (d.type === "loading" && _rBalBef !== undefined)
         ? `<div style="font-size:12px;line-height:1.8;direction:rtl">
-             <div>قبل: <strong>${fmtMoney(_rOwedBef)}</strong></div>
-             <div>بعد: <strong>${fmtMoney(_rOwedAft)}</strong></div>
+             <div>قبل: <strong>${_fmtR(_rBalBef)}</strong></div>
+             <div>بعد: <strong>${_fmtR(_rBalAft ?? 0)}</strong></div>
            </div>`
         : `<span style="color:var(--muted);font-size:11px">—</span>`;
       tr.innerHTML = `
@@ -1166,10 +1166,10 @@ function loadActivityLog() {
         const card = document.createElement("div");
         card.className = "mob-log-card";
         const detailsTxt = [d.details, d.note ? `(${d.note})` : ""].filter(Boolean).join(" — ");
-        const _mobBal = (d.type === "loading" && _rOwedBef !== undefined)
+        const _mobBal = (d.type === "loading" && _rBalBef !== undefined)
           ? `<div style="font-size:12px;margin-top:5px;line-height:1.8;direction:rtl">
-               <div>المستحق قبل: <strong>${fmtMoney(_rOwedBef)}</strong></div>
-               <div>المستحق بعد: <strong>${fmtMoney(_rOwedAft)}</strong></div>
+               <div>المستحق قبل: <strong>${_fmtR(_rBalBef)}</strong></div>
+               <div>المستحق بعد: <strong>${_fmtR(_rBalAft ?? 0)}</strong></div>
              </div>`
           : "";
         card.innerHTML = `
@@ -1271,13 +1271,15 @@ function showInvoice(data) {
       <div class="inv-doc-bill-name">${esc(data.merchantName||"")}</div>
       <div class="inv-doc-bill-detail">من مخزن: ${esc(data.warehouseName||"")}</div>
     </div>`;
-    const _owedBefore = data.merchantBalanceBefore !== undefined ? Math.max(0, -(data.merchantBalanceBefore)) : undefined;
-    const _owedAfter  = data.merchantBalanceBefore !== undefined ? Math.max(0, -(data.merchantBalanceAfter || 0)) : undefined;
-    const _balSection = _owedBefore !== undefined ? `
+    // _fmtBal: رقم موجب = رصيد دائن (بدون علامة) | رقم سالب = دين على التاجر (مع -)
+    const _fmtBal = v => v < 0 ? `-${fmtMoney(-v)}` : fmtMoney(v);
+    const _rawBef = data.merchantBalanceBefore;
+    const _rawAft = data.merchantBalanceAfter;
+    const _balSection = _rawBef !== undefined ? `
       <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:12px;direction:rtl;font-size:13px;line-height:2">
         <div style="font-weight:700">المبلغ المستحق على التاجر — ${esc(data.merchantName||"")}</div>
-        <div>المبلغ المستحق قبل هذه العملية: <strong>${fmtMoney(_owedBefore)}</strong></div>
-        <div>المبلغ المستحق بعد هذه العملية: <strong>${fmtMoney(_owedAfter)}</strong></div>
+        <div>الحساب قبل الطلب الحالي: <strong>${_fmtBal(_rawBef)}</strong></div>
+        <div>الحساب بعد الطلب الحالي: <strong>${_fmtBal(_rawAft ?? 0)}</strong></div>
       </div>` : "";
     bodyHtml = `
       <table class="inv-doc-table">
