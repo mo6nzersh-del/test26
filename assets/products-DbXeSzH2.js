@@ -929,6 +929,7 @@ function initLoadingForm() {
         warehouseName: wh?.name ?? "",
         merchantName: merchant?.name ?? "",
         lines: lineDetails, totalAmount, note,
+        merchantBalanceBefore, merchantBalanceAfter,
         performedBy: currentUser?.email ?? "—",
       });
       form.reset();
@@ -1138,10 +1139,9 @@ function loadActivityLog() {
       const _rOwedBef = _rBalBef !== undefined ? Math.max(0, -_rBalBef) : undefined;
       const _rOwedAft = _rBalAft !== undefined ? Math.max(0, -_rBalAft) : undefined;
       const _balCell = (d.type === "loading" && _rOwedBef !== undefined)
-        ? `<div style="display:flex;align-items:center;gap:5px;font-size:12px;white-space:nowrap;direction:rtl">
-             <span style="color:${_rOwedBef > 0 ? "#b3432f" : "#1a6b3a"};font-weight:700">${fmtMoney(_rOwedBef)}</span>
-             <span style="color:var(--muted);font-size:10px">←</span>
-             <span style="color:${_rOwedAft > 0 ? "#b3432f" : "#1a6b3a"};font-weight:700">${fmtMoney(_rOwedAft)}</span>
+        ? `<div style="font-size:12px;line-height:1.8;direction:rtl">
+             <div>قبل: <strong>${fmtMoney(_rOwedBef)}</strong></div>
+             <div>بعد: <strong>${fmtMoney(_rOwedAft)}</strong></div>
            </div>`
         : `<span style="color:var(--muted);font-size:11px">—</span>`;
       tr.innerHTML = `
@@ -1167,11 +1167,9 @@ function loadActivityLog() {
         card.className = "mob-log-card";
         const detailsTxt = [d.details, d.note ? `(${d.note})` : ""].filter(Boolean).join(" — ");
         const _mobBal = (d.type === "loading" && _rOwedBef !== undefined)
-          ? `<div style="display:flex;align-items:center;gap:6px;font-size:12px;margin-top:5px;padding:5px 8px;background:#fff7ed;border-radius:7px;border:1px solid #fed7aa">
-               <span style="color:#9a3412;font-weight:700;font-size:10.5px">المستحق:</span>
-               <span style="color:${_rOwedBef>0?"#b3432f":"#1a6b3a"};font-weight:700">${fmtMoney(_rOwedBef)}</span>
-               <span style="color:var(--muted);font-size:10px">←</span>
-               <span style="color:${_rOwedAft>0?"#b3432f":"#1a6b3a"};font-weight:700">${fmtMoney(_rOwedAft)}</span>
+          ? `<div style="font-size:12px;margin-top:5px;line-height:1.8;direction:rtl">
+               <div>المستحق قبل: <strong>${fmtMoney(_rOwedBef)}</strong></div>
+               <div>المستحق بعد: <strong>${fmtMoney(_rOwedAft)}</strong></div>
              </div>`
           : "";
         card.innerHTML = `
@@ -1276,19 +1274,10 @@ function showInvoice(data) {
     const _owedBefore = data.merchantBalanceBefore !== undefined ? Math.max(0, -(data.merchantBalanceBefore)) : undefined;
     const _owedAfter  = data.merchantBalanceBefore !== undefined ? Math.max(0, -(data.merchantBalanceAfter || 0)) : undefined;
     const _balSection = _owedBefore !== undefined ? `
-      <div style="margin-top:14px;background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:13px 16px;direction:rtl">
-        <div style="font-weight:800;font-size:12.5px;color:#9a3412;margin-bottom:10px">💰 المبلغ المستحق على التاجر — ${esc(data.merchantName||"")}</div>
-        <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
-          <div style="text-align:center">
-            <div style="font-size:9.5px;color:#78350f;font-weight:700;letter-spacing:.5px;margin-bottom:4px">قبل هذه الحركة</div>
-            <div style="font-size:18px;font-weight:900;font-family:monospace;color:${_owedBefore > 0 ? "#b3432f" : "#1a6b3a"}">${fmtMoney(_owedBefore)}</div>
-          </div>
-          <div style="font-size:20px;color:#aaa;font-weight:900;flex-shrink:0">←</div>
-          <div style="text-align:center">
-            <div style="font-size:9.5px;color:#78350f;font-weight:700;letter-spacing:.5px;margin-bottom:4px">بعد هذه الحركة</div>
-            <div style="font-size:18px;font-weight:900;font-family:monospace;color:${_owedAfter > 0 ? "#b3432f" : "#1a6b3a"}">${fmtMoney(_owedAfter)}</div>
-          </div>
-        </div>
+      <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:12px;direction:rtl;font-size:13px;line-height:2">
+        <div style="font-weight:700">المبلغ المستحق على التاجر — ${esc(data.merchantName||"")}</div>
+        <div>المبلغ المستحق قبل هذه العملية: <strong>${fmtMoney(_owedBefore)}</strong></div>
+        <div>المبلغ المستحق بعد هذه العملية: <strong>${fmtMoney(_owedAfter)}</strong></div>
       </div>` : "";
     bodyHtml = `
       <table class="inv-doc-table">
