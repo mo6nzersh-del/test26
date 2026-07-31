@@ -38,6 +38,9 @@ let lineCounter = 0;
 let loadLines = [];
 let loadLineCounter = 0;
 
+// merchant balance cache: merchantId → running balance (negative = owes money)
+let merchantBalances = {};
+
 // caches of full operation records, keyed by opId, for detail replay
 let movementsRecordsCache = {};
 let loadingRecordsCache = {};
@@ -107,6 +110,7 @@ initPage(user => {
   loadWarehouses();
   loadProducts();
   loadMerchants();
+  listenMerchantBalances();
   loadMovementsRecords();
   loadLoadingRecords();
   loadActivityLog();
@@ -163,6 +167,20 @@ function loadMerchants() {
     merchants = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     refreshMerchantSelects();
   }, err => console.error(err));
+}
+
+/* ── استماع لرصيد كل تاجر (مجموع in - مجموع out من merchantTransactions) ── */
+function listenMerchantBalances() {
+  onSnapshot(query(collection(db, "merchantTransactions")), snap => {
+    merchantBalances = {};
+    snap.forEach(d => {
+      const tx = d.data();
+      const mid = tx.merchantId;
+      if (!mid) return;
+      if (!merchantBalances[mid]) merchantBalances[mid] = 0;
+      merchantBalances[mid] += (tx.type === "in" ? 1 : -1) * (tx.amount || 0);
+    });
+  }, err => console.error("merchantBalances listener error", err));
 }
 
 /* ══════════════════════════════════════
@@ -771,6 +789,10 @@ function initLoadingForm() {
         });
         lineDetails.push({ productId: prod.id, productName: prod.name, qty: line.qty, unit: prod.quantityType || "", price: line.price, total: lineTotal });
       }
+      // رصيد التاجر قبل وبعد هذه الحركة (يُسجَّل لإظهاره في الفاتورة وسجل العمليات)
+      const merchantBalanceBefore = merchantBalances[merchantId] ?? 0;
+      const merchantBalanceAfter = isPaid ? merchantBalanceBefore : merchantBalanceBefore - totalAmount;
+
       // loading operation record
       const opRef = docRef(collection(db, "loadingOperations"));
       batch.set(opRef, {
@@ -778,6 +800,7 @@ function initLoadingForm() {
         warehouseId: whId, warehouseName: wh?.name ?? "",
         merchantId, merchantName: merchant?.name ?? "",
         lines: lineDetails, totalAmount, note,
+        merchantBalanceBefore, merchantBalanceAfter,
         performedBy: currentUser?.email ?? "—",
         createdAt: serverTimestamp(),
       });
@@ -856,10 +879,8 @@ function initLoadingForm() {
         type: "loading",
         summary: `بيع: ${wh?.name ?? ""} → ${merchant?.name ?? ""}`,
         details: `${lineDetails.length} صنف — إجمالي: ${fmtMoney(totalAmount)}`,
-        amount: totalAmount,
-        merchantId,
-        merchantName: merchant?.name ?? "",
         opId, note,
+        merchantBalanceBefore, merchantBalanceAfter,
         performedBy: currentUser?.email ?? "—",
         createdAt: serverTimestamp(),
       });
@@ -1059,31 +1080,11 @@ function loadActivityLog() {
       if (mobList) mobList.innerHTML = '<div class="empty-state">لا توجد عمليات مسجلة بعد</div>';
       return;
     }
-
-    // ── جمع السجلات (مرتبة أحدث أولاً من الاستعلام) ──
-    const allDocs = snap.docs.map(ds => ({ _id: ds.id, ...ds.data() }));
-
-    // ── حساب رصيد المستحقات التراكمي من الأقدم للأحدث ──
-    // (نعكس للحصول على الأقدم أولاً، ثم نحسب، ثم نعرض من الأحدث)
-    const fmtBal = n => {
-      const abs = new Intl.NumberFormat("ar-EG-u-nu-latn", { maximumFractionDigits: 2 }).format(Math.abs(n || 0)) + " ج.م";
-      return n < 0 ? "-" + abs : abs;
-    };
-    let runBal = 0;
-    const balMap = {};
-    [...allDocs].reverse().forEach(d => {
-      if (d.type === "loading" && d.amount) {
-        const before = runBal;
-        runBal -= d.amount; // كل بيع يزيد الدين على التاجر (الرصيد يصبح أكثر سلبية)
-        balMap[d._id] = { before, after: runBal };
-      }
-    });
-
     tbody.innerHTML = "";
     if (mobList) mobList.innerHTML = "";
-    let rowNum = allDocs.length;
-
-    allDocs.forEach(d => {
+    let rowNum = snap.size;
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
       const badgeMap = { production: ["log-prod","إنتاج"], transfer: ["log-transfer","تحويل"], loading: ["log-load","بيع"] };
       const [cls, label] = badgeMap[d.type] ?? ["log-prod", d.type];
       const seqLabel = `OP-${String(rowNum).padStart(5, "0")}`;
@@ -1098,17 +1099,20 @@ function loadActivityLog() {
         ? `data-op-id="${esc(d.opId)}" data-op-kind="${kind}" data-seq-label="${esc(seqLabel)}" title="عرض تفاصيل الحركة كما تمت"`
         : "";
 
-      // ── خلية الرصيد قبل/بعد (للبيع فقط) ──
-      const bal = balMap[d._id];
-      const balHtml = bal
-        ? `<div style="font-size:12px;direction:rtl;line-height:1.7">
-            <div>قبل: ${fmtBal(bal.before)}</div>
-            <div>بعد: ${fmtBal(bal.after)}</div>
-           </div>`
-        : `<span style="color:var(--muted);font-size:12px">—</span>`;
-
       // ── صف الجدول (سطح المكتب) ──
       const tr = document.createElement("tr");
+      // بيانات الرصيد للعرض في السجل
+      const rowBalBefore = d.merchantBalanceBefore ?? (d.opId && loadingRecordsCache[d.opId]?.merchantBalanceBefore);
+      const rowBalAfter  = d.merchantBalanceAfter  ?? (d.opId && loadingRecordsCache[d.opId]?.merchantBalanceAfter);
+      const rowOwedBefore = rowBalBefore !== undefined ? Math.max(0, -rowBalBefore) : undefined;
+      const rowOwedAfter  = rowBalAfter  !== undefined ? Math.max(0, -rowBalAfter)  : undefined;
+      const balCellHtml = (d.type === "loading" && rowOwedBefore !== undefined)
+        ? `<div style="display:flex;align-items:center;gap:5px;font-size:12px;white-space:nowrap;direction:rtl">
+             <span style="color:${rowOwedBefore>0?"#b3432f":"#1a6b3a"};font-weight:700">${fmtMoney(rowOwedBefore)}</span>
+             <span style="color:var(--muted);font-size:10px">←</span>
+             <span style="color:${rowOwedAfter>0?"#b3432f":"#1a6b3a"};font-weight:700">${fmtMoney(rowOwedAfter)}</span>
+           </div>`
+        : `<span style="color:var(--muted);font-size:11px">—</span>`;
       tr.innerHTML = `
         <td>
           <span class="${canPreview ? "log-serial-link" : ""}" ${opAttrs}
@@ -1121,7 +1125,7 @@ function loadActivityLog() {
           <div style="font-weight:700;font-size:13px">${esc(d.summary || "")}</div>
           <div style="font-size:12px;color:var(--muted)">${esc(d.details || "")}${d.note ? ` — <em>${esc(d.note)}</em>` : ""}</div>
         </td>
-        <td>${balHtml}</td>
+        <td>${balCellHtml}</td>
         <td style="font-size:12.5px">${esc(resolveAlias(d.performedBy) || "—")}</td>
         <td class="log-time">${d.createdAt ? fmtDateTime(d.createdAt) : "—"}</td>`;
       tbody.appendChild(tr);
@@ -1131,9 +1135,12 @@ function loadActivityLog() {
         const card = document.createElement("div");
         card.className = "mob-log-card";
         const detailsTxt = [d.details, d.note ? `(${d.note})` : ""].filter(Boolean).join(" — ");
-        const balCardHtml = bal
-          ? `<div style="font-size:12px;color:var(--muted);margin-top:4px;direction:rtl">
-               المستحق قبل: ${fmtBal(bal.before)} &nbsp;|&nbsp; بعد: ${fmtBal(bal.after)}
+        const mobBalHtml = (d.type === "loading" && rowOwedBefore !== undefined)
+          ? `<div style="display:flex;align-items:center;gap:6px;font-size:12px;margin-top:5px;padding:5px 8px;background:#fff7ed;border-radius:7px;border:1px solid #fed7aa">
+               <span style="color:#9a3412;font-weight:700;font-size:10.5px">المستحق:</span>
+               <span style="color:${rowOwedBefore>0?"#b3432f":"#1a6b3a"};font-weight:700">${fmtMoney(rowOwedBefore)}</span>
+               <span style="color:var(--muted);font-size:10px">←</span>
+               <span style="color:${rowOwedAfter>0?"#b3432f":"#1a6b3a"};font-weight:700">${fmtMoney(rowOwedAfter)}</span>
              </div>`
           : "";
         card.innerHTML = `
@@ -1144,7 +1151,7 @@ function loadActivityLog() {
           <div>
             <div class="mlc-summary">${esc(d.summary || "")}</div>
             ${detailsTxt ? `<div class="mlc-details">${esc(detailsTxt)}</div>` : ""}
-            ${balCardHtml}
+            ${mobBalHtml}
           </div>
           <div class="mlc-foot">
             <span class="mlc-by">👤 ${esc(resolveAlias(d.performedBy) || "—")}</span>
@@ -1159,7 +1166,7 @@ function loadActivityLog() {
     });
     bindPreview(tbody);
     if (mobList) bindPreview(mobList);
-  }, err => { console.error(err); tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state">حدث خطأ</div></td></tr>'; });
+  }, err => { console.error(err); tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state">حدث خطأ</div></td></tr>'; });
 }
 
 /* ══════════════════════════════════════
@@ -1235,6 +1242,23 @@ function showInvoice(data) {
       <div class="inv-doc-bill-name">${esc(data.merchantName||"")}</div>
       <div class="inv-doc-bill-detail">من مخزن: ${esc(data.warehouseName||"")}</div>
     </div>`;
+    const owedBefore = Math.max(0, -(data.merchantBalanceBefore ?? 0));
+    const owedAfter  = Math.max(0, -(data.merchantBalanceAfter  ?? 0));
+    const balSection = data.merchantBalanceBefore !== undefined ? `
+      <div style="margin-top:14px;background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:13px 16px;direction:rtl">
+        <div style="font-weight:800;font-size:12.5px;color:#9a3412;margin-bottom:10px">💰 المبلغ المستحق على التاجر — ${esc(data.merchantName||"")}</div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <div style="text-align:center">
+            <div style="font-size:9.5px;color:#78350f;font-weight:700;letter-spacing:.5px;margin-bottom:3px">قبل هذه الحركة</div>
+            <div style="font-size:17px;font-weight:900;font-family:monospace;color:${owedBefore > 0 ? '#b3432f' : '#1a6b3a'}">${fmtMoney(owedBefore)}</div>
+          </div>
+          <div style="font-size:18px;color:#aaa;font-weight:900">←</div>
+          <div style="text-align:center">
+            <div style="font-size:9.5px;color:#78350f;font-weight:700;letter-spacing:.5px;margin-bottom:3px">بعد هذه الحركة</div>
+            <div style="font-size:17px;font-weight:900;font-family:monospace;color:${owedAfter > 0 ? '#b3432f' : '#1a6b3a'}">${fmtMoney(owedAfter)}</div>
+          </div>
+        </div>
+      </div>` : "";
     bodyHtml = `
       <table class="inv-doc-table">
         <thead><tr><th>الصنف</th><th style="text-align:center">الكمية</th><th style="text-align:center">سعر الوحدة</th><th style="text-align:center">الإجمالي</th></tr></thead>
@@ -1243,7 +1267,8 @@ function showInvoice(data) {
       <div class="inv-doc-total-wrap"><table class="inv-doc-total-table">
         <tr><td class="tot-lbl">المجموع الفرعي</td><td class="tot-val">${fmtMoney(data.totalAmount)}</td></tr>
         <tr><td class="tot-lbl"><strong>الإجمالي</strong></td><td class="tot-val"><strong>${fmtMoney(data.totalAmount)}</strong></td></tr>
-      </table></div>`;
+      </table></div>
+      ${balSection}`;
   }
 
   const printNow = new Date().toLocaleString("ar-EG", { year:"numeric", month:"long", day:"numeric", hour:"2-digit", minute:"2-digit" });
