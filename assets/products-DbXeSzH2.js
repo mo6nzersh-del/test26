@@ -38,8 +38,12 @@ let lineCounter = 0;
 let loadLines = [];
 let loadLineCounter = 0;
 
-// merchant balance cache: merchantId → running balance (negative = owes money)
-let merchantBalances = {};
+// merchant balance caches (يطابق منطق calcBalance في صفحة التجار)
+// merchantTransactions : type="out" → دين | type="in" → دفع
+// finance_transactions  : type="merchant", dir="in" → دفع | dir="out" → دين
+let _merchantTxBal  = {};   // من merchantTransactions
+let _merchantFinBal = {};   // من finance_transactions (type=merchant, _active≠false)
+let merchantBalances = {};  // المجموع = _merchantTxBal + _merchantFinBal
 
 // caches of full operation records, keyed by opId, for detail replay
 let movementsRecordsCache = {};
@@ -169,18 +173,44 @@ function loadMerchants() {
   }, err => console.error(err));
 }
 
-/* ── استماع لرصيد كل تاجر (مجموع in - مجموع out من merchantTransactions) ── */
+/* ══ رصيد كل تاجر — يطابق calcBalance في صفحة التجار ══
+   المصدر 1: merchantTransactions  (type=out → دين، type=in → دفع)
+   المصدر 2: finance_transactions  (type=merchant، _active≠false، dir=in → دفع، dir=out → دين)
+   الرصيد السالب = التاجر مدين | الموجب = للتاجر رصيد دائن                    */
+function _rebuildMerchantBalances() {
+  const allMids = new Set([...Object.keys(_merchantTxBal), ...Object.keys(_merchantFinBal)]);
+  merchantBalances = {};
+  allMids.forEach(mid => {
+    merchantBalances[mid] = (_merchantTxBal[mid] || 0) + (_merchantFinBal[mid] || 0);
+  });
+}
+
 function listenMerchantBalances() {
+  // المصدر 1
   onSnapshot(query(collection(db, "merchantTransactions")), snap => {
-    merchantBalances = {};
+    _merchantTxBal = {};
     snap.forEach(d => {
       const tx = d.data();
-      const mid = tx.merchantId;
-      if (!mid) return;
-      if (!merchantBalances[mid]) merchantBalances[mid] = 0;
-      merchantBalances[mid] += (tx.type === "in" ? 1 : -1) * (tx.amount || 0);
+      const mid = tx.merchantId; if (!mid) return;
+      if (!_merchantTxBal[mid]) _merchantTxBal[mid] = 0;
+      _merchantTxBal[mid] += (tx.type === "in" ? 1 : -1) * (tx.amount || 0);
     });
-  }, err => console.error("merchantBalances listener error", err));
+    _rebuildMerchantBalances();
+  }, err => console.error("merchantTxBal listener:", err));
+
+  // المصدر 2
+  onSnapshot(collection(db, "finance_transactions"), snap => {
+    _merchantFinBal = {};
+    snap.docs
+      .filter(d => d.data()._active !== false && d.data().type === "merchant")
+      .forEach(d => {
+        const tx = d.data();
+        const mid = tx.merchantId; if (!mid) return;
+        if (!_merchantFinBal[mid]) _merchantFinBal[mid] = 0;
+        _merchantFinBal[mid] += (tx.dir === "in" ? 1 : -1) * (tx.amount || 0);
+      });
+    _rebuildMerchantBalances();
+  }, err => console.error("merchantFinBal listener:", err));
 }
 
 /* ══════════════════════════════════════
@@ -791,6 +821,7 @@ function initLoadingForm() {
       }
       // رصيد التاجر قبل وبعد هذه الحركة (يُسجَّل لإظهاره في الفاتورة وسجل العمليات)
       const merchantBalanceBefore = merchantBalances[merchantId] ?? 0;
+      // رصيد ما بعد = قبل − المبلغ (إلا إذا كان مدفوعاً نقداً، فتُلغى الحركتان بعضهما)
       const merchantBalanceAfter = isPaid ? merchantBalanceBefore : merchantBalanceBefore - totalAmount;
 
       // loading operation record
@@ -1101,16 +1132,16 @@ function loadActivityLog() {
 
       // ── صف الجدول (سطح المكتب) ──
       const tr = document.createElement("tr");
-      // بيانات الرصيد للعرض في السجل
-      const rowBalBefore = d.merchantBalanceBefore ?? (d.opId && loadingRecordsCache[d.opId]?.merchantBalanceBefore);
-      const rowBalAfter  = d.merchantBalanceAfter  ?? (d.opId && loadingRecordsCache[d.opId]?.merchantBalanceAfter);
-      const rowOwedBefore = rowBalBefore !== undefined ? Math.max(0, -rowBalBefore) : undefined;
-      const rowOwedAfter  = rowBalAfter  !== undefined ? Math.max(0, -rowBalAfter)  : undefined;
-      const balCellHtml = (d.type === "loading" && rowOwedBefore !== undefined)
+      // رصيد التاجر للعرض في صف السجل
+      const _rBalBef = d.merchantBalanceBefore ?? (d.opId && loadingRecordsCache[d.opId]?.merchantBalanceBefore);
+      const _rBalAft = d.merchantBalanceAfter  ?? (d.opId && loadingRecordsCache[d.opId]?.merchantBalanceAfter);
+      const _rOwedBef = _rBalBef !== undefined ? Math.max(0, -_rBalBef) : undefined;
+      const _rOwedAft = _rBalAft !== undefined ? Math.max(0, -_rBalAft) : undefined;
+      const _balCell = (d.type === "loading" && _rOwedBef !== undefined)
         ? `<div style="display:flex;align-items:center;gap:5px;font-size:12px;white-space:nowrap;direction:rtl">
-             <span style="color:${rowOwedBefore>0?"#b3432f":"#1a6b3a"};font-weight:700">${fmtMoney(rowOwedBefore)}</span>
+             <span style="color:${_rOwedBef > 0 ? "#b3432f" : "#1a6b3a"};font-weight:700">${fmtMoney(_rOwedBef)}</span>
              <span style="color:var(--muted);font-size:10px">←</span>
-             <span style="color:${rowOwedAfter>0?"#b3432f":"#1a6b3a"};font-weight:700">${fmtMoney(rowOwedAfter)}</span>
+             <span style="color:${_rOwedAft > 0 ? "#b3432f" : "#1a6b3a"};font-weight:700">${fmtMoney(_rOwedAft)}</span>
            </div>`
         : `<span style="color:var(--muted);font-size:11px">—</span>`;
       tr.innerHTML = `
@@ -1125,7 +1156,7 @@ function loadActivityLog() {
           <div style="font-weight:700;font-size:13px">${esc(d.summary || "")}</div>
           <div style="font-size:12px;color:var(--muted)">${esc(d.details || "")}${d.note ? ` — <em>${esc(d.note)}</em>` : ""}</div>
         </td>
-        <td>${balCellHtml}</td>
+        <td>${_balCell}</td>
         <td style="font-size:12.5px">${esc(resolveAlias(d.performedBy) || "—")}</td>
         <td class="log-time">${d.createdAt ? fmtDateTime(d.createdAt) : "—"}</td>`;
       tbody.appendChild(tr);
@@ -1135,12 +1166,12 @@ function loadActivityLog() {
         const card = document.createElement("div");
         card.className = "mob-log-card";
         const detailsTxt = [d.details, d.note ? `(${d.note})` : ""].filter(Boolean).join(" — ");
-        const mobBalHtml = (d.type === "loading" && rowOwedBefore !== undefined)
+        const _mobBal = (d.type === "loading" && _rOwedBef !== undefined)
           ? `<div style="display:flex;align-items:center;gap:6px;font-size:12px;margin-top:5px;padding:5px 8px;background:#fff7ed;border-radius:7px;border:1px solid #fed7aa">
                <span style="color:#9a3412;font-weight:700;font-size:10.5px">المستحق:</span>
-               <span style="color:${rowOwedBefore>0?"#b3432f":"#1a6b3a"};font-weight:700">${fmtMoney(rowOwedBefore)}</span>
+               <span style="color:${_rOwedBef>0?"#b3432f":"#1a6b3a"};font-weight:700">${fmtMoney(_rOwedBef)}</span>
                <span style="color:var(--muted);font-size:10px">←</span>
-               <span style="color:${rowOwedAfter>0?"#b3432f":"#1a6b3a"};font-weight:700">${fmtMoney(rowOwedAfter)}</span>
+               <span style="color:${_rOwedAft>0?"#b3432f":"#1a6b3a"};font-weight:700">${fmtMoney(_rOwedAft)}</span>
              </div>`
           : "";
         card.innerHTML = `
@@ -1151,7 +1182,7 @@ function loadActivityLog() {
           <div>
             <div class="mlc-summary">${esc(d.summary || "")}</div>
             ${detailsTxt ? `<div class="mlc-details">${esc(detailsTxt)}</div>` : ""}
-            ${mobBalHtml}
+            ${_mobBal}
           </div>
           <div class="mlc-foot">
             <span class="mlc-by">👤 ${esc(resolveAlias(d.performedBy) || "—")}</span>
@@ -1242,20 +1273,20 @@ function showInvoice(data) {
       <div class="inv-doc-bill-name">${esc(data.merchantName||"")}</div>
       <div class="inv-doc-bill-detail">من مخزن: ${esc(data.warehouseName||"")}</div>
     </div>`;
-    const owedBefore = Math.max(0, -(data.merchantBalanceBefore ?? 0));
-    const owedAfter  = Math.max(0, -(data.merchantBalanceAfter  ?? 0));
-    const balSection = data.merchantBalanceBefore !== undefined ? `
+    const _owedBefore = data.merchantBalanceBefore !== undefined ? Math.max(0, -(data.merchantBalanceBefore)) : undefined;
+    const _owedAfter  = data.merchantBalanceBefore !== undefined ? Math.max(0, -(data.merchantBalanceAfter || 0)) : undefined;
+    const _balSection = _owedBefore !== undefined ? `
       <div style="margin-top:14px;background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:13px 16px;direction:rtl">
         <div style="font-weight:800;font-size:12.5px;color:#9a3412;margin-bottom:10px">💰 المبلغ المستحق على التاجر — ${esc(data.merchantName||"")}</div>
-        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
           <div style="text-align:center">
-            <div style="font-size:9.5px;color:#78350f;font-weight:700;letter-spacing:.5px;margin-bottom:3px">قبل هذه الحركة</div>
-            <div style="font-size:17px;font-weight:900;font-family:monospace;color:${owedBefore > 0 ? '#b3432f' : '#1a6b3a'}">${fmtMoney(owedBefore)}</div>
+            <div style="font-size:9.5px;color:#78350f;font-weight:700;letter-spacing:.5px;margin-bottom:4px">قبل هذه الحركة</div>
+            <div style="font-size:18px;font-weight:900;font-family:monospace;color:${_owedBefore > 0 ? "#b3432f" : "#1a6b3a"}">${fmtMoney(_owedBefore)}</div>
           </div>
-          <div style="font-size:18px;color:#aaa;font-weight:900">←</div>
+          <div style="font-size:20px;color:#aaa;font-weight:900;flex-shrink:0">←</div>
           <div style="text-align:center">
-            <div style="font-size:9.5px;color:#78350f;font-weight:700;letter-spacing:.5px;margin-bottom:3px">بعد هذه الحركة</div>
-            <div style="font-size:17px;font-weight:900;font-family:monospace;color:${owedAfter > 0 ? '#b3432f' : '#1a6b3a'}">${fmtMoney(owedAfter)}</div>
+            <div style="font-size:9.5px;color:#78350f;font-weight:700;letter-spacing:.5px;margin-bottom:4px">بعد هذه الحركة</div>
+            <div style="font-size:18px;font-weight:900;font-family:monospace;color:${_owedAfter > 0 ? "#b3432f" : "#1a6b3a"}">${fmtMoney(_owedAfter)}</div>
           </div>
         </div>
       </div>` : "";
@@ -1268,7 +1299,7 @@ function showInvoice(data) {
         <tr><td class="tot-lbl">المجموع الفرعي</td><td class="tot-val">${fmtMoney(data.totalAmount)}</td></tr>
         <tr><td class="tot-lbl"><strong>الإجمالي</strong></td><td class="tot-val"><strong>${fmtMoney(data.totalAmount)}</strong></td></tr>
       </table></div>
-      ${balSection}`;
+      ${_balSection}`;
   }
 
   const printNow = new Date().toLocaleString("ar-EG", { year:"numeric", month:"long", day:"numeric", hour:"2-digit", minute:"2-digit" });
