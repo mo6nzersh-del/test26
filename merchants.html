@@ -147,6 +147,28 @@
     .tx-detail-desc-box{background:var(--bg);border-radius:8px;padding:10px 14px;margin-top:14px;font-size:13px;color:var(--muted)}
     .tx-detail-desc-box strong{color:var(--ink);display:block;margin-bottom:4px;font-size:12px}
     .tx-detail-footer{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);border-top:1px dashed var(--border);padding-top:12px;margin-top:16px}
+    /* ── شريط الرصيد قبل/بعد — معاينة الشاشة ── */
+    .tx-bal-strip{display:flex;align-items:stretch;margin-top:14px;border-radius:10px;overflow:hidden;border:1.5px solid var(--border,#e0e0e0);direction:rtl}
+    .tx-bal-item{flex:1;padding:11px 16px;display:flex;flex-direction:column;gap:3px}
+    .tx-bal-item.before{background:#fdf0ee}
+    .tx-bal-item.after{background:#edf7f0}
+    .tx-bal-sep{display:flex;align-items:center;justify-content:center;padding:0 12px;font-size:18px;font-weight:900;color:#aaa;background:#f7f7f7;flex-shrink:0;border-inline:1px solid var(--border,#e0e0e0)}
+    .tx-bal-label{font-size:11px;font-weight:700;color:var(--muted,#666);letter-spacing:.3px}
+    .tx-bal-val{font-size:16px;font-weight:900;font-family:monospace}
+    .tx-bal-val.debt{color:#b3432f}
+    .tx-bal-val.credit{color:#1a6b3a}
+    .tx-bal-note{font-size:10px;color:var(--muted,#888);margin-top:1px}
+    /* ── قسم الرصيد قبل/بعد — السند الطباعي ── */
+    .doc-bal-section{display:flex;align-items:stretch;margin:10px 0 8px;border:1.5px solid #b0c0e0;border-radius:5px;overflow:hidden;direction:rtl}
+    .doc-bal-cell{flex:1;padding:7px 12px;text-align:center}
+    .doc-bal-cell.before{background:#fdf0ee}
+    .doc-bal-cell.after{background:#edf7f0}
+    .doc-bal-cell-lbl{font-size:9px;color:#555;font-weight:700;margin-bottom:3px;letter-spacing:.5px;text-transform:uppercase}
+    .doc-bal-cell-val{font-size:12.5px;font-weight:900;font-family:monospace}
+    .doc-bal-cell-val.debt{color:#b3432f}
+    .doc-bal-cell-val.credit{color:#1a6b3a}
+    .doc-bal-cell-note{font-size:8.5px;color:#777;margin-top:2px}
+    .doc-bal-arrow{display:flex;align-items:center;justify-content:center;padding:0 10px;font-size:13px;font-weight:900;color:#888;background:#f0f4fa;flex-shrink:0;border-inline:1px solid #c8d4e8}
     .mer-print-only{display:none!important}
     @media print{
       .mer-print-only{display:block!important} .mer-screen-only{display:none!important}
@@ -967,8 +989,59 @@ function openTxDetail(t){
   const fD=s=>s?new Date(s+"T00:00:00").toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"long",day:"numeric"}):"—";
   const fM=s=>{ if(!s) return ""; const [y,m]=s.split("-"); return new Date(Number(y),Number(m)-1,1).toLocaleDateString("ar-EG-u-nu-latn",{month:"long",year:"numeric"}); };
   const fN=n=>new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(n||0)+" ج.م";
+  const fNAbs=n=>new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(Math.abs(n||0))+" ج.م";
   const eS=s=>{ const d=document.createElement("div"); d.textContent=s??""; return d.innerHTML; };
   const party=t.type==="advance"?(t.employeeName||"—"):t.type==="merchant"?(t.merchantName||t.partyName||"—"):(t.partyName||"—");
+
+  // ── حساب الرصيد قبل/بعد الحركة (للتجار فقط) ──
+  const balCtx=t.type==="merchant"?calcMerchantBalanceBeforeAfter(t):null;
+
+  // ── شريط الرصيد للشاشة ──
+  let screenBalHTML="";
+  if(balCtx){
+    const bCls=balCtx.before<=0?"debt":"credit";
+    const aCls=balCtx.after <=0?"debt":"credit";
+    const bNote=balCtx.before<=0?"⚠️ مديونية":"✅ دائن";
+    const aNote=balCtx.after <=0?"⚠️ مديونية":"✅ دائن";
+    screenBalHTML=`
+      <div class="tx-bal-strip">
+        <div class="tx-bal-item before">
+          <div class="tx-bal-label">📊 الرصيد قبل الحركة</div>
+          <div class="tx-bal-val ${bCls}">${fNAbs(balCtx.before)}</div>
+          <div class="tx-bal-note">${bNote}</div>
+        </div>
+        <div class="tx-bal-sep">→</div>
+        <div class="tx-bal-item after">
+          <div class="tx-bal-label">📊 الرصيد بعد الحركة</div>
+          <div class="tx-bal-val ${aCls}">${fNAbs(balCtx.after)}</div>
+          <div class="tx-bal-note">${aNote}</div>
+        </div>
+      </div>`;
+  }
+
+  // ── قسم الرصيد للطباعة ──
+  let printBalHTML="";
+  if(balCtx){
+    const bCls=balCtx.before<=0?"debt":"credit";
+    const aCls=balCtx.after <=0?"debt":"credit";
+    const bNote=balCtx.before<=0?"مديونية":"دائن";
+    const aNote=balCtx.after <=0?"مديونية":"دائن";
+    printBalHTML=`
+      <div class="doc-bal-section">
+        <div class="doc-bal-cell before">
+          <div class="doc-bal-cell-lbl">الرصيد قبل الحركة</div>
+          <div class="doc-bal-cell-val ${bCls}">${fNAbs(balCtx.before)}</div>
+          <div class="doc-bal-cell-note">${bNote}</div>
+        </div>
+        <div class="doc-bal-arrow">→</div>
+        <div class="doc-bal-cell after">
+          <div class="doc-bal-cell-lbl">الرصيد بعد الحركة</div>
+          <div class="doc-bal-cell-val ${aCls}">${fNAbs(balCtx.after)}</div>
+          <div class="doc-bal-cell-note">${aNote}</div>
+        </div>
+      </div>`;
+  }
+
   const infoRows=[
     `<tr><td class="lbl">رقم الحركة</td><td class="val" style="font-family:monospace;font-weight:800;font-size:13px">${eS(t.finId||"—")}</td></tr>`,
     `<tr><td class="lbl">التاريخ</td><td class="val">${eS(fD(t.date))}</td></tr>`,
@@ -979,7 +1052,9 @@ function openTxDetail(t){
     t.type==="merchant"?`<tr><td class="lbl">التاجر</td><td class="val">${eS(party)}</td></tr>`:
     t.type==="advance"?`<tr><td class="lbl">الموظف</td><td class="val">${eS(party)}</td></tr>${t.deductMonth?`<tr><td class="lbl">شهر الخصم</td><td class="val">${eS(fM(t.deductMonth))}</td></tr>`:""}`:
     t.partyName?`<tr><td class="lbl">الجهة</td><td class="val">${eS(party)}</td></tr>`:"",
-    t.sourcePage?`<tr><td class="lbl">أُضيفت من صفحة</td><td class="val">${eS(t.sourcePage)}</td></tr>`:""
+    t.sourcePage?`<tr><td class="lbl">أُضيفت من صفحة</td><td class="val">${eS(t.sourcePage)}</td></tr>`:"",
+    balCtx?`<tr><td class="lbl">الرصيد قبل الحركة</td><td class="val" style="font-family:monospace;font-weight:800;color:${balCtx.before<=0?"#b3432f":"#1a6b3a"}">${fNAbs(balCtx.before)} (${balCtx.before<=0?"مديونية":"دائن"})</td></tr>`:"",
+    balCtx?`<tr><td class="lbl">الرصيد بعد الحركة</td><td class="val" style="font-family:monospace;font-weight:800;color:${balCtx.after<=0?"#b3432f":"#1a6b3a"}">${fNAbs(balCtx.after)} (${balCtx.after<=0?"مديونية":"دائن"})</td></tr>`:""
   ];
   let partyRow="";
   if(t.type==="advance") partyRow=`<div class="dm-item"><div class="dm-label">الموظف</div><div class="dm-val">${eS(party)}</div></div>${t.deductMonth?`<div class="dm-item"><div class="dm-label">شهر الخصم</div><div class="dm-val">${eS(fM(t.deductMonth))}</div></div>`:""}`;
@@ -1005,6 +1080,7 @@ function openTxDetail(t){
       <div class="tx-detail-amount-label">المبلغ الإجمالي</div>
       <div class="tx-detail-amount-val ${t.dir==="in"?"in":"out"}">${fN(t.amount)}</div>
     </div>
+    ${screenBalHTML}
     ${t.description?`<div class="tx-detail-desc-box"><strong>📝 الوصف / الملاحظات</strong>${eS(t.description)}</div>`:""}
     <div class="tx-detail-footer"><span>رقم الحركة: ${eS(t.finId||"—")}</span><span>نظام Ahmed And hamdy © ${new Date().getFullYear()}</span></div>
   </div>
@@ -1030,6 +1106,7 @@ function openTxDetail(t){
           </div>
           <div class="doc-amount-number ${t.dir==="in"?"in":"out"}">${fN(t.amount)}</div>
         </div>
+        ${printBalHTML}
         ${t.description?`<div class="doc-desc-section"><div class="doc-desc-lbl">البيان / الملاحظات</div><div class="doc-desc-val">${eS(t.description)}</div></div>`:""}
         <div class="doc-sigs">
           <div class="doc-sig-box"><div class="sig-label">المحاسب / المُعِدّ</div><div class="sig-line"></div><div class="sig-name">الاسم والتوقيع</div></div>
