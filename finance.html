@@ -1670,19 +1670,16 @@ function updateStats(){
   else if(cashPeriodMode==="day"&&cashPeriodDay)
     periodTx=cashTx.filter(t=>(t.date??"")==cashPeriodDay);
 
-  /* الرصيد التراكمي حتى نهاية الفترة المحددة */
-  let cumTx=cashTx;
-  if(cashPeriodMode==="month"&&cashPeriodYM)
-    cumTx=cashTx.filter(t=>(t.date??"").slice(0,7)<=cashPeriodYM);
-  else if(cashPeriodMode==="day"&&cashPeriodDay)
-    cumTx=cashTx.filter(t=>(t.date??"")<=cashPeriodDay);
-
   const totalIn =periodTx.filter(t=>t.dir==="in") .reduce((s,t)=>s+(t.amount||0),0);
   const totalOut=periodTx.filter(t=>t.dir==="out").reduce((s,t)=>s+(t.amount||0),0);
   const totalAdv=periodTx.filter(t=>t.type==="advance").reduce((s,t)=>s+(t.amount||0),0);
-  const cumIn   =cumTx.filter(t=>t.dir==="in") .reduce((s,t)=>s+(t.amount||0),0);
-  const cumOut  =cumTx.filter(t=>t.dir==="out").reduce((s,t)=>s+(t.amount||0),0);
-  const balance =openingBal+cumIn-cumOut;
+
+  /* الرصيد:
+     - الكل  → رصيد افتتاحي + كل الإيداعات - كل المسحوبات (رقم كامل تراكمي)
+     - شهري/يومي → يبدأ من صفر: إيداعات الفترة فقط - مسحوبات الفترة فقط */
+  const balance = cashPeriodMode==="all"
+    ? openingBal + totalIn - totalOut
+    : totalIn - totalOut;
 
   /* نصوص العنوان الفرعي حسب الوضع */
   let balSub,inSub,outSub,advSub;
@@ -2328,7 +2325,7 @@ async function saveTx(e){
   setTimeout(function(){
     obs.disconnect(); hideLdr();
     if (app.style.visibility === "hidden") app.style.visibility = "visible";
-  }, 700);
+  }, 3500);
 })();
 </script>
 
