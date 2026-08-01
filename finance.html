@@ -581,7 +581,7 @@
         <h2>المالية والصندوق</h2>
         <p>إدارة حركات الصندوق — سلف، مسحوبات، إيداعات، دفعات التجار</p>
       </div>
-      <button type="button" class="btn outline" onclick="window.print()">🖨️ طباعة التقرير</button>
+      <button type="button" class="btn outline" onclick="printCashReport()">🖨️ طباعة التقرير</button>
     </div>
 
     <!-- ═══════ صندوق الكاش ═══════ -->
@@ -1142,6 +1142,185 @@ function syncPeriod(){
 
   updateStats();
   renderTable();
+}
+
+/* ══════════════════════════════════════
+   طباعة تقرير صندوق الكاش
+══════════════════════════════════════ */
+function printCashReport(){
+  /* ── بيانات الفترة ── */
+  const cashTx=allTx.filter(t=>t.type!=="merchant");
+  let periodTx=cashTx;
+  if(cashPeriodMode==="month"&&cashPeriodYM)
+    periodTx=cashTx.filter(t=>(t.date??"").startsWith(cashPeriodYM));
+  else if(cashPeriodMode==="day"&&cashPeriodDay)
+    periodTx=cashTx.filter(t=>(t.date??"")==cashPeriodDay);
+
+  /* تطبيق فلاتر الجدول الإضافية */
+  const typeF  =document.getElementById("filter-type").value;
+  const dirF   =document.getElementById("filter-dir").value;
+  const monthF =document.getElementById("filter-month").value;
+  const searchF=document.getElementById("filter-search").value.toLowerCase().trim();
+  let rows=periodTx.filter(t=>{
+    if(cashPeriodMode==="all"&&monthF&&!(t.date??"").startsWith(monthF)) return false;
+    if(typeF&&t.type!==typeF) return false;
+    if(dirF&&t.dir!==dirF)   return false;
+    if(searchF){
+      const hay=[t.finId,t.partyName,t.merchantName,t.employeeName,t.description].join(" ").toLowerCase();
+      if(!hay.includes(searchF)) return false;
+    }
+    return true;
+  });
+
+  /* ── إحصاءات ── */
+  const totalIn =periodTx.filter(t=>t.dir==="in") .reduce((s,t)=>s+(t.amount||0),0);
+  const totalOut=periodTx.filter(t=>t.dir==="out").reduce((s,t)=>s+(t.amount||0),0);
+  const totalAdv=periodTx.filter(t=>t.type==="advance").reduce((s,t)=>s+(t.amount||0),0);
+  const balance =cashPeriodMode==="all"?openingBal+totalIn-totalOut:totalIn-totalOut;
+
+  /* ── تسميات ── */
+  const typeMap={deposit:"إيداع",withdrawal:"سحب",advance:"سلفة",merchant:"تاجر",other:"أخرى"};
+  let periodLabel="جميع الفترات";
+  if(cashPeriodMode==="month") periodLabel=fmtMonth(cashPeriodYM+"-01");
+  else if(cashPeriodMode==="day") periodLabel=fmtDate(cashPeriodDay);
+
+  const printDate=new Date().toLocaleDateString("ar-EG-u-nu-latn",
+    {year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});
+
+  /* دالة تنسيق التاريخ والساعة */
+  const fmtDT=t=>{
+    if(!t.date) return "—";
+    let timePart="";
+    if(t.createdAt?.seconds){
+      const d=new Date(t.createdAt.seconds*1000);
+      timePart=" "+d.toLocaleTimeString("ar-EG-u-nu-latn",{hour:"2-digit",minute:"2-digit"});
+    }
+    const [y,m,day]=t.date.split("-");
+    const dateStr=new Date(Number(y),Number(m)-1,Number(day))
+      .toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"short",day:"numeric"});
+    return dateStr+timePart;
+  };
+
+  /* ── صفوف الجدول ── */
+  const rowsHtml=rows.length
+    ? rows.map((t,i)=>{
+        const party=t.partyName||t.merchantName||t.employeeName||"—";
+        const isIn=t.dir==="in";
+        return `<tr class="${i%2===1?"alt":""}">
+          <td class="cen">${esc(t.finId||"—")}</td>
+          <td class="cen nowrap">${fmtDT(t)}</td>
+          <td class="cen">${typeMap[t.type]||t.type||"—"}</td>
+          <td class="cen ${isIn?"din":"dout"}">${isIn?"↓ إيداع":"↑ سحب"}</td>
+          <td class="cen num ${isIn?"din":"dout"}">${fmt(t.amount)}</td>
+          <td class="cen">${esc(party)}</td>
+          <td class="desc">${esc(t.description||"—")}</td>
+        </tr>`;
+      }).join("")
+    : `<tr><td colspan="7" class="empty">لا توجد حركات للفترة المحددة</td></tr>`;
+
+  /* ── HTML التقرير ── */
+  const html=`<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head><meta charset="utf-8"/>
+<title>تقرير صندوق المالية — ${periodLabel}</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+@page{size:A4 landscape;margin:10mm 12mm}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Cairo,sans-serif;direction:rtl;color:#000;background:#fff;font-size:9pt}
+
+/* ── ترويسة ── */
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;
+  border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:8px}
+.hdr-center{text-align:center;flex:1}
+.hdr-company{font-size:13pt;font-weight:800;letter-spacing:.5px}
+.hdr-title{font-size:11pt;font-weight:700;margin-top:2px}
+.hdr-period{font-size:9pt;color:#333;margin-top:2px}
+.hdr-side{font-size:8pt;color:#444;white-space:nowrap;padding-top:2px}
+
+/* ── جدول الإحصاءات ── */
+.stats{width:100%;border-collapse:collapse;margin-bottom:8px}
+.stats th,.stats td{border:1px solid #000;padding:4px 8px;text-align:center}
+.stats th{background:#ddd;font-size:9pt;font-weight:700}
+.stats td{font-size:12pt;font-weight:800}
+.din{color:#155724}
+.dout{color:#721c24}
+
+/* ── تسمية القسم ── */
+.sec-lbl{font-size:9pt;font-weight:700;margin:6px 0 4px;
+  border-right:3px solid #000;padding-right:5px}
+
+/* ── جدول الحركات ── */
+.tx{width:100%;border-collapse:collapse;font-size:8pt}
+.tx th{border:1px solid #000;padding:3px 5px;text-align:center;
+  background:#ddd;font-weight:700;white-space:nowrap}
+.tx td{border:1px solid #bbb;padding:2.5px 5px}
+.tx tr.alt td{background:#f5f5f5}
+.cen{text-align:center}
+.nowrap{white-space:nowrap}
+.num{font-weight:700}
+.desc{text-align:right;font-size:7.5pt}
+.empty{text-align:center;padding:12px;color:#666}
+
+/* ── ذيل ── */
+.ftr{margin-top:8px;border-top:1px solid #000;padding-top:5px;
+  display:flex;justify-content:space-between;font-size:7.5pt;color:#444}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-side">تاريخ الطباعة:<br>${printDate}</div>
+  <div class="hdr-center">
+    <div class="hdr-company">Ahmed And hamdy — نظام المحاسبة الداخلي</div>
+    <div class="hdr-title">تقرير صندوق المالية</div>
+    <div class="hdr-period">الفترة: ${periodLabel}</div>
+  </div>
+  <div class="hdr-side" style="text-align:left">إجمالي الحركات:<br><strong>${rows.length} حركة</strong></div>
+</div>
+
+<table class="stats">
+  <tr>
+    <th>رصيد الصندوق ${cashPeriodMode==="all"?"الكلي":`(${periodLabel})`}</th>
+    <th>إجمالي الإيداعات</th>
+    <th>إجمالي المسحوبات</th>
+    <th>إجمالي السلف</th>
+  </tr>
+  <tr>
+    <td class="${balance>=0?"din":"dout"}">${fmt(balance)}</td>
+    <td class="din">${fmt(totalIn)}</td>
+    <td class="dout">${fmt(totalOut)}</td>
+    <td>${fmt(totalAdv)}</td>
+  </tr>
+</table>
+
+<div class="sec-lbl">سجل الحركات المالية — ${periodLabel} — ${rows.length} حركة</div>
+
+<table class="tx">
+  <thead>
+    <tr>
+      <th>معرف الحركة</th>
+      <th>التاريخ والساعة</th>
+      <th>نوع الحركة</th>
+      <th>الاتجاه</th>
+      <th>المبلغ</th>
+      <th>الجهة</th>
+      <th>الوصف</th>
+    </tr>
+  </thead>
+  <tbody>${rowsHtml}</tbody>
+</table>
+
+<div class="ftr">
+  <span>Ahmed And hamdy — نظام المحاسبة الداخلي</span>
+  <span>هذا التقرير صادر آلياً من النظام — ${printDate}</span>
+</div>
+</body></html>`;
+
+  const w=window.open("","_blank");
+  w.document.write(html);
+  w.document.close();
+  w.focus();
+  setTimeout(()=>{ w.print(); },600);
 }
 
 /* ── تهيئة ── */
