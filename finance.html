@@ -282,24 +282,24 @@
 
     /* ── طباعة احترافية للوثيقة الرسمية ── */
     @media print{
-      /* إخفاء كل شيء عدا نافذة التفاصيل */
-      body > *{display:none!important}
-      #tx-detail-modal{
+      /* إخفاء كل شيء عدا نافذة التفاصيل — تعمل فقط عند إضافة printing-tx-detail للـ body */
+      body.printing-tx-detail > *{display:none!important}
+      body.printing-tx-detail #tx-detail-modal{
         display:block!important;
         position:fixed!important;top:0;left:0;right:0;bottom:0;
         background:#fff!important;padding:0!important;
         overflow:visible!important;
       }
-      #tx-detail-modal .modal-box{
+      body.printing-tx-detail #tx-detail-modal .modal-box{
         box-shadow:none!important;border:none!important;
         max-height:none!important;overflow:visible!important;
         padding:0!important;border-radius:0!important;
         background:#fff!important;width:100%!important;
         max-width:100%!important;
       }
-      #tx-detail-modal .modal-box-header,
-      #tx-detail-print-footer{display:none!important}
-      #tx-detail-content{display:block!important}
+      body.printing-tx-detail #tx-detail-modal .modal-box-header,
+      body.printing-tx-detail #tx-detail-print-footer{display:none!important}
+      body.printing-tx-detail #tx-detail-content{display:block!important}
 
       /* ── تخطيط صفحة الطباعة ── */
       @page{
@@ -1550,7 +1550,13 @@ function setupDetailModal(){
   const modal=document.getElementById("tx-detail-modal");
   document.getElementById("tx-detail-close").addEventListener("click",()=>modal.classList.remove("open"));
   document.getElementById("tx-detail-close2").addEventListener("click",()=>modal.classList.remove("open"));
-  document.getElementById("tx-detail-print-btn").addEventListener("click",()=>window.print());
+  document.getElementById("tx-detail-print-btn").addEventListener("click",()=>{
+    document.body.classList.add("printing-tx-detail");
+    window.print();
+    const cleanup=()=>{ document.body.classList.remove("printing-tx-detail"); };
+    window.addEventListener("afterprint",cleanup,{once:true});
+    setTimeout(cleanup,3000);
+  });
   modal.addEventListener("click",e=>{ if(e.target===modal) modal.classList.remove("open"); });
 }
 
@@ -2552,7 +2558,7 @@ async function saveTx(e){
   setTimeout(function(){
     obs.disconnect(); hideLdr();
     if (app.style.visibility === "hidden") app.style.visibility = "visible";
-  }, 700);
+  }, 3500);
 })();
 </script>
 
