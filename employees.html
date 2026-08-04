@@ -1063,7 +1063,7 @@ function openTxDetail(t){
     `<tr><td class="lbl">الموظف</td><td class="val">${eS(empName)}</td></tr>`,
     t.deductMonth?`<tr><td class="lbl">شهر الخصم</td><td class="val">${eS(fM(t.deductMonth))}</td></tr>`:""
   ];
-  const printDate=new Date().toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"long",day:"numeric"});
+  const printDate=new Date().toLocaleDateString("ar-EG-u-nu-latn",{timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric"});
   document.getElementById("tx-detail-content").innerHTML=`
   <div class="emp-screen-only">
     <div class="tx-detail-header">
@@ -1287,7 +1287,7 @@ function setupAdvModal(){
 function openAdvModal(tx){
   advEditId=null;
   document.getElementById("adv-form").reset();
-  document.getElementById("adv-date").value=new Date().toISOString().slice(0,10);
+  document.getElementById("adv-date").value=new Date().toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
   document.getElementById("adv-del-btn").style.display="none";
 
   if(tx){
@@ -1516,7 +1516,7 @@ function fillIdCard(){
   }
   const issueDateEl=document.getElementById("card-issue-date");
   if(issueDateEl) issueDateEl.textContent=new Date().toLocaleDateString("ar-EG-u-nu-latn",
-    {year:"numeric",month:"long",day:"numeric"});
+    {timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric"});
 }
 
 /* ── التنقل بين الأشهر ── */
@@ -1700,6 +1700,7 @@ function renderEmpFinStats(){
 function fmtTS(ts){
   if(!ts?.toDate) return "—";
   return ts.toDate().toLocaleString(LATN,{
+    timeZone:"Africa/Cairo",
     year:"numeric",month:"short",day:"numeric",
     hour:"2-digit",minute:"2-digit"
   });
