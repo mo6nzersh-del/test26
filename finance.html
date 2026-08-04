@@ -1127,7 +1127,7 @@ function buildDeductMonthSelect(currentVal=""){
 /* ── أدوات ── */
 const esc = t => { const d=document.createElement("div"); d.textContent=t??""; return d.innerHTML; };
 const fmt = n => new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(n||0)+" ج.م";
-const today = () => new Date().toISOString().slice(0,10);
+const today = () => new Date().toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
 const fmtDate = s => s?new Date(s+"T00:00:00").toLocaleDateString("ar-EG-u-nu-latn",
   {year:"numeric",month:"long",day:"numeric"}):"—";
 const fmtMonth = s => {
@@ -1164,7 +1164,7 @@ function initCashPeriod(){
   const curY  = now.getFullYear();
   const curM  = String(now.getMonth()+1).padStart(2,"0");
   cashPeriodYM  = `${curY}-${curM}`;
-  cashPeriodDay = now.toISOString().slice(0,10);
+  cashPeriodDay = now.toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
 
   /* بناء dropdown السنوات (السنة الحالية + 4 سابقة) */
   const yearSel = document.getElementById("cash-year-sel");
@@ -1204,7 +1204,7 @@ function syncPeriod(){
   const y=document.getElementById("cash-year-sel").value;
   const m=document.getElementById("cash-month-sel").value;
   cashPeriodYM  = `${y}-${m}`;
-  cashPeriodDay = document.getElementById("cash-day-sel").value||new Date().toISOString().slice(0,10);
+  cashPeriodDay = document.getElementById("cash-day-sel").value||new Date().toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
 
   /* تحديث badge الفترة */
   const lbl=document.getElementById("cash-period-label");
@@ -1264,7 +1264,7 @@ function buildReportHTML(){
   else if(cashPeriodMode==="day") periodLabel=fmtDate(cashPeriodDay);
 
   const printDate=new Date().toLocaleDateString("ar-EG-u-nu-latn",
-    {year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});
+    {timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});
 
   /* دالة تنسيق التاريخ والساعة */
   const fmtDT=t=>{
@@ -1272,7 +1272,7 @@ function buildReportHTML(){
     let timePart="";
     if(t.createdAt?.seconds){
       const d=new Date(t.createdAt.seconds*1000);
-      timePart=" "+d.toLocaleTimeString("ar-EG-u-nu-latn",{hour:"2-digit",minute:"2-digit"});
+      timePart=" "+d.toLocaleTimeString("ar-EG-u-nu-latn",{timeZone:"Africa/Cairo",hour:"2-digit",minute:"2-digit"});
     }
     const [y,m,dy]=t.date.split("-");
     const dateStr=new Date(Number(y),Number(m)-1,Number(dy))
@@ -1679,7 +1679,7 @@ function openTxDetail(t){
     infoRows.push(`<tr><td class="lbl">الجهة</td><td class="val">${esc(party)}</td></tr>`);
   }
 
-  const printDate=new Date().toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});
+  const printDate=new Date().toLocaleDateString("ar-EG-u-nu-latn",{timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});
 
   document.getElementById("tx-detail-content").innerHTML=`
   <!-- ══ عرض الشاشة ══ -->
