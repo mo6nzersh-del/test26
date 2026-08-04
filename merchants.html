@@ -659,7 +659,7 @@ import { getAuth, onAuthStateChanged, signOut }
                             from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, collection, doc,
-  addDoc, updateDoc, deleteDoc, getDocs,
+  addDoc, updateDoc, deleteDoc, getDocs, getDoc,
   query, where, orderBy, onSnapshot,
   serverTimestamp, runTransaction, writeBatch
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -1553,14 +1553,83 @@ function renderUnifiedList(){
     const src=btn.dataset.src;
     const isLoading=src==="loading";
     const msg=isLoading
-      ?"حذف هذه المعاملة لن يُعيد الكميات للمخزن. هل تريد المتابعة؟"
+      ?"هل تريد حذف هذه العملية؟\n\nسيتم تلقائياً:\n• إعادة الكميات المباعة إلى المخزن\n• حذف السجل من صفحة المنتجات\n\nهذا الإجراء لا يمكن التراجع عنه."
       :"هل تريد حذف هذه الحركة؟";
     if(!confirm(msg)) return;
     try{
       const mer=merchants.find(m=>m.id===currentMerId);
-      if(src==="direct"||src==="loading"){
+      if(src==="direct"){
+        // حذف حركة مباشرة فقط (ليست من عملية بيع)
         await deleteDoc(doc(db,"merchantTransactions",btn.dataset.id));
-        writeAuditLog("حذف","حركة تاجر",`${mer?.name||"—"} — ${src==="loading"?"تحميل":"مباشرة"}`);
+        writeAuditLog("حذف","حركة تاجر",`${mer?.name||"—"} — مباشرة`);
+      } else if(src==="loading"){
+        /* ══════════════════════════════════════════════════
+           حذف عملية بيع متكامل:
+           1) إعادة كميات المنتجات للمخزن
+           2) حذف merchantTransactions
+           3) حذف loadingOperations
+           4) حذف activityLog
+           5) إلغاء finance_transactions (إن وجد دفع فوري)
+        ══════════════════════════════════════════════════ */
+        const merTx = merchantTxs.find(t=>t.id===btn.dataset.id);
+        const opId  = merTx?.opId;
+
+        // ── جلب السجلات المرتبطة ──
+        let loLines    = [];   // بنود الكميات المباعة
+        let loDocRefs  = [];   // مراجع loadingOperations
+        let alDocRefs  = [];   // مراجع activityLog
+        let ftDocIds   = [];   // معرّفات finance_transactions
+
+        if(opId){
+          const [loSnap, alSnap, ftSnap] = await Promise.all([
+            getDocs(query(collection(db,"loadingOperations"),    where("opId","==",opId))),
+            getDocs(query(collection(db,"activityLog"),          where("opId","==",opId))),
+            getDocs(query(collection(db,"finance_transactions"), where("opId","==",opId))),
+          ]);
+          loSnap.forEach(d=>{ loLines.push(...(d.data().lines||[])); loDocRefs.push(d.ref); });
+          alSnap.forEach(d=>alDocRefs.push(d.ref));
+          ftSnap.forEach(d=>ftDocIds.push(d.id));
+        }
+
+        // ── قراءة الكميات الحالية للمنتجات المتأثرة ──
+        const prodAddBack = {};   // productId → كمية تُعاد
+        loLines.filter(l=>l.productId && l.qty>0).forEach(l=>{
+          prodAddBack[l.productId] = (prodAddBack[l.productId]||0) + l.qty;
+        });
+        const prodIds   = Object.keys(prodAddBack);
+        const prodSnaps = await Promise.all(prodIds.map(pid=>getDoc(doc(db,"products",pid))));
+
+        // ── تنفيذ كل شيء في batch واحد ──
+        const batch = writeBatch(db);
+
+        // 1) إعادة كميات المنتجات
+        prodSnaps.forEach(pSnap=>{
+          if(!pSnap.exists()) return;
+          const curQty  = pSnap.data().quantity || 0;
+          const addBack = prodAddBack[pSnap.id]  || 0;
+          batch.update(pSnap.ref,{ quantity: curQty + addBack, updatedAt: serverTimestamp() });
+        });
+
+        // 2) حذف merchantTransactions
+        batch.delete(doc(db,"merchantTransactions",btn.dataset.id));
+
+        // 3) حذف loadingOperations
+        loDocRefs.forEach(ref=>batch.delete(ref));
+
+        // 4) حذف activityLog
+        alDocRefs.forEach(ref=>batch.delete(ref));
+
+        // 5) إلغاء finance_transactions (الدفع الفوري عند البيع النقدي)
+        ftDocIds.forEach(fid=>batch.update(doc(db,"finance_transactions",fid),{
+          _active:false, deletedAt:serverTimestamp()
+        }));
+
+        await batch.commit();
+
+        const restoredLabel = prodIds.length>0
+          ? ` — أُعيدت ${prodIds.length} أصناف للمخزن`
+          : "";
+        writeAuditLog("حذف","عملية بيع",`${mer?.name||"—"} — opId: ${opId||"—"}${restoredLabel}`);
       } else {
         // نحذف جميع السجلات التي تحمل نفس finId (السجل الأصل + المرآة الكاش إن وُجدت)
         const tx = finTxs.find(t=>t.id===btn.dataset.id);
@@ -1573,8 +1642,8 @@ function renderUnifiedList(){
         await batch.commit();
         writeAuditLog("حذف","حركة مالية للتاجر",`${mer?.name||"—"} — ${tx?.finId||"—"} (${siblings.length} سجل)`);
       }
-      toast("تم الحذف");
-    }catch(err){ console.error(err); toast("خطأ",true); }
+      toast("تم الحذف بنجاح ✓");
+    }catch(err){ console.error(err); toast("خطأ أثناء الحذف",true); }
   }));
 }
 
