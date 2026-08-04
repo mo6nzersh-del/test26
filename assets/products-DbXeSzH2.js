@@ -63,11 +63,11 @@ function fmtNum(v) {
 }
 function fmtDateTime(ts) {
   const d = ts?.toDate ? ts.toDate() : (ts instanceof Date ? ts : new Date(ts));
-  return d.toLocaleString("ar-EG", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+  return d.toLocaleString("ar-EG", { timeZone: "Africa/Cairo", year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 function fmtDateTimeLong(ts) {
   const d = ts?.toDate ? ts.toDate() : (ts instanceof Date ? ts : new Date(ts));
-  return d.toLocaleString("ar-EG", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" });
+  return d.toLocaleString("ar-EG", { timeZone: "Africa/Cairo", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
 /* select editable number values on interaction so typing replaces them immediately */
@@ -836,7 +836,7 @@ function initLoadingForm() {
         createdAt: serverTimestamp(),
       });
       // write to merchantTransactions so it appears in the merchant account page
-      const today = new Date().toISOString().slice(0, 10);
+      const today = new Date().toLocaleDateString("en-CA", { timeZone: "Africa/Cairo" });
       const txId = `TL-${Date.now().toString(36).toUpperCase().slice(-6)}`;
       const txRef = docRef(collection(db, "merchantTransactions"));
       batch.set(txRef, {
@@ -1216,7 +1216,7 @@ function showInvoice(data) {
   // when showing the invoice right after submitting a new one, show now.
   const now = data.createdAt
     ? fmtDateTimeLong(data.createdAt)
-    : new Date().toLocaleString("ar-EG", { year:"numeric", month:"long", day:"numeric", hour:"2-digit", minute:"2-digit" });
+    : new Date().toLocaleString("ar-EG", { timeZone:"Africa/Cairo", year:"numeric", month:"long", day:"numeric", hour:"2-digit", minute:"2-digit" });
   const isReplay = !!data.createdAt;
   // اعرض الرقم التسلسلي نفسه من سجل العمليات (OP-00006) بدل جزء من opId
   const shortId = data.seqLabel || (data.opId ? data.opId.slice(0, 8).toUpperCase() : "—");
@@ -1293,7 +1293,7 @@ function showInvoice(data) {
       ${_balSection}`;
   }
 
-  const printNow = new Date().toLocaleString("ar-EG", { year:"numeric", month:"long", day:"numeric", hour:"2-digit", minute:"2-digit" });
+  const printNow = new Date().toLocaleString("ar-EG", { timeZone:"Africa/Cairo", year:"numeric", month:"long", day:"numeric", hour:"2-digit", minute:"2-digit" });
   const modalTitle = document.getElementById("invoice-modal-title") || document.querySelector("#invoice-modal .modal-box-header h3");
   if (modalTitle) modalTitle.textContent = isReplay ? "معاينة الحركة" : "فاتورة العملية";
 
