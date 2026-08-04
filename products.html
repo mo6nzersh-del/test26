@@ -901,7 +901,7 @@ function _esc(v){ const d=document.createElement("div"); d.textContent=v??""; re
 function _num(v){ return new Intl.NumberFormat("ar-EG",{maximumFractionDigits:3}).format(v||0); }
 function _dt(ts){
   const d = ts?.toDate ? ts.toDate() : (ts instanceof Date ? ts : new Date(ts));
-  return d.toLocaleString("ar-EG",{year:"numeric",month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
+  return d.toLocaleString("ar-EG",{timeZone:"Africa/Cairo",year:"numeric",month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
 }
 function _txId(){ return "WA-"+Date.now().toString(36).toUpperCase()+"-"+Math.random().toString(36).slice(2,7).toUpperCase(); }
 function _toast(msg, err){
