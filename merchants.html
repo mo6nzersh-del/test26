@@ -892,7 +892,7 @@ function openTxDetail(t){
   else if(t.type==="merchant") partyRow=`<div class="dm-item"><div class="dm-label">التاجر</div><div class="dm-val">${eS(party)}</div></div>`;
   else if(t.partyName) partyRow=`<div class="dm-item"><div class="dm-label">الجهة</div><div class="dm-val">${eS(party)}</div></div>`;
   if(t.sourcePage) partyRow+=`<div class="dm-item"><div class="dm-label">أُضيفت من صفحة</div><div class="dm-val">${eS(t.sourcePage)}</div></div>`;
-  const printDate=new Date().toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"long",day:"numeric"});
+  const printDate=new Date().toLocaleDateString("ar-EG-u-nu-latn",{timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric"});
   document.getElementById("tx-detail-content").innerHTML=`
   <div class="mer-screen-only">
     <div class="tx-detail-header">
@@ -1169,9 +1169,9 @@ function setupDetail(){
   // فلاتر كشف الحساب
   document.getElementById("filter-apply-btn").addEventListener("click",refreshLedger);
   document.getElementById("filter-clear-btn").addEventListener("click",()=>{
-    const now=new Date();
-    document.getElementById("filter-from").value=new Date(now.getFullYear(),now.getMonth(),1).toISOString().slice(0,10);
-    document.getElementById("filter-to").value=now.toISOString().slice(0,10);
+    const nowEG=new Date().toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
+    document.getElementById("filter-from").value=nowEG.slice(0,7)+"-01";
+    document.getElementById("filter-to").value=nowEG;
     refreshLedger();
   });
 
@@ -1191,9 +1191,9 @@ function openDetail(id){
   document.getElementById("list-section").style.display="none";
   document.getElementById("detail-section").style.display="block";
   // ضبط الفلتر الافتراضي: أول يوم في الشهر الحالي → اليوم
-  const now=new Date();
-  document.getElementById("filter-from").value=new Date(now.getFullYear(),now.getMonth(),1).toISOString().slice(0,10);
-  document.getElementById("filter-to").value=now.toISOString().slice(0,10);
+  const nowEG=new Date().toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
+  document.getElementById("filter-from").value=nowEG.slice(0,7)+"-01";
+  document.getElementById("filter-to").value=nowEG;
   fillHeader();
   refreshLedger();
 }
@@ -1224,7 +1224,8 @@ function _toSecs(t){
 function _toDateStr(t){
   if(t.date) return t.date; // YYYY-MM-DD
   const d=t.createdAt?.toDate?.();
-  return d?d.toISOString().slice(0,10):"";
+  return d?d.toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"}):"";
+
 }
 
 /* ── نافذة إضافة دفعة مالية مباشرة من صفحة التاجر ── */
@@ -1236,7 +1237,7 @@ function setupFinTxModal(){
   document.getElementById("fin-tx-form").addEventListener("submit",saveFinTx);
   document.getElementById("add-fin-tx-btn").addEventListener("click",()=>{
     document.getElementById("fin-tx-form").reset();
-    document.getElementById("fin-tx-date").value=new Date().toISOString().slice(0,10);
+    document.getElementById("fin-tx-date").value=new Date().toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
     document.getElementById("fin-dir-in").checked=true;
     const mer=merchants.find(m=>m.id===currentMerId);
     document.getElementById("fin-tx-modal-title").textContent=`دفعة مالية — ${mer?.name??""}`;
@@ -1416,7 +1417,7 @@ function renderUnifiedList(){
     const allDirect=merchantTxs.filter(t=>t.merchantId===currentMerId);
     const allFin   =finTxs.filter(t=>t.merchantId===currentMerId&&t.type==="merchant");
     [...allDirect,...allFin].forEach(t=>{
-      const ds=t.date??(t.createdAt?.toDate?.()?.toISOString().slice(0,10)??"");
+      const ds=t.date??(t.createdAt?.toDate?.()?.toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"})??"");
       if(ds && ds<fromVal) openingBalance+=(t.type==="in"||t.dir==="in"?1:-1)*(t.amount||0);
     });
   }
@@ -1679,7 +1680,7 @@ function printStatement(){
   /* مساعدات تنسيق */
   const fmtD=s=>s?new Date(s+"T00:00:00").toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"short",day:"numeric"}):"—";
   const fmtM=n=>new Intl.NumberFormat("ar-EG-u-nu-latn",{minimumFractionDigits:2,maximumFractionDigits:2}).format(n||0)+" ج.م";
-  const printNow=new Date().toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"long",day:"numeric"});
+  const printNow=new Date().toLocaleDateString("ar-EG-u-nu-latn",{timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric"});
   const periodLabel=(fromVal||toVal)?`${fromVal?fmtD(fromVal):"البداية"}  —  ${toVal?fmtD(toVal):"اليوم"}`:"جميع الفترات";
 
   /* تسمية نوع الحركة */
