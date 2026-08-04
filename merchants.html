@@ -1170,7 +1170,7 @@ function setupDetail(){
   document.getElementById("filter-apply-btn").addEventListener("click",refreshLedger);
   document.getElementById("filter-clear-btn").addEventListener("click",()=>{
     const nowEG=new Date().toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
-    document.getElementById("filter-from").value=nowEG.slice(0,7)+"-01";
+    document.getElementById("filter-from").value="2026-06-01";
     document.getElementById("filter-to").value=nowEG;
     refreshLedger();
   });
@@ -1190,9 +1190,9 @@ function openDetail(id){
   currentMerId=id;
   document.getElementById("list-section").style.display="none";
   document.getElementById("detail-section").style.display="block";
-  // ضبط الفلتر الافتراضي: أول يوم في الشهر الحالي → اليوم
+  // ضبط الفلتر الافتراضي: 01/06/2026 → اليوم
   const nowEG=new Date().toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
-  document.getElementById("filter-from").value=nowEG.slice(0,7)+"-01";
+  document.getElementById("filter-from").value="2026-06-01";
   document.getElementById("filter-to").value=nowEG;
   fillHeader();
   refreshLedger();
