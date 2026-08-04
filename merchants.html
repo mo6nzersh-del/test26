@@ -332,6 +332,29 @@
       .delete-btn{display:none!important}
     }
 
+    /* ══ نافذة تأكيد الحذف المخصصة ══ */
+    #confirm-dialog-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9000;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(2px)}
+    #confirm-dialog-overlay.open{display:flex}
+    .confirm-dialog-box{background:#fff;border-radius:16px;width:100%;max-width:400px;box-shadow:0 24px 60px rgba(0,0,0,.22);animation:confirm-pop .18s cubic-bezier(.34,1.56,.64,1)}
+    @keyframes confirm-pop{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+    .confirm-dialog-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;flex-shrink:0}
+    .confirm-dialog-icon.danger{background:#fde8e5;color:#b3432f}
+    .confirm-dialog-icon.warning{background:#fff4e3;color:#a05c10}
+    .confirm-dialog-body{padding:28px 24px 20px;text-align:center}
+    .confirm-dialog-title{font-size:17px;font-weight:800;color:#111;margin-bottom:8px}
+    .confirm-dialog-msg{font-size:13.5px;color:#444;line-height:1.7;text-align:right;margin-bottom:0}
+    .confirm-dialog-list{list-style:none;padding:0;margin:10px 0;text-align:right}
+    .confirm-dialog-list li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#2e5c2e;background:#edf7ed;border-radius:7px;padding:7px 12px;margin-bottom:6px;font-weight:600}
+    .confirm-dialog-list li .ci{font-size:15px;flex-shrink:0;margin-top:1px}
+    .confirm-dialog-warn{font-size:12px;color:#8b4513;background:#fff4e3;border-radius:7px;padding:7px 12px;margin-top:10px;font-weight:600;display:flex;align-items:center;gap:6px}
+    .confirm-dialog-footer{display:flex;gap:10px;padding:0 24px 22px;flex-direction:row-reverse}
+    .confirm-dialog-footer button{flex:1;padding:11px 0;border-radius:9px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;border:none;transition:opacity .15s,transform .1s}
+    .confirm-dialog-footer button:active{transform:scale(.97)}
+    .confirm-btn-confirm{background:#b3432f;color:#fff}
+    .confirm-btn-confirm:hover{background:#962e1f}
+    .confirm-btn-cancel{background:#f1f3f7;color:#333}
+    .confirm-btn-cancel:hover{background:#e4e7ef}
+
     /* ══ كشف الحساب — أنماط الجدول داخل المودال ══ */
     #stmt-preview-modal{display:none;position:fixed;inset:0;background:#0008;z-index:500;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
     #stmt-preview-modal.open{display:flex}
@@ -621,6 +644,25 @@
   </div>
 </div>
 
+<!-- ═══════ نافذة تأكيد الحذف المخصصة ═══════ -->
+<div id="confirm-dialog-overlay">
+  <div class="confirm-dialog-box">
+    <div class="confirm-dialog-body">
+      <div class="confirm-dialog-icon danger" id="confirm-dialog-icon">🗑️</div>
+      <div class="confirm-dialog-title" id="confirm-dialog-title">تأكيد الحذف</div>
+      <div class="confirm-dialog-msg"  id="confirm-dialog-msg"></div>
+      <ul  class="confirm-dialog-list" id="confirm-dialog-list"></ul>
+      <div class="confirm-dialog-warn" id="confirm-dialog-warn" style="display:none">
+        <span>⚠️</span><span id="confirm-dialog-warn-text"></span>
+      </div>
+    </div>
+    <div class="confirm-dialog-footer">
+      <button class="confirm-btn-confirm" id="confirm-btn-ok">تأكيد</button>
+      <button class="confirm-btn-cancel" id="confirm-btn-cancel">إلغاء</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════ نافذة تفاصيل الحركة المالية ═══════ -->
 <div class="modal-overlay" id="tx-detail-modal">
   <div class="modal-box" style="max-width:500px">
@@ -783,6 +825,64 @@ function init(){
     document.body.classList.add("stmt-print-mode");
     window.print();
     setTimeout(() => document.body.classList.remove("stmt-print-mode"), 1500);
+  });
+}
+
+/* ══════════════════════════════════════════════════════
+   نافذة تأكيد مخصصة — تُعيد Promise<boolean>
+   config: { title, msg, items:[], warn, confirmLabel, icon }
+══════════════════════════════════════════════════════ */
+function showConfirmDialog(config={}){
+  return new Promise(resolve=>{
+    const overlay   = document.getElementById("confirm-dialog-overlay");
+    const iconEl    = document.getElementById("confirm-dialog-icon");
+    const titleEl   = document.getElementById("confirm-dialog-title");
+    const msgEl     = document.getElementById("confirm-dialog-msg");
+    const listEl    = document.getElementById("confirm-dialog-list");
+    const warnEl    = document.getElementById("confirm-dialog-warn");
+    const warnTxtEl = document.getElementById("confirm-dialog-warn-text");
+    const okBtn     = document.getElementById("confirm-btn-ok");
+    const cancelBtn = document.getElementById("confirm-btn-cancel");
+
+    // ملء المحتوى
+    iconEl.textContent      = config.icon  ?? "🗑️";
+    titleEl.textContent     = config.title ?? "تأكيد الحذف";
+    msgEl.textContent       = config.msg   ?? "";
+    okBtn.textContent       = config.confirmLabel ?? "تأكيد الحذف";
+
+    // قائمة البنود
+    listEl.innerHTML = "";
+    (config.items||[]).forEach(item=>{
+      const li=document.createElement("li");
+      li.innerHTML=`<span class="ci">${item.icon??'✅'}</span><span>${item.text}</span>`;
+      listEl.appendChild(li);
+    });
+
+    // تحذير أسفل القائمة
+    if(config.warn){
+      warnTxtEl.textContent=config.warn;
+      warnEl.style.display="flex";
+    } else {
+      warnEl.style.display="none";
+    }
+
+    overlay.classList.add("open");
+
+    // cleanup helper
+    const close=(result)=>{
+      overlay.classList.remove("open");
+      okBtn.removeEventListener("click",onOk);
+      cancelBtn.removeEventListener("click",onCancel);
+      overlay.removeEventListener("click",onOverlay);
+      resolve(result);
+    };
+    const onOk      = ()=>close(true);
+    const onCancel  = ()=>close(false);
+    const onOverlay = (e)=>{ if(e.target===overlay) close(false); };
+
+    okBtn.addEventListener("click",onOk);
+    cancelBtn.addEventListener("click",onCancel);
+    overlay.addEventListener("click",onOverlay);
   });
 }
 
@@ -1552,10 +1652,26 @@ function renderUnifiedList(){
   list.querySelectorAll(".delete-btn").forEach(btn=>btn.addEventListener("click",async()=>{
     const src=btn.dataset.src;
     const isLoading=src==="loading";
-    const msg=isLoading
-      ?"هل تريد حذف هذه العملية؟\n\nسيتم تلقائياً:\n• إعادة الكميات المباعة إلى المخزن\n• حذف السجل من صفحة المنتجات\n\nهذا الإجراء لا يمكن التراجع عنه."
-      :"هل تريد حذف هذه الحركة؟";
-    if(!confirm(msg)) return;
+
+    // نافذة التأكيد المخصصة
+    const confirmed = await showConfirmDialog(isLoading ? {
+      icon:  "📦",
+      title: "حذف عملية بيع",
+      msg:   "هل تريد حذف هذه العملية؟ سيتم تلقائياً:",
+      items: [
+        { icon: "🔄", text: "إعادة الكميات المباعة إلى المخزن" },
+        { icon: "🗑️", text: "حذف السجل من صفحة المنتجات" },
+      ],
+      warn:  "هذا الإجراء لا يمكن التراجع عنه.",
+      confirmLabel: "تأكيد الحذف",
+    } : {
+      icon:  "🗑️",
+      title: "حذف الحركة",
+      msg:   "هل تريد حذف هذه الحركة المالية؟",
+      warn:  "هذا الإجراء لا يمكن التراجع عنه.",
+      confirmLabel: "تأكيد الحذف",
+    });
+    if(!confirmed) return;
     try{
       const mer=merchants.find(m=>m.id===currentMerId);
       if(src==="direct"){
@@ -1571,8 +1687,14 @@ function renderUnifiedList(){
            4) حذف activityLog
            5) إلغاء finance_transactions (إن وجد دفع فوري)
         ══════════════════════════════════════════════════ */
-        const merTx = merchantTxs.find(t=>t.id===btn.dataset.id);
-        const opId  = merTx?.opId;
+        // ── أولاً: جلب السجل مباشرةً من Firestore (ضمان الحصول على opId الحالي) ──
+        const merTxSnap = await getDoc(doc(db,"merchantTransactions",btn.dataset.id));
+        const merTxData = merTxSnap.exists() ? merTxSnap.data() : null;
+        const opId = merTxData?.opId || merchantTxs.find(t=>t.id===btn.dataset.id)?.opId;
+
+        console.log("[حذف بيع] معرّف الحركة:", btn.dataset.id);
+        console.log("[حذف بيع] opId:", opId);
+        console.log("[حذف بيع] source:", merTxData?.source);
 
         // ── جلب السجلات المرتبطة ──
         let loLines    = [];   // بنود الكميات المباعة
@@ -1586,9 +1708,14 @@ function renderUnifiedList(){
             getDocs(query(collection(db,"activityLog"),          where("opId","==",opId))),
             getDocs(query(collection(db,"finance_transactions"), where("opId","==",opId))),
           ]);
+          console.log("[حذف بيع] loadingOperations:", loSnap.size, "سجل");
+          console.log("[حذف بيع] activityLog:",       alSnap.size, "سجل");
+          console.log("[حذف بيع] finance_transactions:", ftSnap.size, "سجل");
           loSnap.forEach(d=>{ loLines.push(...(d.data().lines||[])); loDocRefs.push(d.ref); });
           alSnap.forEach(d=>alDocRefs.push(d.ref));
           ftSnap.forEach(d=>ftDocIds.push(d.id));
+        } else {
+          console.warn("[حذف بيع] ⚠️ لا يوجد opId — سيتم حذف merchantTransactions فقط بدون إعادة المخزون");
         }
 
         // ── قراءة الكميات الحالية للمنتجات المتأثرة ──
