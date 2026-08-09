@@ -10,14 +10,17 @@ function resolveAlias(email) {
   if (!email || email === "—") return email;
   return emailToAlias[email] || email;
 }
-// يستمع إلى appUsers ويبني الخريطة فور أي تغيير
-onSnapshot(collection(db, "appUsers"), snap => {
-  emailToAlias = {};
-  snap.forEach(d => {
-    const { email, alias } = d.data();
-    if (email && alias) emailToAlias[email] = alias;
-  });
-});
+// يستمع إلى appUsers ويبني الخريطة فور أي تغيير.
+// يبدأ بعد اكتمال حارس الدخول حتى لا يسبق تهيئة الجلسة أو يعطل بقية الصفحة.
+function listenAliases() {
+  onSnapshot(collection(db, "appUsers"), snap => {
+    emailToAlias = {};
+    snap.forEach(d => {
+      const { email, alias } = d.data();
+      if (email && alias) emailToAlias[email] = alias;
+    });
+  }, err => console.warn("alias listener:", err));
+}
 
 /* ─── state ─── */
 let currentUser = null;
@@ -100,17 +103,25 @@ function generateSerial(warehouseId) {
 /* ─── init ─── */
 initPage(user => {
   currentUser = user;
+  // ارسم شريط التنقل أولاً؛ فتعطل مستمع اختياري يجب ألا يجعل الصفحة تبدو عالقة.
+  renderNav(`${BASE}products.html`, user);
   initNumberInputSelection();
-  initTabs();
-  initWarehouseContainerDelegation();
-  initWarehouseModal();
-  initProductModal();
-  initInvoiceModal();
-  initOpDeletedModal();
-  initOpTypeSwitcher();
-  initProductionForm();
-  initTransferForm();
-  initLoadingForm();
+  listenAliases();
+  try {
+    initTabs();
+    initWarehouseContainerDelegation();
+    initWarehouseModal();
+    initProductModal();
+    initInvoiceModal();
+    initOpDeletedModal();
+    initOpTypeSwitcher();
+    initProductionForm();
+    initTransferForm();
+    initLoadingForm();
+  } catch (err) {
+    console.error("products page initialization:", err);
+    showToast("تم فتح الصفحة، لكن بعض أدوات المنتجات لم تكتمل", true);
+  }
   loadWarehouses();
   loadProducts();
   loadMerchants();
@@ -118,7 +129,6 @@ initPage(user => {
   loadMovementsRecords();
   loadLoadingRecords();
   loadActivityLog();
-  renderNav(`${BASE}products.html`, user);
 });
 
 /* ══════════════════════════════════════
@@ -153,7 +163,12 @@ function loadWarehouses() {
     warehousesLoaded = true;
     if (productsLoaded) renderWarehousesContainer();
     refreshAllWarehouseSelects();
-  }, err => console.error(err));
+  }, err => {
+    console.error("warehouses listener:", err);
+    warehousesLoaded = true;
+    if (productsLoaded) renderWarehousesContainer();
+    refreshAllWarehouseSelects();
+  });
 }
 
 function loadProducts() {
@@ -162,7 +177,11 @@ function loadProducts() {
     products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     productsLoaded = true;
     if (warehousesLoaded) renderWarehousesContainer();
-  }, err => console.error(err));
+  }, err => {
+    console.error("products listener:", err);
+    productsLoaded = true;
+    if (warehousesLoaded) renderWarehousesContainer();
+  });
 }
 
 function loadMerchants() {
@@ -170,7 +189,10 @@ function loadMerchants() {
   onSnapshot(q, snap => {
     merchants = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     refreshMerchantSelects();
-  }, err => console.error(err));
+  }, err => {
+    console.error("merchants listener:", err);
+    refreshMerchantSelects();
+  });
 }
 
 /* ══ رصيد كل تاجر — يطابق calcBalance في صفحة التجار ══
