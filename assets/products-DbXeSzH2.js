@@ -100,25 +100,36 @@ function generateSerial(warehouseId) {
 /* ─── init ─── */
 initPage(user => {
   currentUser = user;
-  initNumberInputSelection();
-  initTabs();
-  initWarehouseContainerDelegation();
-  initWarehouseModal();
-  initProductModal();
-  initInvoiceModal();
-  initOpDeletedModal();
-  initOpTypeSwitcher();
-  initProductionForm();
-  initTransferForm();
-  initLoadingForm();
-  loadWarehouses();
-  loadProducts();
-  loadMerchants();
-  listenMerchantBalances();
-  loadMovementsRecords();
-  loadLoadingRecords();
-  loadActivityLog();
-  renderNav(`${BASE}products.html`, user);
+  const initializers = [
+    // ابنِ التنقل أولاً، واعزل فشله عن بقية تهيئة الصفحة.
+    ["شريطا التنقل", () => renderNav(`${BASE}products.html`, user)],
+    ["اختيار حقول الأرقام", initNumberInputSelection],
+    ["التبويبات", initTabs],
+    ["أحداث المخازن", initWarehouseContainerDelegation],
+    ["نافذة المخزن", initWarehouseModal],
+    ["نافذة المنتج", initProductModal],
+    ["نافذة الفاتورة", initInvoiceModal],
+    ["نافذة الحركة المحذوفة", initOpDeletedModal],
+    ["مبدل نوع العملية", initOpTypeSwitcher],
+    ["نموذج الإنتاج", initProductionForm],
+    ["نموذج التحويل", initTransferForm],
+    ["نموذج البيع", initLoadingForm],
+    ["تحميل المخازن", loadWarehouses],
+    ["تحميل المنتجات", loadProducts],
+    ["تحميل التجار", loadMerchants],
+    ["أرصدة التجار", listenMerchantBalances],
+    ["سجل حركات المخازن", loadMovementsRecords],
+    ["سجل عمليات البيع", loadLoadingRecords],
+    ["سجل النشاط", loadActivityLog],
+  ];
+
+  initializers.forEach(([name, initialize]) => {
+    try {
+      initialize();
+    } catch (err) {
+      console.error(`Products page initialization failed: ${name}`, err);
+    }
+  });
 });
 
 /* ══════════════════════════════════════
