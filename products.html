@@ -281,6 +281,9 @@
         transition: opacity .35s ease;
       }
       #page-loader.pl-hide { opacity: 0; pointer-events: none; }
+      /* حارس الجلسة يخفي #app مؤقتاً أثناء استعادة Firebase.
+         الشاشة هنا للعرض فقط، لذلك لا نخفي محتوى الصفحة أثناء الانتقال. */
+      #app { visibility: visible !important; }
       .pl-logo {
         width: 90px; height: 90px; border-radius: 22px;
         background: rgba(255,255,255,.18);
@@ -779,49 +782,31 @@
     </div>
 
   
-<!-- ══ مراقب شاشة التحميل ══
-     لا نُخفي الشاشة قبل اكتمال فحص الجلسة، ولا نُعيد تحميل الصفحة تلقائياً.
-     إعادة التحميل أثناء بطء Firebase كانت تسبب صفحة فارغة أو حلقة تحديث. -->
+<!-- ══ شاشة عرض قصيرة ══
+     هذه الشاشة للعرض فقط، ولا تنتظر Firebase أو تسجيل الدخول أو البيانات. -->
 <script>
 (function(){
   var loader = document.getElementById("page-loader");
-  var app    = document.getElementById("app");
-  if (!loader || !app) return;
-
-  var done = false;
-  var statusTimer;
+  var app = document.getElementById("app");
+  if (!loader) return;
 
   function hideLoader(){
-    if (done) return;
-    done = true;
     loader.classList.add("pl-hide");
     window.setTimeout(function(){
       loader.style.display = "none";
       loader.style.visibility = "hidden";
       loader.style.pointerEvents = "none";
     }, 360);
-    if (statusTimer) window.clearTimeout(statusTimer);
   }
 
-  function checkAppReady(){
-    // auth-guard يجعل التطبيق مرئياً فقط بعد معرفة حالة الجلسة.
-    if (app.style.visibility !== "hidden") {
-      hideLoader();
-      observer.disconnect();
-    }
-  }
+  // لا تمنع الشاشة النقر على الصفحة أثناء ظهورها.
+  loader.style.pointerEvents = "none";
 
-  var observer = new MutationObserver(checkAppReady);
-  observer.observe(app, { attributes: true, attributeFilter: ["style"] });
-
-  // في التحميل البطيء نُبقي الصفحة واضحة للمستخدم بدلاً من إعادة تحميلها.
-  statusTimer = window.setTimeout(function(){
-    var text = loader.querySelector(".pl-text");
-    if (text) text.textContent = "الاتصال يستغرق وقتاً أطول من المعتاد…";
-  }, 8000);
-
-  // فحص أولي بعد بدء السكربتات المؤجلة، من دون كشف التطبيق قبل التحقق.
-  window.setTimeout(checkAppReady, 0);
+  // مدة عرض ثابتة فقط، مستقلة عن أي عملية تحميل.
+  window.setTimeout(function(){
+    if (app) app.style.visibility = "visible";
+    hideLoader();
+  }, 1000);
 })();
 </script>
 
