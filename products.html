@@ -26,6 +26,19 @@
     <link rel="modulepreload" crossorigin href="/assets/nav-C4LmEyvm.js">
     <link rel="modulepreload" crossorigin href="/assets/image-utils-ix_Ztzsr.js">
     <link rel="stylesheet" crossorigin href="/assets/auth-guard-C6CJ8_8i.css">
+     <script>
+       (function () {
+         var reloadKey = "products-page-auto-reloaded";
+         if (sessionStorage.getItem(reloadKey) !== "1") {
+           sessionStorage.setItem(reloadKey, "1");
+           setTimeout(function () {
+             window.location.reload();
+           }, 1000);
+         } else {
+           sessionStorage.removeItem(reloadKey);
+         }
+       })();
+     </script>
     <style>
       /* ── Warehouse sections ── */
       .warehouse-section{border:1px solid var(--border);border-radius:10px;margin-bottom:20px;overflow:hidden;background:var(--surface)}
@@ -311,16 +324,6 @@
         font-size: 14px; font-weight: 600;
         letter-spacing: .3px;
       }
-      .pl-retry-btn {
-        border: 1px solid rgba(255,255,255,.55);
-        background: rgba(255,255,255,.14);
-        color: #fff;
-        border-radius: 9px;
-        padding: 9px 18px;
-        font: 600 13px Cairo,sans-serif;
-        cursor: pointer;
-      }
-      .pl-retry-btn:hover { background: rgba(255,255,255,.24); }
 
       /* ══ أزرار تعديل المخزون وسجل الحركات ══ */
       .wh-adj-btn {
@@ -455,7 +458,7 @@
   <div class="pl-spinner"></div>
   <div class="pl-text">جارِ التحميل…</div>
 </div>
-<div id="app" style="visibility:hidden">
+<div id="app">
       <header id="topbar" class="topbar"></header>
       <main class="page">
         <div class="page-header">
@@ -789,64 +792,32 @@
     </div>
 
   
-<!-- ══ مراقب شاشة التحميل ══
-     لا تُخفَ الشاشة قبل اكتمال التحقق من Firebase؛
-     إخفاؤها مبكراً كان يُظهر صفحة بيضاء أثناء انتظار الجلسة. -->
+<!-- ══ مراقب شاشة التحميل ══ -->
 <script>
 (function(){
   var loader = document.getElementById("page-loader");
   var app    = document.getElementById("app");
   if (!loader || !app) return;
   var _done = false;
-  var retryTimer = null;
-
   function hideLdr(){
     if (_done) return;
     _done = true;
-    if (retryTimer) clearTimeout(retryTimer);
+    // تأكد من أن الصفحة قابلة للنقر فوراً
+    if (app.style.visibility === "hidden") app.style.visibility = "visible";
     loader.classList.add("pl-hide");
     setTimeout(function(){
+      // إزالة كاملة من تدفق الصفحة حتى لا يعيق النقر
       loader.style.display    = "none";
       loader.style.visibility = "hidden";
       loader.style.pointerEvents = "none";
     }, 360);
   }
-
-  function showDelayedMessage(){
-    if (_done) return;
-    var text = loader.querySelector(".pl-text");
-    if (text) text.textContent = "الاتصال بالخدمة تأخر قليلاً…";
-
-    if (!loader.querySelector(".pl-retry-btn")) {
-      var btn = document.createElement("button");
-      btn.className = "pl-retry-btn";
-      btn.type = "button";
-      btn.textContent = "إعادة المحاولة";
-      btn.onclick = function(){ window.location.reload(); };
-      loader.appendChild(btn);
-    }
-  }
-
-  // auth-guard يجعل app مرئياً بعد اكتمال التحقق.
-  // نراقب ذلك بدلاً من استخدام مؤقت قصير يخفي التطبيق أثناء انتظاره.
   var obs = new MutationObserver(function(){
-    if (app.style.visibility !== "hidden") {
-      hideLdr();
-      obs.disconnect();
-    }
+    if (app.style.visibility !== "hidden"){ hideLdr(); obs.disconnect(); }
   });
-  obs.observe(app, { attributes:true, attributeFilter:["style"] });
-
-  // حدث صريح من auth-guard، مع إبقاء المراقب كحل احتياطي للنسخ القديمة.
-  window.addEventListener("auth-ready", hideLdr, { once:true });
-
-  if (app.style.visibility !== "hidden") {
-    hideLdr();
-    obs.disconnect();
-  } else {
-    // لا نعيد التحميل تلقائياً ولا نخفي الشاشة؛ نعرض سبب التأخر وزرّاً يدوياً.
-    retryTimer = setTimeout(showDelayedMessage, 12000);
-  }
+  obs.observe(app, { attributes: true, attributeFilter: ["style"] });
+  // الحد الأقصى 1 ثانية
+  setTimeout(function(){ obs.disconnect(); hideLdr(); }, 1000);
 })();
 </script>
 
@@ -1310,13 +1281,62 @@ document.addEventListener("DOMContentLoaded",()=>{
 </script>
 
 
-<!-- ══ حماية أخطاء التهيئة:
-     لا تعيد تحميل الصفحة تلقائياً؛ التحديث القسري كان سبباً في
-     حلقة إعادة تحميل وإظهار صفحة بلا تنقل عند حدوث خطأ عابر. -->
+<!-- ══ Watchdog: يُعيد تحميل الصفحة إذا تعطّل الـ loader أو الـ topbar ══ -->
 <script>
 (function() {
-  // لا يوجد watchdog يعيد تحميل الصفحة. كل تهيئة مستقلة ومحميّة
-  // داخل products-DbXeSzH2_1786305583035.js.
+  var GRACE_MS    = 4000;   // انتظر 4 ثوانٍ قبل أي تدخّل
+  var TIMEOUT_MS  = 10000;  // أقصى وقت مسموح قبل إعادة التحميل الإجبارية
+  var CHECK_INT   = 500;    // فحص كل نصف ثانية
+
+  var startTime = Date.now();
+  var pageOk    = false;    // يصبح true عند اكتمال الصفحة
+
+  // نُراقب الـ topbar — عند إضافة محتوى له نعرف أن الصفحة جاهزة
+  var topbar = document.getElementById("topbar");
+  if (topbar) {
+    var mo = new MutationObserver(function(mutations) {
+      if (topbar.innerHTML.trim().length > 0) {
+        pageOk = true;
+        mo.disconnect();
+      }
+    });
+    mo.observe(topbar, { childList: true, subtree: true });
+  }
+
+  // نُراقب أيضاً إزالة class pl-hide من الـ loader
+  var loader = document.getElementById("page-loader");
+  if (loader) {
+    var lo = new MutationObserver(function() {
+      if (loader.classList.contains("pl-hide")) {
+        pageOk = true;
+        lo.disconnect();
+      }
+    });
+    lo.observe(loader, { attributes: true, attributeFilter: ["class"] });
+  }
+
+  var timer = setInterval(function() {
+    if (pageOk) { clearInterval(timer); return; }
+    var elapsed = Date.now() - startTime;
+    var loaderStuck = loader && !loader.classList.contains("pl-hide");
+    var topbarEmpty = topbar && topbar.innerHTML.trim().length === 0;
+
+    // بعد فترة الـ grace: إذا ظهر أن الصفحة لم تكتمل أعد التحميل
+    if (elapsed > GRACE_MS && (loaderStuck || topbarEmpty)) {
+      clearInterval(timer);
+      // سجّل الخطأ للمساعدة في التشخيص
+      try { console.warn("[watchdog] Page init stalled after " + elapsed + "ms — reloading…"); } catch(e) {}
+      window.location.reload();
+      return;
+    }
+
+    // مهلة صارمة: لا تتجاوز TIMEOUT_MS تحت أي ظرف
+    if (elapsed > TIMEOUT_MS) {
+      clearInterval(timer);
+      try { console.warn("[watchdog] Hard timeout reached — reloading…"); } catch(e) {}
+      window.location.reload();
+    }
+  }, CHECK_INT);
 })();
 </script>
 
