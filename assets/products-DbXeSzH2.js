@@ -119,7 +119,33 @@ function runInitStep(name, step) {
   }
 }
 
-initPage(user => {
+function initProductsPage(callback) {
+  let started = false;
+  const app = document.getElementById("app");
+  const start = user => {
+    if (started || !user) return;
+    started = true;
+    if (app) app.style.visibility = "visible";
+    callback(user);
+  };
+  // عند الانتقال من صفحة أخرى يكون المستخدم غالباً متاحاً قبل وصول
+  // إشعار onAuthStateChanged. استخدامه مباشرة يمنع بقاء الصفحة معلقة.
+  if (auth.currentUser) start(auth.currentUser);
+  const unsubscribe = auth.onAuthStateChanged(user => {
+    if (user) {
+      unsubscribe();
+      start(user);
+    }
+  });
+  // احتياط لحالة تأخر إشعار Firebase أثناء الانتقال بين الصفحات.
+  window.setTimeout(() => {
+    if (!started && auth.currentUser) {
+      unsubscribe();
+      start(auth.currentUser);
+    }
+  }, 2500);
+}
+initProductsPage(user => {
   currentUser = user;
 
   // أظهر شريط التنقل أولاً حتى لا تبدو الصفحة متوقفة إذا تأخر أحد المستمعين.
