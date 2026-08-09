@@ -105,6 +105,8 @@ initPage(user => {
   currentUser = user;
   // ارسم شريط التنقل أولاً؛ فتعطل مستمع اختياري يجب ألا يجعل الصفحة تبدو عالقة.
   renderNav(`${BASE}products.html`, user);
+  // أبلغ شاشة التحميل أن الواجهة الأساسية أصبحت جاهزة.
+  window.dispatchEvent(new Event("products-ready"));
   initNumberInputSelection();
   listenAliases();
   try {
