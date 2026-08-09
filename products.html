@@ -779,31 +779,49 @@
     </div>
 
   
-<!-- ══ شاشة عرض قصيرة ══
-     هذه الشاشة للعرض فقط، ولا تنتظر Firebase أو تسجيل الدخول أو البيانات. -->
+<!-- ══ مراقب شاشة التحميل ══
+     لا نُخفي الشاشة قبل اكتمال فحص الجلسة، ولا نُعيد تحميل الصفحة تلقائياً.
+     إعادة التحميل أثناء بطء Firebase كانت تسبب صفحة فارغة أو حلقة تحديث. -->
 <script>
 (function(){
   var loader = document.getElementById("page-loader");
-  var app = document.getElementById("app");
-  if (!loader) return;
+  var app    = document.getElementById("app");
+  if (!loader || !app) return;
+
+  var done = false;
+  var statusTimer;
 
   function hideLoader(){
+    if (done) return;
+    done = true;
     loader.classList.add("pl-hide");
     window.setTimeout(function(){
       loader.style.display = "none";
       loader.style.visibility = "hidden";
       loader.style.pointerEvents = "none";
     }, 360);
+    if (statusTimer) window.clearTimeout(statusTimer);
   }
 
-  // لا تمنع الشاشة النقر على الصفحة أثناء ظهورها.
-  loader.style.pointerEvents = "none";
+  function checkAppReady(){
+    // auth-guard يجعل التطبيق مرئياً فقط بعد معرفة حالة الجلسة.
+    if (app.style.visibility !== "hidden") {
+      hideLoader();
+      observer.disconnect();
+    }
+  }
 
-  // مدة عرض ثابتة فقط، مستقلة عن أي عملية تحميل.
-  window.setTimeout(function(){
-    if (app) app.style.visibility = "visible";
-    hideLoader();
-  }, 1000);
+  var observer = new MutationObserver(checkAppReady);
+  observer.observe(app, { attributes: true, attributeFilter: ["style"] });
+
+  // في التحميل البطيء نُبقي الصفحة واضحة للمستخدم بدلاً من إعادة تحميلها.
+  statusTimer = window.setTimeout(function(){
+    var text = loader.querySelector(".pl-text");
+    if (text) text.textContent = "الاتصال يستغرق وقتاً أطول من المعتاد…";
+  }, 8000);
+
+  // فحص أولي بعد بدء السكربتات المؤجلة، من دون كشف التطبيق قبل التحقق.
+  window.setTimeout(checkAppReady, 0);
 })();
 </script>
 
