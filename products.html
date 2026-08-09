@@ -445,7 +445,7 @@
   <div class="pl-spinner"></div>
   <div class="pl-text">جارِ التحميل…</div>
 </div>
-<div id="app">
+<div id="app" style="visibility:hidden">
       <header id="topbar" class="topbar"></header>
       <main class="page">
         <div class="page-header">
@@ -808,7 +808,7 @@
     obs.disconnect();
     if (app.style.visibility === "hidden") app.style.visibility = "visible";
     hideLdr();
-  }, 8000);
+  }, 5000);
 })();
 </script>
 
@@ -867,7 +867,7 @@
     </div>
 
 
-<script type="module">
+<script type="module" async>
 /* ════════════════════════════════════════════════════════════════════
    تعديل مخزون المخازن + سجل حركات كل مخزن
    — يستخدم Firebase app الرئيسي (نفس جلسة المستخدم المسجّل)
@@ -1257,7 +1257,7 @@ function _initLogModal(){
 /* ══════════════════════════════════
    Bootstrap
 ══════════════════════════════════ */
-document.addEventListener("DOMContentLoaded",()=>{
+function initWarehouseEnhancements(){
   _initAdjModal();
   _initLogModal();
   _watchContainer();
@@ -1268,7 +1268,13 @@ document.addEventListener("DOMContentLoaded",()=>{
     if(document.getElementById("wh-adjust-modal").classList.contains("open")) _closeAdj();
     if(document.getElementById("wh-log-modal").classList.contains("open"))    _closeLog();
   });
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initWarehouseEnhancements, { once: true });
+} else {
+  initWarehouseEnhancements();
+}
 </script>
 
 
