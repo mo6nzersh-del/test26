@@ -281,6 +281,9 @@
         transition: opacity .35s ease;
       }
       #page-loader.pl-hide { opacity: 0; pointer-events: none; }
+      /* لا تحجب شاشة المصادقة المتأخرة واجهة المنتجات أو النقر على الهاتف */
+      #page-loader { display:none; pointer-events:none; }
+      #app { visibility:visible !important; }
       .pl-logo {
         width: 90px; height: 90px; border-radius: 22px;
         background: rgba(255,255,255,.18);
