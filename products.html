@@ -21,41 +21,11 @@
       Intl.NumberFormat.prototype=_NF.prototype;
     })();
     </script>
-    <script>
-      /*
-       * أحياناً يفشل تحميل ملف الصفحة أثناء الانتقال من صفحة أخرى بسبب
-       * التخزين المؤقت أو تأخر أحد ملفات Firebase. نعيد المحاولة دون إعادة
-       * تحميل الصفحة كاملة، حتى لا تبقى نسخة HTML الأولية ظاهرة وحدها.
-       */
-      window.__productsModuleLoaded = false;
-      window.__productsInitialized = false;
-      (function(){
-        var attempts = 0;
-        function retryProductsModule(){
-          if (window.__productsInitialized || attempts >= 2) return;
-          attempts++;
-          var s = document.createElement("script");
-          s.type = "module";
-          s.src = "/assets/products-DbXeSzH2.js?retry=" + attempts;
-          document.head.appendChild(s);
-        }
-        window.setTimeout(function(){
-          if (!window.__productsInitialized) retryProductsModule();
-        }, 1800);
-        window.setTimeout(function(){
-          if (!window.__productsInitialized) retryProductsModule();
-        }, 4200);
-      })();
-    </script>
     <script type="module" crossorigin src="/assets/products-DbXeSzH2.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/auth-guard-DMMO1gWE.js">
     <link rel="modulepreload" crossorigin href="/assets/nav-C4LmEyvm.js">
     <link rel="modulepreload" crossorigin href="/assets/image-utils-ix_Ztzsr.js">
     <link rel="stylesheet" crossorigin href="/assets/auth-guard-C6CJ8_8i.css">
-    <style id="products-boot-fallback">
-      /* لا تعرض نسخة HTML ناقصة قبل انتهاء المصادقة وتهيئة الصفحة. */
-      #app { opacity: 1 !important; }
-    </style>
     <style>
       /* ── Warehouse sections ── */
       .warehouse-section{border:1px solid var(--border);border-radius:10px;margin-bottom:20px;overflow:hidden;background:var(--surface)}
@@ -476,23 +446,7 @@
   <div class="pl-text">جارِ التحميل…</div>
 </div>
 <div id="app">
-      <header id="topbar" class="topbar">
-        <!-- نسخة احتياطية تظهر فقط إذا تأخر ملف التهيئة، وتُستبدل عند نجاحه -->
-        <div class="topbar-inner products-boot-nav">
-          <div class="brand">
-            <img src="/favicon.svg" alt="logo" style="height:30px;object-fit:contain;border-radius:5px;background:#fff;padding:2px 4px" />
-            <span>Ahmed And hamdy</span>
-          </div>
-          <nav class="nav-tabs">
-            <a href="/dashboard.html">الرئيسية</a>
-            <a href="/merchants.html">التجار</a>
-            <a href="/products.html" class="active">المنتجات</a>
-            <a href="/employees.html">الموظفين</a>
-            <a href="/finance.html">المالية</a>
-          </nav>
-          <div class="user-chip"><button class="icon-btn" type="button">خروج</button></div>
-        </div>
-      </header>
+      <header id="topbar" class="topbar"></header>
       <main class="page">
         <div class="page-header">
           <div>
@@ -706,15 +660,6 @@
 
       </main>
     </div>
-    <nav id="bottom-nav" aria-label="التنقل الرئيسي">
-      <div class="bot-nav-inner">
-        <a href="/dashboard.html" class="bot-nav-item"><span>الرئيسية</span></a>
-        <a href="/merchants.html" class="bot-nav-item"><span>التجار</span></a>
-        <a href="/products.html" class="bot-nav-item active"><span>المنتجات</span></a>
-        <a href="/employees.html" class="bot-nav-item"><span>الموظفين</span></a>
-        <a href="/finance.html" class="bot-nav-item"><span>المالية</span></a>
-      </div>
-    </nav>
 
     <!-- ══════════ PRODUCT MODAL ══════════ -->
     <div class="modal-overlay" id="product-modal">
@@ -834,7 +779,9 @@
     </div>
 
   
-<!-- ══ مراقب شاشة التحميل ══ -->
+<!-- ══ مراقب شاشة التحميل ══
+     لا نستخدم طبقة تغطي الصفحة بعد الآن؛ ظهور الصفحة لا يعتمد
+     على اكتمال أي طلب خارجي. -->
 <script>
 (function(){
   var loader = document.getElementById("page-loader");
@@ -844,19 +791,16 @@
   function hideLdr(){
     if (_done) return;
     _done = true;
-    // تأكد من أن الصفحة قابلة للنقر فوراً حتى لو فشل ملف إضافي.
-    app.style.setProperty("visibility", "visible", "important");
     loader.classList.add("pl-hide");
     setTimeout(function(){
-      // إزالة كاملة من تدفق الصفحة حتى لا يعيق النقر
       loader.style.display    = "none";
       loader.style.visibility = "hidden";
       loader.style.pointerEvents = "none";
     }, 360);
   }
-  // لا تعتمد على visibility وحدها: حارس الدخول يغيّرها بعد تنفيذ هذا السكربت.
-  // صفحة المنتجات ترسل الإشارة بعد اكتمال التهيئة الأساسية.
-  window.addEventListener("products-ready", hideLdr, { once: true });
+  // إخفاء تجميلي فقط. لا ننتظر Firebase ولا نعيد إظهار app بالقوة،
+  // لأن auth-guard هو المسؤول عن إظهاره بعد التحقق من المستخدم.
+  setTimeout(hideLdr, 700);
 })();
 </script>
 
@@ -1320,64 +1264,13 @@ document.addEventListener("DOMContentLoaded",()=>{
 </script>
 
 
-<!-- ══ Watchdog: يُعيد تحميل الصفحة إذا تعطّل الـ loader أو الـ topbar ══ -->
+<!-- ══ حماية أخطاء التهيئة:
+     لا تعيد تحميل الصفحة تلقائياً؛ التحديث القسري كان سبباً في
+     حلقة إعادة تحميل وإظهار صفحة بلا تنقل عند حدوث خطأ عابر. -->
 <script>
 (function() {
-  // تم تعطيل إعادة التحميل التلقائية؛ تأخر Firebase لا يجب أن يعيد الصفحة من البداية.
-  return;
-  var GRACE_MS    = 4000;   // انتظر 4 ثوانٍ قبل أي تدخّل
-  var TIMEOUT_MS  = 10000;  // أقصى وقت مسموح قبل إعادة التحميل الإجبارية
-  var CHECK_INT   = 500;    // فحص كل نصف ثانية
-
-  var startTime = Date.now();
-  var pageOk    = false;    // يصبح true عند اكتمال الصفحة
-
-  // نُراقب الـ topbar — عند إضافة محتوى له نعرف أن الصفحة جاهزة
-  var topbar = document.getElementById("topbar");
-  if (topbar) {
-    var mo = new MutationObserver(function(mutations) {
-      if (topbar.innerHTML.trim().length > 0) {
-        pageOk = true;
-        mo.disconnect();
-      }
-    });
-    mo.observe(topbar, { childList: true, subtree: true });
-  }
-
-  // نُراقب أيضاً إزالة class pl-hide من الـ loader
-  var loader = document.getElementById("page-loader");
-  if (loader) {
-    var lo = new MutationObserver(function() {
-      if (loader.classList.contains("pl-hide")) {
-        pageOk = true;
-        lo.disconnect();
-      }
-    });
-    lo.observe(loader, { attributes: true, attributeFilter: ["class"] });
-  }
-
-  var timer = setInterval(function() {
-    if (pageOk) { clearInterval(timer); return; }
-    var elapsed = Date.now() - startTime;
-    var loaderStuck = loader && !loader.classList.contains("pl-hide");
-    var topbarEmpty = topbar && topbar.innerHTML.trim().length === 0;
-
-    // بعد فترة الـ grace: إذا ظهر أن الصفحة لم تكتمل أعد التحميل
-    if (false && elapsed > GRACE_MS && (loaderStuck || topbarEmpty)) {
-      clearInterval(timer);
-      // سجّل الخطأ للمساعدة في التشخيص
-      try { console.warn("[watchdog] Page init stalled after " + elapsed + "ms — reloading…"); } catch(e) {}
-      console.error("[products] initialization is taking longer than expected");
-      return;
-    }
-
-    // مهلة صارمة: لا تتجاوز TIMEOUT_MS تحت أي ظرف
-    if (false && elapsed > TIMEOUT_MS) {
-      clearInterval(timer);
-      try { console.warn("[watchdog] Hard timeout reached — reloading…"); } catch(e) {}
-      console.error("[products] initialization timeout");
-    }
-  }, CHECK_INT);
+  // لا يوجد watchdog يعيد تحميل الصفحة. كل تهيئة مستقلة ومحميّة
+  // داخل products-DbXeSzH2_1786305583035.js.
 })();
 </script>
 
