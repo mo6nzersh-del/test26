@@ -11,15 +11,20 @@ function resolveAlias(email) {
   return emailToAlias[email] || email;
 }
 // يستمع إلى appUsers ويبني الخريطة فور أي تغيير.
-// يبدأ بعد اكتمال حارس الدخول حتى لا يسبق تهيئة الجلسة أو يعطل بقية الصفحة.
-function listenAliases() {
-  onSnapshot(collection(db, "appUsers"), snap => {
-    emailToAlias = {};
-    snap.forEach(d => {
-      const { email, alias } = d.data();
-      if (email && alias) emailToAlias[email] = alias;
-    });
-  }, err => console.warn("alias listener:", err));
+// يبدأ بعد بناء الواجهة حتى لا يؤدي خطأ Firebase عابر إلى إيقاف الصفحة
+// قبل إنشاء شريطي التنقل.
+function startAliasListener() {
+  try {
+    onSnapshot(collection(db, "appUsers"), snap => {
+      emailToAlias = {};
+      snap.forEach(d => {
+        const { email, alias } = d.data();
+        if (email && alias) emailToAlias[email] = alias;
+      });
+    }, err => console.error("appUsers listener:", err));
+  } catch (err) {
+    console.error("appUsers listener setup:", err);
+  }
 }
 
 /* ─── state ─── */
@@ -103,34 +108,40 @@ function generateSerial(warehouseId) {
 /* ─── init ─── */
 initPage(user => {
   currentUser = user;
-  // ارسم شريط التنقل أولاً؛ فتعطل مستمع اختياري يجب ألا يجعل الصفحة تبدو عالقة.
+  // أنشئ التنقل أولاً. إذا تعطل جزء ثانوي من الصفحة فلن تختفي
+  // الأشرطة ولن تصبح الصفحة غير قابلة للاستخدام.
   renderNav(`${BASE}products.html`, user);
-  // أبلغ شاشة التحميل أن الواجهة الأساسية أصبحت جاهزة.
-  window.dispatchEvent(new Event("products-ready"));
-  initNumberInputSelection();
-  listenAliases();
-  try {
-    initTabs();
-    initWarehouseContainerDelegation();
-    initWarehouseModal();
-    initProductModal();
-    initInvoiceModal();
-    initOpDeletedModal();
-    initOpTypeSwitcher();
-    initProductionForm();
-    initTransferForm();
-    initLoadingForm();
-  } catch (err) {
-    console.error("products page initialization:", err);
-    showToast("تم فتح الصفحة، لكن بعض أدوات المنتجات لم تكتمل", true);
-  }
-  loadWarehouses();
-  loadProducts();
-  loadMerchants();
-  listenMerchantBalances();
-  loadMovementsRecords();
-  loadLoadingRecords();
-  loadActivityLog();
+
+  const initializers = [
+    ["number input selection", initNumberInputSelection],
+    ["tabs", initTabs],
+    ["warehouse delegation", initWarehouseContainerDelegation],
+    ["warehouse modal", initWarehouseModal],
+    ["product modal", initProductModal],
+    ["invoice modal", initInvoiceModal],
+    ["deleted operation modal", initOpDeletedModal],
+    ["operation switcher", initOpTypeSwitcher],
+    ["production form", initProductionForm],
+    ["transfer form", initTransferForm],
+    ["loading form", initLoadingForm],
+    ["alias listener", startAliasListener],
+    ["warehouses", loadWarehouses],
+    ["products", loadProducts],
+    ["merchants", loadMerchants],
+    ["merchant balances", listenMerchantBalances],
+    ["movement records", loadMovementsRecords],
+    ["loading records", loadLoadingRecords],
+    ["activity log", loadActivityLog],
+  ];
+
+  // كل جزء مستقل؛ خطأ في Firebase أو في بيانات قديمة لا يوقف بقية الصفحة.
+  initializers.forEach(([name, initializer]) => {
+    try {
+      initializer();
+    } catch (err) {
+      console.error(`Products page ${name} initialization failed:`, err);
+    }
+  });
 });
 
 /* ══════════════════════════════════════
@@ -165,12 +176,7 @@ function loadWarehouses() {
     warehousesLoaded = true;
     if (productsLoaded) renderWarehousesContainer();
     refreshAllWarehouseSelects();
-  }, err => {
-    console.error("warehouses listener:", err);
-    warehousesLoaded = true;
-    if (productsLoaded) renderWarehousesContainer();
-    refreshAllWarehouseSelects();
-  });
+  }, err => console.error(err));
 }
 
 function loadProducts() {
@@ -179,11 +185,7 @@ function loadProducts() {
     products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     productsLoaded = true;
     if (warehousesLoaded) renderWarehousesContainer();
-  }, err => {
-    console.error("products listener:", err);
-    productsLoaded = true;
-    if (warehousesLoaded) renderWarehousesContainer();
-  });
+  }, err => console.error(err));
 }
 
 function loadMerchants() {
@@ -191,10 +193,7 @@ function loadMerchants() {
   onSnapshot(q, snap => {
     merchants = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     refreshMerchantSelects();
-  }, err => {
-    console.error("merchants listener:", err);
-    refreshMerchantSelects();
-  });
+  }, err => console.error(err));
 }
 
 /* ══ رصيد كل تاجر — يطابق calcBalance في صفحة التجار ══
