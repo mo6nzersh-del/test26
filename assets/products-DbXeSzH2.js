@@ -10,14 +10,18 @@ function resolveAlias(email) {
   if (!email || email === "—") return email;
   return emailToAlias[email] || email;
 }
-// يستمع إلى appUsers ويبني الخريطة فور أي تغيير
-onSnapshot(collection(db, "appUsers"), snap => {
-  emailToAlias = {};
-  snap.forEach(d => {
-    const { email, alias } = d.data();
-    if (email && alias) emailToAlias[email] = alias;
-  });
-});
+let aliasesStarted = false;
+function listenAliases() {
+  if (aliasesStarted) return;
+  aliasesStarted = true;
+  onSnapshot(collection(db, "appUsers"), snap => {
+    emailToAlias = {};
+    snap.forEach(d => {
+      const { email, alias } = d.data();
+      if (email && alias) emailToAlias[email] = alias;
+    });
+  }, err => console.error("aliases listener:", err));
+}
 
 /* ─── state ─── */
 let currentUser = null;
@@ -26,6 +30,14 @@ let products = [];
 let merchants = [];
 let warehousesLoaded = false;
 let productsLoaded = false;
+let merchantsLoaded = false;
+let merchantBalancesStarted = false;
+let movementsRecordsStarted = false;
+let loadingRecordsStarted = false;
+let activityLogStarted = false;
+let warehouseViewActivated = false;
+let warehousesLoadVersion = 0;
+let productsLoadVersion = 0;
 let pendingProductFile = null;
 let editingProductId = null;
 
@@ -48,6 +60,7 @@ let merchantBalances = {};  // المجموع = _merchantTxBal + _merchantFinBal
 // caches of full operation records, keyed by opId, for detail replay
 let movementsRecordsCache = {};
 let loadingRecordsCache = {};
+let warehouseRenderVersion = 0;
 
 /* ─── helpers ─── */
 function esc(v) {
@@ -97,39 +110,79 @@ function generateSerial(warehouseId) {
   return `W${whNum}-${String(count).padStart(5, "0")}`;
 }
 
+function scheduleWhenIdle(task) {
+  if (typeof window.requestIdleCallback === "function") {
+    window.requestIdleCallback(task, { timeout: 1000 });
+  } else {
+    setTimeout(task, 0);
+  }
+}
+
+function mapDocsInChunks(docs, mapDoc, done) {
+  const result = [];
+  let index = 0;
+  const processChunk = () => {
+    const end = Math.min(index + 150, docs.length);
+    for (; index < end; index += 1) result.push(mapDoc(docs[index]));
+    if (index < docs.length) {
+      setTimeout(processChunk, 0);
+    } else {
+      done(result);
+    }
+  };
+  processChunk();
+}
+
 /* ─── init ─── */
 initPage(user => {
   currentUser = user;
-  const initializers = [
-    // ابنِ التنقل أولاً، واعزل فشله عن بقية تهيئة الصفحة.
-    ["شريطا التنقل", () => renderNav(`${BASE}products.html`, user)],
-    ["اختيار حقول الأرقام", initNumberInputSelection],
-    ["التبويبات", initTabs],
-    ["أحداث المخازن", initWarehouseContainerDelegation],
-    ["نافذة المخزن", initWarehouseModal],
-    ["نافذة المنتج", initProductModal],
-    ["نافذة الفاتورة", initInvoiceModal],
-    ["نافذة الحركة المحذوفة", initOpDeletedModal],
-    ["مبدل نوع العملية", initOpTypeSwitcher],
-    ["نموذج الإنتاج", initProductionForm],
-    ["نموذج التحويل", initTransferForm],
-    ["نموذج البيع", initLoadingForm],
-    ["تحميل المخازن", loadWarehouses],
-    ["تحميل المنتجات", loadProducts],
-    ["تحميل التجار", loadMerchants],
-    ["أرصدة التجار", listenMerchantBalances],
-    ["سجل حركات المخازن", loadMovementsRecords],
-    ["سجل عمليات البيع", loadLoadingRecords],
-    ["سجل النشاط", loadActivityLog],
-  ];
+  const app = document.getElementById("app");
+  if (app) app.style.visibility = "visible";
+  const loader = document.getElementById("page-loader");
+  if (loader) {
+    // إيقاف الغطاء فور نجاح المصادقة، قبل بدء تهيئة البيانات.
+    loader.classList.add("pl-hide");
+    loader.style.pointerEvents = "none";
+  }
 
-  initializers.forEach(([name, initialize]) => {
-    try {
-      initialize();
-    } catch (err) {
-      console.error(`Products page initialization failed: ${name}`, err);
-    }
-  });
+  const initializePage = () => {
+    const initializers = [
+      // ابنِ التنقل أولاً، واعزل فشله عن بقية تهيئة الصفحة.
+      ["شريطا التنقل", () => renderNav(`${BASE}products.html`, user)],
+      ["اختيار حقول الأرقام", initNumberInputSelection],
+      ["التبويبات", initTabs],
+      ["أحداث المخازن", initWarehouseContainerDelegation],
+      ["نافذة المخزن", initWarehouseModal],
+      ["نافذة المنتج", initProductModal],
+      ["نافذة الفاتورة", initInvoiceModal],
+      ["نافذة الحركة المحذوفة", initOpDeletedModal],
+      ["مبدل نوع العملية", initOpTypeSwitcher],
+      ["نموذج الإنتاج", initProductionForm],
+      ["نموذج التحويل", initTransferForm],
+      ["نموذج البيع", initLoadingForm],
+    ];
+
+    initializers.forEach(([name, initialize]) => {
+      try {
+        initialize();
+      } catch (err) {
+        console.error(`Products page initialization failed: ${name}`, err);
+      }
+    });
+
+    // اترك للمتصفح فرصة رسم الواجهة والاستجابة للمس قبل بدء اشتراكات Firestore.
+    scheduleWhenIdle(() => {
+      try { loadWarehouses(); } catch (err) {
+        console.error("Products page initialization failed: تحميل المخازن", err);
+      }
+      try { loadProducts(); } catch (err) {
+        console.error("Products page initialization failed: تحميل المنتجات", err);
+      }
+    }, 0);
+  };
+
+  // أعطِ الهاتف فرصة لرسم الواجهة قبل أي تهيئة إضافية.
+  setTimeout(initializePage, 0);
 });
 
 /* ══════════════════════════════════════
@@ -150,6 +203,20 @@ function initTabs() {
       });
       tabs[key].btn.classList.add("active");
       tabs[key].view.classList.add("active");
+      if (key === "loading") {
+        loadMerchants();
+        listenMerchantBalances();
+      }
+      if (key === "warehouses") {
+        warehouseViewActivated = true;
+        if (warehousesLoaded && productsLoaded) renderWarehousesContainer();
+      }
+      if (key === "log") {
+        listenAliases();
+        loadMovementsRecords();
+        loadLoadingRecords();
+        loadActivityLog();
+      }
     });
   });
 }
@@ -160,23 +227,35 @@ function initTabs() {
 function loadWarehouses() {
   const q = query(collection(db, "warehouses"), orderBy("createdAt", "asc"));
   onSnapshot(q, snap => {
-    warehouses = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    warehousesLoaded = true;
-    if (productsLoaded) renderWarehousesContainer();
-    refreshAllWarehouseSelects();
+    const docs = snap.docs;
+    const version = ++warehousesLoadVersion;
+    mapDocsInChunks(docs, d => ({ id: d.id, ...d.data() }), mapped => {
+      if (version !== warehousesLoadVersion) return;
+      warehouses = mapped;
+      warehousesLoaded = true;
+      if (productsLoaded && warehouseViewActivated) renderWarehousesContainer();
+      refreshAllWarehouseSelects();
+    });
   }, err => console.error(err));
 }
 
 function loadProducts() {
   const q = query(collection(db, "products"), orderBy("createdAt", "asc"));
   onSnapshot(q, snap => {
-    products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    productsLoaded = true;
-    if (warehousesLoaded) renderWarehousesContainer();
+    const docs = snap.docs;
+    const version = ++productsLoadVersion;
+    mapDocsInChunks(docs, d => ({ id: d.id, ...d.data() }), mapped => {
+      if (version !== productsLoadVersion) return;
+      products = mapped;
+      productsLoaded = true;
+      if (warehousesLoaded && warehouseViewActivated) renderWarehousesContainer();
+    });
   }, err => console.error(err));
 }
 
 function loadMerchants() {
+  if (merchantsLoaded) return;
+  merchantsLoaded = true;
   const q = query(collection(db, "merchants"), orderBy("createdAt", "desc"));
   onSnapshot(q, snap => {
     merchants = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -197,6 +276,8 @@ function _rebuildMerchantBalances() {
 }
 
 function listenMerchantBalances() {
+  if (merchantBalancesStarted) return;
+  merchantBalancesStarted = true;
   // المصدر 1
   onSnapshot(query(collection(db, "merchantTransactions")), snap => {
     _merchantTxBal = {};
@@ -229,16 +310,24 @@ function listenMerchantBalances() {
 ══════════════════════════════════════ */
 function renderWarehousesContainer() {
   const container = document.getElementById("warehouses-container");
-  if (!container) return;
+  if (!container || !warehouseViewActivated) return;
+  const renderVersion = ++warehouseRenderVersion;
   if (warehouses.length === 0) {
     container.innerHTML = '<div class="empty-state">لا توجد مخازن بعد. أضف مخزنًا أولاً.</div>';
     return;
   }
   container.innerHTML = "";
-  warehouses.forEach(wh => {
+  let index = 0;
+  const renderNextWarehouse = () => {
+    if (renderVersion !== warehouseRenderVersion) return;
+    const wh = warehouses[index];
+    if (!wh) return;
     const whProducts = products.filter(p => p.warehouseId === wh.id);
     container.appendChild(buildWarehouseSection(wh, whProducts));
-  });
+    index += 1;
+    if (index < warehouses.length) requestAnimationFrame(renderNextWarehouse);
+  };
+  requestAnimationFrame(renderNextWarehouse);
 }
 
 function buildWarehouseSection(wh, whProducts) {
@@ -999,6 +1088,8 @@ function renderLoadLines() {
    RECORDS LISTS
 ══════════════════════════════════════ */
 function loadMovementsRecords() {
+  if (movementsRecordsStarted) return;
+  movementsRecordsStarted = true;
   const container = document.getElementById("movements-records-list");
   const q = query(collection(db, "warehouseOperations"), orderBy("createdAt", "desc"));
   onSnapshot(q, snap => {
@@ -1033,6 +1124,8 @@ function loadMovementsRecords() {
 }
 
 function loadLoadingRecords() {
+  if (loadingRecordsStarted) return;
+  loadingRecordsStarted = true;
   const container = document.getElementById("loading-records-list");
   const q = query(collection(db, "loadingOperations"), orderBy("createdAt", "desc"));
   onSnapshot(q, snap => {
@@ -1112,6 +1205,8 @@ function bindDeleteBtns(container, colName) {
    ACTIVITY LOG
 ══════════════════════════════════════ */
 function loadActivityLog() {
+  if (activityLogStarted) return;
+  activityLogStarted = true;
   const tbody = document.getElementById("log-table-body");
   const mobList = document.getElementById("mob-log-list");
   const countEl = document.getElementById("log-count");
