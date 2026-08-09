@@ -26,6 +26,11 @@
     <link rel="modulepreload" crossorigin href="/assets/nav-C4LmEyvm.js">
     <link rel="modulepreload" crossorigin href="/assets/image-utils-ix_Ztzsr.js">
     <link rel="stylesheet" crossorigin href="/assets/auth-guard-C6CJ8_8i.css">
+    <style id="products-boot-fallback">
+      /* لا تسمح لتأخر المصادقة أو ملف إضافي بتحويل الصفحة إلى شاشة بيضاء. */
+      #app { visibility: visible !important; opacity: 1 !important; }
+      #page-loader { display: none !important; }
+    </style>
     <style>
       /* ── Warehouse sections ── */
       .warehouse-section{border:1px solid var(--border);border-radius:10px;margin-bottom:20px;overflow:hidden;background:var(--surface)}
@@ -445,7 +450,7 @@
   <div class="pl-spinner"></div>
   <div class="pl-text">جارِ التحميل…</div>
 </div>
-<div id="app">
+<div id="app" style="visibility:visible!important;opacity:1!important">
       <header id="topbar" class="topbar"></header>
       <main class="page">
         <div class="page-header">
@@ -789,8 +794,8 @@
   function hideLdr(){
     if (_done) return;
     _done = true;
-    // تأكد من أن الصفحة قابلة للنقر فوراً
-    if (app.style.visibility === "hidden") app.style.visibility = "visible";
+    // تأكد من أن الصفحة قابلة للنقر فوراً حتى لو فشل ملف إضافي.
+    app.style.setProperty("visibility", "visible", "important");
     loader.classList.add("pl-hide");
     setTimeout(function(){
       // إزالة كاملة من تدفق الصفحة حتى لا يعيق النقر
@@ -799,18 +804,11 @@
       loader.style.pointerEvents = "none";
     }, 360);
   }
-  var obs = new MutationObserver(function(){
-    if (app.style.visibility !== "hidden"){ hideLdr(); obs.disconnect(); }
-  });
-  obs.observe(app, { attributes: true, attributeFilter: ["style"] });
-  // الحد الأقصى 1 ثانية
-  function waitUntilReady(){
-    if (app.style.visibility !== "hidden") {
-      hideLdr();
-      obs.disconnect();
-    }
-  }
-  waitUntilReady();
+  // لا تعتمد على visibility وحدها: حارس الدخول يغيّرها بعد تنفيذ هذا السكربت.
+  // صفحة المنتجات ترسل الإشارة بعد اكتمال التهيئة الأساسية.
+  window.addEventListener("products-ready", hideLdr, { once: true });
+  // إذا تعطل ملف JavaScript أو تأخرت الشبكة، اعرض الواجهة بسرعة بدل حجبها.
+  setTimeout(hideLdr, 1200);
 })();
 </script>
 
