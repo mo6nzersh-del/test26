@@ -281,6 +281,9 @@
         transition: opacity .35s ease;
       }
       #page-loader.pl-hide { opacity: 0; pointer-events: none; }
+      /* حارس الجلسة يخفي #app مؤقتاً أثناء استعادة Firebase.
+         الشاشة هنا للعرض فقط، لذلك لا نخفي محتوى الصفحة أثناء الانتقال. */
+      #app { visibility: visible !important; }
       .pl-logo {
         width: 90px; height: 90px; border-radius: 22px;
         background: rgba(255,255,255,.18);
@@ -779,32 +782,31 @@
     </div>
 
   
-<!-- ══ مراقب شاشة التحميل ══ -->
+<!-- ══ شاشة عرض قصيرة ══
+     هذه الشاشة للعرض فقط، ولا تنتظر Firebase أو تسجيل الدخول أو البيانات. -->
 <script>
 (function(){
   var loader = document.getElementById("page-loader");
-  var app    = document.getElementById("app");
-  if (!loader || !app) return;
-  var _done = false;
-  function hideLdr(){
-    if (_done) return;
-    _done = true;
-    // تأكد من أن الصفحة قابلة للنقر فوراً
-    if (app.style.visibility === "hidden") app.style.visibility = "visible";
+  var app = document.getElementById("app");
+  if (!loader) return;
+
+  function hideLoader(){
     loader.classList.add("pl-hide");
-    setTimeout(function(){
-      // إزالة كاملة من تدفق الصفحة حتى لا يعيق النقر
-      loader.style.display    = "none";
+    window.setTimeout(function(){
+      loader.style.display = "none";
       loader.style.visibility = "hidden";
       loader.style.pointerEvents = "none";
     }, 360);
   }
-  var obs = new MutationObserver(function(){
-    if (app.style.visibility !== "hidden"){ hideLdr(); obs.disconnect(); }
-  });
-  obs.observe(app, { attributes: true, attributeFilter: ["style"] });
-  // الحد الأقصى 1 ثانية
-  setTimeout(function(){ obs.disconnect(); hideLdr(); }, 1000);
+
+  // لا تمنع الشاشة النقر على الصفحة أثناء ظهورها.
+  loader.style.pointerEvents = "none";
+
+  // مدة عرض ثابتة فقط، مستقلة عن أي عملية تحميل.
+  window.setTimeout(function(){
+    if (app) app.style.visibility = "visible";
+    hideLoader();
+  }, 1000);
 })();
 </script>
 
@@ -1267,65 +1269,6 @@ document.addEventListener("DOMContentLoaded",()=>{
 });
 </script>
 
-
-<!-- ══ Watchdog: يُعيد تحميل الصفحة إذا تعطّل الـ loader أو الـ topbar ══ -->
-<script>
-(function() {
-  var GRACE_MS    = 4000;   // انتظر 4 ثوانٍ قبل أي تدخّل
-  var TIMEOUT_MS  = 10000;  // أقصى وقت مسموح قبل إعادة التحميل الإجبارية
-  var CHECK_INT   = 500;    // فحص كل نصف ثانية
-
-  var startTime = Date.now();
-  var pageOk    = false;    // يصبح true عند اكتمال الصفحة
-
-  // نُراقب الـ topbar — عند إضافة محتوى له نعرف أن الصفحة جاهزة
-  var topbar = document.getElementById("topbar");
-  if (topbar) {
-    var mo = new MutationObserver(function(mutations) {
-      if (topbar.innerHTML.trim().length > 0) {
-        pageOk = true;
-        mo.disconnect();
-      }
-    });
-    mo.observe(topbar, { childList: true, subtree: true });
-  }
-
-  // نُراقب أيضاً إزالة class pl-hide من الـ loader
-  var loader = document.getElementById("page-loader");
-  if (loader) {
-    var lo = new MutationObserver(function() {
-      if (loader.classList.contains("pl-hide")) {
-        pageOk = true;
-        lo.disconnect();
-      }
-    });
-    lo.observe(loader, { attributes: true, attributeFilter: ["class"] });
-  }
-
-  var timer = setInterval(function() {
-    if (pageOk) { clearInterval(timer); return; }
-    var elapsed = Date.now() - startTime;
-    var loaderStuck = loader && !loader.classList.contains("pl-hide");
-    var topbarEmpty = topbar && topbar.innerHTML.trim().length === 0;
-
-    // بعد فترة الـ grace: إذا ظهر أن الصفحة لم تكتمل أعد التحميل
-    if (elapsed > GRACE_MS && (loaderStuck || topbarEmpty)) {
-      clearInterval(timer);
-      // سجّل الخطأ للمساعدة في التشخيص
-      try { console.warn("[watchdog] Page init stalled after " + elapsed + "ms — reloading…"); } catch(e) {}
-      window.location.reload();
-      return;
-    }
-
-    // مهلة صارمة: لا تتجاوز TIMEOUT_MS تحت أي ظرف
-    if (elapsed > TIMEOUT_MS) {
-      clearInterval(timer);
-      try { console.warn("[watchdog] Hard timeout reached — reloading…"); } catch(e) {}
-      window.location.reload();
-    }
-  }, CHECK_INT);
-})();
-</script>
 
 </body>
 </html>
