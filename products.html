@@ -311,6 +311,16 @@
         font-size: 14px; font-weight: 600;
         letter-spacing: .3px;
       }
+      .pl-retry-btn {
+        border: 1px solid rgba(255,255,255,.55);
+        background: rgba(255,255,255,.14);
+        color: #fff;
+        border-radius: 9px;
+        padding: 9px 18px;
+        font: 600 13px Cairo,sans-serif;
+        cursor: pointer;
+      }
+      .pl-retry-btn:hover { background: rgba(255,255,255,.24); }
 
       /* ══ أزرار تعديل المخزون وسجل الحركات ══ */
       .wh-adj-btn {
@@ -445,7 +455,7 @@
   <div class="pl-spinner"></div>
   <div class="pl-text">جارِ التحميل…</div>
 </div>
-<div id="app">
+<div id="app" style="visibility:hidden">
       <header id="topbar" class="topbar"></header>
       <main class="page">
         <div class="page-header">
@@ -780,17 +790,20 @@
 
   
 <!-- ══ مراقب شاشة التحميل ══
-     لا نستخدم طبقة تغطي الصفحة بعد الآن؛ ظهور الصفحة لا يعتمد
-     على اكتمال أي طلب خارجي. -->
+     لا تُخفَ الشاشة قبل اكتمال التحقق من Firebase؛
+     إخفاؤها مبكراً كان يُظهر صفحة بيضاء أثناء انتظار الجلسة. -->
 <script>
 (function(){
   var loader = document.getElementById("page-loader");
   var app    = document.getElementById("app");
   if (!loader || !app) return;
   var _done = false;
+  var retryTimer = null;
+
   function hideLdr(){
     if (_done) return;
     _done = true;
+    if (retryTimer) clearTimeout(retryTimer);
     loader.classList.add("pl-hide");
     setTimeout(function(){
       loader.style.display    = "none";
@@ -798,9 +811,42 @@
       loader.style.pointerEvents = "none";
     }, 360);
   }
-  // إخفاء تجميلي فقط. لا ننتظر Firebase ولا نعيد إظهار app بالقوة،
-  // لأن auth-guard هو المسؤول عن إظهاره بعد التحقق من المستخدم.
-  setTimeout(hideLdr, 700);
+
+  function showDelayedMessage(){
+    if (_done) return;
+    var text = loader.querySelector(".pl-text");
+    if (text) text.textContent = "الاتصال بالخدمة تأخر قليلاً…";
+
+    if (!loader.querySelector(".pl-retry-btn")) {
+      var btn = document.createElement("button");
+      btn.className = "pl-retry-btn";
+      btn.type = "button";
+      btn.textContent = "إعادة المحاولة";
+      btn.onclick = function(){ window.location.reload(); };
+      loader.appendChild(btn);
+    }
+  }
+
+  // auth-guard يجعل app مرئياً بعد اكتمال التحقق.
+  // نراقب ذلك بدلاً من استخدام مؤقت قصير يخفي التطبيق أثناء انتظاره.
+  var obs = new MutationObserver(function(){
+    if (app.style.visibility !== "hidden") {
+      hideLdr();
+      obs.disconnect();
+    }
+  });
+  obs.observe(app, { attributes:true, attributeFilter:["style"] });
+
+  // حدث صريح من auth-guard، مع إبقاء المراقب كحل احتياطي للنسخ القديمة.
+  window.addEventListener("auth-ready", hideLdr, { once:true });
+
+  if (app.style.visibility !== "hidden") {
+    hideLdr();
+    obs.disconnect();
+  } else {
+    // لا نعيد التحميل تلقائياً ولا نخفي الشاشة؛ نعرض سبب التأخر وزرّاً يدوياً.
+    retryTimer = setTimeout(showDelayedMessage, 12000);
+  }
 })();
 </script>
 
