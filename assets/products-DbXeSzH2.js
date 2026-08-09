@@ -6,26 +6,18 @@ const BASE = "/";
 
 /* ─── alias map: email → اسم مستعار ─── */
 let emailToAlias = {};
-let aliasesLoaded = false;
 function resolveAlias(email) {
   if (!email || email === "—") return email;
   return emailToAlias[email] || email;
 }
-function loadAliases() {
-  if (aliasesLoaded) return;
-  aliasesLoaded = true;
-  // الأسماء المستعارة مطلوبة للسجلات فقط، لذلك لا نبدأ مستمعاً إضافياً أثناء الانتقال.
-  onSnapshot(collection(db, "appUsers"), snap => {
-    emailToAlias = {};
-    snap.forEach(d => {
-      const { email, alias } = d.data();
-      if (email && alias) emailToAlias[email] = alias;
-    });
-  }, err => {
-    aliasesLoaded = false;
-    console.error("aliases listener:", err);
+// يستمع إلى appUsers ويبني الخريطة فور أي تغيير
+onSnapshot(collection(db, "appUsers"), snap => {
+  emailToAlias = {};
+  snap.forEach(d => {
+    const { email, alias } = d.data();
+    if (email && alias) emailToAlias[email] = alias;
   });
-}
+});
 
 /* ─── state ─── */
 let currentUser = null;
@@ -56,10 +48,6 @@ let merchantBalances = {};  // المجموع = _merchantTxBal + _merchantFinBal
 // caches of full operation records, keyed by opId, for detail replay
 let movementsRecordsCache = {};
 let loadingRecordsCache = {};
-let movementsRecordsLoaded = false;
-let loadingRecordsLoaded = false;
-let activityLogLoaded = false;
-let merchantBalancesLoaded = false;
 
 /* ─── helpers ─── */
 function esc(v) {
@@ -110,69 +98,27 @@ function generateSerial(warehouseId) {
 }
 
 /* ─── init ─── */
-function runInitStep(name, step) {
-  try {
-    step();
-  } catch (error) {
-    // خطأ في جزء ثانوي لا ينبغي أن يمنع فتح الصفحة وباقي الأدوات.
-    console.error(`[products] ${name} initialization failed`, error);
-  }
-}
-
-function initProductsPage(callback) {
-  let started = false;
-  const app = document.getElementById("app");
-  const start = user => {
-    if (started || !user) return;
-    started = true;
-    if (app) app.style.visibility = "visible";
-    callback(user);
-  };
-  // عند الانتقال من صفحة أخرى يكون المستخدم غالباً متاحاً قبل وصول
-  // إشعار onAuthStateChanged. استخدامه مباشرة يمنع بقاء الصفحة معلقة.
-  if (auth.currentUser) start(auth.currentUser);
-  const unsubscribe = auth.onAuthStateChanged(user => {
-    if (user) {
-      unsubscribe();
-      start(user);
-    }
-  });
-  // احتياط لحالة تأخر إشعار Firebase أثناء الانتقال بين الصفحات.
-  window.setTimeout(() => {
-    if (!started && auth.currentUser) {
-      unsubscribe();
-      start(auth.currentUser);
-    }
-  }, 2500);
-}
-initProductsPage(user => {
+initPage(user => {
   currentUser = user;
-
-  // أظهر شريط التنقل أولاً حتى لا تبدو الصفحة متوقفة إذا تأخر أحد المستمعين.
-  runInitStep("navigation", () => renderNav(`${BASE}products.html`, user));
-  runInitStep("number inputs", initNumberInputSelection);
-  runInitStep("tabs", initTabs);
-  runInitStep("warehouse delegation", initWarehouseContainerDelegation);
-  runInitStep("warehouse modal", initWarehouseModal);
-  runInitStep("product modal", initProductModal);
-  runInitStep("invoice modal", initInvoiceModal);
-  runInitStep("deleted operation modal", initOpDeletedModal);
-  runInitStep("operation switcher", initOpTypeSwitcher);
-  runInitStep("production form", initProductionForm);
-  runInitStep("transfer form", initTransferForm);
-  runInitStep("loading form", initLoadingForm);
-
-  // ابدأ البيانات الأساسية فوراً، وأجّل السجلات الثقيلة حتى لا تتنافس
-  // كل لقطات Firestore على الخيط الرئيسي أثناء الانتقال من صفحة أخرى.
-  runInitStep("warehouses", loadWarehouses);
-  runInitStep("products", loadProducts);
-  runInitStep("merchants", loadMerchants);
-  const deferUntilIdle = window.requestIdleCallback
-    ? callback => window.requestIdleCallback(callback, { timeout: 1500 })
-    : callback => window.setTimeout(callback, 1200);
-  deferUntilIdle(() => {
-    runInitStep("initial movement records", () => loadTabData("movements"));
-  });
+  initNumberInputSelection();
+  initTabs();
+  initWarehouseContainerDelegation();
+  initWarehouseModal();
+  initProductModal();
+  initInvoiceModal();
+  initOpDeletedModal();
+  initOpTypeSwitcher();
+  initProductionForm();
+  initTransferForm();
+  initLoadingForm();
+  loadWarehouses();
+  loadProducts();
+  loadMerchants();
+  listenMerchantBalances();
+  loadMovementsRecords();
+  loadLoadingRecords();
+  loadActivityLog();
+  renderNav(`${BASE}products.html`, user);
 });
 
 /* ══════════════════════════════════════
@@ -193,49 +139,8 @@ function initTabs() {
       });
       tabs[key].btn.classList.add("active");
       tabs[key].view.classList.add("active");
-      loadTabData(key);
     });
   });
-}
-
-function loadTabData(key) {
-  if (key === "movements" && !movementsRecordsLoaded) {
-    movementsRecordsLoaded = true;
-    loadMovementsRecords();
-    return;
-  }
-
-  if (key === "loading") {
-    if (!merchantBalancesLoaded) {
-      merchantBalancesLoaded = true;
-      listenMerchantBalances();
-    }
-    if (!loadingRecordsLoaded) {
-      loadingRecordsLoaded = true;
-      loadLoadingRecords();
-    }
-    return;
-  }
-
-  if (key === "log") {
-    loadAliases();
-    if (!merchantBalancesLoaded) {
-      merchantBalancesLoaded = true;
-      listenMerchantBalances();
-    }
-    if (!movementsRecordsLoaded) {
-      movementsRecordsLoaded = true;
-      loadMovementsRecords();
-    }
-    if (!loadingRecordsLoaded) {
-      loadingRecordsLoaded = true;
-      loadLoadingRecords();
-    }
-    if (!activityLogLoaded) {
-      activityLogLoaded = true;
-      loadActivityLog();
-    }
-  }
 }
 
 /* ══════════════════════════════════════
@@ -415,7 +320,7 @@ function initWarehouseModal() {
   });
 }
 
-/* حذف المخازن r�صبح متاحاً فقط من صفحة DeepLog، ولا يمكن تنفيذه من هذه الصفحة */
+/* حذف المخازن أصبح متاحاً فقط من صفحة DeepLog، ولا يمكن تنفيذه من هذه الصفحة */
 
 /* ══════════════════════════════════════
    PRODUCT MODAL
@@ -732,7 +637,7 @@ function initTransferForm() {
     const prevVal = selProd.value;
     selProd.innerHTML = '<option value="">اختر صنفاً من المخزن المصدر</option>';
     whProducts.forEach(p => {
-      const opt = document.cr�ateElement("option");
+      const opt = document.createElement("option");
       opt.value = p.id;
       opt.textContent = `${p.name} (${fmtNum(p.quantity || 0)} ${p.quantityType || ""})`;
       selProd.appendChild(opt);
