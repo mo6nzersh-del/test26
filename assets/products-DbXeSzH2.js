@@ -10,22 +10,14 @@ function resolveAlias(email) {
   if (!email || email === "—") return email;
   return emailToAlias[email] || email;
 }
-// يستمع إلى appUsers ويبني الخريطة فور أي تغيير.
-// يبدأ بعد بناء الواجهة حتى لا يؤدي خطأ Firebase عابر إلى إيقاف الصفحة
-// قبل إنشاء شريطي التنقل.
-function startAliasListener() {
-  try {
-    onSnapshot(collection(db, "appUsers"), snap => {
-      emailToAlias = {};
-      snap.forEach(d => {
-        const { email, alias } = d.data();
-        if (email && alias) emailToAlias[email] = alias;
-      });
-    }, err => console.error("appUsers listener:", err));
-  } catch (err) {
-    console.error("appUsers listener setup:", err);
-  }
-}
+// يستمع إلى appUsers ويبني الخريطة فور أي تغيير
+onSnapshot(collection(db, "appUsers"), snap => {
+  emailToAlias = {};
+  snap.forEach(d => {
+    const { email, alias } = d.data();
+    if (email && alias) emailToAlias[email] = alias;
+  });
+});
 
 /* ─── state ─── */
 let currentUser = null;
@@ -108,40 +100,25 @@ function generateSerial(warehouseId) {
 /* ─── init ─── */
 initPage(user => {
   currentUser = user;
-  // أنشئ التنقل أولاً. إذا تعطل جزء ثانوي من الصفحة فلن تختفي
-  // الأشرطة ولن تصبح الصفحة غير قابلة للاستخدام.
+  initNumberInputSelection();
+  initTabs();
+  initWarehouseContainerDelegation();
+  initWarehouseModal();
+  initProductModal();
+  initInvoiceModal();
+  initOpDeletedModal();
+  initOpTypeSwitcher();
+  initProductionForm();
+  initTransferForm();
+  initLoadingForm();
+  loadWarehouses();
+  loadProducts();
+  loadMerchants();
+  listenMerchantBalances();
+  loadMovementsRecords();
+  loadLoadingRecords();
+  loadActivityLog();
   renderNav(`${BASE}products.html`, user);
-
-  const initializers = [
-    ["number input selection", initNumberInputSelection],
-    ["tabs", initTabs],
-    ["warehouse delegation", initWarehouseContainerDelegation],
-    ["warehouse modal", initWarehouseModal],
-    ["product modal", initProductModal],
-    ["invoice modal", initInvoiceModal],
-    ["deleted operation modal", initOpDeletedModal],
-    ["operation switcher", initOpTypeSwitcher],
-    ["production form", initProductionForm],
-    ["transfer form", initTransferForm],
-    ["loading form", initLoadingForm],
-    ["alias listener", startAliasListener],
-    ["warehouses", loadWarehouses],
-    ["products", loadProducts],
-    ["merchants", loadMerchants],
-    ["merchant balances", listenMerchantBalances],
-    ["movement records", loadMovementsRecords],
-    ["loading records", loadLoadingRecords],
-    ["activity log", loadActivityLog],
-  ];
-
-  // كل جزء مستقل؛ خطأ في Firebase أو في بيانات قديمة لا يوقف بقية الصفحة.
-  initializers.forEach(([name, initializer]) => {
-    try {
-      initializer();
-    } catch (err) {
-      console.error(`Products page ${name} initialization failed:`, err);
-    }
-  });
 });
 
 /* ══════════════════════════════════════
