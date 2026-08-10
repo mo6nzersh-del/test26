@@ -181,6 +181,27 @@
     .filter-bar{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin-bottom:14px}
     .filter-bar .field{margin:0}
 
+    /* ── بحث وترتيب قائمة التجار ── */
+    .merchant-list-tools{
+      display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;
+      padding:0 12px 14px;
+    }
+    .merchant-search-field{flex:1 1 260px;margin:0}
+    .merchant-search-field label{
+      display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:5px;
+    }
+    .merchant-search-field input{
+      width:100%;box-sizing:border-box;border:1px solid var(--border);
+      border-radius:8px;padding:9px 12px;background:var(--surface);color:var(--ink);
+      font:inherit;font-size:13px;outline:none;transition:border-color .15s,box-shadow .15s;
+    }
+    .merchant-search-field input:focus{
+      border-color:var(--primary);box-shadow:0 0 0 3px rgba(74,125,212,.14);
+    }
+    .merchant-sort-note{
+      color:var(--muted);font-size:12px;font-weight:600;padding-bottom:9px;white-space:nowrap;
+    }
+
     /* بطاقات الجوال — مخفية افتراضياً على الديسكتوب */
     .mob-mer-list { display: none; }
 
@@ -476,6 +497,13 @@
         <div class="panel-header">
           <h3>التجار</h3>
           <button type="button" class="btn small" id="add-merchant-btn">+ إضافة تاجر</button>
+        </div>
+        <div class="merchant-list-tools">
+          <div class="merchant-search-field">
+            <label for="merchant-search">بحث باسم التاجر</label>
+            <input type="search" id="merchant-search" placeholder="اكتب اسم التاجر..." autocomplete="off" />
+          </div>
+          <div class="merchant-sort-note">الأسماء مرتبة أبجدياً</div>
         </div>
         <div class="table-wrap">
           <table class="data-table">
@@ -805,6 +833,7 @@ let pendingOpenId=new URLSearchParams(window.location.search).get("id");
 function init(){
   setupMerchantModal();
   setupDetail();
+  document.getElementById("merchant-search").addEventListener("input",renderList);
   loadMerchants();
   loadAllMerchantTxs();
   loadFinTxs();
@@ -1167,14 +1196,28 @@ function loadActivityOpMap(){
 function renderList(){
   const tbody=document.getElementById("merchants-tbody");
   const mobList=document.getElementById("mob-mer-list");
+  const searchInput=document.getElementById("merchant-search");
+  const searchTerm=(searchInput?.value??"").trim().toLocaleLowerCase("ar");
+  const normalizeName=name=>String(name??"").trim().toLocaleLowerCase("ar");
+  const visibleMerchants=merchants
+    .filter(mer=>!searchTerm || normalizeName(mer.name).includes(searchTerm))
+    .sort((a,b)=>normalizeName(a.name).localeCompare(normalizeName(b.name),"ar",
+      {sensitivity:"base",numeric:true}));
+
   if(!merchants.length){
     tbody.innerHTML='<tr><td colspan="5"><div class="empty-state">لا يوجد تجار مسجلون بعد</div></td></tr>';
     mobList.innerHTML='<div class="empty-state">لا يوجد تجار مسجلون بعد</div>';
     return;
   }
+  if(!visibleMerchants.length){
+    const message=`لا توجد نتائج للاسم "${esc(searchInput.value.trim())}"`;
+    tbody.innerHTML=`<tr><td colspan="5"><div class="empty-state">${message}</div></td></tr>`;
+    mobList.innerHTML=`<div class="empty-state">${message}</div>`;
+    return;
+  }
   tbody.innerHTML="";
   mobList.innerHTML="";
-  merchants.forEach(mer=>{
+  visibleMerchants.forEach(mer=>{
     const bal=calcBalance(mer.id);
 
     // ── صف الجدول (سطح المكتب) ──
