@@ -427,6 +427,123 @@
       #stmt-preview-content tbody tr td{padding:5px 6px}
       #stmt-preview-content .col-hdr th{padding:6px 6px;font-size:9.5px}
     }
+
+     /* ══ معاينة عملية البيع — نفس تنسيق صفحة المنتجات ══ */
+     #merchant-invoice-modal{
+       display:none;position:fixed;inset:0;background:#0008;z-index:1000;
+       align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;
+     }
+     #merchant-invoice-modal.open{display:flex}
+     .merchant-invoice-box{
+       background:#fff;border-radius:12px;width:100%;max-width:860px;margin:auto;
+       box-shadow:0 20px 50px #00000050;padding:20px;max-height:calc(100vh - 32px);
+       overflow-y:auto;box-sizing:border-box;
+     }
+     .merchant-invoice-header{
+       display:flex;align-items:center;justify-content:space-between;
+       padding-bottom:12px;margin-bottom:18px;border-bottom:1px solid #e0e0e0;
+     }
+     .merchant-invoice-header h3{margin:0;font-size:16px;font-weight:800}
+     .merchant-invoice-actions{
+       display:flex;gap:10px;margin-top:18px;padding-top:14px;
+       border-top:1px solid #e0e0e0;
+     }
+     .merchant-invoice-actions .btn{flex:1}
+     .merchant-invoice-loading{text-align:center;padding:50px 20px;color:var(--muted);font-weight:700}
+
+     .merchant-invoice-box .inv-doc{
+       font-family:Cairo,sans-serif;direction:rtl;max-width:680px;margin:0 auto;color:#111;background:#fff
+     }
+     .merchant-invoice-box .inv-doc-head{
+       display:flex;align-items:flex-start;justify-content:space-between;gap:20px;
+       padding-bottom:14px;margin-bottom:14px;border-bottom:2px solid #222
+     }
+     .merchant-invoice-box .inv-doc-logo-wrap{display:flex;flex-direction:column;gap:3px}
+     .merchant-invoice-box .inv-doc-brand{font-size:16px;font-weight:800;color:#111;margin-top:6px}
+     .merchant-invoice-box .inv-doc-brand-sub{font-size:11px;color:#777;margin-top:1px}
+     .merchant-invoice-box .inv-doc-nums{text-align:left;min-width:170px}
+     .merchant-invoice-box .inv-doc-num-row{
+       display:flex;justify-content:space-between;gap:16px;font-size:12.5px;margin-bottom:5px
+     }
+     .merchant-invoice-box .inv-doc-num-row span{color:#777}
+     .merchant-invoice-box .inv-doc-num-row strong{color:#111;font-weight:700}
+     .merchant-invoice-box .inv-doc-bill{margin-bottom:16px}
+     .merchant-invoice-box .inv-doc-bill-label{
+       font-size:10.5px;font-weight:700;color:#777;letter-spacing:.8px;
+       text-transform:uppercase;margin-bottom:4px
+     }
+     .merchant-invoice-box .inv-doc-bill-name{font-size:14.5px;font-weight:800;color:#111;margin-bottom:2px}
+     .merchant-invoice-box .inv-doc-bill-detail{font-size:12px;color:#555;line-height:1.65}
+     .merchant-invoice-box .inv-doc-type-badge{
+       display:inline-block;font-size:11px;font-weight:700;border-radius:4px;
+       padding:3px 10px;margin-bottom:12px;border:1px solid;
+       background:#fdf4e3;color:#92400e;border-color:#fcd34d
+     }
+     .merchant-invoice-box .inv-doc-table{
+       width:100%;border-collapse:collapse;font-size:13px;margin-bottom:0
+     }
+     .merchant-invoice-box .inv-doc-table th{
+       text-align:right;padding:9px 12px;background:#f5f5f5;font-size:12px;
+       font-weight:700;color:#444;border:1px solid #ddd
+     }
+     .merchant-invoice-box .inv-doc-table td{
+       padding:9px 12px;border:1px solid #e0e0e0;vertical-align:middle;color:#111
+     }
+     .merchant-invoice-box .inv-doc-table tr:nth-child(even) td{background:#fafafa}
+     .merchant-invoice-box .inv-doc-total-wrap{
+       border:1px solid #ddd;border-top:none;display:flex;justify-content:flex-end
+     }
+     .merchant-invoice-box .inv-doc-total-table{border-collapse:collapse;min-width:260px}
+     .merchant-invoice-box .inv-doc-total-table td{
+       padding:8px 12px;border-top:1px solid #e0e0e0;font-size:13px
+     }
+     .merchant-invoice-box .inv-doc-total-table tr:last-child td{
+       background:#f5f5f5;font-weight:800;font-size:14px;color:#111;border-top:2px solid #222
+     }
+     .merchant-invoice-box .inv-doc-total-table .tot-lbl{color:#555}
+     .merchant-invoice-box .inv-doc-total-table .tot-val{text-align:left;font-family:monospace}
+     .merchant-invoice-box .inv-doc-note{
+       margin-top:14px;padding:10px 14px;background:#f9f9f9;border-right:3px solid #bbb;
+       font-size:12px;color:#555;border-radius:0 4px 4px 0
+     }
+     .merchant-invoice-box .inv-doc-balance{
+       margin-top:14px;border-top:1px solid #ddd;padding-top:12px;
+       direction:rtl;font-size:13px;line-height:2
+     }
+     .merchant-invoice-box .inv-doc-footer{
+       margin-top:26px;padding-top:12px;border-top:1px dashed #ccc;
+       display:flex;align-items:flex-end;justify-content:space-between;font-size:11px;color:#aaa
+     }
+     .merchant-invoice-box .inv-doc-sig-line{width:110px;border-top:1px solid #666;margin-bottom:4px}
+     .merchant-invoice-box .inv-doc-sig{text-align:center;font-size:11px;color:#777}
+     @media(max-width:600px){
+       #merchant-invoice-modal{padding:8px}
+       .merchant-invoice-box{max-height:calc(100vh - 16px);padding:12px}
+       .merchant-invoice-box .inv-doc-head{gap:10px}
+       .merchant-invoice-box .inv-doc-nums{min-width:145px}
+       .merchant-invoice-box .inv-doc-num-row{gap:8px;font-size:11px}
+       .merchant-invoice-box .inv-doc-table{font-size:10px}
+       .merchant-invoice-box .inv-doc-table th,
+       .merchant-invoice-box .inv-doc-table td{padding:6px 5px}
+       .merchant-invoice-box .inv-doc-total-table{min-width:210px}
+       .merchant-invoice-box .inv-doc-footer{font-size:9px;gap:10px}
+     }
+     @media print{
+       body.merchant-invoice-print-mode > *{display:none!important}
+       body.merchant-invoice-print-mode #merchant-invoice-modal{
+         display:block!important;position:fixed!important;inset:0!important;
+         background:#fff!important;padding:14mm 16mm!important;overflow:visible!important;
+         z-index:9999!important;box-sizing:border-box!important
+       }
+       body.merchant-invoice-print-mode .merchant-invoice-box{
+         box-shadow:none!important;max-height:none!important;overflow:visible!important;
+         border:none!important;padding:0!important;width:100%!important;max-width:100%!important
+       }
+       body.merchant-invoice-print-mode .merchant-invoice-header,
+       body.merchant-invoice-print-mode .merchant-invoice-actions{display:none!important}
+       body.merchant-invoice-print-mode .merchant-invoice-box .inv-doc{max-width:680px}
+       *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+     }
   
       /* ══ شاشة التحميل ══ */
       #page-loader {
@@ -722,6 +839,21 @@
   </div>
 </div>
 
+<!-- ═══════ معاينة عملية البيع بنفس تنسيق صفحة المنتجات ═══════ -->
+<div id="merchant-invoice-modal">
+  <div class="merchant-invoice-box">
+    <div class="merchant-invoice-header">
+      <h3 id="merchant-invoice-title">معاينة الحركة</h3>
+      <button type="button" class="modal-close" id="merchant-invoice-close">&times;</button>
+    </div>
+    <div id="merchant-invoice-content"></div>
+    <div class="merchant-invoice-actions">
+      <button type="button" class="btn" id="merchant-invoice-print-btn">🖨 طباعة</button>
+      <button type="button" class="btn outline" id="merchant-invoice-close2">إغلاق</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════ Firebase ═══════ -->
 <script type="module">
 import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -797,6 +929,7 @@ let currentMerId   = null;
 let editMerId      = null;
 let txDir          = "in";
 let merFinUnsub    = null;
+const loadingOperationCache = {};
 
 /* ── أدوات ── */
 const esc = t => { const d=document.createElement("div"); d.textContent=t??""; return d.innerHTML; };
@@ -807,6 +940,16 @@ const fmtTs = ts => {
   if(!ts) return "—";
   const d=ts.toDate?.()??new Date(ts);
   return d.toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"long",day:"numeric"});
+};
+const fmtMoney = n => new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(n||0)+" ج.م";
+const fmtNum = n => new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(n||0);
+const fmtOperationDate = ts => {
+  if(!ts) return "—";
+  const d=ts.toDate?.()??new Date(ts);
+  return d.toLocaleString("ar-EG-u-nu-latn",{
+    timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric",
+    hour:"2-digit",minute:"2-digit"
+  });
 };
 
 function toast(msg,err=false){
@@ -840,6 +983,7 @@ function init(){
   loadActivityOpMap();
   // نافذة التفاصيل — مستقلة عن تحميل البيانات
   try{ setupDetailModal(); }catch(e){ console.warn("setupDetailModal:",e); }
+  try{ setupMerchantInvoiceModal(); }catch(e){ console.warn("setupMerchantInvoiceModal:",e); }
   // كشف الحساب + CSV
   document.getElementById("print-stmt-btn").addEventListener("click", printStatement);
   document.getElementById("export-csv-btn").addEventListener("click", exportLedgerCSV);
@@ -926,6 +1070,121 @@ function setupDetailModal(){
     setTimeout(()=>document.body.classList.remove("tx-print-mode"),1500);
   });
   modal.addEventListener("click",e=>{ if(e.target===modal) modal.classList.remove("open"); });
+}
+
+/* ── معاينة عملية البيع القادمة من صفحة المنتجات ── */
+function setupMerchantInvoiceModal(){
+  const modal=document.getElementById("merchant-invoice-modal"); if(!modal) return;
+  const close=()=>{
+    modal.classList.remove("open");
+    document.body.classList.remove("merchant-invoice-print-mode");
+  };
+  document.getElementById("merchant-invoice-close").addEventListener("click",close);
+  document.getElementById("merchant-invoice-close2").addEventListener("click",close);
+  document.getElementById("merchant-invoice-print-btn").addEventListener("click",()=>{
+    document.body.classList.add("merchant-invoice-print-mode");
+    window.print();
+    setTimeout(()=>document.body.classList.remove("merchant-invoice-print-mode"),1500);
+  });
+  modal.addEventListener("click",e=>{ if(e.target===modal) close(); });
+}
+
+async function openMerchantSalePreview(raw,seqLabel){
+  if(!raw?.opId) return;
+  const modal=document.getElementById("merchant-invoice-modal");
+  const content=document.getElementById("merchant-invoice-content");
+  modal.classList.add("open");
+  content.innerHTML='<div class="merchant-invoice-loading">جارِ تحميل معاينة عملية البيع...</div>';
+
+  try{
+    let operation=loadingOperationCache[raw.opId];
+    if(!operation){
+      const snap=await getDocs(query(
+        collection(db,"loadingOperations"),where("opId","==",raw.opId)
+      ));
+      if(snap.empty){
+        modal.classList.remove("open");
+        toast("تفاصيل عملية البيع غير متوفرة لأنها حُذفت",true);
+        return;
+      }
+      const operationDoc=snap.docs[0];
+      operation={id:operationDoc.id,...operationDoc.data()};
+      loadingOperationCache[raw.opId]=operation;
+    }
+    showMerchantSalePreview({
+      ...operation,
+      seqLabel:seqLabel||activityOpMap[raw.opId]||raw.opId.slice(0,8).toUpperCase(),
+      merchantName:operation.merchantName||raw.merchantName||"—",
+      performedBy:operation.performedBy||raw.performedBy||"—",
+    });
+  }catch(err){
+    console.error("loading operation preview:",err);
+    modal.classList.remove("open");
+    toast("تعذر تحميل معاينة عملية البيع",true);
+  }
+}
+
+function showMerchantSalePreview(data){
+  const modal=document.getElementById("merchant-invoice-modal");
+  const content=document.getElementById("merchant-invoice-content");
+  const now=data.createdAt?fmtOperationDate(data.createdAt):"—";
+  const shortId=data.seqLabel||(data.opId?data.opId.slice(0,8).toUpperCase():"—");
+  const lineRows=(data.lines||[]).map(line=>`
+    <tr>
+      <td>${esc(line.productName)}</td>
+      <td style="text-align:center">${fmtNum(line.qty)} ${esc(line.unit)}</td>
+      <td style="text-align:center">${fmtMoney(line.price)}</td>
+      <td style="text-align:center;font-weight:700">${fmtMoney(line.total)}</td>
+    </tr>`).join("");
+  const fmtBalance=value=>value<0?`-${fmtMoney(-value)}`:fmtMoney(value);
+  const balanceSection=data.merchantBalanceBefore!==undefined?`
+    <div class="inv-doc-balance">
+      <div style="font-weight:700">المبلغ المستحق على التاجر — ${esc(data.merchantName||"")}</div>
+      <div>الحساب قبل الطلب: <strong>${fmtBalance(data.merchantBalanceBefore)}</strong></div>
+      <div>الحساب بعد الطلب: <strong>${fmtBalance(data.merchantBalanceAfter??0)}</strong></div>
+    </div>`:"";
+  const printNow=new Date().toLocaleString("ar-EG-u-nu-latn",{
+    timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"
+  });
+
+  content.innerHTML=`
+    <div class="inv-doc">
+      <div class="inv-doc-head">
+        <div class="inv-doc-logo-wrap">
+          <div class="inv-doc-brand">Ahmed And Hamdy</div>
+          <div class="inv-doc-brand-sub">نظام المحاسبة الداخلي — معاينة حركة سابقة</div>
+        </div>
+        <div class="inv-doc-nums">
+          <div class="inv-doc-num-row"><span>رقم الفاتورة</span><strong>${esc(shortId)}</strong></div>
+          <div class="inv-doc-num-row"><span>تاريخ الحركة</span><strong>${esc(now)}</strong></div>
+          <div class="inv-doc-num-row"><span>نفّذها</span><strong>${esc(data.performedBy||"—")}</strong></div>
+        </div>
+      </div>
+      <span class="inv-doc-type-badge">فاتورة بيع</span>
+      <div class="inv-doc-bill">
+        <div class="inv-doc-bill-label">إلى</div>
+        <div class="inv-doc-bill-name">${esc(data.merchantName||"")}</div>
+        <div class="inv-doc-bill-detail">من مخزن: ${esc(data.warehouseName||"")}</div>
+      </div>
+      <table class="inv-doc-table">
+        <thead><tr>
+          <th>الصنف</th><th style="text-align:center">الكمية</th>
+          <th style="text-align:center">سعر الوحدة</th><th style="text-align:center">الإجمالي</th>
+        </tr></thead>
+        <tbody>${lineRows||`<tr><td colspan="4" style="text-align:center">لا توجد أصناف</td></tr>`}</tbody>
+      </table>
+      <div class="inv-doc-total-wrap"><table class="inv-doc-total-table">
+        <tr><td class="tot-lbl">المجموع الفرعي</td><td class="tot-val">${fmtMoney(data.totalAmount)}</td></tr>
+        <tr><td class="tot-lbl"><strong>الإجمالي</strong></td><td class="tot-val"><strong>${fmtMoney(data.totalAmount)}</strong></td></tr>
+      </table></div>
+      ${balanceSection}
+      ${data.note?`<div class="inv-doc-note">ملاحظة: ${esc(data.note)}</div>`:""}
+      <div class="inv-doc-footer">
+        <div>تمت معاينتها بتاريخ: ${esc(printNow)}</div>
+        <div class="inv-doc-sig"><div class="inv-doc-sig-line"></div><div>التوقيع والختم</div></div>
+      </div>
+    </div>`;
+  document.getElementById("merchant-invoice-title").textContent="معاينة الحركة";
 }
 
 const _TX_TYPE_CFG={
@@ -1467,6 +1726,8 @@ function _buildAllRows(){
     amount:t.amount||0,
     note:t.note||"",
     id:t.id,
+     opId:t.opId||"",
+     performedBy:t.performedBy||"",
     sourcePage:t.sourcePage||"",
   }));
   const fin=finTxs.filter(t=>t.merchantId===currentMerId).map(t=>({
@@ -1679,6 +1940,10 @@ function renderUnifiedList(){
     el.addEventListener("click",()=>{
       const raw=merchantTxs.find(t=>t.id===el.dataset.merTxId);
       if(!raw) return;
+       if(raw.source==="loading"&&raw.opId){
+         openMerchantSalePreview(raw,activityOpMap[raw.opId]||raw.opId.slice(0,8).toUpperCase());
+         return;
+       }
       const mer=merchants.find(m=>m.id===currentMerId);
       openTxDetail({
         id:       raw.id,
