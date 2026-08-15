@@ -572,8 +572,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-  getFirestore, collection, doc, addDoc, updateDoc, getDoc,
-  onSnapshot, serverTimestamp, writeBatch, runTransaction
+  getFirestore, collection, doc, addDoc, updateDoc, getDoc, getDocs,
+  query, where, onSnapshot, serverTimestamp, writeBatch, runTransaction
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 function compressImage(file){
   return new Promise((resolve,reject)=>{
@@ -1251,8 +1251,19 @@ function bindUI(){
   document.querySelectorAll("[data-mp-type]").forEach(c=>c.addEventListener("click",()=>{const type=c.dataset.mpType;c.querySelector("input").checked=true;if(type==="out")document.getElementById("mp-cash").checked=false;else document.getElementById("mp-cash").checked=true;updateMerchantPayStyle();}));document.getElementById("merchant-pay-form").addEventListener("submit",submitMerchantPay);
 }
 
-onAuthStateChanged(auth,user=>{
+onAuthStateChanged(auth,async user=>{
   if(!user){location.href="/index.html";return;}
+  try{
+    const blockedSnap=await getDocs(query(
+      collection(db,"blockedUsers"),
+      where("email","==",String(user.email||"").trim().toLowerCase())
+    ));
+    if(!blockedSnap.empty){
+      await signOut(auth);
+      window.location.replace("/index.html");
+      return;
+    }
+  }catch(err){console.error("blocked user check failed",err);}
   currentUser=user;renderNav(user);initSearchableSelects();bindUI();startData();window.__dashboardReady=true;document.getElementById("app").style.visibility="visible";hideLoader();
 });
 
