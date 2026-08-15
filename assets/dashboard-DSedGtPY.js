@@ -110,8 +110,9 @@ function renderNav(user){
 }
 function hideLoader(){
   const loader=document.getElementById("page-loader");
-  loader.style.opacity="0";
-  setTimeout(()=>loader.style.display="none",260);
+  if(!loader)return;
+  loader.classList.add("pl-hide");
+  setTimeout(()=>loader.style.display="none",380);
 }
 
 /* ══════════════════════════════════════
@@ -162,6 +163,131 @@ function refreshAllSelects(){
   refreshProductExisting();
 }
 
+
+/* ══════════════════════════════════════
+   SEARCHABLE SELECTS
+   يحافظ على <select> الأصلي ويضيف بحثاً داخل القائمة المرئية
+══════════════════════════════════════ */
+let smartSelectPopover = null;
+let smartSelectCurrent = null;
+let smartSelectButton = null;
+let smartSelectFiltered = [];
+let smartActiveIndex = -1;
+
+function smartNormalize(v){
+  return String(v??"").toLocaleLowerCase("ar").normalize("NFKD").replace(/[\u064B-\u065F\u0670]/g,"").replace(/أ|إ|آ/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").trim();
+}
+function smartContextLabel(select){
+  const field=select.closest(".field,.line-cell");
+  const label=field?.querySelector("label")?.textContent?.replace(/\*/g,"").trim();
+  return label||"الخيار";
+}
+function ensureSmartPopover(){
+  if(smartSelectPopover)return smartSelectPopover;
+  const pop=document.createElement("div");
+  pop.id="smart-select-popover";
+  pop.innerHTML=`<div class="smart-search-box"><input class="smart-search-input" type="search" autocomplete="off" /></div><div class="smart-options"></div>`;
+  document.body.appendChild(pop);
+  const input=pop.querySelector(".smart-search-input");
+  input.addEventListener("input",()=>renderSmartOptions(input.value));
+  input.addEventListener("keydown",e=>{
+    const buttons=[...pop.querySelectorAll(".smart-option")];
+    if(e.key==="ArrowDown"){e.preventDefault();smartActiveIndex=Math.min(buttons.length-1,smartActiveIndex+1);paintSmartActive(buttons);}
+    else if(e.key==="ArrowUp"){e.preventDefault();smartActiveIndex=Math.max(0,smartActiveIndex-1);paintSmartActive(buttons);}
+    else if(e.key==="Enter"){e.preventDefault();const b=buttons[smartActiveIndex>=0?smartActiveIndex:0];if(b)b.click();}
+    else if(e.key==="Escape"){e.preventDefault();closeSmartSelect();}
+  });
+  window.addEventListener("resize",()=>smartSelectCurrent&&positionSmartPopover());
+  window.addEventListener("scroll",()=>smartSelectCurrent&&positionSmartPopover(),true);
+  document.addEventListener("pointerdown",e=>{
+    if(!smartSelectCurrent)return;
+    if(pop.contains(e.target)||smartSelectButton?.contains(e.target))return;
+    closeSmartSelect();
+  });
+  return pop;
+}
+function paintSmartActive(buttons){
+  buttons.forEach((b,i)=>b.classList.toggle("active",i===smartActiveIndex));
+  buttons[smartActiveIndex]?.scrollIntoView({block:"nearest"});
+}
+function syncSmartSelect(select){
+  const btn=select._smartButton;if(!btn)return;
+  const opt=select.options[select.selectedIndex];
+  btn.querySelector(".smart-select-label").textContent=opt?.textContent||select.dataset.placeholder||"اختر";
+  btn.disabled=select.disabled;
+  btn.setAttribute("aria-disabled",select.disabled?"true":"false");
+  if(smartSelectCurrent===select)renderSmartOptions(smartSelectPopover?.querySelector(".smart-search-input")?.value||"");
+}
+function enhanceSelect(select){
+  if(!(select instanceof HTMLSelectElement)||select.dataset.smartEnhanced==="1")return;
+  select.dataset.smartEnhanced="1";
+  const wrapper=document.createElement("div");wrapper.className="smart-select-wrap";
+  select.parentNode.insertBefore(wrapper,select);wrapper.appendChild(select);select.classList.add("smart-native-select");
+  const btn=document.createElement("button");btn.type="button";btn.className="smart-select-btn";btn.setAttribute("aria-haspopup","listbox");
+  btn.innerHTML='<span class="smart-select-label"></span><span class="smart-select-chevron">⌄</span>';
+  wrapper.appendChild(btn);select._smartButton=btn;
+  btn.addEventListener("click",()=>{if(!select.disabled)openSmartSelect(select,btn);});
+  select.addEventListener("change",()=>syncSmartSelect(select));
+  const obs=new MutationObserver(()=>syncSmartSelect(select));
+  obs.observe(select,{childList:true,subtree:true,attributes:true,attributeFilter:["disabled"]});
+  select._smartObserver=obs;
+  syncSmartSelect(select);
+}
+function enhanceAllSelects(root=document){
+  if(root instanceof HTMLSelectElement)enhanceSelect(root);
+  root.querySelectorAll?.("select").forEach(enhanceSelect);
+}
+function positionSmartPopover(){
+  if(!smartSelectCurrent||!smartSelectButton||!smartSelectPopover)return;
+  const r=smartSelectButton.getBoundingClientRect(), vw=document.documentElement.clientWidth, vh=document.documentElement.clientHeight;
+  const margin=8, desired=Math.min(Math.max(r.width,250),Math.min(460,vw-margin*2));
+  let left=Math.max(margin,Math.min(r.left,vw-desired-margin));
+  smartSelectPopover.style.width=desired+"px";
+  smartSelectPopover.style.left=left+"px";
+  const popH=Math.min(360,smartSelectPopover.scrollHeight||330);
+  const below=vh-r.bottom-margin, above=r.top-margin;
+  if(below>=Math.min(260,popH)||below>=above){smartSelectPopover.style.top=(r.bottom+5)+"px";smartSelectPopover.style.bottom="auto";}
+  else{smartSelectPopover.style.top="auto";smartSelectPopover.style.bottom=(vh-r.top+5)+"px";}
+}
+function openSmartSelect(select,btn){
+  const pop=ensureSmartPopover();
+  if(smartSelectCurrent===select&&pop.classList.contains("open")){closeSmartSelect();return;}
+  closeSmartSelect();smartSelectCurrent=select;smartSelectButton=btn;btn.classList.add("is-open");
+  const input=pop.querySelector(".smart-search-input");
+  input.value="";input.placeholder=`ابحث عن ${smartContextLabel(select)}...`;
+  pop.classList.add("open");renderSmartOptions("");positionSmartPopover();
+  requestAnimationFrame(()=>{positionSmartPopover();input.focus();input.select();});
+}
+function closeSmartSelect(){
+  smartSelectPopover?.classList.remove("open");smartSelectButton?.classList.remove("is-open");
+  smartSelectCurrent=null;smartSelectButton=null;smartSelectFiltered=[];smartActiveIndex=-1;
+}
+function renderSmartOptions(query){
+  if(!smartSelectCurrent||!smartSelectPopover)return;
+  const q=smartNormalize(query), opts=[...smartSelectCurrent.options];
+  smartSelectFiltered=opts.filter(o=>!o.disabled&&(!q||smartNormalize(o.textContent).includes(q)));
+  smartActiveIndex=smartSelectFiltered.length?0:-1;
+  const box=smartSelectPopover.querySelector(".smart-options");
+  if(!smartSelectFiltered.length){box.innerHTML='<div class="smart-empty">لا توجد نتائج مطابقة</div>';positionSmartPopover();return;}
+  box.innerHTML="";
+  smartSelectFiltered.forEach((o,i)=>{
+    const b=document.createElement("button");b.type="button";b.className="smart-option"+(o.value===smartSelectCurrent.value?" selected":"")+(i===smartActiveIndex?" active":"");
+    b.textContent=o.textContent;b.dataset.value=o.value;b.setAttribute("role","option");b.setAttribute("aria-selected",o.value===smartSelectCurrent.value?"true":"false");
+    b.addEventListener("click",()=>{
+      const changed=smartSelectCurrent.value!==o.value;smartSelectCurrent.value=o.value;syncSmartSelect(smartSelectCurrent);
+      if(changed){smartSelectCurrent.dispatchEvent(new Event("input",{bubbles:true}));smartSelectCurrent.dispatchEvent(new Event("change",{bubbles:true}));}
+      closeSmartSelect();
+    });
+    box.appendChild(b);
+  });
+  positionSmartPopover();
+}
+function initSearchableSelects(){
+  enhanceAllSelects(document);
+  const bodyObserver=new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType===1)enhanceAllSelects(n);})));bodyObserver.observe(document.body,{childList:true,subtree:true});
+  document.addEventListener("reset",()=>setTimeout(()=>document.querySelectorAll("select[data-smart-enhanced='1']").forEach(syncSmartSelect),0),true);
+}
+
 /* ══════════════════════════════════════
    modal shell
 ══════════════════════════════════════ */
@@ -178,6 +304,7 @@ function openModal(id){
   document.body.style.overflow="hidden";
 }
 function closeModal(modal){
+  closeSmartSelect();
   (typeof modal==="string"?document.getElementById(modal):modal)?.classList.remove("open");
   if(!document.querySelector(".dash-modal.open"))document.body.style.overflow="";
 }
@@ -513,5 +640,5 @@ function bindUI(){
 
 onAuthStateChanged(auth,user=>{
   if(!user){location.href="/index.html";return;}
-  currentUser=user;renderNav(user);bindUI();startData();document.getElementById("app").style.visibility="visible";hideLoader();
+  currentUser=user;renderNav(user);initSearchableSelects();bindUI();startData();document.getElementById("app").style.visibility="visible";hideLoader();
 });
