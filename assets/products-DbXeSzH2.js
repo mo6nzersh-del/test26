@@ -249,7 +249,7 @@ function loadProducts() {
       products = mapped;
       productsLoaded = true;
       if (warehousesLoaded && warehouseViewActivated) renderWarehousesContainer();
-      if (document.getElementById("sale-product-search")?.value.trim()) refreshSaleProductSuggestions();
+      if (document.getElementById("view-loading")) renderLoadLines();
     });
   }, err => console.error(err));
 }
@@ -261,7 +261,7 @@ function loadMerchants() {
   onSnapshot(q, snap => {
     merchants = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     refreshMerchantSelects();
-    if (document.getElementById("sale-merchant-search")?.value.trim()) refreshSaleMerchantSuggestions();
+    _refreshSearchableSelect(document.getElementById("load-merchant"));
     updateSaleSummary();
   }, err => console.error(err));
 }
@@ -277,7 +277,7 @@ function _rebuildMerchantBalances() {
     merchantBalances[mid] = (_merchantTxBal[mid] || 0) + (_merchantFinBal[mid] || 0);
   });
   updateSaleSummary();
-  if (document.getElementById("sale-merchant-search")?.value.trim()) refreshSaleMerchantSuggestions();
+  _refreshSearchableSelect(document.getElementById("load-merchant"));
 }
 
 function listenMerchantBalances() {
@@ -562,9 +562,11 @@ function refreshMerchantSelects() {
   merchants.forEach(m => {
     const opt = document.createElement("option");
     opt.value = m.id; opt.textContent = m.name;
+    opt.dataset.search = `${m.name || ""} ${m.phone || ""} ${m.email || ""}`;
     sel.appendChild(opt);
   });
   sel.value = prev;
+  _refreshSearchableSelect(sel);
 }
 
 /* ══════════════════════════════════════
@@ -700,7 +702,7 @@ function renderProdLines(direction) {
     const row = document.createElement("div");
     row.className = "prod-line-row";
     const opts = whProducts.map(p =>
-      `<option value="${p.id}" ${p.id === line.productId ? "selected" : ""}>${esc(p.name)} (${fmtNum(p.quantity || 0)} ${esc(p.quantityType || "")})</option>`
+      `<option value="${p.id}" data-search="${esc(`${p.name || ""} ${p.serialId || ""} ${p.description || ""}`)}" ${p.id === line.productId ? "selected" : ""}>${esc(p.name)} (${fmtNum(p.quantity || 0)} ${esc(p.quantityType || "")})</option>`
     ).join("");
     row.innerHTML = `
       <select class="pline-prod"><option value="">اختر منتجاً</option>${opts}</select>
@@ -860,77 +862,144 @@ function initTransferForm() {
 
 
 /* ══════════════════════════════════════
-   SALE QUICK SEARCH + LIVE SUMMARY
-   طبقة تسهيل فقط — لا تغيّر منطق الحفظ أو المحاسبة
+   SEARCHABLE SELECTS + LIVE SUMMARY
+   البحث داخل نفس قائمة التاجر وقائمة المنتجات
+   الـ select الأصلي يبقى هو المصدر الحقيقي للقيمة
 ══════════════════════════════════════ */
 function _saleNorm(v) {
   return String(v ?? "").trim().toLowerCase()
     .replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/ى/g, "ي");
 }
 
-function _closeSaleSearchResults(exceptId = "") {
-  ["sale-product-results", "sale-merchant-results"].forEach(id => {
-    if (id === exceptId) return;
-    document.getElementById(id)?.classList.remove("open");
+let _searchableSelectDocBound = false;
+function _closeAllSearchableSelects(exceptRoot = null) {
+  document.querySelectorAll("#view-loading .inline-search-select").forEach(root => {
+    if (root === exceptRoot) return;
+    root.querySelector(".iss-menu")?.classList.remove("open");
+    root.querySelector(".iss-trigger")?.classList.remove("open");
   });
 }
 
-function _renderSaleSearchResults(container, items, type) {
-  if (!container) return;
-  if (!items.length) {
-    container.innerHTML = '<div class="sale-search-empty">لا توجد نتائج مطابقة</div>';
-    container.classList.add("open");
-    return;
+function _refreshSearchableSelect(select) {
+  if (!select || !select._issApi) return;
+  select._issApi.sync();
+  if (select._issApi.isOpen()) select._issApi.render();
+}
+
+function initSearchableSelect(select, cfg = {}) {
+  if (!select || select._issApi) return;
+  const placeholder = cfg.placeholder || select.options[0]?.textContent || "اختر";
+  const searchPlaceholder = cfg.searchPlaceholder || select.dataset.searchPlaceholder || "ابحث...";
+  const nativeRequired = select.required;
+  if (nativeRequired) {
+    select.required = false; // التحقق موجود بالفعل داخل منطق تنفيذ عملية البيع
+    select.dataset.wasRequired = "1";
   }
-  container.innerHTML = items.slice(0, 10).map(item => {
-    if (type === "product") {
-      const wh = warehouses.find(w => w.id === item.warehouseId);
-      const meta = [item.serialId ? `# ${item.serialId}` : "", wh?.name || item.warehouseName || ""].filter(Boolean).join(" · ");
-      return `<button type="button" class="sale-search-result" data-sale-product-id="${item.id}">
-        <span class="sale-result-main">
-          <span class="sale-result-name">${esc(item.name || "")}</span>
-          <span class="sale-result-meta">${esc(meta || "منتج")}</span>
-        </span>
-        <span class="sale-result-tag">${fmtNum(item.quantity || 0)} ${esc(item.quantityType || "")}</span>
-      </button>`;
+  select.classList.add("iss-native");
+  select.tabIndex = -1;
+  select.setAttribute("aria-hidden", "true");
+
+  const root = document.createElement("div");
+  root.className = "inline-search-select";
+  select.parentNode.insertBefore(root, select);
+  root.appendChild(select);
+
+  const trigger = document.createElement("button");
+  trigger.type = "button";
+  trigger.className = "iss-trigger";
+  trigger.setAttribute("aria-haspopup", "listbox");
+  trigger.setAttribute("aria-expanded", "false");
+  trigger.innerHTML = '<span class="iss-trigger-text"></span><span class="iss-trigger-arrow">▼</span>';
+
+  const menu = document.createElement("div");
+  menu.className = "iss-menu";
+  menu.innerHTML = `
+    <div class="iss-searchbar">
+      <div class="iss-search-wrap">
+        <span class="iss-search-icon">🔎</span>
+        <input type="search" class="iss-search-input" placeholder="${esc(searchPlaceholder)}" autocomplete="off" />
+      </div>
+    </div>
+    <div class="iss-options" role="listbox"></div>`;
+  root.appendChild(trigger);
+  root.appendChild(menu);
+
+  const triggerText = trigger.querySelector(".iss-trigger-text");
+  const input = menu.querySelector(".iss-search-input");
+  const optionsBox = menu.querySelector(".iss-options");
+
+  function getOptionSearchText(opt) {
+    return _saleNorm(`${opt.textContent || ""} ${opt.dataset.search || ""}`);
+  }
+
+  function sync() {
+    const opt = select.options[select.selectedIndex];
+    triggerText.textContent = opt?.value ? opt.textContent : placeholder;
+    trigger.classList.toggle("has-value", !!opt?.value);
+  }
+
+  function render() {
+    const q = _saleNorm(input.value);
+    const opts = Array.from(select.options).filter(opt => opt.value);
+    const matches = q ? opts.filter(opt => getOptionSearchText(opt).includes(q)) : opts;
+    if (!matches.length) {
+      optionsBox.innerHTML = '<div class="iss-empty">لا توجد نتائج مطابقة</div>';
+      return;
     }
-    const bal = merchantBalances[item.id] ?? 0;
-    const balText = bal < 0 ? `مدين ${fmtMoney(-bal)}` : `رصيد ${fmtMoney(bal)}`;
-    return `<button type="button" class="sale-search-result" data-sale-merchant-id="${item.id}">
-      <span class="sale-result-main">
-        <span class="sale-result-name">${esc(item.name || "")}</span>
-        <span class="sale-result-meta">${esc(item.phone || item.email || "تاجر")}</span>
-      </span>
-      <span class="sale-result-tag">${balText}</span>
-    </button>`;
-  }).join("");
-  container.classList.add("open");
-}
+    optionsBox.innerHTML = matches.map(opt => {
+      const selected = opt.value === select.value;
+      return `<button type="button" class="iss-option${selected ? " selected" : ""}" data-value="${esc(opt.value)}" role="option" aria-selected="${selected ? "true" : "false"}">
+        <span class="iss-option-name">${esc(opt.textContent || "")}</span>
+        <span class="iss-option-check">${selected ? "✓" : ""}</span>
+      </button>`;
+    }).join("");
+  }
 
-function refreshSaleProductSuggestions() {
-  const input = document.getElementById("sale-product-search");
-  const results = document.getElementById("sale-product-results");
-  if (!input || !results) return;
-  const q = _saleNorm(input.value);
-  if (!q) { results.classList.remove("open"); results.innerHTML = ""; return; }
+  function openMenu() {
+    _closeAllSearchableSelects(root);
+    menu.classList.add("open");
+    trigger.classList.add("open");
+    trigger.setAttribute("aria-expanded", "true");
+    input.value = "";
+    render();
+    requestAnimationFrame(() => { input.focus(); input.select(); });
+  }
 
-  const whId = document.getElementById("load-warehouse")?.value || "";
-  const pool = whId ? products.filter(p => p.warehouseId === whId) : products;
-  const matches = pool.filter(p => {
-    const hay = _saleNorm(`${p.name || ""} ${p.serialId || ""} ${p.description || ""}`);
-    return hay.includes(q);
+  function closeMenu() {
+    menu.classList.remove("open");
+    trigger.classList.remove("open");
+    trigger.setAttribute("aria-expanded", "false");
+  }
+
+  trigger.addEventListener("click", () => menu.classList.contains("open") ? closeMenu() : openMenu());
+  input.addEventListener("input", render);
+  input.addEventListener("keydown", e => {
+    if (e.key === "Escape") { closeMenu(); trigger.focus(); return; }
+    if (e.key === "Enter") {
+      const first = optionsBox.querySelector(".iss-option");
+      if (first) { e.preventDefault(); first.click(); }
+    }
   });
-  _renderSaleSearchResults(results, matches, "product");
-}
+  optionsBox.addEventListener("click", e => {
+    const btn = e.target.closest(".iss-option");
+    if (!btn) return;
+    select.value = btn.dataset.value;
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+    sync();
+    closeMenu();
+    trigger.focus();
+  });
+  select.addEventListener("change", sync);
 
-function refreshSaleMerchantSuggestions() {
-  const input = document.getElementById("sale-merchant-search");
-  const results = document.getElementById("sale-merchant-results");
-  if (!input || !results) return;
-  const q = _saleNorm(input.value);
-  if (!q) { results.classList.remove("open"); results.innerHTML = ""; return; }
-  const matches = merchants.filter(m => _saleNorm(`${m.name || ""} ${m.phone || ""} ${m.email || ""}`).includes(q));
-  _renderSaleSearchResults(results, matches, "merchant");
+  select._issApi = { sync, render, isOpen: () => menu.classList.contains("open"), close: closeMenu };
+  sync();
+
+  if (!_searchableSelectDocBound) {
+    _searchableSelectDocBound = true;
+    document.addEventListener("click", e => {
+      if (!e.target.closest("#view-loading .inline-search-select")) _closeAllSearchableSelects();
+    });
+  }
 }
 
 function updateSaleSummary() {
@@ -957,119 +1026,22 @@ function updateSaleSummary() {
   balanceVal.classList.toggle("debt", after < 0);
 }
 
-function _chooseQuickProduct(productId) {
-  const product = products.find(p => p.id === productId);
-  if (!product) return;
-
-  const whSel = document.getElementById("load-warehouse");
-  if (!whSel.value && product.warehouseId) {
-    whSel.value = product.warehouseId;
-    whSel.dispatchEvent(new Event("change", { bubbles: true }));
-  }
-  // لو كان المستخدم اختار مخزناً بالفعل، لا نسمح للبحث بإدخال صنف من مخزن آخر.
-  if (whSel.value && product.warehouseId && whSel.value !== product.warehouseId) {
-    showToast("هذا المنتج موجود في مخزن آخر — غيّر المخزن المصدر أولاً", true);
-    return;
-  }
-
-  let target = loadLines.find(l => l.productId === product.id);
-  if (!target) target = loadLines.find(l => !l.productId);
-  if (!target) {
-    target = { id: ++loadLineCounter, productId: "", qty: 1, price: 0 };
-    loadLines.push(target);
-  }
-  target.productId = product.id;
-  if (!target.qty || target.qty <= 0) target.qty = 1;
-  if (!target.price && product.price) target.price = product.price;
-  renderLoadLines();
-
-  const input = document.getElementById("sale-product-search");
-  if (input) input.value = product.name || "";
-  document.getElementById("sale-product-results")?.classList.remove("open");
-
-  requestAnimationFrame(() => {
-    const row = document.querySelector(`.loading-line-row[data-line-id="${target.id}"]`);
-    const qty = row?.querySelector(".lline-qty");
-    if (qty) { qty.focus(); qty.select(); }
-  });
-}
-
-function _chooseQuickMerchant(merchantId) {
-  const merchant = merchants.find(m => m.id === merchantId);
-  if (!merchant) return;
-  const sel = document.getElementById("load-merchant");
-  sel.value = merchant.id;
-  sel.dispatchEvent(new Event("change", { bubbles: true }));
-  const input = document.getElementById("sale-merchant-search");
-  if (input) input.value = merchant.name || "";
-  document.getElementById("sale-merchant-results")?.classList.remove("open");
-  updateSaleSummary();
-}
-
-function initSaleQuickSearch() {
-  const productInput = document.getElementById("sale-product-search");
-  const merchantInput = document.getElementById("sale-merchant-search");
-  const productResults = document.getElementById("sale-product-results");
-  const merchantResults = document.getElementById("sale-merchant-results");
-  if (!productInput || !merchantInput || !productResults || !merchantResults) return;
-
-  productInput.addEventListener("input", refreshSaleProductSuggestions);
-  productInput.addEventListener("focus", () => {
-    if (productInput.value.trim()) refreshSaleProductSuggestions();
-    _closeSaleSearchResults("sale-product-results");
-  });
-  merchantInput.addEventListener("input", refreshSaleMerchantSuggestions);
-  merchantInput.addEventListener("focus", () => {
-    loadMerchants();
-    if (merchantInput.value.trim()) refreshSaleMerchantSuggestions();
-    _closeSaleSearchResults("sale-merchant-results");
-  });
-
-  productInput.addEventListener("keydown", e => {
-    if (e.key !== "Enter") return;
-    const first = productResults.querySelector("[data-sale-product-id]");
-    if (first) { e.preventDefault(); _chooseQuickProduct(first.dataset.saleProductId); }
-  });
-  merchantInput.addEventListener("keydown", e => {
-    if (e.key !== "Enter") return;
-    const first = merchantResults.querySelector("[data-sale-merchant-id]");
-    if (first) { e.preventDefault(); _chooseQuickMerchant(first.dataset.saleMerchantId); }
-  });
-
-  productResults.addEventListener("click", e => {
-    const btn = e.target.closest("[data-sale-product-id]");
-    if (btn) _chooseQuickProduct(btn.dataset.saleProductId);
-  });
-  merchantResults.addEventListener("click", e => {
-    const btn = e.target.closest("[data-sale-merchant-id]");
-    if (btn) _chooseQuickMerchant(btn.dataset.saleMerchantId);
-  });
-
-  document.addEventListener("click", e => {
-    if (!e.target.closest("#sale-quick-search")) _closeSaleSearchResults();
-  });
-  updateSaleSummary();
-}
-
 /* ══════════════════════════════════════
    �OADING FORM (warehouse → merchant)
 ══════════════════════════════════════ */
 function initLoadingForm() {
   loadLines = [{ id: ++loadLineCounter, productId: "", qty: 1, price: 0 }];
   renderLoadLines();
-  initSaleQuickSearch();
+  initSearchableSelect(document.getElementById("load-merchant"), {
+    placeholder: "اختر تاجراً",
+    searchPlaceholder: "ابحث عن اسم التاجر..."
+  });
 
   document.getElementById("load-warehouse").addEventListener("change", () => {
     renderLoadLines();
-    const pInput = document.getElementById("sale-product-search");
-    if (pInput) pInput.value = "";
-    document.getElementById("sale-product-results")?.classList.remove("open");
     updateSaleSummary();
   });
   document.getElementById("load-merchant").addEventListener("change", () => {
-    const selected = merchants.find(m => m.id === document.getElementById("load-merchant").value);
-    const mInput = document.getElementById("sale-merchant-search");
-    if (mInput && selected) mInput.value = selected.name || "";
     updateSaleSummary();
   });
   document.getElementById("load-add-line-btn").addEventListener("click", () => {
@@ -1247,8 +1219,8 @@ function initLoadingForm() {
       form.reset();
       loadLines = [{ id: ++loadLineCounter, productId: "", qty: 1, price: 0 }];
       renderLoadLines();
-      document.getElementById("sale-product-results")?.classList.remove("open");
-      document.getElementById("sale-merchant-results")?.classList.remove("open");
+      _refreshSearchableSelect(document.getElementById("load-merchant"));
+      _closeAllSearchableSelects();
       updatePayStyle();
       updateSaleSummary();
       showToast("تمت عملية البيع بنجاح");
@@ -1290,6 +1262,10 @@ function renderLoadLines() {
     const inpPrice = row.querySelector(".lline-price");
     const btnRem = row.querySelector(".remove-line");
     const hint = row.querySelector(".line-hint");
+    initSearchableSelect(selProd, {
+      placeholder: whId ? "اختر صنفاً" : "اختر المخزن المصدر أولاً",
+      searchPlaceholder: "ابحث عن اسم المنتج..."
+    });
     function upHint() {
       const p = products.find(x => x.id === selProd.value);
       if (p) {
