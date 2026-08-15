@@ -249,6 +249,7 @@ function loadProducts() {
       products = mapped;
       productsLoaded = true;
       if (warehousesLoaded && warehouseViewActivated) renderWarehousesContainer();
+      if (document.getElementById("sale-product-search")?.value.trim()) refreshSaleProductSuggestions();
     });
   }, err => console.error(err));
 }
@@ -260,6 +261,8 @@ function loadMerchants() {
   onSnapshot(q, snap => {
     merchants = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     refreshMerchantSelects();
+    if (document.getElementById("sale-merchant-search")?.value.trim()) refreshSaleMerchantSuggestions();
+    updateSaleSummary();
   }, err => console.error(err));
 }
 
@@ -273,6 +276,8 @@ function _rebuildMerchantBalances() {
   allMids.forEach(mid => {
     merchantBalances[mid] = (_merchantTxBal[mid] || 0) + (_merchantFinBal[mid] || 0);
   });
+  updateSaleSummary();
+  if (document.getElementById("sale-merchant-search")?.value.trim()) refreshSaleMerchantSuggestions();
 }
 
 function listenMerchantBalances() {
@@ -853,14 +858,220 @@ function initTransferForm() {
   });
 }
 
+
+/* ══════════════════════════════════════
+   SALE QUICK SEARCH + LIVE SUMMARY
+   طبقة تسهيل فقط — لا تغيّر منطق الحفظ أو المحاسبة
+══════════════════════════════════════ */
+function _saleNorm(v) {
+  return String(v ?? "").trim().toLowerCase()
+    .replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/ى/g, "ي");
+}
+
+function _closeSaleSearchResults(exceptId = "") {
+  ["sale-product-results", "sale-merchant-results"].forEach(id => {
+    if (id === exceptId) return;
+    document.getElementById(id)?.classList.remove("open");
+  });
+}
+
+function _renderSaleSearchResults(container, items, type) {
+  if (!container) return;
+  if (!items.length) {
+    container.innerHTML = '<div class="sale-search-empty">لا توجد نتائج مطابقة</div>';
+    container.classList.add("open");
+    return;
+  }
+  container.innerHTML = items.slice(0, 10).map(item => {
+    if (type === "product") {
+      const wh = warehouses.find(w => w.id === item.warehouseId);
+      const meta = [item.serialId ? `# ${item.serialId}` : "", wh?.name || item.warehouseName || ""].filter(Boolean).join(" · ");
+      return `<button type="button" class="sale-search-result" data-sale-product-id="${item.id}">
+        <span class="sale-result-main">
+          <span class="sale-result-name">${esc(item.name || "")}</span>
+          <span class="sale-result-meta">${esc(meta || "منتج")}</span>
+        </span>
+        <span class="sale-result-tag">${fmtNum(item.quantity || 0)} ${esc(item.quantityType || "")}</span>
+      </button>`;
+    }
+    const bal = merchantBalances[item.id] ?? 0;
+    const balText = bal < 0 ? `مدين ${fmtMoney(-bal)}` : `رصيد ${fmtMoney(bal)}`;
+    return `<button type="button" class="sale-search-result" data-sale-merchant-id="${item.id}">
+      <span class="sale-result-main">
+        <span class="sale-result-name">${esc(item.name || "")}</span>
+        <span class="sale-result-meta">${esc(item.phone || item.email || "تاجر")}</span>
+      </span>
+      <span class="sale-result-tag">${balText}</span>
+    </button>`;
+  }).join("");
+  container.classList.add("open");
+}
+
+function refreshSaleProductSuggestions() {
+  const input = document.getElementById("sale-product-search");
+  const results = document.getElementById("sale-product-results");
+  if (!input || !results) return;
+  const q = _saleNorm(input.value);
+  if (!q) { results.classList.remove("open"); results.innerHTML = ""; return; }
+
+  const whId = document.getElementById("load-warehouse")?.value || "";
+  const pool = whId ? products.filter(p => p.warehouseId === whId) : products;
+  const matches = pool.filter(p => {
+    const hay = _saleNorm(`${p.name || ""} ${p.serialId || ""} ${p.description || ""}`);
+    return hay.includes(q);
+  });
+  _renderSaleSearchResults(results, matches, "product");
+}
+
+function refreshSaleMerchantSuggestions() {
+  const input = document.getElementById("sale-merchant-search");
+  const results = document.getElementById("sale-merchant-results");
+  if (!input || !results) return;
+  const q = _saleNorm(input.value);
+  if (!q) { results.classList.remove("open"); results.innerHTML = ""; return; }
+  const matches = merchants.filter(m => _saleNorm(`${m.name || ""} ${m.phone || ""} ${m.email || ""}`).includes(q));
+  _renderSaleSearchResults(results, matches, "merchant");
+}
+
+function updateSaleSummary() {
+  const itemsVal = document.querySelector("#sale-summary-items .sale-summary-value");
+  const totalVal = document.querySelector("#sale-summary-total .sale-summary-value");
+  const balanceVal = document.querySelector("#sale-summary-balance .sale-summary-value");
+  if (!itemsVal || !totalVal || !balanceVal) return;
+
+  const valid = loadLines.filter(l => l.productId && l.qty > 0);
+  const total = valid.reduce((sum, l) => sum + (Number(l.qty) || 0) * (Number(l.price) || 0), 0);
+  itemsVal.textContent = String(valid.length);
+  totalVal.textContent = fmtMoney(total);
+
+  const merchantId = document.getElementById("load-merchant")?.value || "";
+  if (!merchantId) {
+    balanceVal.textContent = "اختر تاجراً";
+    balanceVal.classList.remove("debt");
+    return;
+  }
+  const before = merchantBalances[merchantId] ?? 0;
+  const isPaid = document.getElementById("load-pay-paid")?.checked;
+  const after = isPaid ? before : before - total;
+  balanceVal.textContent = after < 0 ? `-${fmtMoney(-after)}` : fmtMoney(after);
+  balanceVal.classList.toggle("debt", after < 0);
+}
+
+function _chooseQuickProduct(productId) {
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
+
+  const whSel = document.getElementById("load-warehouse");
+  if (!whSel.value && product.warehouseId) {
+    whSel.value = product.warehouseId;
+    whSel.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  // لو كان المستخدم اختار مخزناً بالفعل، لا نسمح للبحث بإدخال صنف من مخزن آخر.
+  if (whSel.value && product.warehouseId && whSel.value !== product.warehouseId) {
+    showToast("هذا المنتج موجود في مخزن آخر — غيّر المخزن المصدر أولاً", true);
+    return;
+  }
+
+  let target = loadLines.find(l => l.productId === product.id);
+  if (!target) target = loadLines.find(l => !l.productId);
+  if (!target) {
+    target = { id: ++loadLineCounter, productId: "", qty: 1, price: 0 };
+    loadLines.push(target);
+  }
+  target.productId = product.id;
+  if (!target.qty || target.qty <= 0) target.qty = 1;
+  if (!target.price && product.price) target.price = product.price;
+  renderLoadLines();
+
+  const input = document.getElementById("sale-product-search");
+  if (input) input.value = product.name || "";
+  document.getElementById("sale-product-results")?.classList.remove("open");
+
+  requestAnimationFrame(() => {
+    const row = document.querySelector(`.loading-line-row[data-line-id="${target.id}"]`);
+    const qty = row?.querySelector(".lline-qty");
+    if (qty) { qty.focus(); qty.select(); }
+  });
+}
+
+function _chooseQuickMerchant(merchantId) {
+  const merchant = merchants.find(m => m.id === merchantId);
+  if (!merchant) return;
+  const sel = document.getElementById("load-merchant");
+  sel.value = merchant.id;
+  sel.dispatchEvent(new Event("change", { bubbles: true }));
+  const input = document.getElementById("sale-merchant-search");
+  if (input) input.value = merchant.name || "";
+  document.getElementById("sale-merchant-results")?.classList.remove("open");
+  updateSaleSummary();
+}
+
+function initSaleQuickSearch() {
+  const productInput = document.getElementById("sale-product-search");
+  const merchantInput = document.getElementById("sale-merchant-search");
+  const productResults = document.getElementById("sale-product-results");
+  const merchantResults = document.getElementById("sale-merchant-results");
+  if (!productInput || !merchantInput || !productResults || !merchantResults) return;
+
+  productInput.addEventListener("input", refreshSaleProductSuggestions);
+  productInput.addEventListener("focus", () => {
+    if (productInput.value.trim()) refreshSaleProductSuggestions();
+    _closeSaleSearchResults("sale-product-results");
+  });
+  merchantInput.addEventListener("input", refreshSaleMerchantSuggestions);
+  merchantInput.addEventListener("focus", () => {
+    loadMerchants();
+    if (merchantInput.value.trim()) refreshSaleMerchantSuggestions();
+    _closeSaleSearchResults("sale-merchant-results");
+  });
+
+  productInput.addEventListener("keydown", e => {
+    if (e.key !== "Enter") return;
+    const first = productResults.querySelector("[data-sale-product-id]");
+    if (first) { e.preventDefault(); _chooseQuickProduct(first.dataset.saleProductId); }
+  });
+  merchantInput.addEventListener("keydown", e => {
+    if (e.key !== "Enter") return;
+    const first = merchantResults.querySelector("[data-sale-merchant-id]");
+    if (first) { e.preventDefault(); _chooseQuickMerchant(first.dataset.saleMerchantId); }
+  });
+
+  productResults.addEventListener("click", e => {
+    const btn = e.target.closest("[data-sale-product-id]");
+    if (btn) _chooseQuickProduct(btn.dataset.saleProductId);
+  });
+  merchantResults.addEventListener("click", e => {
+    const btn = e.target.closest("[data-sale-merchant-id]");
+    if (btn) _chooseQuickMerchant(btn.dataset.saleMerchantId);
+  });
+
+  document.addEventListener("click", e => {
+    if (!e.target.closest("#sale-quick-search")) _closeSaleSearchResults();
+  });
+  updateSaleSummary();
+}
+
 /* ══════════════════════════════════════
    �OADING FORM (warehouse → merchant)
 ══════════════════════════════════════ */
 function initLoadingForm() {
   loadLines = [{ id: ++loadLineCounter, productId: "", qty: 1, price: 0 }];
   renderLoadLines();
+  initSaleQuickSearch();
 
-  document.getElementById("load-warehouse").addEventListener("change", () => renderLoadLines());
+  document.getElementById("load-warehouse").addEventListener("change", () => {
+    renderLoadLines();
+    const pInput = document.getElementById("sale-product-search");
+    if (pInput) pInput.value = "";
+    document.getElementById("sale-product-results")?.classList.remove("open");
+    updateSaleSummary();
+  });
+  document.getElementById("load-merchant").addEventListener("change", () => {
+    const selected = merchants.find(m => m.id === document.getElementById("load-merchant").value);
+    const mInput = document.getElementById("sale-merchant-search");
+    if (mInput && selected) mInput.value = selected.name || "";
+    updateSaleSummary();
+  });
   document.getElementById("load-add-line-btn").addEventListener("click", () => {
     loadLines.push({ id: ++loadLineCounter, productId: "", qty: 1, price: 0 });
     renderLoadLines();
@@ -883,6 +1094,7 @@ function initLoadingForm() {
       hint.style.color      = "#a06a10";
       hint.textContent      = "سيُسجَّل دين على التاجر بقيمة الفاتورة";
     }
+    updateSaleSummary();
   }
   document.getElementById("load-pay-paid").addEventListener("change", updatePayStyle);
   document.getElementById("load-pay-unpaid").addEventListener("change", updatePayStyle);
@@ -1035,6 +1247,10 @@ function initLoadingForm() {
       form.reset();
       loadLines = [{ id: ++loadLineCounter, productId: "", qty: 1, price: 0 }];
       renderLoadLines();
+      document.getElementById("sale-product-results")?.classList.remove("open");
+      document.getElementById("sale-merchant-results")?.classList.remove("open");
+      updatePayStyle();
+      updateSaleSummary();
       showToast("تمت عملية البيع بنجاح");
     } catch (err) { console.error(err); showToast("حدث خطأ أثناء التنفيذ", true); }
     finally { submitBtn.disabled = false; submitBtn.textContent = "تنفيذ عملية البيع"; }
@@ -1047,19 +1263,28 @@ function renderLoadLines() {
   const whId = document.getElementById("load-warehouse")?.value;
   const whProducts = whId ? products.filter(p => p.warehouseId === whId) : [];
   container.innerHTML = "";
-  loadLines.forEach(line => {
+  loadLines.forEach((line, index) => {
     const row = document.createElement("div");
-    row.className = "prod-line-row";
-    row.style.gridTemplateColumns = "2fr 1fr 1fr auto";
+    row.className = "prod-line-row loading-line-row";
+    row.dataset.lineId = line.id;
     const opts = whProducts.map(p =>
       `<option value="${p.id}" ${p.id === line.productId ? "selected" : ""}>${esc(p.name)} (${fmtNum(p.quantity || 0)} ${esc(p.quantityType || "")})</option>`
     ).join("");
     row.innerHTML = `
-      <select class="lline-prod"><option value="">اختر صنفاً</option>${opts}</select>
-      <input type="number" class="lline-qty" min="0.01" step="0.01" value="${line.qty}" placeholder="الكمية" />
-      <input type="number" class="lline-price" min="0" step="0.01" value="${line.price}" placeholder="السعر" />
+      <div class="sale-line-field sale-line-product">
+        <span class="sale-line-label">الصنف ${index + 1}</span>
+        <select class="lline-prod"><option value="">اختر صنفاً</option>${opts}</select>
+      </div>
+      <div class="sale-line-field sale-line-qty">
+        <span class="sale-line-label">الكمية</span>
+        <input type="number" class="lline-qty" min="0.01" step="0.01" value="${line.qty}" placeholder="الكمية" inputmode="decimal" />
+      </div>
+      <div class="sale-line-field sale-line-price">
+        <span class="sale-line-label">السعر</span>
+        <input type="number" class="lline-price" min="0" step="0.01" value="${line.price}" placeholder="السعر" inputmode="decimal" />
+      </div>
       <button type="button" class="remove-line" ${loadLines.length === 1 ? "disabled" : ""}>حذف</button>
-      <div class="line-hint" style="grid-column:1/-1"></div>`;
+      <div class="line-hint"></div>`;
     const selProd = row.querySelector(".lline-prod");
     const inpQty = row.querySelector(".lline-qty");
     const inpPrice = row.querySelector(".lline-price");
@@ -1068,12 +1293,24 @@ function renderLoadLines() {
     function upHint() {
       const p = products.find(x => x.id === selProd.value);
       if (p) {
-        hint.textContent = `متوفر: ${fmtNum(p.quantity || 0)} ${p.quantityType || ""} — الإجمالي: ${fmtMoney(line.qty * line.price)}`;
-        if (!line.price && p.price) { inpPrice.value = p.price; line.price = p.price; }
-      } else hint.textContent = "";
+        if (!line.price && p.price) {
+          inpPrice.value = p.price;
+          line.price = p.price;
+        }
+        const lineTotal = (Number(line.qty) || 0) * (Number(line.price) || 0);
+        hint.textContent = `متوفر: ${fmtNum(p.quantity || 0)} ${p.quantityType || ""} — الإجمالي: ${fmtMoney(lineTotal)}`;
+      } else {
+        hint.textContent = whId ? "اختر الصنف" : "اختر المخزن المصدر أولاً";
+      }
+      updateSaleSummary();
     }
-    selProd.addEventListener("change", () => { line.productId = selProd.value; upHint(); });
-    inpQty.addEventListener("input", () => { line.qty = Number(inpQty.value) || 1; upHint(); });
+    selProd.addEventListener("change", () => {
+      line.productId = selProd.value;
+      const p = products.find(x => x.id === line.productId);
+      if (p?.price && !line.price) { line.price = p.price; inpPrice.value = p.price; }
+      upHint();
+    });
+    inpQty.addEventListener("input", () => { line.qty = Number(inpQty.value) || 0; upHint(); });
     inpPrice.addEventListener("input", () => { line.price = Number(inpPrice.value) || 0; upHint(); });
     btnRem.addEventListener("click", () => {
       loadLines = loadLines.filter(l => l.id !== line.id);
@@ -1082,6 +1319,7 @@ function renderLoadLines() {
     upHint();
     container.appendChild(row);
   });
+  updateSaleSummary();
 }
 
 /* ══════════════════════════════════════
