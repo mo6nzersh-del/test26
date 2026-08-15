@@ -26,7 +26,9 @@
     .svg-icon.duotone svg .fill{fill:currentColor;stroke:none;opacity:.18}
     .svg-icon.duotone svg .line{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
     .welcome-wave{display:inline-flex;align-items:center;justify-content:center;width:1.05em;height:1.05em;vertical-align:-.12em}
-    .welcome-wave .svg-icon{width:1em;height:1em}
+    .welcome-wave .svg-icon{width:.92em;height:.92em}
+    .welcome-wave.is-morning{background:linear-gradient(145deg,#fff9d8,#ffe998);color:#d59a08}
+    .welcome-wave.is-evening{background:linear-gradient(145deg,#eef1ff,#dce4ff);color:#556dd8}
     .ops-icon .svg-icon,.a-ico .svg-icon,.m-ico .svg-icon{width:22px;height:22px}
     .ticon .svg-icon{width:18px;height:18px}
     .radio-card strong .svg-icon,.cash-check strong .svg-icon{width:15px;height:15px;margin-left:6px;vertical-align:-2px}
@@ -50,8 +52,8 @@
     .welcome-kicker::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--primary)}
     .dash-hero h1{margin:0;font-size:clamp(24px,3vw,35px);font-weight:900;letter-spacing:-.45px;color:var(--ink);line-height:1.35}
     .greeting-name{color:var(--primary-dark)}
-    .welcome-wave{display:inline-block;font-size:.8em;transform-origin:70% 70%;animation:welcomeWave 2.8s ease-in-out infinite}
-    @keyframes welcomeWave{0%,55%,100%{transform:rotate(0)}62%{transform:rotate(12deg)}69%{transform:rotate(-7deg)}76%{transform:rotate(10deg)}83%{transform:rotate(0)}}
+    .welcome-wave{display:inline-flex;align-items:center;justify-content:center;width:1.4em;height:1.4em;border-radius:50%;margin-inline-start:.22em;vertical-align:-.18em;background:linear-gradient(145deg,#fff8d6,#fff0a8);color:#d6a21f;box-shadow:0 3px 10px rgba(214,162,31,.16)}
+    @keyframes welcomeWave{from{transform:none}to{transform:none}}
     .dash-hero p{margin:7px 0 0;color:var(--muted);font-size:13.5px;line-height:1.8}
     .welcome-date{margin-top:9px!important;font-size:11.5px!important;font-weight:700;color:var(--muted)!important}
     .welcome-side{position:relative;z-index:1;display:flex;align-items:center;gap:12px;flex:0 0 auto}
@@ -226,7 +228,7 @@
       <section class="dash-hero" aria-label="رسالة الترحيب">
         <div class="welcome-copy">
           <div class="welcome-kicker">الرئيسية</div>
-          <h1><span id="greeting-text">مرحباً</span>، <span class="greeting-name" id="greeting-name">...</span> <span class="welcome-wave" aria-hidden="true"><span class="svg-icon" data-svg-icon="wave"></span></span></h1>
+          <h1><span id="greeting-text">مرحباً</span>، <span class="greeting-name" id="greeting-name">...</span> <span class="welcome-wave" aria-hidden="true"><span class="svg-icon" data-svg-icon="sun"></span></span></h1>
           <p>أهلاً بعودتك، يمكنك الوصول إلى أهم عملياتك بسرعة من الأقسام الموجودة بالأسفل.</p>
           <p class="welcome-date" id="welcome-date"></p>
         </div>
@@ -393,7 +395,7 @@
       <div class="modal-body"><form id="merchant-pay-form">
         <div class="field"><label>اسم التاجر *</label><select id="mp-merchant"><option value="">اختر التاجر</option></select></div>
         <div class="mini-title">نوع الحركة</div>
-        <div class="radio-cards" id="mp-type-cards"><label class="radio-card active-in" data-mp-type="in"><input type="radio" name="mp-type" value="in" checked><strong><span class="svg-icon" data-svg-icon="card"></span>التاجر دفع — تسديد مستحقات</strong><small>يقل دين التاجر، وإذا كانت نقدية يدخل المبلغ إلى الصندوق.</small></label><label class="radio-card" data-mp-type="out"><input type="radio" name="mp-type" value="out"><strong><span class="svg-icon" data-svg-icon="plus-circle"></span>إضافة مبلغ على حساب التاجر</strong><small>يزيد دين التاجر، وإذا كانت نقدية يخرج المبلغ من الصندوق.</small></label></div>
+        <div class="radio-cards" id="mp-type-cards"><label class="radio-card active-in" data-mp-type="in"><input type="radio" name="mp-type" value="in" checked><strong><span class="svg-icon" data-svg-icon="receipt-check"></span>التاجر دفع — تسديد مستحقات</strong><small>يقل دين التاجر، وإذا كانت نقدية يدخل المبلغ إلى الصندوق.</small></label><label class="radio-card" data-mp-type="out"><input type="radio" name="mp-type" value="out"><strong><span class="svg-icon" data-svg-icon="wallet-plus"></span>إضافة مبلغ على حساب التاجر</strong><small>يزيد دين التاجر، وإذا كانت نقدية يخرج المبلغ من الصندوق.</small></label></div>
         <label class="cash-check"><input type="checkbox" id="mp-cash" checked><span><strong><span class="svg-icon" data-svg-icon="wallet"></span>هذه الحركة نقدية فعلياً</strong><small>فعّلها فقط إذا دخل أو خرج نقد حقيقي من صندوق الكاش. عطّلها للتسويات غير النقدية.</small></span></label>
         <div class="form-grid"><div class="field"><label>المبلغ (ج.م) *</label><input id="mp-amount" type="number" min="0.01" step="0.01" placeholder="0.00"></div><div class="field"><label>التاريخ *</label><input id="mp-date" type="date"></div></div>
         <div class="field"><label>الوصف / الملاحظات</label><input id="mp-desc" type="text" placeholder="اختياري"></div>
@@ -664,7 +666,11 @@ const SVG_ICONS = {
   "plus-circle": `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/></svg>`,
   "minus-circle": `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8 12h8"/></svg>`,
   edit: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16v4Z"/><path d="m12.5 7.5 4 4"/></svg>`,
-  card: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/></svg>`
+  card: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/></svg>`,
+  sun: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.3M12 19.2v2.3M21.5 12h-2.3M4.8 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9 5.3 5.3"/></svg>`,
+  moon: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a8.5 8.5 0 1 0 9.5 9.5Z"/></svg>`,
+  "receipt-check": `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v18l-2.2-1.5L12 21l-2.8-1.5L7 21V3Z"/><path d="M9.5 8.5h5M9.5 12h5"/><path d="m9.3 15.5 1.4 1.4 3-3"/></svg>`,
+  "wallet-plus": `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18a2 2 0 0 1 2 2v1.5"/><path d="M4 9h15.5A1.5 1.5 0 0 1 21 10.5v7A1.5 1.5 0 0 1 19.5 19H6.5A2.5 2.5 0 0 1 4 16.5V7.5Z"/><path d="M9 14h5M11.5 11.5v5"/></svg>`
 };
 function svgIcon(name){ return SVG_ICONS[name] || SVG_ICONS.note; }
 function setSvgIcon(el,name){ if(el) el.innerHTML = `<span class="svg-icon" data-icon-rendered="${name}">${svgIcon(name)}</span>`; }
@@ -791,12 +797,19 @@ renderSvgIcons();
 
 function updateDashboardGreeting(user){
   const hour=new Date().getHours();
-  const greeting=hour<12?"صباح الخير":"مساء الخير";
+  const isMorning=hour<12;
+  const greeting=isMorning?"صباح الخير":"مساء الخير";
   const greetingEl=document.getElementById("greeting-text");
   const nameEl=document.getElementById("greeting-name");
   const avatarEl=document.getElementById("welcome-avatar");
   const dateEl=document.getElementById("welcome-date");
+  const greetIconWrap=document.querySelector('.welcome-wave');
   if(greetingEl) greetingEl.textContent=greeting;
+  if(greetIconWrap){
+    greetIconWrap.classList.toggle('is-morning', isMorning);
+    greetIconWrap.classList.toggle('is-evening', !isMorning);
+    greetIconWrap.innerHTML = `<span class="svg-icon">${svgIcon(isMorning?"sun":"moon")}</span>`;
+  }
 
   let fallbackName=(user?.displayName||"").trim();
   if(!fallbackName){
