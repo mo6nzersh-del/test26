@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" crossorigin href="/assets/auth-guard-C6CJ8_8i.css">
-  <script type="module" crossorigin src="/assets/dashboard-DSedGtPY.js"></script>
+  <script type="module" crossorigin src="/assets/dashboard-QSearchV3.js"></script>
   <style>
     *,*::before,*::after{box-sizing:border-box}
     :root{
@@ -367,5 +367,181 @@
       </form></div>
     </div>
   </div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   Fallback searchable selects — داخل dashboard.html مباشرة
+   يبقي الـ select الحقيقي في الخلفية ويعرض قائمة بحث مخصصة.
+   وضعه هنا يمنع مشاكل cache لملف الـ module.
+═══════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+  let pop=null, current=null, trigger=null, activeIndex=-1;
+
+  function norm(v){
+    return String(v == null ? '' : v)
+      .toLowerCase()
+      .normalize('NFKD')
+      .replace(/[\u064B-\u065F\u0670]/g,'')
+      .replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').trim();
+  }
+  function fieldName(sel){
+    const cell=sel.closest('.field,.line-cell');
+    const label=cell && cell.querySelector('label');
+    const t=(label && label.textContent || '').replace(/\*/g,'').trim();
+    return t || 'الخيار';
+  }
+  function ensurePop(){
+    if(pop) return pop;
+    pop=document.createElement('div');
+    pop.id='smart-select-popover';
+    pop.innerHTML='<div class="smart-search-box"><input class="smart-search-input" type="search" autocomplete="off" spellcheck="false"></div><div class="smart-options" role="listbox"></div>';
+    document.body.appendChild(pop);
+    const input=pop.querySelector('.smart-search-input');
+    input.addEventListener('input',function(){ render(input.value); });
+    input.addEventListener('keydown',function(e){
+      const items=[...pop.querySelectorAll('.smart-option')];
+      if(e.key==='ArrowDown'){ e.preventDefault(); activeIndex=Math.min(items.length-1,activeIndex+1); paint(items); }
+      else if(e.key==='ArrowUp'){ e.preventDefault(); activeIndex=Math.max(0,activeIndex-1); paint(items); }
+      else if(e.key==='Enter'){ e.preventDefault(); const b=items[activeIndex>=0?activeIndex:0]; if(b)b.click(); }
+      else if(e.key==='Escape'){ e.preventDefault(); close(); }
+    });
+    document.addEventListener('pointerdown',function(e){
+      if(!current) return;
+      if(pop.contains(e.target) || (trigger && trigger.contains(e.target))) return;
+      close();
+    },true);
+    window.addEventListener('resize',position);
+    window.addEventListener('scroll',position,true);
+    return pop;
+  }
+  function paint(items){
+    items.forEach((x,i)=>x.classList.toggle('active',i===activeIndex));
+    if(items[activeIndex]) items[activeIndex].scrollIntoView({block:'nearest'});
+  }
+  function sync(sel){
+    const b=sel._smartButton;
+    if(!b) return;
+    const opt=sel.options[sel.selectedIndex];
+    const label=b.querySelector('.smart-select-label');
+    if(label) label.textContent=opt ? opt.textContent : 'اختر';
+    b.disabled=!!sel.disabled;
+    b.setAttribute('aria-disabled',sel.disabled?'true':'false');
+    if(current===sel && pop && pop.classList.contains('open')) render(pop.querySelector('.smart-search-input').value);
+  }
+  function enhance(sel){
+    if(!(sel instanceof HTMLSelectElement) || sel.dataset.smartEnhanced==='1') return;
+    sel.dataset.smartEnhanced='1';
+    const wrap=document.createElement('div');
+    wrap.className='smart-select-wrap';
+    sel.parentNode.insertBefore(wrap,sel);
+    wrap.appendChild(sel);
+    sel.classList.add('smart-native-select');
+
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='smart-select-btn';
+    b.setAttribute('aria-haspopup','listbox');
+    b.innerHTML='<span class="smart-select-label"></span><span class="smart-select-chevron">⌄</span>';
+    wrap.appendChild(b);
+    sel._smartButton=b;
+
+    b.addEventListener('click',function(){ if(!sel.disabled) open(sel,b); });
+    sel.addEventListener('change',function(){ sync(sel); });
+    sel.addEventListener('input',function(){ sync(sel); });
+    new MutationObserver(function(){ sync(sel); }).observe(sel,{childList:true,subtree:true,attributes:true,attributeFilter:['disabled']});
+    sync(sel);
+  }
+  function enhanceAll(root){
+    root=root||document;
+    if(root instanceof HTMLSelectElement) enhance(root);
+    if(root.querySelectorAll) root.querySelectorAll('select').forEach(enhance);
+  }
+  function position(){
+    if(!current || !trigger || !pop || !pop.classList.contains('open')) return;
+    const r=trigger.getBoundingClientRect();
+    const vw=document.documentElement.clientWidth, vh=document.documentElement.clientHeight;
+    const margin=8;
+    const width=Math.min(Math.max(r.width,260),Math.min(500,vw-margin*2));
+    const left=Math.max(margin,Math.min(r.left,vw-width-margin));
+    pop.style.width=width+'px';
+    pop.style.left=left+'px';
+    const below=vh-r.bottom-margin, above=r.top-margin;
+    const expected=Math.min(380,Math.max(250,pop.scrollHeight||320));
+    if(below>=Math.min(260,expected) || below>=above){
+      pop.style.top=(r.bottom+6)+'px'; pop.style.bottom='auto';
+    }else{
+      pop.style.top='auto'; pop.style.bottom=(vh-r.top+6)+'px';
+    }
+  }
+  function open(sel,b){
+    ensurePop();
+    if(current===sel && pop.classList.contains('open')){ close(); return; }
+    close();
+    current=sel; trigger=b; activeIndex=0;
+    b.classList.add('is-open');
+    const input=pop.querySelector('.smart-search-input');
+    input.value='';
+    input.placeholder='ابحث عن '+fieldName(sel)+'...';
+    pop.classList.add('open');
+    render('');
+    position();
+    requestAnimationFrame(function(){ position(); input.focus(); input.select(); });
+  }
+  function close(){
+    if(pop) pop.classList.remove('open');
+    if(trigger) trigger.classList.remove('is-open');
+    current=null; trigger=null; activeIndex=-1;
+  }
+  function render(q){
+    if(!current || !pop) return;
+    const needle=norm(q);
+    const opts=[...current.options].filter(function(o){
+      return !o.disabled && (!needle || norm(o.textContent).includes(needle));
+    });
+    const box=pop.querySelector('.smart-options');
+    box.innerHTML='';
+    if(!opts.length){ box.innerHTML='<div class="smart-empty">لا توجد نتائج مطابقة</div>'; position(); return; }
+    activeIndex=Math.min(Math.max(activeIndex,0),opts.length-1);
+    opts.forEach(function(o,i){
+      const b=document.createElement('button');
+      b.type='button';
+      b.className='smart-option'+(o.value===current.value?' selected':'')+(i===activeIndex?' active':'');
+      b.textContent=o.textContent;
+      b.setAttribute('role','option');
+      b.setAttribute('aria-selected',o.value===current.value?'true':'false');
+      b.addEventListener('click',function(){
+        const sel=current;
+        const changed=sel.value!==o.value;
+        sel.value=o.value;
+        sync(sel);
+        if(changed){
+          sel.dispatchEvent(new Event('input',{bubbles:true}));
+          sel.dispatchEvent(new Event('change',{bubbles:true}));
+        }
+        close();
+      });
+      box.appendChild(b);
+    });
+    position();
+  }
+
+  function boot(){
+    ensurePop();
+    enhanceAll(document);
+    new MutationObserver(function(records){
+      records.forEach(function(r){
+        r.addedNodes.forEach(function(n){ if(n.nodeType===1) enhanceAll(n); });
+      });
+    }).observe(document.body,{childList:true,subtree:true});
+    document.addEventListener('reset',function(){
+      setTimeout(function(){ document.querySelectorAll('select[data-smart-enhanced="1"]').forEach(sync); },0);
+    },true);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
+})();
+</script>
+
 </body>
 </html>
