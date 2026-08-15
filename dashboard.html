@@ -21,10 +21,29 @@
     body{background:var(--bg);overflow-x:hidden}
     #app{min-height:100vh;visibility:hidden}
     .dash-page{width:min(1180px,100%);margin:0 auto;padding:28px 22px 96px}
-    .dash-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:24px}
-    .dash-hero h1{margin:0;font-size:clamp(23px,3vw,34px);font-weight:900;letter-spacing:-.4px;color:var(--ink)}
-    .dash-hero p{margin:6px 0 0;color:var(--muted);font-size:14px;line-height:1.8}
-    .live-chip{display:flex;align-items:center;gap:8px;white-space:nowrap;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:8px 13px;font-size:12px;font-weight:800;color:var(--muted);box-shadow:0 3px 12px rgba(0,0,0,.04)}
+    /* واجهة الترحيب أعلى الداشبورد — بقية الأقسام تبقى كما هي */
+    .dash-hero{
+      position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:22px;
+      margin-bottom:24px;padding:24px 26px;border:1px solid var(--border);border-radius:22px;
+      background:
+        radial-gradient(circle at 8% 18%,rgba(47,111,79,.11),transparent 34%),
+        radial-gradient(circle at 92% 100%,rgba(49,95,156,.08),transparent 32%),
+        var(--surface);
+      box-shadow:var(--dash-shadow)
+    }
+    .dash-hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,rgba(255,255,255,.32),transparent 45%)}
+    .welcome-copy{position:relative;z-index:1;min-width:0}
+    .welcome-kicker{display:inline-flex;align-items:center;gap:7px;margin-bottom:8px;color:var(--primary-dark);font-size:11.5px;font-weight:900;background:var(--primary-soft);border-radius:999px;padding:5px 10px}
+    .welcome-kicker::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--primary)}
+    .dash-hero h1{margin:0;font-size:clamp(24px,3vw,35px);font-weight:900;letter-spacing:-.45px;color:var(--ink);line-height:1.35}
+    .greeting-name{color:var(--primary-dark)}
+    .welcome-wave{display:inline-block;font-size:.8em;transform-origin:70% 70%;animation:welcomeWave 2.8s ease-in-out infinite}
+    @keyframes welcomeWave{0%,55%,100%{transform:rotate(0)}62%{transform:rotate(12deg)}69%{transform:rotate(-7deg)}76%{transform:rotate(10deg)}83%{transform:rotate(0)}}
+    .dash-hero p{margin:7px 0 0;color:var(--muted);font-size:13.5px;line-height:1.8}
+    .welcome-date{margin-top:9px!important;font-size:11.5px!important;font-weight:700;color:var(--muted)!important}
+    .welcome-side{position:relative;z-index:1;display:flex;align-items:center;gap:12px;flex:0 0 auto}
+    .welcome-avatar{width:54px;height:54px;border-radius:17px;display:grid;place-items:center;background:linear-gradient(145deg,var(--dash-green),var(--dash-green-dark));color:#fff;font-size:21px;font-weight:900;box-shadow:0 8px 18px rgba(47,111,79,.19);border:3px solid rgba(255,255,255,.75);text-transform:uppercase}
+    .live-chip{display:flex;align-items:center;gap:8px;white-space:nowrap;background:rgba(255,255,255,.8);border:1px solid var(--border);border-radius:999px;padding:8px 13px;font-size:11.5px;font-weight:800;color:var(--muted);box-shadow:0 3px 12px rgba(0,0,0,.035);backdrop-filter:blur(6px)}
     .live-dot{width:8px;height:8px;border-radius:50%;background:#3aa86b;box-shadow:0 0 0 4px rgba(58,168,107,.12)}
 
     .ops-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--dash-radius);box-shadow:var(--dash-shadow);padding:20px;margin-bottom:18px}
@@ -169,14 +188,14 @@
       .dash-page{padding:20px 16px 92px}.action-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.dash-hero{align-items:flex-start}.direction-strip{grid-template-columns:1fr}
     }
     @media(max-width:620px){
-      .dash-page{padding:14px 11px 88px}.dash-hero{margin-bottom:15px}.dash-hero h1{font-size:23px}.dash-hero p{font-size:12px}.live-chip{display:none}
+      .dash-page{padding:14px 11px 88px}.dash-hero{margin-bottom:15px;padding:18px 16px;border-radius:18px;align-items:flex-start;gap:12px}.dash-hero h1{font-size:22px}.dash-hero p{font-size:11.5px;line-height:1.7}.welcome-kicker{font-size:10.5px;margin-bottom:7px}.welcome-date{font-size:10.5px!important;margin-top:7px!important}.welcome-side{align-self:flex-start}.welcome-avatar{width:45px;height:45px;border-radius:14px;font-size:18px}.live-chip{display:none}
       .ops-section{padding:13px;border-radius:15px;margin-bottom:12px}.ops-head{margin-bottom:11px}.ops-icon{width:36px;height:36px;border-radius:10px}.ops-title h2{font-size:15px}.ops-title p{font-size:10.5px}.section-link{font-size:10.5px;padding:6px 8px}
       .action-grid{grid-template-columns:1fr 1fr;gap:8px}.action-card{min-height:96px;padding:11px;display:block}.action-card .a-ico{width:37px;height:37px;margin-bottom:8px;font-size:18px}.action-card strong{font-size:12.5px}.action-card small{font-size:10px;line-height:1.45}
       .direction-strip{margin-top:10px}.direction-note{font-size:10.5px;padding:9px}
       .dash-modal{padding:0;align-items:flex-end}.dash-modal-box,.dash-modal-box.wide{width:100%;max-height:92dvh;border-radius:22px 22px 0 0;border-bottom:0;animation:sheetIn .18s ease}@keyframes sheetIn{from{transform:translateY(18px);opacity:.7}to{transform:none;opacity:1}}
       .modal-head{padding:13px 14px}.modal-body{padding:14px}.form-grid{grid-template-columns:1fr}.line-row,.line-row.production{grid-template-columns:1fr 1fr}.line-row .line-cell:first-child{grid-column:1/-1}.line-row .remove-line{grid-column:1/-1;height:38px}.line-meta{grid-column:1/-1}.type-grid,.radio-cards{grid-template-columns:1fr}.summary-box{grid-template-columns:1fr 1fr}.summary-item:last-child:nth-child(3){grid-column:1/-1}.modal-actions{position:sticky;bottom:-14px;background:linear-gradient(transparent,var(--surface) 20%);padding:18px 0 4px}.modal-actions .primary-btn{flex:1}.modal-actions .ghost-btn{min-width:88px}
     }
-    @media(max-width:390px){.action-grid{grid-template-columns:1fr}.action-card{min-height:auto;display:flex}.action-card .a-ico{margin-bottom:0}.summary-box{grid-template-columns:1fr}}
+    @media(max-width:390px){.dash-hero{padding:16px 13px}.welcome-side{display:none}.dash-hero h1{font-size:20px}.welcome-kicker{padding:4px 8px}.action-grid{grid-template-columns:1fr}.action-card{min-height:auto;display:flex}.action-card .a-ico{margin-bottom:0}.summary-box{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -192,12 +211,17 @@
   <div id="app">
     <header id="topbar" class="topbar"></header>
     <main class="dash-page">
-      <section class="dash-hero">
-        <div>
-          <h1>مركز العمليات السريعة</h1>
-          <p>نفّذ أهم عمليات المنتجات والمالية مباشرةً من مكان واحد، بنفس اتجاهات الحركة المستخدمة في الصفحات الأصلية.</p>
+      <section class="dash-hero" aria-label="رسالة الترحيب">
+        <div class="welcome-copy">
+          <div class="welcome-kicker">الرئيسية</div>
+          <h1><span id="greeting-text">مرحباً</span>، <span class="greeting-name" id="greeting-name">...</span> <span class="welcome-wave" aria-hidden="true">👋</span></h1>
+          <p>أهلاً بعودتك، يمكنك الوصول إلى أهم عملياتك بسرعة من الأقسام الموجودة بالأسفل.</p>
+          <p class="welcome-date" id="welcome-date"></p>
         </div>
-        <div class="live-chip"><span class="live-dot"></span><span id="data-status">البيانات متصلة</span></div>
+        <div class="welcome-side">
+          <div class="live-chip"><span class="live-dot"></span><span id="data-status">البيانات متصلة</span></div>
+          <div class="welcome-avatar" id="welcome-avatar" aria-hidden="true">A</div>
+        </div>
       </section>
 
       <section class="ops-section">
@@ -725,6 +749,45 @@ function renderNav(user){
   if(!bottom){bottom=document.createElement("nav");bottom.id="bottom-nav";document.body.appendChild(bottom);}
   bottom.innerHTML=`<div class="bot-nav-inner">${NAV_ITEMS.map(([href,label,path])=>`<a href="/${href}" class="bot-nav-item${href==="dashboard.html"?" active":""}"><span class="bot-nav-icon"><svg viewBox="0 0 24 24"><path d="${path}"/></svg></span><span>${label}</span></a>`).join("")}</div>`;
 }
+function updateDashboardGreeting(user){
+  const hour=new Date().getHours();
+  const greeting=hour<12?"صباح الخير":"مساء الخير";
+  const greetingEl=document.getElementById("greeting-text");
+  const nameEl=document.getElementById("greeting-name");
+  const avatarEl=document.getElementById("welcome-avatar");
+  const dateEl=document.getElementById("welcome-date");
+  if(greetingEl) greetingEl.textContent=greeting;
+
+  let fallbackName=(user?.displayName||"").trim();
+  if(!fallbackName){
+    try{ fallbackName=(localStorage.getItem("ahDisplay")||localStorage.getItem("displayName")||"").trim(); }catch(_){}
+  }
+  if(!fallbackName) fallbackName=String(user?.email||"مستخدم").split("@")[0];
+
+  const applyName=name=>{
+    const clean=String(name||fallbackName||"مستخدم").trim();
+    if(nameEl) nameEl.textContent=clean;
+    if(avatarEl) avatarEl.textContent=(clean.match(/[\p{L}\p{N}]/u)?.[0]||"A").toUpperCase();
+  };
+  applyName(fallbackName);
+
+  if(dateEl){
+    try{
+      dateEl.textContent=new Intl.DateTimeFormat("ar-EG",{weekday:"long",day:"numeric",month:"long"}).format(new Date());
+    }catch(_){ dateEl.textContent=""; }
+  }
+
+  /* نحاول استخدام الاسم/الاسم المستعار الموجود في إدارة الحسابات بدون تعطيل تحميل الصفحة */
+  const email=String(user?.email||"").trim();
+  if(email){
+    getDocs(query(collection(db,"appUsers"),where("email","==",email))).then(snap=>{
+      if(snap.empty) return;
+      const data=snap.docs[0].data()||{};
+      applyName(data.alias||data.name||fallbackName);
+    }).catch(()=>{});
+  }
+}
+
 function hideLoader(){
   const loader=document.getElementById("page-loader");
   if(!loader)return;
@@ -1251,7 +1314,7 @@ function bindUI(){
   document.querySelectorAll("[data-mp-type]").forEach(c=>c.addEventListener("click",()=>{const type=c.dataset.mpType;c.querySelector("input").checked=true;if(type==="out")document.getElementById("mp-cash").checked=false;else document.getElementById("mp-cash").checked=true;updateMerchantPayStyle();}));document.getElementById("merchant-pay-form").addEventListener("submit",submitMerchantPay);
 }
 
-onAuthStateChanged(auth,async user=>{
+onAuthStateChanged(auth, async user=>{
   if(!user){location.href="/index.html";return;}
   try{
     const blockedSnap=await getDocs(query(
@@ -1263,8 +1326,10 @@ onAuthStateChanged(auth,async user=>{
       window.location.replace("/index.html");
       return;
     }
-  }catch(err){console.error("blocked user check failed",err);}
-  currentUser=user;renderNav(user);initSearchableSelects();bindUI();startData();window.__dashboardReady=true;document.getElementById("app").style.visibility="visible";hideLoader();
+  }catch(err){
+    console.error("blocked user check failed",err);
+  }
+  currentUser=user;renderNav(user);updateDashboardGreeting(user);initSearchableSelects();bindUI();startData();window.__dashboardReady=true;document.getElementById("app").style.visibility="visible";hideLoader();
 });
 
 </script>
