@@ -862,6 +862,15 @@
       .warehouse-row .wh-actions{grid-template-columns:1fr}
       .ldcm-footer{grid-template-columns:1fr}
     }
+
+    /* الكتاب في عنوان DeepLog — ضغط مطول للعودة للرئيسية */
+    .deeplog-home-book{
+      display:inline-flex;align-items:center;justify-content:center;
+      cursor:pointer;user-select:none;-webkit-user-select:none;
+      -webkit-touch-callout:none;touch-action:manipulation;
+      transform-origin:center;transition:transform .12s ease,filter .12s ease;
+    }
+    .deeplog-home-book.is-holding{transform:scale(.88);filter:brightness(.92)}
 </style>
 </head>
 <body>
@@ -879,7 +888,7 @@
   <main class="page">
     <div class="dl-header">
       <div>
-        <h2>📒 السجل الشامل</h2>
+        <h2><span id="deeplog-home-book" class="deeplog-home-book" title="اضغط مطولاً للعودة إلى الرئيسية" aria-label="العودة إلى الصفحة الرئيسية بالضغط المطول">📒</span> السجل الشامل</h2>
         <p>عرض وتعديل وحذف كل العمليات — مالية، مخزنية، وكشف حساب موحّد لكل تاجر أو موظف</p>
       </div>
       <span class="dl-badge">صفحة خاصة — غير مرتبطة بالتنقل الرئيسي</span>
@@ -3174,6 +3183,54 @@ async function handleCreateAccount(e) {
     obs.disconnect(); hideLdr();
     if (app.style.visibility === "hidden") app.style.visibility = "visible";
   }, 1000);
+})();
+</script>
+
+<!-- ضغط مطول على أيقونة الكتاب للعودة إلى الداشبورد -->
+<script>
+(function(){
+  const book = document.getElementById("deeplog-home-book");
+  if (!book) return;
+
+  const HOLD_MS = 900;
+  const MOVE_TOLERANCE = 14;
+  let timer = null;
+  let startX = 0, startY = 0;
+  let activePointer = null;
+  let fired = false;
+
+  function cancelHold(){
+    if (timer) { clearTimeout(timer); timer = null; }
+    book.classList.remove("is-holding");
+    activePointer = null;
+  }
+
+  book.addEventListener("pointerdown", function(e){
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    cancelHold();
+    fired = false;
+    activePointer = e.pointerId;
+    startX = e.clientX;
+    startY = e.clientY;
+    book.classList.add("is-holding");
+    try { book.setPointerCapture(e.pointerId); } catch (_) {}
+    timer = setTimeout(function(){
+      timer = null;
+      fired = true;
+      book.classList.remove("is-holding");
+      window.location.href = "/dashboard.html";
+    }, HOLD_MS);
+  });
+
+  book.addEventListener("pointermove", function(e){
+    if (activePointer !== e.pointerId || !timer) return;
+    if (Math.hypot(e.clientX - startX, e.clientY - startY) > MOVE_TOLERANCE) cancelHold();
+  });
+  book.addEventListener("pointerup", cancelHold);
+  book.addEventListener("pointercancel", cancelHold);
+  book.addEventListener("lostpointercapture", function(){ if (!fired) cancelHold(); });
+  book.addEventListener("contextmenu", function(e){ e.preventDefault(); });
+  book.addEventListener("dragstart", function(e){ e.preventDefault(); });
 })();
 </script>
 
