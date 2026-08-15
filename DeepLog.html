@@ -145,6 +145,14 @@
       padding:5px 13px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;
       transition:background .12s}
     .trash-perm-del-btn:hover{background:#f5c6c0}
+    .trash-delete-all-btn{
+      border:none;background:linear-gradient(135deg,#b3432f,#cf5140);color:#fff;
+      border-radius:9px;padding:8px 14px;font-size:12.5px;font-weight:800;cursor:pointer;
+      font-family:inherit;white-space:nowrap;box-shadow:0 4px 12px rgba(179,67,47,.18);
+      transition:transform .12s ease,box-shadow .12s ease,opacity .12s ease,background .12s ease;
+    }
+    .trash-delete-all-btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(179,67,47,.24)}
+    .trash-delete-all-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
     .trash-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px}
     .trash-empty .te-ico{font-size:48px;display:block;margin-bottom:10px}
     .deleted-row td{opacity:.75;background:#fffaf9}
@@ -586,12 +594,12 @@
     .search-input{min-width:220px}
 
     /* الأزرار */
-    .btn,.row-actions button,.trash-restore-btn,.trash-perm-del-btn{
+    .btn,.row-actions button,.trash-restore-btn,.trash-perm-del-btn,.trash-delete-all-btn{
       min-height:38px;border-radius:9px;
       transition:transform .12s ease,box-shadow .12s ease,opacity .12s ease,background .12s ease;
     }
-    .btn:hover,.row-actions button:hover,.trash-restore-btn:hover,.trash-perm-del-btn:hover{transform:translateY(-1px)}
-    .btn:focus-visible,.row-actions button:focus-visible,.trash-restore-btn:focus-visible,.trash-perm-del-btn:focus-visible,
+    .btn:hover,.row-actions button:hover,.trash-restore-btn:hover,.trash-perm-del-btn:hover,.trash-delete-all-btn:hover{transform:translateY(-1px)}
+    .btn:focus-visible,.row-actions button:focus-visible,.trash-restore-btn:focus-visible,.trash-perm-del-btn:focus-visible,.trash-delete-all-btn:focus-visible,
     .section-tabs button:focus-visible,#mob-tab-trigger:focus-visible,.mob-tab-item:focus-visible{
       outline:2px solid var(--primary);outline-offset:2px;
     }
@@ -744,7 +752,8 @@
         width:100%!important;min-width:0!important;margin:0!important;
       }
       .filters-bar .search-input,.trash-filters .search-input,#audit-filter-search{grid-column:1/-1}
-      .filters-bar .btn,.trash-filters .btn,#audit-reset-btn{min-height:42px}
+      .filters-bar .btn,.trash-filters .btn,#audit-reset-btn,.trash-delete-all-btn{min-height:42px}
+      .trash-delete-all-btn{grid-column:1/-1;width:100%!important}
       #fin-add-btn{margin-right:0!important}
 
       /* مدخل الرصيد الافتتاحي */
@@ -1225,6 +1234,8 @@
           </select>
           <input type="text" id="trash-search" class="search-input" placeholder="بحث بالرقم أو الوصف أو الجهة..." />
           <button type="button" id="trash-reset-btn" class="btn outline small">إعادة ضبط</button>
+          <button type="button" id="trash-delete-all-btn" class="trash-delete-all-btn" disabled
+            title="حذف جميع الحركات الموجودة في سلة المحذوفات نهائياً">🗑 حذف جميع الحركات نهائياً</button>
         </div>
 
         <!-- جدول الحركات المحذوفة -->
@@ -2868,6 +2879,7 @@ function renderTrash() {
   const countEl  = document.getElementById("trash-count");
   const finCountEl = document.getElementById("trash-fin-count");
   const finTotalEl = document.getElementById("trash-fin-total");
+  const deleteAllBtn = document.getElementById("trash-delete-all-btn");
 
   const typeF   = document.getElementById("trash-filter-type")?.value  || "";
   const dirF    = document.getElementById("trash-filter-dir")?.value   || "";
@@ -2891,6 +2903,12 @@ function renderTrash() {
   if (countEl)    countEl.textContent    = `${allDeletedFinTx.length} حركة محذوفة`;
   if (finCountEl) finCountEl.textContent = allDeletedFinTx.length;
   if (finTotalEl) finTotalEl.textContent = fmt(total);
+  if (deleteAllBtn) {
+    deleteAllBtn.disabled = allDeletedFinTx.length === 0;
+    deleteAllBtn.textContent = allDeletedFinTx.length
+      ? `🗑 حذف جميع الحركات نهائياً (${allDeletedFinTx.length})`
+      : "🗑 حذف جميع الحركات نهائياً";
+  }
 
   if (!rows.length) {
     tbody.innerHTML = `
@@ -2965,6 +2983,12 @@ function setupTrashFilters() {
     });
     resetBtn._trashListenerAttached = true;
   }
+
+  const deleteAllBtn = document.getElementById("trash-delete-all-btn");
+  if (deleteAllBtn && !deleteAllBtn._trashListenerAttached) {
+    deleteAllBtn.addEventListener("click", () => permanentlyDeleteAllFinTx(deleteAllBtn));
+    deleteAllBtn._trashListenerAttached = true;
+  }
 }
 
 /* ── استعادة حركة مالية محذوفة ── */
@@ -3024,6 +3048,71 @@ async function permanentlyDeleteFinTx(id, btn) {
     toast("حدث خطأ أثناء الحذف النهائي", true);
     btn.disabled = false;
     btn.textContent = "🗑 حذف نهائي";
+  }
+}
+
+/* ── حذف جميع الحركات الموجودة في سلة المحذوفات نهائياً ── */
+async function permanentlyDeleteAllFinTx(btn) {
+  const targets = allDeletedFinTx.slice();
+  if (!targets.length) {
+    toast("سلة المحذوفات فارغة");
+    return;
+  }
+
+  const total = targets.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+  const ok = confirm(
+    `⚠️ حذف جميع الحركات نهائياً\n\n` +
+    `سيتم حذف ${targets.length} حركة مالية من سلة المحذوفات بقيمة إجمالية ${fmt(total)}.\n` +
+    `هذا الإجراء نهائي ولا يمكن التراجع عنه.\n\n` +
+    `الحركات النشطة خارج سلة المحذوفات لن تتأثر.\n\nهل تريد المتابعة؟`
+  );
+  if (!ok) return;
+
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  let deletedCount = 0;
+
+  try {
+    /* Firestore يسمح حتى 500 عملية في الـ batch؛ نستخدم 400 كهامش أمان */
+    const CHUNK_SIZE = 400;
+    for (let i = 0; i < targets.length; i += CHUNK_SIZE) {
+      const chunk = targets.slice(i, i + CHUNK_SIZE);
+      const batch = writeBatch(db);
+      chunk.forEach(t => batch.delete(doc(db, "finance_transactions", t.id)));
+      await batch.commit();
+
+      deletedCount += chunk.length;
+      btn.textContent = `جارِ الحذف... ${deletedCount}/${targets.length}`;
+    }
+
+    toast(`تم حذف ${deletedCount} حركة نهائياً من سلة المحذوفات`);
+
+    await addDoc(collection(db, "auditLog"), {
+      action:    "حذف نهائي جماعي",
+      entity:    "حركات مالية",
+      page:      "السجل الشامل",
+      details:   `حذف جميع الحركات من سلة المحذوفات — العدد: ${deletedCount} — الإجمالي: ${fmt(total)}`,
+      userEmail: currentUser?.email ?? "—",
+      createdAt: serverTimestamp(),
+    }).catch(err => console.error("auditLog write failed", err));
+
+    logDlAction(
+      "حذف نهائي جماعي للحركات المالية",
+      `العدد: ${deletedCount} — الإجمالي: ${fmt(total)}`
+    );
+  } catch (err) {
+    console.error(err);
+    toast(
+      deletedCount
+        ? `تم حذف ${deletedCount} حركة ثم حدث خطأ. أعد المحاولة لحذف الباقي.`
+        : "حدث خطأ أثناء حذف الحركات",
+      true
+    );
+  } finally {
+    /* onSnapshot سيعيد الرسم تلقائياً؛ نعيد حالة الزر احتياطياً */
+    btn.disabled = allDeletedFinTx.length === 0;
+    btn.textContent = originalText;
+    setTimeout(renderTrash, 0);
   }
 }
 
