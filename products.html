@@ -235,6 +235,155 @@
         .mlc-by{font-size:11.5px;color:var(--muted);font-weight:600}
         .mlc-time{font-size:11px;color:var(--muted);font-family:monospace;white-space:nowrap}
       }
+
+      /* ══════════════════════════════════════
+         تسهيلات عمليات البيع — بحث سريع + ملخص
+      ══════════════════════════════════════ */
+      #view-loading .sale-quick-search{
+        display:grid;grid-template-columns:1fr 1fr;gap:12px;
+        padding:14px;margin-bottom:16px;
+        border:1px solid var(--border);border-radius:12px;
+        background:linear-gradient(135deg,var(--primary-soft),var(--surface));
+      }
+      #view-loading .sale-quick-title{
+        grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px;
+        font-size:.83rem;font-weight:800;color:var(--primary-dark);
+      }
+      #view-loading .sale-quick-title small{font-size:.7rem;font-weight:600;color:var(--muted)}
+      #view-loading .sale-search-field{position:relative;min-width:0}
+      #view-loading .sale-search-field label{
+        display:block;margin-bottom:6px;font-size:.78rem;font-weight:800;color:var(--ink)
+      }
+      #view-loading .sale-search-wrap{position:relative}
+      #view-loading .sale-search-icon{
+        position:absolute;right:11px;top:50%;transform:translateY(-50%);
+        font-size:15px;line-height:1;pointer-events:none;opacity:.7
+      }
+      #view-loading .sale-search-input{
+        width:100%;height:43px;padding:9px 36px 9px 12px;
+        border:1.5px solid var(--border);border-radius:10px;
+        background:var(--surface);color:var(--ink);font-family:inherit;font-size:.88rem;
+        outline:none;transition:border-color .15s,box-shadow .15s,background .15s;
+      }
+      #view-loading .sale-search-input:focus{
+        border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);background:#fff
+      }
+      #view-loading .sale-search-results{
+        display:none;position:absolute;z-index:45;top:calc(100% + 5px);right:0;left:0;
+        max-height:245px;overflow:auto;background:var(--surface);
+        border:1px solid var(--border);border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.14);
+      }
+      #view-loading .sale-search-results.open{display:block}
+      #view-loading .sale-search-result{
+        width:100%;border:none;border-bottom:1px solid var(--border);background:transparent;
+        color:var(--ink);font-family:inherit;text-align:right;padding:10px 12px;cursor:pointer;
+        display:flex;align-items:center;justify-content:space-between;gap:10px;
+      }
+      #view-loading .sale-search-result:last-child{border-bottom:none}
+      #view-loading .sale-search-result:hover,
+      #view-loading .sale-search-result:focus{background:var(--primary-soft);outline:none}
+      #view-loading .sale-result-main{min-width:0}
+      #view-loading .sale-result-name{font-size:.84rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      #view-loading .sale-result-meta{font-size:.68rem;color:var(--muted);margin-top:2px}
+      #view-loading .sale-result-tag{
+        flex-shrink:0;font-size:.68rem;font-weight:700;color:var(--primary-dark);
+        background:var(--primary-soft);border-radius:999px;padding:3px 7px;white-space:nowrap
+      }
+      #view-loading .sale-search-empty{padding:12px;text-align:center;font-size:.78rem;color:var(--muted)}
+      #view-loading .sale-summary{
+        display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+        margin:0 0 16px;padding:10px;
+        border:1px solid var(--border);border-radius:12px;background:var(--bg)
+      }
+      #view-loading .sale-summary-item{
+        min-width:0;background:var(--surface);border:1px solid var(--border);
+        border-radius:9px;padding:9px 10px;text-align:center
+      }
+      #view-loading .sale-summary-label{display:block;font-size:.68rem;color:var(--muted);font-weight:700;margin-bottom:3px}
+      #view-loading .sale-summary-value{display:block;font-size:.86rem;color:var(--ink);font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      #view-loading #sale-summary-total .sale-summary-value{color:var(--primary-dark)}
+      #view-loading #sale-summary-balance .sale-summary-value.debt{color:var(--danger)}
+      #view-loading .prod-line-row.loading-line-row{grid-template-columns:2fr 1fr 1fr auto}
+      #view-loading .sale-line-field{display:contents}
+      #view-loading .sale-line-label{display:none}
+
+      @media(max-width:700px){
+        /* تحسين الهاتف محصور داخل تبويب عمليات البيع فقط */
+        #view-loading .panel{
+          padding:14px;border-radius:14px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.06)
+        }
+        #view-loading .panel>h3{font-size:1.05rem;margin-bottom:6px}
+        #view-loading .panel>p{font-size:.78rem!important;line-height:1.65;margin:0 0 14px!important}
+        #view-loading .sale-quick-search{
+          grid-template-columns:1fr;gap:10px;padding:11px;margin-bottom:14px;
+          border-radius:11px;background:var(--primary-soft)
+        }
+        #view-loading .sale-quick-title{display:block}
+        #view-loading .sale-quick-title small{display:block;margin-top:2px;line-height:1.5}
+        #view-loading .sale-search-input{height:46px;font-size:16px}
+        #view-loading #loading-form>.form-grid{
+          grid-template-columns:1fr!important;gap:10px!important;margin-bottom:12px!important
+        }
+        #view-loading #loading-form>.form-grid .field{margin-bottom:0!important}
+        #view-loading #loading-form>.form-grid select,
+        #view-loading #load-note{min-height:46px;font-size:16px}
+        #view-loading .items-lines-block{
+          padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--bg);margin-bottom:12px
+        }
+        #view-loading .items-lines-block h4{
+          font-size:.84rem;margin:0 0 9px;padding-bottom:7px;border-bottom:1px solid var(--border)
+        }
+        #view-loading .prod-line-row.loading-line-row{
+          display:grid!important;
+          grid-template-columns:1fr 1fr!important;
+          grid-template-areas:
+            "product product"
+            "qty price"
+            "hint remove"!important;
+          gap:9px!important;align-items:end!important;
+          background:var(--surface);border:1px solid var(--border);border-radius:11px;
+          padding:10px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.04)
+        }
+        #view-loading .sale-line-field{display:block;min-width:0}
+        #view-loading .sale-line-product{grid-area:product}
+        #view-loading .sale-line-qty{grid-area:qty}
+        #view-loading .sale-line-price{grid-area:price}
+        #view-loading .sale-line-label{
+          display:block;font-size:.67rem;font-weight:800;color:var(--muted);margin:0 2px 4px
+        }
+        #view-loading .prod-line-row.loading-line-row select,
+        #view-loading .prod-line-row.loading-line-row input[type="number"]{
+          min-height:44px;padding:9px 10px;font-size:16px;background:#fff
+        }
+        #view-loading .prod-line-row.loading-line-row .remove-line{
+          grid-area:remove;justify-self:end;align-self:center;
+          min-width:74px;padding:7px 10px!important;margin:0!important
+        }
+        #view-loading .prod-line-row.loading-line-row .line-hint{
+          grid-area:hint!important;font-size:.69rem!important;line-height:1.55;
+          padding:3px 1px!important;align-self:center
+        }
+        #view-loading #load-add-line-btn{
+          width:100%;min-height:42px;border-style:solid;background:var(--surface)
+        }
+        #view-loading .pay-options{grid-template-columns:1fr 1fr;gap:8px}
+        #view-loading .pay-opt{padding:10px 9px;gap:7px;border-radius:10px}
+        #view-loading .pay-opt-icon{font-size:18px}
+        #view-loading .pay-opt-title{font-size:.78rem}
+        #view-loading .pay-opt-sub{font-size:.63rem}
+        #view-loading #pay-hint{font-size:.72rem!important;line-height:1.55}
+        #view-loading .sale-summary{
+          grid-template-columns:1fr 1fr;gap:7px;padding:8px;margin-bottom:12px
+        }
+        #view-loading .sale-summary-item{padding:8px 7px}
+        #view-loading #sale-summary-balance{grid-column:1/-1}
+        #view-loading .sale-summary-label{font-size:.64rem}
+        #view-loading .sale-summary-value{font-size:.82rem}
+        #view-loading #loading-submit-btn{
+          min-height:50px;font-size:16px;border-radius:11px;position:sticky;bottom:76px;z-index:15
+        }
+      }
+
       /* ── print styles ── */
       @media print{
         @page{size:A4 portrait;margin:0}
@@ -562,6 +711,32 @@
             <h3>إرسال بضائع إلى تاجر</h3>
             <p style="color:var(--muted);font-size:.87rem;margin:-8px 0 16px">تُخصم الكميات من المخزن وتُسجَّل كأموال مطلوبة من التاجر</p>
             <form id="loading-form">
+
+              <!-- بحث سريع لتسريع عملية البيع -->
+              <div class="sale-quick-search" id="sale-quick-search">
+                <div class="sale-quick-title">
+                  <span>🔎 بحث سريع</span>
+                  <small>اختر المنتج أو التاجر مباشرةً، وستظل القوائم الأصلية متاحة كما هي</small>
+                </div>
+                <div class="sale-search-field">
+                  <label for="sale-product-search">بحث عن اسم المنتج</label>
+                  <div class="sale-search-wrap">
+                    <span class="sale-search-icon">📦</span>
+                    <input type="search" id="sale-product-search" class="sale-search-input"
+                      placeholder="اكتب اسم المنتج أو رقمه..." autocomplete="off" />
+                    <div class="sale-search-results" id="sale-product-results"></div>
+                  </div>
+                </div>
+                <div class="sale-search-field">
+                  <label for="sale-merchant-search">بحث عن اسم التاجر</label>
+                  <div class="sale-search-wrap">
+                    <span class="sale-search-icon">👤</span>
+                    <input type="search" id="sale-merchant-search" class="sale-search-input"
+                      placeholder="اكتب اسم التاجر..." autocomplete="off" />
+                    <div class="sale-search-results" id="sale-merchant-results"></div>
+                  </div>
+                </div>
+              </div>
               <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
                 <div class="field" style="margin-bottom:0">
                   <label for="load-warehouse">المخزن المصدر</label>
@@ -603,6 +778,22 @@
                   </label>
                 </div>
                 <p id="pay-hint" style="margin:8px 0 0;font-size:.82rem;color:#a06a10">سيُسجَّل دين على التاجر بقيمة الفاتورة</p>
+              </div>
+
+              <!-- ملخص فوري قبل التنفيذ -->
+              <div class="sale-summary" id="sale-summary" aria-live="polite">
+                <div class="sale-summary-item" id="sale-summary-items">
+                  <span class="sale-summary-label">الأصناف المختارة</span>
+                  <span class="sale-summary-value">0</span>
+                </div>
+                <div class="sale-summary-item" id="sale-summary-total">
+                  <span class="sale-summary-label">إجمالي البيع</span>
+                  <span class="sale-summary-value">0 ج.م</span>
+                </div>
+                <div class="sale-summary-item" id="sale-summary-balance">
+                  <span class="sale-summary-label">رصيد التاجر بعد العملية</span>
+                  <span class="sale-summary-value">اختر تاجراً</span>
+                </div>
               </div>
               <button type="submit" class="btn" id="loading-submit-btn">تنفيذ عملية البيع</button>
             </form>
