@@ -477,6 +477,382 @@
         font-size: 14px; font-weight: 600;
         letter-spacing: .3px;
       }
+
+
+    /* ════════════════════════════════════════════════════════════════
+       DeepLog — UI refresh 2026
+       طبقة تنسيق فقط: لا تغيّر منطق الصفحة أو معرّفات عناصرها
+       ════════════════════════════════════════════════════════════════ */
+    :root{
+      --dl-radius-lg:18px;
+      --dl-radius-md:13px;
+      --dl-shadow:0 8px 28px rgba(28,37,33,.075);
+      --dl-shadow-soft:0 3px 14px rgba(28,37,33,.055);
+      --dl-ring:0 0 0 3px color-mix(in srgb,var(--primary) 15%,transparent);
+    }
+
+    html{scroll-behavior:smooth}
+    body{overflow-x:hidden}
+    #app{min-height:100vh}
+    .page{
+      width:min(100%,1320px);
+      margin-inline:auto;
+      padding:24px clamp(16px,2.5vw,30px) 56px;
+    }
+
+    /* رأس الصفحة */
+    .dl-header{
+      position:relative;
+      overflow:hidden;
+      padding:20px 22px;
+      border-radius:var(--dl-radius-lg);
+      box-shadow:var(--dl-shadow-soft);
+      margin-bottom:18px;
+      background:
+        linear-gradient(135deg,color-mix(in srgb,var(--primary-soft) 52%,var(--surface)),var(--surface) 58%);
+    }
+    .dl-header::before{
+      content:"";position:absolute;inset-block:0;inset-inline-start:0;width:5px;
+      background:linear-gradient(180deg,var(--primary),var(--primary-dark));
+    }
+    .dl-header h2{font-size:clamp(20px,2vw,25px);line-height:1.3;letter-spacing:-.2px}
+    .dl-header p{font-size:13px;line-height:1.8;max-width:760px}
+    .dl-badge{
+      padding:6px 12px;border:1px solid color-mix(in srgb,#d4a854 45%,transparent);
+      box-shadow:0 2px 8px rgba(160,106,16,.06)
+    }
+
+    /* التبويبات على الكمبيوتر */
+    .section-tabs{
+      display:flex;gap:8px;flex-wrap:wrap;
+      padding:7px;
+      background:color-mix(in srgb,var(--surface) 92%,var(--bg));
+      border:1px solid var(--border);
+      border-radius:15px;
+      box-shadow:var(--dl-shadow-soft);
+    }
+    .section-tabs button{
+      min-height:40px;padding:8px 14px;border-radius:10px;
+      transition:transform .14s ease,box-shadow .14s ease,background .14s ease,border-color .14s ease;
+    }
+    .section-tabs button:hover{transform:translateY(-1px)}
+    .section-tabs button.active{box-shadow:0 4px 12px rgba(47,111,79,.14)}
+
+    /* البانيلات */
+    .panel{
+      border-radius:var(--dl-radius-lg);
+      border:1px solid color-mix(in srgb,var(--border) 90%,transparent);
+      box-shadow:var(--dl-shadow-soft);
+      padding:20px;
+      margin-bottom:18px;
+      overflow:visible;
+    }
+    .panel-header{
+      min-height:36px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      margin-bottom:14px;
+    }
+    .panel-header h3{font-size:16px;line-height:1.45;margin:0}
+    .section-view>.panel:last-child{margin-bottom:0}
+
+    /* الحقول والفلاتر */
+    .field label{font-weight:700}
+    .field input,.field select,.field textarea,
+    .filter-select,.search-input,
+    #audit-filter-page,#audit-filter-action,#audit-filter-search{
+      min-height:42px;
+      border-radius:10px!important;
+      border:1.5px solid var(--border)!important;
+      background:var(--surface)!important;
+      color:var(--ink)!important;
+      font-family:inherit!important;
+      font-size:13.5px!important;
+      transition:border-color .14s ease,box-shadow .14s ease,background .14s ease;
+    }
+    .field input:focus,.field select:focus,.field textarea:focus,
+    .filter-select:focus,.search-input:focus,
+    #audit-filter-page:focus,#audit-filter-action:focus,#audit-filter-search:focus{
+      outline:none!important;border-color:var(--primary)!important;box-shadow:var(--dl-ring)!important;
+    }
+    .filters-bar,.trash-filters{
+      gap:9px;
+      padding:11px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:color-mix(in srgb,var(--bg) 65%,var(--surface));
+      margin-bottom:14px;
+    }
+    .filter-select{min-width:145px}
+    .search-input{min-width:220px}
+
+    /* الأزرار */
+    .btn,.row-actions button,.trash-restore-btn,.trash-perm-del-btn{
+      min-height:38px;border-radius:9px;
+      transition:transform .12s ease,box-shadow .12s ease,opacity .12s ease,background .12s ease;
+    }
+    .btn:hover,.row-actions button:hover,.trash-restore-btn:hover,.trash-perm-del-btn:hover{transform:translateY(-1px)}
+    .btn:focus-visible,.row-actions button:focus-visible,.trash-restore-btn:focus-visible,.trash-perm-del-btn:focus-visible,
+    .section-tabs button:focus-visible,#mob-tab-trigger:focus-visible,.mob-tab-item:focus-visible{
+      outline:2px solid var(--primary);outline-offset:2px;
+    }
+
+    /* الجداول */
+    .table-wrap{
+      width:100%;max-width:100%;overflow:auto;
+      border:1px solid var(--border);
+      border-radius:13px;
+      background:var(--surface);
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:thin;
+      scrollbar-color:color-mix(in srgb,var(--muted) 45%,transparent) transparent;
+    }
+    .table-wrap::-webkit-scrollbar{height:8px;width:8px}
+    .table-wrap::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--muted) 35%,transparent);border-radius:99px}
+    .table-wrap .data-table{margin:0;border:0;min-width:720px}
+    .data-table thead th{
+      position:sticky;top:0;z-index:2;
+      padding:10px 11px;
+      background:color-mix(in srgb,var(--bg) 82%,var(--surface));
+      color:var(--muted);font-size:12px;font-weight:800;
+      border-bottom:1px solid var(--border);
+      white-space:nowrap;
+    }
+    .data-table td{padding:10px 11px;vertical-align:middle;line-height:1.6}
+    .data-table tbody tr{transition:background .12s ease}
+    .data-table tbody tr:hover td{background:color-mix(in srgb,var(--primary-soft) 28%,var(--surface))}
+    .data-table tbody tr:last-child td{border-bottom:0}
+    .dl-desc-cell{max-width:260px}
+    .rec-id{display:inline-flex;align-items:center;min-height:26px;text-decoration:none;border-style:dashed}
+
+    /* كشف الحساب */
+    .stmt-grid{
+      padding:12px;border:1px solid var(--border);border-radius:13px;
+      background:color-mix(in srgb,var(--bg) 60%,var(--surface));
+    }
+    .stmt-field{min-width:210px}
+    .stmt-summary{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .stmt-card{
+      border-radius:13px;padding:14px 15px;background:var(--surface);
+      box-shadow:0 2px 8px rgba(28,37,33,.035)
+    }
+    .stmt-card .v{font-size:19px}
+
+    /* المخازن / الإحصائيات / سلة المحذوفات */
+    .warehouse-row{
+      border-radius:13px;padding:13px 15px;box-shadow:0 2px 9px rgba(28,37,33,.035);
+      transition:transform .12s ease,border-color .12s ease,box-shadow .12s ease
+    }
+    .warehouse-row:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--primary) 35%,var(--border));box-shadow:var(--dl-shadow-soft)}
+    .trash-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .trash-stat-pill{border-radius:13px;min-width:0;padding:12px 14px}
+
+    /* محدد نوع العملية */
+    .type-selector{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+    .type-opt{min-height:92px;border-radius:12px;justify-content:center}
+    .type-opt.selected{box-shadow:0 0 0 2px color-mix(in srgb,var(--primary) 12%,transparent)}
+
+    /* المودالات */
+    .modal-overlay{padding:20px;background:rgba(15,23,42,.48);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+    .modal-box{
+      width:min(100%,620px);max-height:min(90vh,780px);overflow:auto;
+      border-radius:18px!important;border:1px solid color-mix(in srgb,var(--border) 80%,transparent);
+      box-shadow:0 28px 80px rgba(15,23,42,.22);
+    }
+    .modal-box-header{
+      position:sticky;top:0;z-index:4;
+      background:color-mix(in srgb,var(--surface) 94%,transparent);
+      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+      padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid var(--border)
+    }
+    .modal-close{min-width:38px;min-height:38px;border-radius:10px}
+    .tx-detail-meta-grid{border:1px solid var(--border)}
+    #ldcm-overlay{backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+    .ldcm-box{border-radius:18px}
+
+    /* شريط تبويبات الهاتف */
+    #mob-tab-bar{position:relative;z-index:20}
+    #mob-tab-trigger{
+      min-height:48px;border-radius:13px;box-shadow:var(--dl-shadow-soft);
+      background:var(--surface)
+    }
+    #mob-tab-overlay{z-index:9800;background:rgba(15,23,42,.52);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+    #mob-tab-sheet{box-shadow:0 -20px 60px rgba(15,23,42,.18);padding-bottom:max(24px,env(safe-area-inset-bottom))}
+    .mob-tab-item{min-height:48px}
+
+    /* الأجهزة المتوسطة / التابلت */
+    @media (max-width:1100px){
+      .page{padding-inline:18px}
+      .stmt-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .type-selector{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .table-wrap .data-table{min-width:760px}
+    }
+
+    /* هاتف + تابلت صغير */
+    @media (max-width:900px){
+      .page{padding:16px 14px 48px}
+      #mob-tab-bar{position:sticky;top:8px;margin-bottom:14px!important}
+      .dl-header{padding:16px 17px;margin-bottom:14px}
+      .dl-header h2{font-size:20px}
+      .dl-header p{font-size:12.5px}
+      .panel{padding:16px;margin-bottom:14px;border-radius:15px}
+      .panel-header{margin-bottom:12px}
+      .filters-bar,.trash-filters{padding:10px}
+      .filter-select,.search-input{flex:1 1 200px}
+      .table-wrap .data-table{min-width:720px}
+      .type-selector{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+
+    /* الهاتف */
+    @media (max-width:640px){
+      body{background:color-mix(in srgb,var(--bg) 96%,#fff)}
+      .page{
+        padding:10px 10px calc(30px + env(safe-area-inset-bottom));
+        width:100%;
+      }
+      .dl-header{
+        padding:14px 14px 15px;
+        border-radius:14px;
+        flex-direction:column;align-items:stretch;gap:9px;
+      }
+      .dl-header::before{width:4px}
+      .dl-header h2{font-size:18px;margin-bottom:3px}
+      .dl-header p{font-size:11.8px;line-height:1.7}
+      .dl-badge{align-self:flex-start;white-space:normal;line-height:1.5}
+
+      #mob-tab-bar{top:6px}
+      #mob-tab-trigger{min-height:46px;padding:10px 13px;font-size:14px}
+      #mob-tab-sheet{border-radius:18px 18px 0 0;max-height:82dvh}
+      .mob-tab-list{gap:5px;padding-inline:10px}
+      .mob-tab-item{font-size:14px;padding:11px 13px}
+
+      .panel{padding:13px 11px;border-radius:14px}
+      .panel-header{align-items:flex-start;gap:7px}
+      .panel-header h3{font-size:14px;line-height:1.6}
+      .panel-header>span{font-size:11.5px!important}
+
+      /* الفلاتر جميعها تصبح شبكة مرتبة */
+      .filters-bar,.trash-filters,
+      #view-auditlog .panel>div[style*="display:flex"][style*="flex-wrap:wrap"]{
+        display:grid!important;
+        grid-template-columns:1fr 1fr!important;
+        align-items:stretch!important;
+        gap:8px!important;
+        padding:9px!important;
+      }
+      .filters-bar>* ,.trash-filters>* ,
+      #view-auditlog .panel>div[style*="display:flex"][style*="flex-wrap:wrap"]>*{
+        width:100%!important;min-width:0!important;margin:0!important;
+      }
+      .filters-bar .search-input,.trash-filters .search-input,#audit-filter-search{grid-column:1/-1}
+      .filters-bar .btn,.trash-filters .btn,#audit-reset-btn{min-height:42px}
+      #fin-add-btn{margin-right:0!important}
+
+      /* مدخل الرصيد الافتتاحي */
+      #view-finance>.panel:first-child>div:last-child{
+        display:grid!important;grid-template-columns:1fr!important;gap:9px!important
+      }
+      #opening-balance{width:100%}
+      #save-opening{width:100%;margin-top:0!important;min-height:42px}
+      #view-finance>.panel:first-child p{margin-top:4px!important;line-height:1.7}
+
+      /* الجداول تبقى كاملة مع تمرير أفقي واضح */
+      .table-wrap{margin-inline:0;border-radius:11px}
+      .table-wrap .data-table{min-width:680px}
+      .data-table th{font-size:11px!important;padding:8px 8px!important}
+      .data-table td{font-size:12px!important;padding:9px 8px!important;white-space:normal}
+      .data-table td .row-actions{white-space:nowrap}
+      .dl-desc-cell{max-width:150px;font-size:11.5px}
+      .rec-id{font-size:10.5px}
+
+      /* كشف الحساب */
+      .stmt-grid{padding:9px;gap:8px;flex-direction:column}
+      .stmt-field{width:100%;min-width:0}
+      .stmt-summary{grid-template-columns:1fr 1fr;gap:8px}
+      .stmt-card{padding:11px 12px}
+      .stmt-card .k{font-size:10.8px}
+      .stmt-card .v{font-size:15px}
+
+      .type-selector{grid-template-columns:1fr 1fr;gap:7px}
+      .type-opt{min-height:78px;padding:9px 5px}
+      .type-opt .ico{font-size:20px}
+      .type-opt .lbl{font-size:11.5px}
+
+      .warehouse-row{padding:11px;gap:9px}
+      .warehouse-row .wh-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;width:100%}
+      .warehouse-row .wh-actions .btn{width:100%}
+      .trash-stats{grid-template-columns:1fr 1fr;gap:8px}
+      .trash-stat-pill{padding:10px;gap:7px}
+      .trash-stat-pill .tsp-num{font-size:16px}
+      .trash-stat-pill .tsp-lbl{font-size:10px;line-height:1.4}
+
+      /* المودال = bottom sheet */
+      .modal-overlay{align-items:flex-end!important;padding:0!important}
+      .modal-box{
+        width:100%!important;max-width:100%!important;max-height:92dvh!important;
+        border-radius:18px 18px 0 0!important;
+        padding:20px 13px max(18px,env(safe-area-inset-bottom))!important;
+        box-shadow:0 -18px 50px rgba(15,23,42,.18)!important;
+      }
+      .modal-box::before{
+        content:"";display:block;width:38px;height:4px;border-radius:99px;background:var(--border);
+        margin:-10px auto 10px
+      }
+      .modal-box-header{margin-inline:0;padding:2px 0 9px}
+      .modal-box-header h3{font-size:15px}
+      .tx-detail-meta-grid{grid-template-columns:1fr!important;padding:11px!important}
+      .tx-detail-footer{gap:7px;flex-wrap:wrap}
+      #tx-detail-print-footer{display:grid!important;grid-template-columns:1fr!important}
+
+      .ldcm-box{max-height:90dvh;border-radius:18px 18px 0 0;align-self:flex-end}
+      #ldcm-overlay{align-items:flex-end;padding:0}
+      .ldcm-header{padding:14px 15px}
+      .ldcm-body{padding:14px 14px 4px}
+      .ldcm-line{align-items:flex-start;flex-direction:column;gap:7px}
+      .ldcm-qty-row{width:100%;justify-content:space-between}
+      .ldcm-footer{padding:12px 14px max(14px,env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr}
+      .ldcm-footer .btn{width:100%}
+
+      /* النماذج ذات صفين تصبح عموداً */
+      div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
+      #account-form{gap:9px!important}
+      #account-form .field{width:100%!important}
+
+      /* مساحة لمس مريحة */
+      .field input,.field select,.field textarea,.filter-select,.search-input,
+      #audit-filter-page,#audit-filter-action,#audit-filter-search{font-size:16px!important;min-height:44px}
+      .btn{min-height:42px}
+      .row-actions{gap:5px;flex-wrap:wrap}
+      .row-actions button{min-height:36px;padding:7px 9px!important}
+    }
+
+    /* هواتف ضيقة جداً */
+    @media (max-width:420px){
+      .page{padding-inline:8px}
+      .dl-header{padding-inline:12px}
+      .panel{padding:11px 9px}
+      .filters-bar,.trash-filters,
+      #view-auditlog .panel>div[style*="display:flex"][style*="flex-wrap:wrap"]{
+        grid-template-columns:1fr!important
+      }
+      .filters-bar .search-input,.trash-filters .search-input,#audit-filter-search{grid-column:auto}
+      .stmt-summary{grid-template-columns:1fr}
+      .trash-stats{grid-template-columns:1fr}
+      .type-selector{grid-template-columns:1fr 1fr}
+      .type-opt .sub{display:none}
+      .table-wrap .data-table{min-width:640px}
+    }
+
+    @media (max-width:340px){
+      .page{padding-inline:6px}
+      .dl-header h2{font-size:16px}
+      .dl-header p{font-size:11px}
+      .panel{padding:10px 7px}
+      .panel-header h3{font-size:13px}
+      .type-selector{grid-template-columns:1fr}
+      .type-opt{min-height:64px}
+      .warehouse-row .wh-actions{grid-template-columns:1fr}
+      .ldcm-footer{grid-template-columns:1fr}
+    }
 </style>
 </head>
 <body>
