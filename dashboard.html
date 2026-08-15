@@ -688,11 +688,39 @@ const NAV_ITEMS=[
 function renderNav(user){
   const top=document.getElementById("topbar");
   top.innerHTML=`<div class="topbar-inner">
-    <div class="brand"><img src="https://i.imgur.com/NsN1HgC.png" alt="logo" style="height:30px;object-fit:contain;border-radius:5px;background:#fff;padding:2px 4px" onerror="this.style.display='none'"><span>Ahmed And hamdy</span></div>
+    <div class="brand"><img id="dashboard-secret-logo" src="https://i.imgur.com/NsN1HgC.png" alt="logo" draggable="false" style="height:30px;object-fit:contain;border-radius:5px;background:#fff;padding:2px 4px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation" onerror="this.style.display='none'"><span>Ahmed And hamdy</span></div>
     <nav class="nav-tabs">${NAV_ITEMS.map(([href,label])=>`<a href="/${href}" class="${href==="dashboard.html"?"active":""}">${label}</a>`).join("")}</nav>
     <div class="user-chip"><span>${esc(user?.email||"")}</span><button class="icon-btn" id="logout-btn">خروج</button></div>
   </div>`;
   document.getElementById("logout-btn").addEventListener("click",async()=>{await signOut(auth);location.href="/index.html";});
+
+  // انتقال سري إلى DeepLog: ضغطة طويلة على شعار الصفحة الرئيسية فقط
+  const secretLogo=document.getElementById("dashboard-secret-logo");
+  if(secretLogo){
+    let holdTimer=null;
+    let holdTriggered=false;
+    const HOLD_MS=900;
+    const cancelHold=()=>{
+      if(holdTimer){ clearTimeout(holdTimer); holdTimer=null; }
+    };
+    secretLogo.addEventListener("pointerdown",e=>{
+      if(e.pointerType==="mouse" && e.button!==0) return;
+      holdTriggered=false;
+      cancelHold();
+      holdTimer=setTimeout(()=>{
+        holdTriggered=true;
+        location.href="/DeepLog.html";
+      },HOLD_MS);
+    });
+    ["pointerup","pointercancel","pointerleave"].forEach(type=>secretLogo.addEventListener(type,cancelHold));
+    secretLogo.addEventListener("dragstart",e=>e.preventDefault());
+    secretLogo.addEventListener("contextmenu",e=>e.preventDefault());
+    secretLogo.addEventListener("click",e=>{
+      // الضغط العادي على الشعار لا ينفذ شيئاً
+      if(!holdTriggered) e.preventDefault();
+    });
+  }
+
   let bottom=document.getElementById("bottom-nav");
   if(!bottom){bottom=document.createElement("nav");bottom.id="bottom-nav";document.body.appendChild(bottom);}
   bottom.innerHTML=`<div class="bot-nav-inner">${NAV_ITEMS.map(([href,label,path])=>`<a href="/${href}" class="bot-nav-item${href==="dashboard.html"?" active":""}"><span class="bot-nav-icon"><svg viewBox="0 0 24 24"><path d="${path}"/></svg></span><span>${label}</span></a>`).join("")}</div>`;
