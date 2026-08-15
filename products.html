@@ -237,59 +237,9 @@
       }
 
       /* ══════════════════════════════════════
-         تسهيلات عمليات البيع — بحث سريع + ملخص
+         عمليات البيع — قوائم قابلة للبحث + ملخص مباشر
+         البحث موجود داخل قائمة التاجر وقائمة كل منتج
       ══════════════════════════════════════ */
-      #view-loading .sale-quick-search{
-        display:grid;grid-template-columns:1fr 1fr;gap:12px;
-        padding:14px;margin-bottom:16px;
-        border:1px solid var(--border);border-radius:12px;
-        background:linear-gradient(135deg,var(--primary-soft),var(--surface));
-      }
-      #view-loading .sale-quick-title{
-        grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px;
-        font-size:.83rem;font-weight:800;color:var(--primary-dark);
-      }
-      #view-loading .sale-quick-title small{font-size:.7rem;font-weight:600;color:var(--muted)}
-      #view-loading .sale-search-field{position:relative;min-width:0}
-      #view-loading .sale-search-field label{
-        display:block;margin-bottom:6px;font-size:.78rem;font-weight:800;color:var(--ink)
-      }
-      #view-loading .sale-search-wrap{position:relative}
-      #view-loading .sale-search-icon{
-        position:absolute;right:11px;top:50%;transform:translateY(-50%);
-        font-size:15px;line-height:1;pointer-events:none;opacity:.7
-      }
-      #view-loading .sale-search-input{
-        width:100%;height:43px;padding:9px 36px 9px 12px;
-        border:1.5px solid var(--border);border-radius:10px;
-        background:var(--surface);color:var(--ink);font-family:inherit;font-size:.88rem;
-        outline:none;transition:border-color .15s,box-shadow .15s,background .15s;
-      }
-      #view-loading .sale-search-input:focus{
-        border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);background:#fff
-      }
-      #view-loading .sale-search-results{
-        display:none;position:absolute;z-index:45;top:calc(100% + 5px);right:0;left:0;
-        max-height:245px;overflow:auto;background:var(--surface);
-        border:1px solid var(--border);border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.14);
-      }
-      #view-loading .sale-search-results.open{display:block}
-      #view-loading .sale-search-result{
-        width:100%;border:none;border-bottom:1px solid var(--border);background:transparent;
-        color:var(--ink);font-family:inherit;text-align:right;padding:10px 12px;cursor:pointer;
-        display:flex;align-items:center;justify-content:space-between;gap:10px;
-      }
-      #view-loading .sale-search-result:last-child{border-bottom:none}
-      #view-loading .sale-search-result:hover,
-      #view-loading .sale-search-result:focus{background:var(--primary-soft);outline:none}
-      #view-loading .sale-result-main{min-width:0}
-      #view-loading .sale-result-name{font-size:.84rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-      #view-loading .sale-result-meta{font-size:.68rem;color:var(--muted);margin-top:2px}
-      #view-loading .sale-result-tag{
-        flex-shrink:0;font-size:.68rem;font-weight:700;color:var(--primary-dark);
-        background:var(--primary-soft);border-radius:999px;padding:3px 7px;white-space:nowrap
-      }
-      #view-loading .sale-search-empty{padding:12px;text-align:center;font-size:.78rem;color:var(--muted)}
       #view-loading .sale-summary{
         display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
         margin:0 0 16px;padding:10px;
@@ -303,30 +253,73 @@
       #view-loading .sale-summary-value{display:block;font-size:.86rem;color:var(--ink);font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       #view-loading #sale-summary-total .sale-summary-value{color:var(--primary-dark)}
       #view-loading #sale-summary-balance .sale-summary-value.debt{color:var(--danger)}
-      #view-loading .prod-line-row.loading-line-row{grid-template-columns:2fr 1fr 1fr auto}
+
+      /* قائمة بحث مدمجة — تحافظ على select الأصلي كقيمة خلفية */
+      #view-loading .inline-search-select{position:relative;width:100%;min-width:0}
+      #view-loading .iss-native{
+        position:absolute!important;right:0;bottom:0;width:1px!important;height:1px!important;
+        min-height:0!important;padding:0!important;margin:0!important;opacity:0!important;
+        pointer-events:none!important;border:0!important
+      }
+      #view-loading .iss-trigger{
+        width:100%;min-height:44px;padding:9px 12px;border:1.5px solid var(--border);
+        border-radius:10px;background:var(--surface);color:var(--ink);font-family:inherit;
+        font-size:.88rem;text-align:right;display:flex;align-items:center;justify-content:space-between;
+        gap:10px;cursor:pointer;transition:border-color .15s,box-shadow .15s,background .15s
+      }
+      #view-loading .iss-trigger:hover{border-color:var(--primary)}
+      #view-loading .iss-trigger.open{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+      #view-loading .iss-trigger-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+      #view-loading .iss-trigger-arrow{font-size:.72rem;color:var(--muted);transition:transform .15s;flex-shrink:0}
+      #view-loading .iss-trigger.open .iss-trigger-arrow{transform:rotate(180deg)}
+      #view-loading .iss-menu{
+        display:none;position:absolute;z-index:80;top:calc(100% + 5px);right:0;left:0;
+        background:var(--surface);border:1px solid var(--border);border-radius:11px;
+        box-shadow:0 14px 34px rgba(0,0,0,.16);overflow:hidden
+      }
+      #view-loading .iss-menu.open{display:block}
+      #view-loading .iss-searchbar{padding:9px;background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:2}
+      #view-loading .iss-search-wrap{position:relative}
+      #view-loading .iss-search-icon{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;opacity:.7}
+      #view-loading .iss-search-input{
+        width:100%;height:40px;padding:8px 34px 8px 10px;border:1.5px solid var(--border);
+        border-radius:9px;background:var(--surface);color:var(--ink);font-family:inherit;font-size:.84rem;outline:none
+      }
+      #view-loading .iss-search-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+      #view-loading .iss-options{max-height:245px;overflow:auto;overscroll-behavior:contain}
+      #view-loading .iss-option{
+        width:100%;border:0;border-bottom:1px solid var(--border);background:transparent;color:var(--ink);
+        font-family:inherit;text-align:right;padding:10px 12px;cursor:pointer;display:flex;align-items:center;
+        justify-content:space-between;gap:8px;font-size:.84rem
+      }
+      #view-loading .iss-option:last-child{border-bottom:0}
+      #view-loading .iss-option:hover,#view-loading .iss-option:focus,#view-loading .iss-option.selected{background:var(--primary-soft);outline:none}
+      #view-loading .iss-option-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+      #view-loading .iss-option-check{color:var(--primary-dark);font-weight:900;flex-shrink:0}
+      #view-loading .iss-empty{padding:13px;text-align:center;color:var(--muted);font-size:.78rem}
+
+      #view-loading .prod-line-row.loading-line-row{grid-template-columns:2fr 1fr 1fr auto;overflow:visible}
       #view-loading .sale-line-field{display:contents}
       #view-loading .sale-line-label{display:none}
+      #view-loading .items-lines-block{overflow:visible}
 
       @media(max-width:700px){
         /* تحسين الهاتف محصور داخل تبويب عمليات البيع فقط */
         #view-loading .panel{
-          padding:14px;border-radius:14px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.06)
+          padding:14px;border-radius:14px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);overflow:visible
         }
         #view-loading .panel>h3{font-size:1.05rem;margin-bottom:6px}
         #view-loading .panel>p{font-size:.78rem!important;line-height:1.65;margin:0 0 14px!important}
-        #view-loading .sale-quick-search{
-          grid-template-columns:1fr;gap:10px;padding:11px;margin-bottom:14px;
-          border-radius:11px;background:var(--primary-soft)
-        }
-        #view-loading .sale-quick-title{display:block}
-        #view-loading .sale-quick-title small{display:block;margin-top:2px;line-height:1.5}
-        #view-loading .sale-search-input{height:46px;font-size:16px}
         #view-loading #loading-form>.form-grid{
           grid-template-columns:1fr!important;gap:10px!important;margin-bottom:12px!important
         }
         #view-loading #loading-form>.form-grid .field{margin-bottom:0!important}
-        #view-loading #loading-form>.form-grid select,
-        #view-loading #load-note{min-height:46px;font-size:16px}
+        #view-loading #load-warehouse,#view-loading #load-note{min-height:46px;font-size:16px}
+        #view-loading .iss-trigger{min-height:46px;font-size:16px}
+        #view-loading .iss-search-input{height:44px;font-size:16px}
+        #view-loading .iss-menu{z-index:120}
+        #view-loading .iss-options{max-height:280px}
+        #view-loading .iss-option{min-height:44px;padding:11px 12px;font-size:.88rem}
         #view-loading .items-lines-block{
           padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--bg);margin-bottom:12px
         }
@@ -351,7 +344,6 @@
         #view-loading .sale-line-label{
           display:block;font-size:.67rem;font-weight:800;color:var(--muted);margin:0 2px 4px
         }
-        #view-loading .prod-line-row.loading-line-row select,
         #view-loading .prod-line-row.loading-line-row input[type="number"]{
           min-height:44px;padding:9px 10px;font-size:16px;background:#fff
         }
@@ -712,31 +704,6 @@
             <p style="color:var(--muted);font-size:.87rem;margin:-8px 0 16px">تُخصم الكميات من المخزن وتُسجَّل كأموال مطلوبة من التاجر</p>
             <form id="loading-form">
 
-              <!-- بحث سريع لتسريع عملية البيع -->
-              <div class="sale-quick-search" id="sale-quick-search">
-                <div class="sale-quick-title">
-                  <span>🔎 بحث سريع</span>
-                  <small>اختر المنتج أو التاجر مباشرةً، وستظل القوائم الأصلية متاحة كما هي</small>
-                </div>
-                <div class="sale-search-field">
-                  <label for="sale-product-search">بحث عن اسم المنتج</label>
-                  <div class="sale-search-wrap">
-                    <span class="sale-search-icon">📦</span>
-                    <input type="search" id="sale-product-search" class="sale-search-input"
-                      placeholder="اكتب اسم المنتج أو رقمه..." autocomplete="off" />
-                    <div class="sale-search-results" id="sale-product-results"></div>
-                  </div>
-                </div>
-                <div class="sale-search-field">
-                  <label for="sale-merchant-search">بحث عن اسم التاجر</label>
-                  <div class="sale-search-wrap">
-                    <span class="sale-search-icon">👤</span>
-                    <input type="search" id="sale-merchant-search" class="sale-search-input"
-                      placeholder="اكتب اسم التاجر..." autocomplete="off" />
-                    <div class="sale-search-results" id="sale-merchant-results"></div>
-                  </div>
-                </div>
-              </div>
               <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
                 <div class="field" style="margin-bottom:0">
                   <label for="load-warehouse">المخزن المصدر</label>
@@ -744,7 +711,7 @@
                 </div>
                 <div class="field" style="margin-bottom:0">
                   <label for="load-merchant">التاجر</label>
-                  <select id="load-merchant" required><option value="">اختر تاجراً</option></select>
+                  <select id="load-merchant" required data-search-placeholder="ابحث عن اسم التاجر..."><option value="">اختر تاجراً</option></select>
                 </div>
               </div>
               <div class="items-lines-block">
