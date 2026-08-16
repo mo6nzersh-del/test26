@@ -696,6 +696,59 @@
        body.merchant-invoice-print-mode .merchant-invoice-box .inv-bal-title{background:#fff!important}
      }
 
+
+
+     /* ══ تبسيط فاتورة البيع والحركة المالية ══ */
+     .merchant-invoice-box .inv-payment-state{
+       display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid #111;
+       border-radius:3px;font-size:10px;font-weight:900;color:#111;background:#fff;white-space:nowrap
+     }
+     .merchant-invoice-box .inv-payment-state.unpaid{border-style:dashed}
+     .merchant-invoice-box .inv-bal-flow{grid-template-columns:1fr 1fr!important}
+     .merchant-invoice-box .inv-bal-step{min-height:74px;padding:14px 12px!important}
+     .merchant-invoice-box .inv-bal-step+.inv-bal-step{border-right:1px solid #bbb}
+     .merchant-invoice-box .inv-bal-step-final{font-weight:900}
+     .merchant-invoice-box .inv-bal-lbl{font-size:10px!important;color:#555!important;margin-bottom:7px!important}
+     .merchant-invoice-box .inv-bal-val{font-size:15px!important}
+     .merchant-invoice-box .inv-bal-result{padding:8px 11px!important}
+
+     .simple-fin-doc{direction:rtl;background:#fff;color:#111;font-family:Cairo,sans-serif;border:1px solid #d2d2d2;border-radius:8px;padding:22px 24px;box-shadow:0 3px 14px rgba(0,0,0,.035)}
+     .simple-fin-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding-bottom:12px;border-bottom:2px solid #111}
+     .simple-fin-brand{font-size:17px;font-weight:900}
+     .simple-fin-sub{font-size:9.5px;color:#777;margin-top:2px}
+     .simple-fin-ref{text-align:left;font-size:9.5px;color:#666;line-height:1.7}
+     .simple-fin-ref strong{display:block;font:800 11px monospace,Cairo,sans-serif;color:#111;direction:ltr}
+     .simple-fin-party{margin-top:18px;border-bottom:1px solid #bbb;padding-bottom:12px}
+     .simple-fin-label{font-size:9px;color:#777;font-weight:800;margin-bottom:3px}
+     .simple-fin-name{font-size:18px;font-weight:900}
+     .simple-fin-movement{margin-top:14px;border:1px solid #bbb;padding:12px 14px}
+     .simple-fin-kind{font-size:11px;font-weight:900;margin-bottom:5px}
+     .simple-fin-desc{font-size:12px;line-height:1.8;font-weight:700}
+     .simple-fin-desc .simple-fin-amount{font-size:16px;font-weight:900;white-space:nowrap}
+     .simple-fin-balances{display:grid;grid-template-columns:1fr 1fr;border:1px solid #111;margin-top:14px}
+     .simple-fin-balance{padding:14px 12px;text-align:center;min-height:76px;display:flex;flex-direction:column;justify-content:center}
+     .simple-fin-balance+.simple-fin-balance{border-right:1px solid #111}
+     .simple-fin-balance-label{font-size:9.5px;color:#555;font-weight:800;margin-bottom:6px}
+     .simple-fin-balance-value{font-size:16px;font-weight:900;direction:ltr;unicode-bidi:embed;font-family:monospace,Cairo,sans-serif}
+     .simple-fin-balance-state{font-size:8.5px;margin-top:4px;font-weight:800;color:#555}
+     .simple-fin-foot{display:flex;justify-content:space-between;gap:12px;margin-top:18px;padding-top:7px;border-top:1px solid #aaa;font-size:8.5px;color:#777}
+
+     @media(max-width:600px){
+       .merchant-invoice-box .inv-doc-type-line{align-items:flex-start;flex-wrap:wrap}
+       .merchant-invoice-box .inv-bal-flow{grid-template-columns:1fr 1fr!important}
+       .merchant-invoice-box .inv-bal-step{padding:11px 6px!important;min-height:68px}
+       .merchant-invoice-box .inv-bal-step+.inv-bal-step{border-right:1px solid #bbb!important}
+       .simple-fin-doc{padding:15px 12px;border:0;box-shadow:none}
+       .simple-fin-head{display:block}.simple-fin-ref{text-align:right;margin-top:8px}
+       .simple-fin-balances{grid-template-columns:1fr 1fr}
+       .simple-fin-balance{padding:12px 7px}.simple-fin-balance-value{font-size:13px}
+     }
+     @media print{
+       body.tx-print-mode .simple-fin-doc{width:180mm;min-height:auto;margin:0 auto;border:0;border-radius:0;box-shadow:none;padding:0;background:#fff;color:#111}
+       body.tx-print-mode .simple-fin-doc *{color:#111!important;background:#fff!important;box-shadow:none!important;text-shadow:none!important}
+       body.merchant-invoice-print-mode .merchant-invoice-box .inv-payment-state{background:#fff!important;color:#111!important;border-color:#111!important}
+     }
+
      /* ══ شاشة التحميل ══ */
       #page-loader {
         position: fixed; inset: 0; z-index: 9999;
@@ -1298,11 +1351,18 @@ function showMerchantSalePreview(data){
       <td style="text-align:center">${fmtMoney(line.price)}</td>
       <td style="text-align:center;font-weight:800">${fmtMoney(line.total)}</td>
     </tr>`).join("");
-  const fmtBalance=value=>value<0?`-${fmtMoney(-value)}`:fmtMoney(value);
-  const balanceSection=data.merchantBalanceBefore!==undefined?(()=>{
-    const before=Number(data.merchantBalanceBefore)||0;
-    const after=Number(data.merchantBalanceAfter)||0;
-    const saleValue=Number(data.totalAmount)||0;
+  const hasBalanceInfo=data.merchantBalanceBefore!==undefined && data.merchantBalanceAfter!==undefined;
+  const beforeBalance=hasBalanceInfo?(Number(data.merchantBalanceBefore)||0):0;
+  const afterBalance=hasBalanceInfo?(Number(data.merchantBalanceAfter)||0):0;
+  let salePaid=null;
+  if(typeof data.paid==="boolean") salePaid=data.paid;
+  else if(hasBalanceInfo) salePaid=Math.abs(afterBalance-beforeBalance)<0.01;
+  else if(String(data.note||"").includes("نقدي")) salePaid=true;
+  const paymentStatusText=salePaid===true?"مدفوعة":salePaid===false?"غير مدفوعة":"غير محددة";
+  const paymentStatusClass=salePaid===false?"unpaid":"";
+  const balanceSection=hasBalanceInfo?(()=>{
+    const before=beforeBalance;
+    const after=afterBalance;
     const accountView=value=>({
       amount:fmtMoney(Math.abs(value)),
       state:value<0?"عليه":value>0?"له":"مُسدّد"
@@ -1317,23 +1377,17 @@ function showMerchantSalePreview(data){
     return `
     <div class="inv-doc-balance">
       <div class="inv-bal-title">
-        <span>ملخص حساب التاجر بعد عملية البيع</span>
+        <span>ملخص حساب التاجر</span>
         <span class="inv-bal-merchant">${esc(data.merchantName||"")}</span>
       </div>
       <div class="inv-bal-flow">
         <div class="inv-bal-step">
-          <div class="inv-bal-lbl">الحساب قبل البيع</div>
+          <div class="inv-bal-lbl">حساب التاجر السابق</div>
           <div class="inv-bal-val">${beforeView.amount}</div>
           <div class="inv-bal-state">${beforeView.state}</div>
         </div>
-        <div class="inv-bal-connector" aria-hidden="true"><span>←</span></div>
-        <div class="inv-bal-step inv-bal-step-movement">
-          <div class="inv-bal-lbl">قيمة هذه الفاتورة</div>
-          <div class="inv-bal-val">${fmtMoney(saleValue)}</div>
-        </div>
-        <div class="inv-bal-connector" aria-hidden="true"><span>←</span></div>
         <div class="inv-bal-step inv-bal-step-final">
-          <div class="inv-bal-lbl">الحساب بعد البيع</div>
+          <div class="inv-bal-lbl">حساب التاجر الإجمالي</div>
           <div class="inv-bal-val">${afterView.amount}</div>
           <div class="inv-bal-state">${afterView.state}</div>
         </div>
@@ -1359,7 +1413,7 @@ function showMerchantSalePreview(data){
       </div>
       <div class="inv-doc-type-line">
         <span class="inv-doc-type-badge">فاتورة بيع</span>
-        <span class="inv-doc-copy-note">نسخة النظام — تفاصيل العملية كما سُجلت وقت البيع</span>
+        <span class="inv-payment-state ${paymentStatusClass}">حالة الدفع عند تنفيذ البيع: ${paymentStatusText}</span>
       </div>
       <div class="inv-doc-party-grid">
         <div class="inv-doc-party-card">
@@ -1440,130 +1494,61 @@ function calcMerchantBalanceBeforeAfter(tx){
 }
 
 function renderTxBalanceBox(tx){
-  const box=document.getElementById("tx-detail-balance-box"); if(!box) return;
-  const balCtx=tx.type==="merchant"?calcMerchantBalanceBeforeAfter(tx):null;
-  if(!balCtx){ box.style.display="none"; box.innerHTML=""; return; }
-  const fN=n=>new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(n||0)+" ج.م";
-  const card=(icon,label,val,cls)=>`
-    <div class="mer-stat ${cls}" style="width:100%">
-      <div class="msk">${icon} ${label}</div>
-      <div class="msv" style="color:${val<=0?"#b3432f":"#1a6b3a"}">${fN(Math.abs(val))}</div>
-      <div class="mss">
-        <strong style="color:${val<=0?"#b3432f":"#1a6b3a"}">${val<=0?"⚠️ التاجر مدين بهذا المبلغ":"✅ رصيد دائن — التاجر دفع أكثر"}</strong>
-      </div>
-    </div>`;
-  box.style.display="flex";
-  box.style.flexDirection="column";
-  box.style.gap="12px";
-  box.innerHTML=`
-    ${card("⬆️","الرصيد قبل الحركة",balCtx.before,"stat-out")}
-    ${card("⬇️","الرصيد بعد الحركة",balCtx.after,"stat-in")}`;
+  const box=document.getElementById("tx-detail-balance-box");
+  if(!box) return;
+  box.style.display="none";
+  box.innerHTML="";
 }
 
 function openTxDetail(t){
   if(!t) return;
-  const cfg=_TX_TYPE_CFG[t.type]??{label:t.type||"—",badge:"tb-other"};
   const fD=s=>s?new Date(s+"T00:00:00").toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"long",day:"numeric"}):"—";
-  const fM=s=>{ if(!s) return ""; const [y,m]=s.split("-"); return new Date(Number(y),Number(m)-1,1).toLocaleDateString("ar-EG-u-nu-latn",{month:"long",year:"numeric"}); };
   const fN=n=>new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(n||0)+" ج.م";
   const eS=s=>{ const d=document.createElement("div"); d.textContent=s??""; return d.innerHTML; };
-  const party=t.type==="advance"?(t.employeeName||"—"):t.type==="merchant"?(t.merchantName||t.partyName||"—"):(t.partyName||"—");
-  const isMerchant=t.type==="merchant";
-  const isIn=t.dir==="in";
-
-  // في دفتر التاجر: in = دفعة/تسديد، out = إضافة دين.
-  // في الحركات النقدية العامة: in = قبض/إيداع، out = صرف/سحب.
-  const movementLabel=isMerchant
-    ? (isIn?"تسديد مستحقات التاجر":"إضافة مبلغ على حساب التاجر")
-    : (isIn?"إيداع / قبض":"سحب / صرف");
-  const documentTitle=isMerchant
-    ? (isIn?"سند تسديد مستحقات":"سند إضافة على الحساب")
-    : (isIn?"سند قبض":"سند صرف");
-  const directionExplanation=isMerchant
-    ? (isIn?"تُخفّض هذه الحركة المبلغ المستحق على التاجر":"تزيد هذه الحركة المبلغ المستحق على التاجر")
-    : (isIn?"حركة داخلة إلى الصندوق":"حركة خارجة من الصندوق");
-  const partyLabel=isMerchant?"التاجر":t.type==="advance"?"الموظف":"الجهة";
-  const createdText=t.createdAt?fmtOperationDate(t.createdAt):"—";
-  const printText=new Date().toLocaleString("ar-EG-u-nu-latn",{timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});
-  const balCtx=isMerchant?calcMerchantBalanceBeforeAfter(t):null;
-  const fmtSignedBalance=v=>`${v<0?"-":""}${fN(Math.abs(v||0))}`;
-
-  const balanceHtml=balCtx?`
-    <div class="fin-balance-box">
-      <div class="fin-balance-title">أثر الحركة على حساب التاجر</div>
-      <div class="fin-balance-grid">
-        <div class="fin-balance-cell"><div class="fin-balance-lbl">الرصيد قبل الحركة</div><div class="fin-balance-val">${fmtSignedBalance(balCtx.before)}</div></div>
-        <div class="fin-balance-arrow">←</div>
-        <div class="fin-balance-cell"><div class="fin-balance-lbl">الرصيد بعد الحركة</div><div class="fin-balance-val">${fmtSignedBalance(balCtx.after)}</div></div>
-      </div>
-    </div>`:"";
+  const party=t.merchantName||t.partyName||"—";
+  const isPayment=t.dir==="in";
+  const movementTitle=isPayment?"دفعة من التاجر":"دين / إضافة على حساب التاجر";
+  const movementText=isPayment
+    ? `دفعة بقيمة ${fN(t.amount)}${t.description?` — ${t.description}`:""}`
+    : `إضافة دين بقيمة ${fN(t.amount)}${t.description?` — ${t.description}`:""}`;
+  const balCtx=calcMerchantBalanceBeforeAfter(t);
+  const balanceView=value=>{
+    const v=Number(value)||0;
+    return {amount:fN(Math.abs(v)),state:v<0?"عليه":v>0?"له":"مُسدّد"};
+  };
+  const before=balanceView(balCtx?.before||0);
+  const after=balanceView(balCtx?.after||0);
 
   const documentInner=`
-      <div class="fin-doc-head">
-        <div class="fin-company">
-          <div class="fin-company-name">Ahmed And Hamdy</div>
-          <div class="fin-company-sub">النظام المحاسبي الداخلي — إدارة حسابات التجار</div>
-        </div>
-        <div class="fin-doc-title">
-          <div class="fin-doc-kind">${eS(documentTitle)}</div>
-          <span class="fin-doc-id">${eS(t.finId||"—")}</span>
-        </div>
+    <div class="simple-fin-head">
+      <div><div class="simple-fin-brand">Ahmed And Hamdy</div><div class="simple-fin-sub">حركة حساب تاجر</div></div>
+      <div class="simple-fin-ref"><strong>${eS(t.finId||"—")}</strong><span>${eS(fD(t.date))}</span></div>
+    </div>
+    <div class="simple-fin-party">
+      <div class="simple-fin-label">اسم التاجر</div>
+      <div class="simple-fin-name">${eS(party)}</div>
+    </div>
+    <div class="simple-fin-movement">
+      <div class="simple-fin-kind">${eS(movementTitle)}</div>
+      <div class="simple-fin-desc">${eS(movementText)}</div>
+    </div>
+    <div class="simple-fin-balances">
+      <div class="simple-fin-balance">
+        <div class="simple-fin-balance-label">الرصيد قبل الحركة</div>
+        <div class="simple-fin-balance-value">${eS(before.amount)}</div>
+        <div class="simple-fin-balance-state">${eS(before.state)}</div>
       </div>
-
-      <div class="fin-doc-status">
-        <span><strong>${eS(cfg.label)}</strong> — ${eS(movementLabel)}</span>
-        <span>${eS(directionExplanation)}</span>
+      <div class="simple-fin-balance">
+        <div class="simple-fin-balance-label">الرصيد بعد الحركة</div>
+        <div class="simple-fin-balance-value">${eS(after.amount)}</div>
+        <div class="simple-fin-balance-state">${eS(after.state)}</div>
       </div>
-
-      <div class="fin-doc-section">
-        <div class="fin-doc-section-title">بيانات الحركة</div>
-        <div class="fin-info-grid">
-          <div class="fin-info-item"><div class="fin-info-label">رقم المعاملة</div><div class="fin-info-value" style="font-family:monospace;direction:ltr;text-align:right">${eS(t.finId||"—")}</div></div>
-          <div class="fin-info-item"><div class="fin-info-label">تاريخ الحركة</div><div class="fin-info-value">${eS(fD(t.date))}</div></div>
-          <div class="fin-info-item"><div class="fin-info-label">${eS(partyLabel)}</div><div class="fin-info-value">${eS(party)}</div></div>
-          <div class="fin-info-item"><div class="fin-info-label">نوع الحركة</div><div class="fin-info-value">${eS(movementLabel)}</div></div>
-          ${t.type==="advance"&&t.deductMonth?`<div class="fin-info-item"><div class="fin-info-label">شهر الخصم</div><div class="fin-info-value">${eS(fM(t.deductMonth))}</div></div>`:""}
-          ${t.sourcePage?`<div class="fin-info-item"><div class="fin-info-label">مصدر التسجيل</div><div class="fin-info-value">${eS(t.sourcePage)}</div></div>`:""}
-        </div>
-      </div>
-
-      <div class="fin-amount-box">
-        <div>
-          <div class="fin-amount-label">قيمة الحركة</div>
-          <div class="fin-amount-words">فقط ${eS(amountInWords(t.amount))} لا غير</div>
-        </div>
-        <div class="fin-amount-value">${eS(fN(t.amount))}</div>
-      </div>
-
-      ${balanceHtml}
-
-      <div class="fin-doc-section">
-        <div class="fin-doc-section-title">البيان / الملاحظات</div>
-        <div class="fin-desc-box">${t.description?eS(t.description):"لا توجد ملاحظات مسجلة لهذه الحركة."}</div>
-        <div class="fin-meta-strip">
-          <div>تاريخ التسجيل: ${eS(createdText)}</div>
-          <div>نوع السجل: ${eS(cfg.label)}</div>
-          <div>حالة السجل: فعّال</div>
-        </div>
-      </div>
-
-      <div class="fin-signatures">
-        <div><div class="fin-signature-label">المحاسب / مُعدّ الحركة</div><div class="fin-signature-line">الاسم والتوقيع</div></div>
-        <div><div class="fin-signature-label">${isMerchant?"التاجر / المندوب":t.type==="advance"?"الموظف / المستلم":"الجهة المعنية"}</div><div class="fin-signature-line">${eS(party!=="—"?party:"الاسم والتوقيع")}</div></div>
-        <div><div class="fin-signature-label">الاعتماد</div><div class="fin-signature-line">التوقيع والختم</div></div>
-      </div>
-
-      <div class="fin-doc-footer">
-        <span>مستند محاسبي داخلي — طُبع بتاريخ ${eS(printText)}</span>
-        <span class="fin-footer-id">${eS(t.finId||"—")}</span>
-        <span>Ahmed And Hamdy</span>
-      </div>`;
+    </div>
+    <div class="simple-fin-foot"><span>${eS(movementTitle)}</span><span>${eS(t.finId||"")}</span></div>`;
 
   document.getElementById("tx-detail-content").innerHTML=`
-    <div class="financial-document fin-doc-screen mer-screen-only">${documentInner}</div>
-    <div class="financial-document fin-doc-print mer-print-only" style="display:none">${documentInner}</div>`;
-
-  // صندوق الرصيد القديم يبقى للواجهة فقط كملخص إضافي ولا يدخل في الطباعة.
+    <div class="simple-fin-doc mer-screen-only">${documentInner}</div>
+    <div class="simple-fin-doc mer-print-only" style="display:none">${documentInner}</div>`;
   renderTxBalanceBox(t);
   document.getElementById("tx-detail-modal").classList.add("open");
 }
