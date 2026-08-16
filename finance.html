@@ -133,6 +133,64 @@
     .qa-btn.t-mer{border-color:#d4a854;color:#7a4f10;background:#fefaf3}
     .qa-btn.t-oth{border-color:var(--border);color:var(--muted);background:var(--surface)}
 
+    /* ══ اختيار مدة تقرير صندوق الكاش ══ */
+    #cash-rpt-range-overlay{
+      display:none;position:fixed;inset:0;z-index:10020;background:rgba(15,23,42,.48);
+      align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(4px);
+      font-family:Cairo,"Segoe UI",sans-serif;direction:rtl;
+    }
+    #cash-rpt-range-overlay.open{display:flex}
+    .cash-rpt-range-box{
+      width:min(520px,100%);background:var(--surface,#fff);border:1px solid var(--border,#e4e8e5);
+      border-radius:20px;box-shadow:0 24px 70px rgba(15,23,42,.22);overflow:hidden;
+      animation:cashRptRangeIn .18s ease;
+    }
+    @keyframes cashRptRangeIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+    .cash-rpt-range-head{display:flex;align-items:flex-start;gap:12px;padding:18px 18px 14px;border-bottom:1px solid var(--border,#e4e8e5)}
+    .cash-rpt-range-ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:0 0 auto;
+      background:#edf8f1;color:#1a6b3a;font-size:20px}
+    .cash-rpt-range-title{min-width:0;flex:1}
+    .cash-rpt-range-title h3{margin:0;color:var(--ink,#17211b);font-size:16px;font-weight:900}
+    .cash-rpt-range-title p{margin:4px 0 0;color:var(--muted,#758078);font-size:11.5px;line-height:1.7}
+    .cash-rpt-range-x{width:36px;height:36px;border:0;border-radius:10px;background:var(--bg,#f5f7f5);color:var(--muted,#758078);
+      font-size:20px;cursor:pointer;font-family:inherit;flex:0 0 auto}
+    .cash-rpt-range-x:hover{background:#fff0ed;color:#b3432f}
+    .cash-rpt-range-body{padding:16px 18px 18px}
+    .cash-rpt-range-label{font-size:11.5px;font-weight:900;color:var(--muted,#758078);margin-bottom:8px}
+    .cash-rpt-presets{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:15px}
+    .cash-rpt-preset{border:1.5px solid var(--border,#dfe5e0);background:#fff;color:var(--ink,#17211b);border-radius:10px;
+      padding:9px 6px;font:700 11.5px Cairo,sans-serif;cursor:pointer;transition:.14s}
+    .cash-rpt-preset:hover{border-color:#8fbaa2;background:#f6fbf8}
+    .cash-rpt-preset.active{background:#edf8f1;border-color:#4f9a70;color:#155b34;box-shadow:0 0 0 2px rgba(79,154,112,.08)}
+    .cash-rpt-date-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .cash-rpt-date-field label{display:block;font-size:11.5px;font-weight:800;color:var(--ink,#17211b);margin-bottom:5px}
+    .cash-rpt-date-field input{width:100%;height:44px;border:1.5px solid var(--border,#dfe5e0);border-radius:10px;background:#fbfcfb;
+      padding:7px 10px;font:600 13px Cairo,sans-serif;color:var(--ink,#17211b);outline:none}
+    .cash-rpt-date-field input:focus{border-color:#4f9a70;box-shadow:0 0 0 3px rgba(79,154,112,.11);background:#fff}
+    .cash-rpt-range-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:13px;padding:11px 12px;
+      border:1px solid #dce9e1;background:#f5fbf7;border-radius:11px}
+    .cash-rpt-range-summary-main{font-size:11.5px;color:#476052;line-height:1.65}
+    .cash-rpt-range-summary-main strong{display:block;color:#173f29;font-size:12.5px}
+    #cash-rpt-range-count{font-size:11px;font-weight:900;white-space:nowrap;color:#1a6b3a;background:#fff;border:1px solid #d7e8dd;border-radius:999px;padding:5px 9px}
+    .cash-rpt-range-error{display:none;margin-top:9px;color:#b3432f;font-size:11.5px;font-weight:700;background:#fff3f0;border:1px solid #f0d3cc;border-radius:9px;padding:8px 10px}
+    .cash-rpt-range-error.show{display:block}
+    .cash-rpt-range-actions{display:flex;gap:9px;margin-top:15px}
+    .cash-rpt-range-actions button{min-height:43px;border-radius:10px;font-family:Cairo,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer}
+    #cash-rpt-range-preview{flex:1;border:0;background:#1a6b3a;color:#fff;padding:9px 16px;box-shadow:0 5px 14px rgba(26,107,58,.16)}
+    #cash-rpt-range-preview:hover{background:#155b34}
+    #cash-rpt-range-cancel{border:1.5px solid var(--border,#dfe5e0);background:#fff;color:var(--muted,#66736b);padding:9px 15px}
+    @media(max-width:620px){
+      #cash-rpt-range-overlay{align-items:flex-end;padding:0}
+      .cash-rpt-range-box{width:100%;border-radius:20px 20px 0 0;max-height:92dvh;overflow:auto}
+      .cash-rpt-range-head{padding:16px 14px 12px}
+      .cash-rpt-range-body{padding:14px 14px max(18px,env(safe-area-inset-bottom))}
+      .cash-rpt-presets{grid-template-columns:1fr 1fr}
+      .cash-rpt-date-grid{grid-template-columns:1fr}
+      .cash-rpt-date-field input{height:46px;font-size:16px}
+      .cash-rpt-range-summary{align-items:flex-start;flex-direction:column;gap:7px}
+      .cash-rpt-range-actions{position:sticky;bottom:0;background:linear-gradient(transparent,var(--surface,#fff) 25%);padding-top:16px}
+    }
+
     /* ══ معاينة تقرير صندوق الكاش (overlay) ══ */
     #cash-rpt-overlay{
       display:none;position:fixed;inset:0;z-index:10000;
@@ -663,7 +721,7 @@
         <h2>المالية والصندوق</h2>
         <p>إدارة حركات الصندوق — سلف، مسحوبات، إيداعات، دفعات التجار</p>
       </div>
-      <button type="button" class="btn outline" onclick="printCashReport()">🖨️ طباعة التقرير</button>
+      <button type="button" class="btn outline" id="cash-report-open-btn">🖨️ طباعة التقرير</button>
     </div>
 
     <!-- ═══════ صندوق الكاش ═══════ -->
@@ -795,6 +853,45 @@
     </div>
 
   </main>
+</div>
+
+<!-- ══ اختيار مدة تقرير صندوق الكاش ══ -->
+<div id="cash-rpt-range-overlay" aria-hidden="true">
+  <div class="cash-rpt-range-box" role="dialog" aria-modal="true" aria-labelledby="cash-rpt-range-heading">
+    <div class="cash-rpt-range-head">
+      <div class="cash-rpt-range-ico">📅</div>
+      <div class="cash-rpt-range-title">
+        <h3 id="cash-rpt-range-heading">اختيار مدة التقرير</h3>
+        <p>حدد الفترة التي تريد ظهور حركات الصندوق فيها، ثم عاين التقرير قبل الطباعة.</p>
+      </div>
+      <button type="button" class="cash-rpt-range-x" id="cash-rpt-range-x" aria-label="إغلاق">×</button>
+    </div>
+    <div class="cash-rpt-range-body">
+      <div class="cash-rpt-range-label">اختيار سريع</div>
+      <div class="cash-rpt-presets">
+        <button type="button" class="cash-rpt-preset" data-rpt-preset="today">اليوم</button>
+        <button type="button" class="cash-rpt-preset" data-rpt-preset="7days">آخر 7 أيام</button>
+        <button type="button" class="cash-rpt-preset active" data-rpt-preset="month">هذا الشهر</button>
+        <button type="button" class="cash-rpt-preset" data-rpt-preset="all">كل الفترات</button>
+      </div>
+
+      <div class="cash-rpt-range-label">أو حدد فترة مخصصة</div>
+      <div class="cash-rpt-date-grid">
+        <div class="cash-rpt-date-field"><label for="cash-rpt-from">من تاريخ</label><input type="date" id="cash-rpt-from"></div>
+        <div class="cash-rpt-date-field"><label for="cash-rpt-to">إلى تاريخ</label><input type="date" id="cash-rpt-to"></div>
+      </div>
+
+      <div class="cash-rpt-range-summary">
+        <div class="cash-rpt-range-summary-main"><strong id="cash-rpt-range-label">—</strong><span>سيتم تضمين جميع حركات الصندوق الواقعة داخل هذه الفترة.</span></div>
+        <span id="cash-rpt-range-count">— حركة</span>
+      </div>
+      <div class="cash-rpt-range-error" id="cash-rpt-range-error"></div>
+      <div class="cash-rpt-range-actions">
+        <button type="button" id="cash-rpt-range-preview">معاينة التقرير</button>
+        <button type="button" id="cash-rpt-range-cancel">إلغاء</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ══ معاينة تقرير صندوق الكاش ══ -->
@@ -1110,6 +1207,7 @@ let editTxId      = null;
 let cashPeriodMode = "month"; // "all" | "month" | "day"
 let cashPeriodYM   = "";      // "YYYY-MM"
 let cashPeriodDay  = "";      // "YYYY-MM-DD"
+let cashReportSelection = null; // {mode:"range"|"all", from, to, label}
 
 const TYPE_CFG = {
   advance:    {label:"سلفة موظف",       badge:"tb-advance",    dir:"out", fixed:true },
@@ -1253,43 +1351,119 @@ function syncPeriod(){
 /* ══════════════════════════════════════
    معاينة وطباعة تقرير صندوق الكاش
 ══════════════════════════════════════ */
-function buildReportHTML(){
-  /* ── بيانات الفترة ── */
+function addIsoDays(iso,delta){
+  const d=new Date(iso+"T12:00:00");
+  d.setDate(d.getDate()+delta);
+  return d.toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
+}
+function currentMonthStart(){
+  return today().slice(0,7)+"-01";
+}
+function reportRangeLabel(from,to,all=false){
+  if(all) return "جميع الفترات";
+  if(from===to) return fmtDate(from);
+  return `من ${fmtDate(from)} إلى ${fmtDate(to)}`;
+}
+function getCashReportTransactions(selection){
   const cashTx=allTx.filter(t=>t.type!=="merchant");
-  let periodTx=cashTx;
-  if(cashPeriodMode==="month"&&cashPeriodYM)
-    periodTx=cashTx.filter(t=>(t.date??"").startsWith(cashPeriodYM));
-  else if(cashPeriodMode==="day"&&cashPeriodDay)
-    periodTx=cashTx.filter(t=>(t.date??"")==cashPeriodDay);
-
-  /* تطبيق فلاتر الجدول الإضافية */
-  const typeF  =document.getElementById("filter-type").value;
-  const dirF   =document.getElementById("filter-dir").value;
-  const monthF =document.getElementById("filter-month").value;
-  const searchF=document.getElementById("filter-search").value.toLowerCase().trim();
-  const rows=periodTx.filter(t=>{
-    if(cashPeriodMode==="all"&&monthF&&!(t.date??"").startsWith(monthF)) return false;
-    if(typeF&&t.type!==typeF) return false;
-    if(dirF&&t.dir!==dirF)   return false;
-    if(searchF){
-      const hay=[t.finId,t.partyName,t.merchantName,t.employeeName,t.description].join(" ").toLowerCase();
-      if(!hay.includes(searchF)) return false;
-    }
-    return true;
+  if(!selection||selection.mode==="all") return cashTx;
+  return cashTx.filter(t=>{
+    const d=String(t.date||"");
+    return d&&d>=selection.from&&d<=selection.to;
   });
+}
+function setCashReportPreset(preset){
+  const from=document.getElementById("cash-rpt-from");
+  const to=document.getElementById("cash-rpt-to");
+  const now=today();
+  let f="",t="";
+  if(preset==="today") f=t=now;
+  else if(preset==="7days"){t=now;f=addIsoDays(now,-6);}
+  else if(preset==="month"){f=currentMonthStart();t=now;}
+  else if(preset==="all"){f="";t="";}
+  from.value=f;to.value=t;
+  document.querySelectorAll(".cash-rpt-preset").forEach(b=>b.classList.toggle("active",b.dataset.rptPreset===preset));
+  from.disabled=preset==="all";to.disabled=preset==="all";
+  updateCashReportRangeSummary();
+}
+function getCashReportSelectionFromDialog(){
+  const active=document.querySelector(".cash-rpt-preset.active")?.dataset.rptPreset||"";
+  const from=document.getElementById("cash-rpt-from").value;
+  const to=document.getElementById("cash-rpt-to").value;
+  if(active==="all"&&!from&&!to) return {mode:"all",from:"",to:"",label:"جميع الفترات"};
+  if(!from||!to) return null;
+  if(from>to) return {error:"تاريخ البداية يجب أن يكون قبل تاريخ النهاية."};
+  return {mode:"range",from,to,label:reportRangeLabel(from,to,false)};
+}
+function updateCashReportRangeSummary(){
+  const errorEl=document.getElementById("cash-rpt-range-error");
+  const labelEl=document.getElementById("cash-rpt-range-label");
+  const countEl=document.getElementById("cash-rpt-range-count");
+  const selection=getCashReportSelectionFromDialog();
+  errorEl.classList.remove("show");errorEl.textContent="";
+  if(!selection){
+    labelEl.textContent="حدد تاريخ البداية والنهاية";
+    countEl.textContent="— حركة";
+    return;
+  }
+  if(selection.error){
+    labelEl.textContent="الفترة غير صحيحة";
+    countEl.textContent="— حركة";
+    errorEl.textContent=selection.error;errorEl.classList.add("show");
+    return;
+  }
+  labelEl.textContent=selection.label;
+  countEl.textContent=`${getCashReportTransactions(selection).length} حركة`;
+}
+function openCashReportRangeDialog(){
+  const overlay=document.getElementById("cash-rpt-range-overlay");
+  const max=today();
+  const from=document.getElementById("cash-rpt-from");
+  const to=document.getElementById("cash-rpt-to");
+  from.max=max;to.max=max;
+  if(cashReportSelection?.mode==="range"){
+    from.disabled=false;to.disabled=false;
+    from.value=cashReportSelection.from;to.value=cashReportSelection.to;
+    document.querySelectorAll(".cash-rpt-preset").forEach(b=>b.classList.remove("active"));
+    updateCashReportRangeSummary();
+  }else if(cashReportSelection?.mode==="all"){
+    setCashReportPreset("all");
+  }else{
+    setCashReportPreset("month");
+  }
+  overlay.classList.add("open");overlay.setAttribute("aria-hidden","false");
+  document.body.style.overflow="hidden";
+}
+function closeCashReportRangeDialog(){
+  const overlay=document.getElementById("cash-rpt-range-overlay");
+  overlay.classList.remove("open");overlay.setAttribute("aria-hidden","true");
+  document.body.style.overflow="";
+}
 
-  /* ── إحصاءات ── */
+function buildReportHTML(selection=cashReportSelection){
+  /* التقرير يستخدم فقط المدة التي اختارها المستخدم من نافذة التقرير */
+  selection=selection||{mode:"all",from:"",to:"",label:"جميع الفترات"};
+  const cashTx=allTx.filter(t=>t.type!=="merchant");
+  const periodTx=getCashReportTransactions(selection);
+  const rows=periodTx;
+
+  /* ── إحصاءات الفترة ── */
   const totalIn =periodTx.filter(t=>t.dir==="in") .reduce((s,t)=>s+(t.amount||0),0);
   const totalOut=periodTx.filter(t=>t.dir==="out").reduce((s,t)=>s+(t.amount||0),0);
   const totalAdv=periodTx.filter(t=>t.type==="advance").reduce((s,t)=>s+(t.amount||0),0);
-  const balance =cashPeriodMode==="all"?openingBal+totalIn-totalOut:totalIn-totalOut;
+
+  /* رصيد الصندوق حتى نهاية المدة، وليس فقط صافي حركة المدة */
+  const balanceTx=selection.mode==="all"
+    ? cashTx
+    : cashTx.filter(t=>String(t.date||"")&&String(t.date||"")<=selection.to);
+  const balanceIn =balanceTx.filter(t=>t.dir==="in") .reduce((s,t)=>s+(t.amount||0),0);
+  const balanceOut=balanceTx.filter(t=>t.dir==="out").reduce((s,t)=>s+(t.amount||0),0);
+  const balance=openingBal+balanceIn-balanceOut;
 
   /* ── تسميات ── */
   const typeMap={deposit:"إيداع",withdrawal:"سحب",advance:"سلفة",merchant:"تاجر",other:"أخرى"};
-  let periodLabel="جميع الفترات";
-  if(cashPeriodMode==="month") periodLabel=fmtMonth(cashPeriodYM+"-01");
-  else if(cashPeriodMode==="day") periodLabel=fmtDate(cashPeriodDay);
-
+  const periodLabel=selection.label||reportRangeLabel(selection.from,selection.to,selection.mode==="all");
+  const balanceTitle=selection.mode==="all"?"رصيد الصندوق الحالي":"رصيد الصندوق حتى نهاية الفترة";
   const printDate=new Date().toLocaleDateString("ar-EG-u-nu-latn",
     {timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});
 
@@ -1324,7 +1498,6 @@ function buildReportHTML(){
       }).join("")
     : `<tr><td colspan="7" class="rpt-empty">لا توجد حركات للفترة المحددة</td></tr>`;
 
-  /* ── HTML المحتوى (داخل الـ overlay — بدون html/head/body) ── */
   return {periodLabel, printDate, count:rows.length, html:`
     <div class="rpt-hdr">
       <div class="rpt-side">تاريخ الطباعة:<br><strong>${printDate}</strong></div>
@@ -1338,7 +1511,7 @@ function buildReportHTML(){
 
     <table class="rpt-stats">
       <tr>
-        <th>رصيد الصندوق ${cashPeriodMode==="all"?"(إجمالي كلي)":"("+periodLabel+")"}</th>
+        <th>${balanceTitle}</th>
         <th>إجمالي الإيداعات</th>
         <th>إجمالي المسحوبات</th>
         <th>إجمالي السلف</th>
@@ -1373,8 +1546,21 @@ function buildReportHTML(){
   `};
 }
 
+/* زر "طباعة التقرير" يفتح أولاً نافذة اختيار المدة */
 function printCashReport(){
-  const {periodLabel,html}=buildReportHTML();
+  openCashReportRangeDialog();
+}
+function openCashReportPreview(){
+  const selection=getCashReportSelectionFromDialog();
+  const errorEl=document.getElementById("cash-rpt-range-error");
+  if(!selection||selection.error){
+    errorEl.textContent=selection?.error||"حدد تاريخ البداية والنهاية أولاً.";
+    errorEl.classList.add("show");
+    return;
+  }
+  cashReportSelection=selection;
+  const {periodLabel,html}=buildReportHTML(selection);
+  closeCashReportRangeDialog();
   document.getElementById("cash-rpt-bar-title").textContent=`معاينة تقرير صندوق المالية — ${periodLabel}`;
   document.getElementById("cash-rpt-body").innerHTML=html;
   document.getElementById("cash-rpt-overlay").classList.add("open");
@@ -1382,6 +1568,20 @@ function printCashReport(){
 }
 
 function setupCashReportModal(){
+  const rangeOverlay=document.getElementById("cash-rpt-range-overlay");
+  document.getElementById("cash-report-open-btn").addEventListener("click",printCashReport);
+  document.getElementById("cash-rpt-range-x").addEventListener("click",closeCashReportRangeDialog);
+  document.getElementById("cash-rpt-range-cancel").addEventListener("click",closeCashReportRangeDialog);
+  document.getElementById("cash-rpt-range-preview").addEventListener("click",openCashReportPreview);
+  rangeOverlay.addEventListener("click",e=>{if(e.target===rangeOverlay) closeCashReportRangeDialog();});
+  document.querySelectorAll(".cash-rpt-preset").forEach(btn=>btn.addEventListener("click",()=>setCashReportPreset(btn.dataset.rptPreset)));
+  ["cash-rpt-from","cash-rpt-to"].forEach(id=>document.getElementById(id).addEventListener("input",()=>{
+    document.querySelectorAll(".cash-rpt-preset").forEach(b=>b.classList.remove("active"));
+    document.getElementById("cash-rpt-from").disabled=false;
+    document.getElementById("cash-rpt-to").disabled=false;
+    updateCashReportRangeSummary();
+  }));
+
   document.getElementById("cash-rpt-close-btn").addEventListener("click",()=>{
     document.getElementById("cash-rpt-overlay").classList.remove("open");
     document.body.style.overflow="";
@@ -1389,11 +1589,16 @@ function setupCashReportModal(){
   document.getElementById("cash-rpt-print-btn").addEventListener("click",()=>{
     document.body.classList.add("printing-cash-report");
     window.print();
-    /* إزالة الكلاس بعد الطباعة (afterprint أو fallback) */
     const cleanup=()=>{ document.body.classList.remove("printing-cash-report"); };
     window.addEventListener("afterprint",cleanup,{once:true});
-    /* fallback للأجهزة التي لا تطلق afterprint */
     setTimeout(cleanup,3000);
+  });
+  document.addEventListener("keydown",e=>{
+    if(e.key!=="Escape") return;
+    if(rangeOverlay.classList.contains("open")) closeCashReportRangeDialog();
+    else if(document.getElementById("cash-rpt-overlay").classList.contains("open")){
+      document.getElementById("cash-rpt-overlay").classList.remove("open");document.body.style.overflow="";
+    }
   });
 }
 
