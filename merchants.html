@@ -1169,7 +1169,93 @@
         transform:none!important;transform-origin:initial!important
       }
     }
-</style>
+
+
+    /* ══ كشف الحساب V10 — معاينة A4 + ترقيم صفحات ثابت ══ */
+    #stmt-preview-content .stmt-paper{
+      width:794px!important;max-width:794px!important;padding:0!important;background:transparent!important;
+      box-shadow:none!important;overflow:visible!important
+    }
+    #stmt-preview-content .stmt-page{
+      width:794px;min-height:1123px;box-sizing:border-box;background:#fff;
+      padding:34px 38px 28px;margin:0 0 18px;display:flex;flex-direction:column;
+      border:1px solid #e2e2e2;box-shadow:0 3px 14px rgba(0,0,0,.08);overflow:hidden
+    }
+    #stmt-preview-content .stmt-page:last-child{margin-bottom:0}
+    #stmt-preview-content .stmt-page-content{flex:1;min-height:0}
+    #stmt-preview-content .stmt-page .hdr-top{margin-bottom:8px}
+    #stmt-preview-content .stmt-page .hdr-bill{margin-bottom:10px}
+    #stmt-preview-content .stmt-page .stmt-summary{margin:10px 0 14px}
+    #stmt-preview-content .stmt-continuation{
+      display:flex;justify-content:space-between;gap:12px;align-items:center;
+      margin:8px 0 12px;padding:7px 9px;border:1px solid #d9dde3;background:#fff;
+      font-size:10.5px;font-weight:700;color:#444
+    }
+    #stmt-preview-content .stmt-lines-table{width:100%;table-layout:fixed;border-collapse:collapse}
+    #stmt-preview-content .stmt-lines-table col.stmt-col-index{width:5%}
+    #stmt-preview-content .stmt-lines-table col.stmt-col-date{width:14%}
+    #stmt-preview-content .stmt-lines-table col.stmt-col-desc{width:34%}
+    #stmt-preview-content .stmt-lines-table col.stmt-col-in{width:15%}
+    #stmt-preview-content .stmt-lines-table col.stmt-col-out{width:15%}
+    #stmt-preview-content .stmt-lines-table col.stmt-col-bal{width:17%}
+    #stmt-preview-content .stmt-lines-table th:first-child,
+    #stmt-preview-content .stmt-lines-table td:first-child{
+      padding-left:4px!important;padding-right:4px!important;text-align:center!important;white-space:nowrap
+    }
+    #stmt-preview-content .stmt-page-footer{
+      flex:0 0 auto;margin-top:14px;padding-top:9px;border-top:1px dashed #c7c7c7;
+      display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:12px;
+      font-size:9.5px;color:#777;direction:rtl
+    }
+    #stmt-preview-content .stmt-page-footer .stmt-page-no{
+      min-width:92px;text-align:center;border:1px solid #777;padding:4px 10px;
+      color:#111;font-weight:900;background:#fff;white-space:nowrap
+    }
+    #stmt-preview-content .stmt-page-footer .stmt-footer-brand{text-align:left}
+    #stmt-preview-content .stmt-page-footer .stmt-footer-date{text-align:right}
+
+    @media(max-width:600px){
+      #stmt-preview-content .stmt-paper{width:794px!important;max-width:none!important;padding:0!important}
+      #stmt-preview-content .stmt-page{width:794px!important;min-height:1123px!important;padding:34px 38px 28px!important;margin-bottom:14px!important}
+      #stmt-preview-content .stmt-lines-table{font-size:11.5px!important}
+      #stmt-preview-content .stmt-lines-table .col-hdr th{padding:9px 7px!important;font-size:12px!important}
+      #stmt-preview-content .stmt-lines-table tbody td{padding:7px 7px!important;font-size:11px!important}
+    }
+
+    @media print{
+      body.stmt-print-mode #stmt-preview-modal{padding:0!important;margin:0!important;background:#fff!important;position:absolute!important;inset:0!important}
+      body.stmt-print-mode #stmt-preview-modal .stmt-modal-box,
+      body.stmt-print-mode #stmt-preview-content,
+      body.stmt-print-mode #stmt-preview-content .stmt-preview-stage,
+      body.stmt-print-mode #stmt-preview-content .stmt-paper{
+        width:210mm!important;max-width:210mm!important;margin:0!important;padding:0!important;background:#fff!important;
+        overflow:visible!important;transform:none!important;zoom:1!important
+      }
+      body.stmt-print-mode #stmt-preview-content .stmt-page{
+        width:210mm!important;height:297mm!important;min-height:297mm!important;max-height:297mm!important;
+        box-sizing:border-box!important;padding:10mm 12mm 8mm!important;margin:0!important;
+        border:0!important;box-shadow:none!important;background:#fff!important;overflow:hidden!important;
+        break-after:page!important;page-break-after:always!important;display:flex!important;flex-direction:column!important
+      }
+      body.stmt-print-mode #stmt-preview-content .stmt-page:last-child{break-after:auto!important;page-break-after:auto!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-page-content{flex:1!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-doc-title{font-size:15pt!important;margin:0 0 4mm!important;color:#000!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-continuation{border:0.7pt solid #777!important;color:#000!important;background:#fff!important;font-size:7.5pt!important;margin:2.5mm 0 3mm!important;padding:1.6mm 2mm!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-lines-table col.stmt-col-index{width:5%!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-lines-table col.stmt-col-date{width:14%!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-lines-table col.stmt-col-desc{width:34%!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-lines-table col.stmt-col-in{width:15%!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-lines-table col.stmt-col-out{width:15%!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-lines-table col.stmt-col-bal{width:17%!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-page-footer{
+        color:#333!important;border-top:0.7pt solid #777!important;margin-top:3mm!important;padding-top:2mm!important;
+        font-size:7pt!important;display:grid!important;grid-template-columns:1fr auto 1fr!important
+      }
+      body.stmt-print-mode #stmt-preview-content .stmt-page-footer .stmt-page-no{border:0.8pt solid #000!important;color:#000!important;padding:1mm 3mm!important;min-width:26mm!important}
+      @page{size:A4 portrait;margin:0!important}
+    }
+
+  </style>
 </head>
 <body>
 <!-- ══ شاشة التحميل ══ -->
@@ -2861,7 +2947,6 @@ function printStatement(){
   const printNow=new Date().toLocaleDateString("ar-EG-u-nu-latn",{timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric"});
   const periodLabel=(fromVal||toVal)?`${fromVal?fmtD(fromVal):"البداية"}  —  ${toVal?fmtD(toVal):"اليوم"}`:"جميع الفترات";
 
-  /* تسمية نوع الحركة */
   function srcLabel(t){
     if(t._src==="loading") return"عملية بيع / تحميل";
     if(t._src==="finance") return t.dir==="out"?"تسديد مستحقات":"إضافة على الحساب";
@@ -2869,106 +2954,130 @@ function printStatement(){
     return t.note||"حركة مباشرة";
   }
 
-  /* ── بناء محتوى الكشف (HTML داخلي فقط بدون wrapper) ── */
-  const innerHTML=`
-<div class="stmt-preview-stage"><div class="stmt-paper">
-<div class="stmt-doc-title">كشف حساب التاجر</div>
-<table>
-  <thead>
-    <tr>
-      <td colspan="6" style="padding:0 0 8px 0;border:none">
-        <div class="hdr-top">
-          <div>
-            <div class="hdr-brand">Ahmed And Hamdy</div>
-            <div class="hdr-brand-sub">نظام المحاسبة الداخلي</div>
-          </div>
-          <div class="hdr-nums">
-            <div><span>نوع المستند</span><strong>كشف حساب</strong></div>
-            <div><span>تاريخ الطباعة</span><strong>${printNow}</strong></div>
-            <div><span>الفترة</span><strong>${periodLabel}</strong></div>
-          </div>
+  /* تقسيم الحركات فعلياً إلى أوراق A4 حتى يكون الترقيم ثابتاً في الهاتف والكمبيوتر. */
+  function rowWeight(r){
+    const txt=String(r.note||srcLabel(r)||"").trim();
+    return Math.max(1,Math.min(3,Math.ceil(Math.max(1,txt.length)/42)));
+  }
+  const pages=[];
+  let cursor=0,pageIndex=0;
+  while(cursor<rows.length || pageIndex===0){
+    let capacity=pageIndex===0?16:22;
+    if(pageIndex===0&&fromVal&&openingBalance!==0) capacity-=1;
+    const chunk=[];
+    let used=0;
+    while(cursor<rows.length){
+      const w=rowWeight(rows[cursor]);
+      if(chunk.length&&used+w>capacity) break;
+      chunk.push(rows[cursor]);
+      used+=w;
+      cursor++;
+      if(used>=capacity) break;
+    }
+    pages.push(chunk);
+    pageIndex++;
+    if(cursor>=rows.length) break;
+  }
+
+  const totalPages=pages.length;
+  const colgroup=`<colgroup>
+    <col class="stmt-col-index"><col class="stmt-col-date"><col class="stmt-col-desc">
+    <col class="stmt-col-in"><col class="stmt-col-out"><col class="stmt-col-bal">
+  </colgroup>`;
+
+  function documentHeader(isFirst,pageNo){
+    return `
+      <div class="stmt-doc-title">كشف حساب التاجر</div>
+      <div class="hdr-top">
+        <div>
+          <div class="hdr-brand">Ahmed And Hamdy</div>
+          <div class="hdr-brand-sub">نظام المحاسبة الداخلي</div>
         </div>
-        <div class="hdr-bill" style="padding-top:7px">
-          <div class="hdr-bill-left">
-            <div class="lbl">حساب التاجر</div>
-            <div class="name">${mer.name}</div>
-            <div class="detail">${[mer.phone,mer.address].filter(Boolean).join("  |  ")||"—"}</div>
-          </div>
-          <div>
-            ${fromVal||toVal
-              ?`<span class="hdr-badge">📅 ${periodLabel}</span>`
-              :`<span class="hdr-badge">جميع الفترات</span>`}
-          </div>
+        <div class="hdr-nums">
+          <div><span>نوع المستند</span><strong>كشف حساب</strong></div>
+          <div><span>تاريخ الطباعة</span><strong>${printNow}</strong></div>
+          <div><span>الفترة</span><strong>${periodLabel}</strong></div>
         </div>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="6" style="padding:0;border:none">
-        <div class="stmt-summary">
-          <div class="stmt-summary-item"><span>الرصيد الافتتاحي</span><strong>${openingBalance<0?"-":""}${fmtM(Math.abs(openingBalance))}</strong></div>
-          <div class="stmt-summary-item"><span>إجمالي مدفوعات التاجر</span><strong>${fmtM(totalIn)}</strong></div>
-          <div class="stmt-summary-item"><span>إجمالي مسحوبات / ديون التاجر</span><strong>${fmtM(totalOut)}</strong></div>
-          <div class="stmt-summary-item"><span>الرصيد الختامي</span><strong>${runBal<0?"-":""}${fmtM(Math.abs(runBal))}</strong></div>
+      </div>
+      <div class="hdr-bill" style="padding-top:7px">
+        <div class="hdr-bill-left">
+          <div class="lbl">حساب التاجر</div>
+          <div class="name">${mer.name}</div>
+          <div class="detail">${[mer.phone,mer.address].filter(Boolean).join("  |  ")||"—"}</div>
         </div>
-      </td>
-    </tr>
-    <tr class="col-hdr">
-      <th style="width:9%" class="num-col">#</th>
-      <th style="width:14%">التاريخ</th>
-      <th style="width:32%">البيان</th>
-      <th style="width:14%" class="num-col">مدفوعات التاجر</th>
-      <th style="width:14%" class="num-col">مسحوبات التاجر</th>
-      <th style="width:17%" class="num-col">الرصيد</th>
-    </tr>
-  </thead>
-  <tbody>
-    ${fromVal&&openingBalance!==0?`<tr class="opening">
-      <td class="num-col">—</td>
-      <td>${fmtD(fromVal)}</td>
-      <td>رصيد مرحّل من الفترة السابقة</td>
-      <td class="dash">—</td>
-      <td class="dash">—</td>
+        <div><span class="hdr-badge">${isFirst?(fromVal||toVal?periodLabel:"جميع الفترات"):`متابعة — صفحة ${pageNo}`}</span></div>
+      </div>
+      ${isFirst?`<div class="stmt-summary">
+        <div class="stmt-summary-item"><span>الرصيد الافتتاحي</span><strong>${openingBalance<0?"-":""}${fmtM(Math.abs(openingBalance))}</strong></div>
+        <div class="stmt-summary-item"><span>إجمالي مدفوعات التاجر</span><strong>${fmtM(totalIn)}</strong></div>
+        <div class="stmt-summary-item"><span>إجمالي مسحوبات / ديون التاجر</span><strong>${fmtM(totalOut)}</strong></div>
+        <div class="stmt-summary-item"><span>الرصيد الختامي</span><strong>${runBal<0?"-":""}${fmtM(Math.abs(runBal))}</strong></div>
+      </div>`:`<div class="stmt-continuation"><span>متابعة كشف حساب: <b>${mer.name}</b></span><span>${periodLabel}</span></div>`}
+    `;
+  }
+
+  function openingRowHTML(){
+    if(!(fromVal&&openingBalance!==0)) return"";
+    return `<tr class="opening">
+      <td class="num-col">—</td><td>${fmtD(fromVal)}</td><td>رصيد مرحّل من الفترة السابقة</td>
+      <td class="dash">—</td><td class="dash">—</td>
       <td class="amt-bal ${openingBalance>=0?"pos":"neg"}">${openingBalance<0?"-":""}${fmtM(Math.abs(openingBalance))}</td>
-    </tr>`:""}
-    ${rows.map(r=>`<tr>
+    </tr>`;
+  }
+
+  function movementRowsHTML(chunk){
+    return chunk.map(r=>`<tr>
       <td class="num-col">${r.idx}</td>
       <td>${fmtD(r.dateStr)}</td>
       <td>${r.note||srcLabel(r)}</td>
       <td class="${r.dir==="in"?"amt-in":"dash"}">${r.dir==="in"?fmtM(r.amount):"—"}</td>
       <td class="${r.dir==="out"?"amt-out":"dash"}">${r.dir==="out"?fmtM(r.amount):"—"}</td>
       <td class="amt-bal ${r.runBal>=0?"pos":"neg"}">${r.runBal<0?"-":""}${fmtM(Math.abs(r.runBal))}</td>
-    </tr>`).join("")}
-  </tbody>
-  <tfoot>
-    <tr>
-      <td colspan="3" class="f-lbl">الإجمالي — ${rows.length} حركة${fromVal||toVal?" في الفترة المحددة":""}</td>
-      <td class="f-val">${fmtM(totalIn)}</td>
-      <td class="f-val">${fmtM(totalOut)}</td>
-      <td class="f-val">${runBal<0?"-":""}${fmtM(Math.abs(runBal))} ${runBal>=0?"(مدين)":"(دائن)"}</td>
-    </tr>
-  </tfoot>
-</table>
-<div class="stmt-print-footer">
-  <div>طُبع بتاريخ: ${printNow}</div>
-  <div class="sig-wrap">
-    <div class="sig-line"></div>
-    <div>التوقيع والختم</div>
-  </div>
-  <div>Ahmed And Hamdy — نظام المحاسبة الداخلي</div>
-</div>
-</div></div>`;
+    </tr>`).join("");
+  }
 
-  /* ── حقن المحتوى وفتح المودال ── */
+  function totalsHTML(){
+    return `<tfoot><tr>
+      <td colspan="3" class="f-lbl">الإجمالي — ${rows.length} حركة${fromVal||toVal?" في الفترة المحددة":""}</td>
+      <td class="f-val">${fmtM(totalIn)}</td><td class="f-val">${fmtM(totalOut)}</td>
+      <td class="f-val">${runBal<0?"-":""}${fmtM(Math.abs(runBal))} ${runBal>=0?"(مدين)":"(دائن)"}</td>
+    </tr></tfoot>`;
+  }
+
+  const pagesHTML=pages.map((chunk,i)=>{
+    const pageNo=i+1;
+    const isFirst=i===0;
+    const isLast=i===pages.length-1;
+    return `<section class="stmt-page" data-page="${pageNo}">
+      <div class="stmt-page-content">
+        ${documentHeader(isFirst,pageNo)}
+        <div class="stmt-table-wrap"><table class="stmt-lines-table">
+          ${colgroup}
+          <thead><tr class="col-hdr">
+            <th class="num-col">#</th><th>التاريخ</th><th>البيان</th>
+            <th class="num-col">مدفوعات التاجر</th><th class="num-col">مسحوبات التاجر</th><th class="num-col">الرصيد</th>
+          </tr></thead>
+          <tbody>${isFirst?openingRowHTML():""}${movementRowsHTML(chunk)}${rows.length===0?`<tr><td colspan="6" style="text-align:center;padding:18px">لا توجد حركات في الفترة المحددة</td></tr>`:""}</tbody>
+          ${isLast?totalsHTML():""}
+        </table></div>
+      </div>
+      <div class="stmt-page-footer">
+        <div class="stmt-footer-date">طُبع بتاريخ: ${printNow}</div>
+        <div class="stmt-page-no">صفحة ${pageNo} من ${totalPages}</div>
+        <div class="stmt-footer-brand">Ahmed And Hamdy — نظام المحاسبة الداخلي</div>
+      </div>
+    </section>`;
+  }).join("");
+
+  const innerHTML=`<div class="stmt-preview-stage"><div class="stmt-paper">${pagesHTML}</div></div>`;
+
   document.getElementById("stmt-preview-title").textContent = "كشف حساب — " + mer.name;
   document.getElementById("stmt-preview-content").innerHTML = innerHTML;
   document.getElementById("stmt-preview-modal").classList.add("open");
-  // تمرير لأعلى عند كل فتح
   setTimeout(()=>{
     const host=document.getElementById("stmt-preview-content");
-    host.scrollTop=0;
-    host.scrollLeft=0;
-    scheduleStatementPreviewFit();
-  }, 30);
+    host.scrollTop=0;host.scrollLeft=0;scheduleStatementPreviewFit();
+  },30);
 }
 
 </script>
