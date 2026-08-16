@@ -713,6 +713,18 @@
      .merchant-invoice-box .inv-bal-result{padding:8px 11px!important}
 
      .simple-fin-doc{direction:rtl;background:#fff;color:#111;font-family:Cairo,sans-serif;border:1px solid #d2d2d2;border-radius:8px;padding:22px 24px;box-shadow:0 3px 14px rgba(0,0,0,.035)}
+     /* ترويسة الحركة المالية — مطابقة لترويسة فاتورة البيع */
+     .simple-fin-doc .inv-doc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:16px;margin-bottom:16px;border-bottom:2px solid #111}
+     .simple-fin-doc .inv-doc-logo-wrap{display:flex;flex-direction:column;gap:3px}
+     .simple-fin-doc .inv-doc-brand{font-size:19px;font-weight:800;color:#111;letter-spacing:.1px;margin-top:0}
+     .simple-fin-doc .inv-doc-brand-sub{font-size:10.5px;color:#666;margin-top:1px}
+     .simple-fin-doc .inv-doc-nums{text-align:left;min-width:220px;border:1px solid #d9d9d9;border-radius:6px;padding:8px 10px}
+     .simple-fin-doc .inv-doc-num-row{display:flex;justify-content:space-between;gap:16px;font-size:11.5px;margin-bottom:5px;padding-bottom:5px;border-bottom:1px dotted #ddd}
+     .simple-fin-doc .inv-doc-num-row:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
+     .simple-fin-doc .inv-doc-num-row span{color:#777}
+     .simple-fin-doc .inv-doc-num-row strong{color:#111;font-weight:700}
+     .simple-fin-doc .inv-doc-type-line{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+     .simple-fin-doc .inv-doc-type-badge{display:inline-block;font-size:11px;font-weight:700;background:#fff;color:#111;border:1px solid #111;border-radius:3px;margin:0;padding:4px 11px}
      .simple-fin-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding-bottom:12px;border-bottom:2px solid #111}
      .simple-fin-brand{font-size:17px;font-weight:900}
      .simple-fin-sub{font-size:9.5px;color:#777;margin-top:2px}
@@ -739,13 +751,18 @@
        .merchant-invoice-box .inv-bal-step{padding:11px 6px!important;min-height:68px}
        .merchant-invoice-box .inv-bal-step+.inv-bal-step{border-right:1px solid #bbb!important}
        .simple-fin-doc{padding:15px 12px;border:0;box-shadow:none}
-       .simple-fin-head{display:block}.simple-fin-ref{text-align:right;margin-top:8px}
+       .simple-fin-doc .inv-doc-head{display:block}
+       .simple-fin-doc .inv-doc-nums{margin-top:10px;min-width:0;text-align:right}
+       .simple-fin-doc .inv-doc-type-line{align-items:flex-start;flex-wrap:wrap}
        .simple-fin-balances{grid-template-columns:1fr 1fr}
        .simple-fin-balance{padding:12px 7px}.simple-fin-balance-value{font-size:13px}
      }
      @media print{
        body.tx-print-mode .simple-fin-doc{width:180mm;min-height:auto;margin:0 auto;border:0;border-radius:0;box-shadow:none;padding:0;background:#fff;color:#111}
        body.tx-print-mode .simple-fin-doc *{color:#111!important;background:#fff!important;box-shadow:none!important;text-shadow:none!important}
+       body.tx-print-mode .simple-fin-doc .inv-doc-head{border-bottom:2px solid #111!important}
+       body.tx-print-mode .simple-fin-doc .inv-doc-nums{border:1px solid #bbb!important}
+       body.tx-print-mode .simple-fin-doc .inv-doc-type-badge{border:1px solid #111!important}
        body.merchant-invoice-print-mode .merchant-invoice-box .inv-payment-state{background:#fff!important;color:#111!important;border-color:#111!important}
      }
 
@@ -1410,7 +1427,7 @@ function showMerchantSalePreview(data){
       </div>
       <div class="inv-doc-type-line">
         <span class="inv-doc-type-badge">فاتورة بيع</span>
-        <span class="inv-payment-state ${paymentStatusClass}">حالة الدفع عند تنفيذ البيع: ${paymentStatusText}</span>
+        <span class="inv-payment-state ${paymentStatusClass}">حالة الدفع للفاتورة الحالية: ${paymentStatusText}</span>
       </div>
       <div class="inv-doc-party-grid">
         <div class="inv-doc-party-card">
@@ -1517,9 +1534,18 @@ function openTxDetail(t){
   const after=balanceView(balCtx?.after||0);
 
   const documentInner=`
-    <div class="simple-fin-head">
-      <div><div class="simple-fin-brand">Ahmed And Hamdy</div><div class="simple-fin-sub">حركة حساب تاجر</div></div>
-      <div class="simple-fin-ref"><strong>${eS(t.finId||"—")}</strong><span>${eS(fD(t.date))}</span></div>
+    <div class="inv-doc-head simple-fin-invoice-head">
+      <div class="inv-doc-logo-wrap">
+        <div class="inv-doc-brand">Ahmed And Hamdy</div>
+        <div class="inv-doc-brand-sub">النظام المحاسبي الداخلي — حركة مالية</div>
+      </div>
+      <div class="inv-doc-nums">
+        <div class="inv-doc-num-row"><span>رقم الحركة</span><strong>${eS(t.finId||"—")}</strong></div>
+        <div class="inv-doc-num-row"><span>تاريخ الحركة</span><strong>${eS(fD(t.date))}</strong></div>
+      </div>
+    </div>
+    <div class="inv-doc-type-line simple-fin-type-line">
+      <span class="inv-doc-type-badge">حركة مالية</span>
     </div>
     <div class="simple-fin-party">
       <div class="simple-fin-label">اسم التاجر</div>
