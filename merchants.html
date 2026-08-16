@@ -1364,15 +1364,14 @@ function showMerchantSalePreview(data){
     const before=beforeBalance;
     const after=afterBalance;
     const accountView=value=>({
-      amount:fmtMoney(Math.abs(value)),
-      state:value<0?"عليه":value>0?"له":"مُسدّد"
+      amount:fmtMoney(Math.abs(value))
     });
     const beforeView=accountView(before);
     const afterView=accountView(after);
     const afterText=after<0
-      ? `على التاجر ${fmtMoney(Math.abs(after))}`
+      ? `على التاجر تسديد ${fmtMoney(Math.abs(after))}`
       : after>0
-        ? `للتاجر رصيد ${fmtMoney(after)}`
+        ? `مبلغ مستحق للتاجر ${fmtMoney(after)}`
         : "الحساب مسدّد بالكامل";
     return `
     <div class="inv-doc-balance">
@@ -1384,12 +1383,10 @@ function showMerchantSalePreview(data){
         <div class="inv-bal-step">
           <div class="inv-bal-lbl">حساب التاجر السابق</div>
           <div class="inv-bal-val">${beforeView.amount}</div>
-          <div class="inv-bal-state">${beforeView.state}</div>
         </div>
         <div class="inv-bal-step inv-bal-step-final">
           <div class="inv-bal-lbl">حساب التاجر الإجمالي</div>
           <div class="inv-bal-val">${afterView.amount}</div>
-          <div class="inv-bal-state">${afterView.state}</div>
         </div>
       </div>
       <div class="inv-bal-result"><span>وضع الحساب بعد العملية</span><strong>${afterText}</strong></div>
@@ -1514,7 +1511,7 @@ function openTxDetail(t){
   const balCtx=calcMerchantBalanceBeforeAfter(t);
   const balanceView=value=>{
     const v=Number(value)||0;
-    return {amount:fN(Math.abs(v)),state:v<0?"عليه":v>0?"له":"مُسدّد"};
+    return {amount:fN(Math.abs(v))};
   };
   const before=balanceView(balCtx?.before||0);
   const after=balanceView(balCtx?.after||0);
@@ -1536,12 +1533,10 @@ function openTxDetail(t){
       <div class="simple-fin-balance">
         <div class="simple-fin-balance-label">الرصيد قبل الحركة</div>
         <div class="simple-fin-balance-value">${eS(before.amount)}</div>
-        <div class="simple-fin-balance-state">${eS(before.state)}</div>
       </div>
       <div class="simple-fin-balance">
         <div class="simple-fin-balance-label">الرصيد بعد الحركة</div>
         <div class="simple-fin-balance-value">${eS(after.amount)}</div>
-        <div class="simple-fin-balance-state">${eS(after.state)}</div>
       </div>
     </div>
     <div class="simple-fin-foot"><span>${eS(movementTitle)}</span><span>${eS(t.finId||"")}</span></div>`;
