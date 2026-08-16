@@ -215,49 +215,84 @@
       max-width:900px;margin:20px auto;padding:0 16px 40px;
     }
 
-    /* ── محتوى التقرير ── */
-    .rpt-hdr{display:flex;justify-content:space-between;align-items:flex-start;
-      border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:10px}
-    .rpt-hdr-center{text-align:center;flex:1}
-    .rpt-company{font-size:15px;font-weight:800}
-    .rpt-title{font-size:13px;font-weight:700;margin-top:3px}
-    .rpt-period-badge{font-size:11px;color:#333;margin-top:3px}
-    .rpt-side{font-size:10px;color:#444;white-space:nowrap;padding-top:2px}
+    /* ── محتوى التقرير — وثيقة شركات أحادية اللون ── */
+    #cash-rpt-body{color:#111}
+    .rpt-page{
+      background:#fff;color:#111;margin:0 auto 18px;padding:12mm 12mm 9mm;
+      width:min(100%,297mm);min-height:198mm;box-sizing:border-box;
+      box-shadow:0 4px 18px rgba(0,0,0,.12);position:relative;
+    }
+    .rpt-page-inner{min-height:177mm;display:flex;flex-direction:column}
 
-    .rpt-stats{width:100%;border-collapse:collapse;margin-bottom:10px}
-    .rpt-stats th,.rpt-stats td{border:1.5px solid #000;padding:6px 10px;text-align:center}
-    .rpt-stats th{background:#e0e0e0;font-size:11px;font-weight:700}
-    .rpt-stats td{font-size:14px;font-weight:800}
-    .rpt-din{color:#155724}.rpt-dout{color:#721c24}
+    /* ترويسة الصفحة الأولى */
+    .rpt-doc-head{display:grid;grid-template-columns:58px 1fr auto;gap:13px;align-items:start;margin-bottom:9px}
+    .rpt-doc-mark{width:54px;height:54px;border:2px solid #111;display:grid;place-items:center;font:900 17px Cairo,sans-serif;letter-spacing:.5px}
+    .rpt-doc-company{font-size:18px;font-weight:900;line-height:1.3;margin-top:1px}
+    .rpt-doc-dept{font-size:10.5px;font-weight:700;margin-top:3px;letter-spacing:.1px}
+    .rpt-doc-kind{font-size:9.5px;margin-top:5px}
+    .rpt-doc-stamp{border:1.5px solid #111;padding:6px 10px;text-align:center;font-size:9.5px;font-weight:800;white-space:nowrap}
+    .rpt-doc-rule{height:4px;border-top:2px solid #111;border-bottom:1px solid #111;margin:0 0 9px}
+    .rpt-doc-title{text-align:center;margin:2px 0 9px}
+    .rpt-doc-title h1{margin:0;font-size:17px;font-weight:900}
+    .rpt-doc-title p{margin:3px 0 0;font-size:10px;font-weight:700}
+    .rpt-meta{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:9.5px}
+    .rpt-meta td{border:1px solid #111;padding:5px 7px;vertical-align:middle}
+    .rpt-meta .rpt-meta-label{font-weight:900;width:85px;white-space:nowrap}
+    .rpt-meta .rpt-meta-value{font-weight:600}
 
-    .rpt-sec{font-size:11px;font-weight:700;margin:10px 0 5px;
-      border-right:3px solid #000;padding-right:6px}
+    /* ترويسة مختصرة للصفحات التالية */
+    .rpt-cont-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;border-bottom:2px solid #111;padding-bottom:6px;margin-bottom:9px}
+    .rpt-cont-company{font-size:12px;font-weight:900}
+    .rpt-cont-sub{font-size:9px;margin-top:2px}
+    .rpt-cont-period{text-align:left;font-size:9px;font-weight:700;white-space:nowrap}
 
-    .rpt-tx{width:100%;border-collapse:collapse;font-size:11px}
-    .rpt-tx th{border:1.5px solid #000;padding:4px 6px;text-align:center;
-      background:#e0e0e0;font-weight:700;white-space:nowrap}
-    .rpt-tx td{border:1px solid #ccc;padding:3px 6px}
-    .rpt-tx tr:nth-child(even) td{background:#f6f6f6}
+    .rpt-stats{width:100%;border-collapse:collapse;margin-bottom:9px;table-layout:fixed}
+    .rpt-stats th,.rpt-stats td{border:1.4px solid #111;padding:5px 7px;text-align:center;color:#111!important;background:#fff!important}
+    .rpt-stats th{font-size:9.5px;font-weight:900;border-bottom:2px solid #111}
+    .rpt-stats td{font-size:12px;font-weight:900}
+    .rpt-din,.rpt-dout{color:#111!important}
+
+    .rpt-sec{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:9.5px;font-weight:900;margin:6px 0 5px;padding:0 0 4px;border-bottom:1.5px solid #111}
+    .rpt-sec span:last-child{font-size:8.5px;font-weight:700}
+
+    .rpt-tx{width:100%;border-collapse:collapse;font-size:8.7px;table-layout:fixed}
+    .rpt-tx th{border:1.3px solid #111;padding:4px 4px;text-align:center;background:#fff!important;color:#111;font-weight:900;white-space:nowrap;border-bottom:2px solid #111}
+    .rpt-tx td{border:1px solid #666;padding:3.5px 4px;color:#111;background:#fff!important;vertical-align:middle;line-height:1.45}
+    .rpt-tx tr:nth-child(even) td{background:#fff!important}
+    .rpt-tx th:nth-child(1){width:12%}.rpt-tx th:nth-child(2){width:16%}.rpt-tx th:nth-child(3){width:11%}
+    .rpt-tx th:nth-child(4){width:10%}.rpt-tx th:nth-child(5){width:13%}.rpt-tx th:nth-child(6){width:15%}.rpt-tx th:nth-child(7){width:23%}
     .rpt-cen{text-align:center}.rpt-nowrap{white-space:nowrap}
-    .rpt-num{font-weight:700;text-align:center}
-    .rpt-desc{text-align:right;font-size:10px}
-    .rpt-empty{text-align:center;padding:16px;color:#666}
+    .rpt-num{font-weight:900;text-align:center}
+    .rpt-desc{text-align:right;font-size:8.3px;overflow-wrap:anywhere}
+    .rpt-empty{text-align:center;padding:18px!important;font-size:10px;font-weight:700}
+    .rpt-dir-in,.rpt-dir-out{display:inline-block;min-width:42px;text-align:center;font-weight:900}
+    .rpt-dir-in::before{content:"↓ ";font-weight:900}.rpt-dir-out::before{content:"↑ ";font-weight:900}
 
-    .rpt-ftr{margin-top:12px;border-top:1px solid #aaa;padding-top:6px;
-      display:flex;justify-content:space-between;font-size:10px;color:#555}
+    /* تذييل داخلي ثابت في كل ورقة */
+    .rpt-page-footer{margin-top:auto;padding-top:6px;border-top:1px solid #111;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;font-size:8.5px;color:#111}
+    .rpt-page-footer .rpt-foot-left{text-align:right;font-weight:700}
+    .rpt-page-footer .rpt-foot-page{text-align:center;font-weight:900;border:1px solid #111;padding:2px 9px;white-space:nowrap}
+    .rpt-page-footer .rpt-foot-right{text-align:left}
 
     /* ── طباعة overlay التقرير ── */
     @media print{
+      html,body{background:#fff!important}
       body.printing-cash-report > *{display:none!important}
       body.printing-cash-report #cash-rpt-overlay{
-        display:block!important;position:static!important;
+        display:block!important;position:static!important;inset:auto!important;
         background:#fff!important;overflow:visible!important;
       }
       body.printing-cash-report #cash-rpt-bar{display:none!important}
-      body.printing-cash-report #cash-rpt-body{
-        max-width:100%!important;margin:0!important;padding:0!important;
+      body.printing-cash-report #cash-rpt-body{max-width:none!important;margin:0!important;padding:0!important;background:#fff!important}
+      body.printing-cash-report .rpt-page{
+        width:297mm!important;height:210mm!important;min-height:210mm!important;margin:0!important;
+        padding:9mm 11mm 8mm!important;box-shadow:none!important;page-break-after:always;break-after:page;
+        color:#000!important;background:#fff!important;
       }
-      @page{size:A4 landscape;margin:10mm 12mm}
+      body.printing-cash-report .rpt-page:last-child{page-break-after:auto;break-after:auto}
+      body.printing-cash-report .rpt-page-inner{height:193mm!important;min-height:193mm!important}
+      body.printing-cash-report *{-webkit-print-color-adjust:economy!important;print-color-adjust:economy!important}
+      @page{size:A4 landscape;margin:0}
     }
 
     /* ── فلتر فترة صندوق الكاش ── */
@@ -1460,14 +1495,14 @@ function buildReportHTML(selection=cashReportSelection){
   const balanceOut=balanceTx.filter(t=>t.dir==="out").reduce((s,t)=>s+(t.amount||0),0);
   const balance=openingBal+balanceIn-balanceOut;
 
-  /* ── تسميات ── */
   const typeMap={deposit:"إيداع",withdrawal:"سحب",advance:"سلفة",merchant:"تاجر",other:"أخرى"};
   const periodLabel=selection.label||reportRangeLabel(selection.from,selection.to,selection.mode==="all");
   const balanceTitle=selection.mode==="all"?"رصيد الصندوق الحالي":"رصيد الصندوق حتى نهاية الفترة";
-  const printDate=new Date().toLocaleDateString("ar-EG-u-nu-latn",
+  const now=new Date();
+  const printDate=now.toLocaleDateString("ar-EG-u-nu-latn",
     {timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});
+  const reportNo=`FIN-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,"0")}${String(now.getDate()).padStart(2,"0")}-${String(now.getHours()).padStart(2,"0")}${String(now.getMinutes()).padStart(2,"0")}`;
 
-  /* دالة تنسيق التاريخ والساعة */
   const fmtDT=t=>{
     if(!t.date) return "—";
     let timePart="";
@@ -1481,69 +1516,79 @@ function buildReportHTML(selection=cashReportSelection){
     return dateStr+timePart;
   };
 
-  /* ── صفوف الجدول ── */
-  const rowsHtml=rows.length
-    ? rows.map(t=>{
-        const party=t.partyName||t.merchantName||t.employeeName||"—";
-        const isIn=t.dir==="in";
-        return `<tr>
-          <td class="rpt-cen">${esc(t.finId||"—")}</td>
-          <td class="rpt-cen rpt-nowrap">${fmtDT(t)}</td>
-          <td class="rpt-cen">${typeMap[t.type]||t.type||"—"}</td>
-          <td class="rpt-cen ${isIn?"rpt-din":"rpt-dout"}">${isIn?"↓ إيداع":"↑ سحب"}</td>
-          <td class="rpt-num ${isIn?"rpt-din":"rpt-dout"}">${fmt(t.amount)}</td>
-          <td class="rpt-cen">${esc(party)}</td>
-          <td class="rpt-desc">${esc(t.description||"—")}</td>
-        </tr>`;
-      }).join("")
-    : `<tr><td colspan="7" class="rpt-empty">لا توجد حركات للفترة المحددة</td></tr>`;
+  const rowHTML=t=>{
+    const party=t.partyName||t.merchantName||t.employeeName||"—";
+    const isIn=t.dir==="in";
+    return `<tr>
+      <td class="rpt-cen">${esc(t.finId||"—")}</td>
+      <td class="rpt-cen rpt-nowrap">${fmtDT(t)}</td>
+      <td class="rpt-cen">${typeMap[t.type]||t.type||"—"}</td>
+      <td class="rpt-cen"><span class="${isIn?"rpt-dir-in":"rpt-dir-out"}">${isIn?"داخل":"خارج"}</span></td>
+      <td class="rpt-num">${fmt(t.amount)}</td>
+      <td class="rpt-cen">${esc(party)}</td>
+      <td class="rpt-desc">${esc(t.description||"—")}</td>
+    </tr>`;
+  };
 
-  return {periodLabel, printDate, count:rows.length, html:`
-    <div class="rpt-hdr">
-      <div class="rpt-side">تاريخ الطباعة:<br><strong>${printDate}</strong></div>
-      <div class="rpt-hdr-center">
-        <div class="rpt-company">Ahmed And hamdy — نظام المحاسبة الداخلي</div>
-        <div class="rpt-title">تقرير صندوق المالية</div>
-        <div class="rpt-period-badge">الفترة: ${periodLabel}</div>
+  /* تقسيم محافظ حتى يبقى ترقيم الصفحات داخل كل ورقة فعلياً */
+  const firstPageSize=12, otherPageSize=17;
+  const pages=[];
+  if(!rows.length){
+    pages.push([]);
+  }else{
+    pages.push(rows.slice(0,firstPageSize));
+    let pos=firstPageSize;
+    while(pos<rows.length){pages.push(rows.slice(pos,pos+otherPageSize));pos+=otherPageSize;}
+  }
+  const totalPages=pages.length;
+
+  const tableHead=`<thead><tr>
+    <th>معرف الحركة</th><th>التاريخ والساعة</th><th>نوع الحركة</th><th>الاتجاه</th><th>المبلغ</th><th>الجهة</th><th>الوصف</th>
+  </tr></thead>`;
+
+  const pagesHtml=pages.map((chunk,index)=>{
+    const pageNo=index+1;
+    const first=index===0;
+    const bodyHtml=chunk.length?chunk.map(rowHTML).join(""):`<tr><td colspan="7" class="rpt-empty">لا توجد حركات للفترة المحددة</td></tr>`;
+    const header=first?`
+      <div class="rpt-doc-head">
+        <div class="rpt-doc-mark">A&amp;H</div>
+        <div>
+          <div class="rpt-doc-company">Ahmed And hamdy</div>
+          <div class="rpt-doc-dept">الإدارة المالية — نظام المحاسبة الداخلي</div>
+          <div class="rpt-doc-kind">وثيقة مالية داخلية</div>
+        </div>
+        <div class="rpt-doc-stamp">تقرير رسمي<br>للاستخدام الداخلي</div>
       </div>
-      <div class="rpt-side" style="text-align:left">عدد الحركات:<br><strong>${rows.length} حركة</strong></div>
-    </div>
+      <div class="rpt-doc-rule"></div>
+      <div class="rpt-doc-title"><h1>تقرير صندوق المالية</h1><p>${periodLabel}</p></div>
+      <table class="rpt-meta"><tbody>
+        <tr><td class="rpt-meta-label">رقم التقرير</td><td class="rpt-meta-value">${reportNo}</td><td class="rpt-meta-label">تاريخ الإصدار</td><td class="rpt-meta-value">${printDate}</td></tr>
+        <tr><td class="rpt-meta-label">الفترة</td><td class="rpt-meta-value">${periodLabel}</td><td class="rpt-meta-label">عدد الحركات</td><td class="rpt-meta-value">${rows.length} حركة</td></tr>
+      </tbody></table>
+      <table class="rpt-stats"><tr><th>${balanceTitle}</th><th>إجمالي الإيداعات</th><th>إجمالي المسحوبات</th><th>إجمالي السلف</th></tr>
+      <tr><td>${fmt(balance)}</td><td>${fmt(totalIn)}</td><td>${fmt(totalOut)}</td><td>${fmt(totalAdv)}</td></tr></table>
+    `:`
+      <div class="rpt-cont-head">
+        <div><div class="rpt-cont-company">Ahmed And hamdy — الإدارة المالية</div><div class="rpt-cont-sub">استكمال تقرير صندوق المالية</div></div>
+        <div class="rpt-cont-period">${periodLabel}<br>${reportNo}</div>
+      </div>`;
 
-    <table class="rpt-stats">
-      <tr>
-        <th>${balanceTitle}</th>
-        <th>إجمالي الإيداعات</th>
-        <th>إجمالي المسحوبات</th>
-        <th>إجمالي السلف</th>
-      </tr>
-      <tr>
-        <td class="${balance>=0?"rpt-din":"rpt-dout"}">${fmt(balance)}</td>
-        <td class="rpt-din">${fmt(totalIn)}</td>
-        <td class="rpt-dout">${fmt(totalOut)}</td>
-        <td>${fmt(totalAdv)}</td>
-      </tr>
-    </table>
+    return `<section class="rpt-page${first?" rpt-first-page":""}">
+      <div class="rpt-page-inner">
+        ${header}
+        <div class="rpt-sec"><span>سجل الحركات المالية</span><span>${chunk.length} حركة في هذه الصفحة</span></div>
+        <table class="rpt-tx">${tableHead}<tbody>${bodyHtml}</tbody></table>
+        <div class="rpt-page-footer">
+          <span class="rpt-foot-left">Ahmed And hamdy — وثيقة داخلية</span>
+          <span class="rpt-foot-page">صفحة ${pageNo} من ${totalPages}</span>
+          <span class="rpt-foot-right">${reportNo}</span>
+        </div>
+      </div>
+    </section>`;
+  }).join("");
 
-    <div class="rpt-sec">سجل الحركات المالية — ${periodLabel} — ${rows.length} حركة</div>
-
-    <table class="rpt-tx">
-      <thead><tr>
-        <th>معرف الحركة</th>
-        <th>التاريخ والساعة</th>
-        <th>نوع الحركة</th>
-        <th>الاتجاه</th>
-        <th>المبلغ</th>
-        <th>الجهة</th>
-        <th>الوصف</th>
-      </tr></thead>
-      <tbody>${rowsHtml}</tbody>
-    </table>
-
-    <div class="rpt-ftr">
-      <span>Ahmed And hamdy — نظام المحاسبة الداخلي</span>
-      <span>هذا التقرير صادر آلياً من النظام — ${printDate}</span>
-    </div>
-  `};
+  return {periodLabel,printDate,count:rows.length,reportNo,totalPages,html:pagesHtml};
 }
 
 /* زر "طباعة التقرير" يفتح أولاً نافذة اختيار المدة */
@@ -1587,10 +1632,15 @@ function setupCashReportModal(){
     document.body.style.overflow="";
   });
   document.getElementById("cash-rpt-print-btn").addEventListener("click",()=>{
+    const oldTitle=document.title;
+    document.title="";
     document.body.classList.add("printing-cash-report");
-    window.print();
-    const cleanup=()=>{ document.body.classList.remove("printing-cash-report"); };
+    const cleanup=()=>{
+      document.body.classList.remove("printing-cash-report");
+      document.title=oldTitle;
+    };
     window.addEventListener("afterprint",cleanup,{once:true});
+    window.print();
     setTimeout(cleanup,3000);
   });
   document.addEventListener("keydown",e=>{
