@@ -448,6 +448,80 @@
       #stmt-preview-content .col-hdr th{padding:6px 6px;font-size:9.5px}
     }
 
+
+    /* ═══════════════════════════════════════════════
+       كشف الحساب V8 — معاينة ثابتة + طباعة A4 أبيض وأسود
+       ═══════════════════════════════════════════════ */
+    #stmt-preview-content{position:relative;overflow:auto;display:block}
+    #stmt-preview-content .stmt-preview-stage{width:100%;display:flex;justify-content:center;align-items:flex-start;overflow:visible}
+    #stmt-preview-content .stmt-paper{width:820px;max-width:820px;background:#fff;padding:18px 20px 16px;box-sizing:border-box;transform-origin:top center}
+    #stmt-preview-content .stmt-doc-title{font-size:18px;font-weight:900;text-align:center;margin:2px 0 12px;color:#111;letter-spacing:.1px}
+    #stmt-preview-content .stmt-summary{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #cfd5dc;margin:10px 0 14px;background:#fff}
+    #stmt-preview-content .stmt-summary-item{padding:10px 9px;text-align:center;border-left:1px solid #cfd5dc;min-width:0}
+    #stmt-preview-content .stmt-summary-item:last-child{border-left:0}
+    #stmt-preview-content .stmt-summary-item span{display:block;font-size:9.5px;color:#777;font-weight:700;margin-bottom:4px;white-space:nowrap}
+    #stmt-preview-content .stmt-summary-item strong{display:block;font-size:13px;color:#111;font-weight:900;direction:rtl;unicode-bidi:plaintext}
+    #stmt-preview-content .stmt-table-wrap{width:100%;overflow:visible}
+
+    @media(max-width:600px){
+      #stmt-preview-modal{padding:8px!important;align-items:flex-start}
+      .stmt-modal-box{max-height:calc(100dvh - 16px);border-radius:14px}
+      .stmt-modal-header{padding:12px 14px}
+      #stmt-preview-content{padding:10px 6px!important;background:#f4f4f4!important;overflow:auto!important}
+      #stmt-preview-content .stmt-preview-stage{justify-content:flex-start;min-height:1px}
+      #stmt-preview-content .stmt-paper{width:820px!important;max-width:none!important;padding:18px 20px!important}
+      #stmt-preview-content table{font-size:11.5px!important}
+      #stmt-preview-content tbody tr td{padding:7px 10px!important}
+      #stmt-preview-content .col-hdr th{padding:10px 10px!important;font-size:13px!important}
+      #stmt-preview-footer{padding:10px 12px;gap:8px}
+      #stmt-preview-footer .btn{min-height:48px;flex:1}
+    }
+
+    @media print{
+      body.stmt-print-mode #stmt-preview-modal{
+        display:block!important;position:static!important;inset:auto!important;width:210mm!important;min-height:297mm!important;
+        background:#fff!important;padding:10mm 12mm!important;margin:0!important;overflow:visible!important;z-index:auto!important;box-sizing:border-box!important
+      }
+      body.stmt-print-mode #stmt-preview-modal .stmt-modal-box{width:186mm!important;max-width:186mm!important;margin:0!important;display:block!important;overflow:visible!important}
+      body.stmt-print-mode #stmt-preview-content{display:block!important;width:186mm!important;max-width:186mm!important;padding:0!important;margin:0!important;background:#fff!important;overflow:visible!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-preview-stage{display:block!important;width:186mm!important;overflow:visible!important;height:auto!important;min-height:0!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-paper{display:block!important;width:186mm!important;max-width:186mm!important;padding:0!important;margin:0!important;transform:none!important;zoom:1!important;background:#fff!important;color:#000!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-doc-title{font-size:15pt!important;color:#000!important;margin:0 0 5mm!important}
+      body.stmt-print-mode #stmt-preview-content table{width:100%!important;table-layout:fixed!important;font-size:9pt!important;color:#000!important;background:#fff!important}
+      body.stmt-print-mode #stmt-preview-content .hdr-top{border-bottom:1.5pt solid #000!important;margin-bottom:2.5mm!important;padding-bottom:2.5mm!important;gap:8mm!important}
+      body.stmt-print-mode #stmt-preview-content .hdr-brand{color:#000!important;font-size:13pt!important;letter-spacing:0!important}
+      body.stmt-print-mode #stmt-preview-content .hdr-brand-sub,
+      body.stmt-print-mode #stmt-preview-content .hdr-nums span,
+      body.stmt-print-mode #stmt-preview-content .hdr-bill-left .lbl,
+      body.stmt-print-mode #stmt-preview-content .hdr-bill-left .detail{color:#555!important}
+      body.stmt-print-mode #stmt-preview-content .hdr-nums{min-width:48mm!important;font-size:8.5pt!important}
+      body.stmt-print-mode #stmt-preview-content .hdr-nums strong,
+      body.stmt-print-mode #stmt-preview-content .hdr-bill-left .name{color:#000!important}
+      body.stmt-print-mode #stmt-preview-content .hdr-badge{background:#fff!important;color:#000!important;border:1pt solid #000!important;border-radius:0!important;padding:1.5mm 4mm!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-summary{border:1pt solid #000!important;margin:3mm 0 4mm!important;background:#fff!important;break-inside:avoid!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-summary-item{border-left:1pt solid #000!important;padding:2.5mm 2mm!important;background:#fff!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-summary-item:last-child{border-left:0!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-summary-item span{font-size:7.5pt!important;color:#444!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-summary-item strong{font-size:10pt!important;color:#000!important}
+      body.stmt-print-mode #stmt-preview-content .col-hdr th{background:#fff!important;color:#000!important;border:1pt solid #000!important;text-shadow:none!important;font-size:8pt!important;padding:2mm 1.5mm!important}
+      body.stmt-print-mode #stmt-preview-content tbody tr td{background:#fff!important;color:#000!important;border:0.7pt solid #555!important;font-size:8pt!important;padding:1.8mm 1.5mm!important}
+      body.stmt-print-mode #stmt-preview-content tbody tr:nth-child(even) td{background:#fff!important}
+      body.stmt-print-mode #stmt-preview-content td.amt-in,
+      body.stmt-print-mode #stmt-preview-content td.amt-out,
+      body.stmt-print-mode #stmt-preview-content td.amt-bal,
+      body.stmt-print-mode #stmt-preview-content td.amt-bal.pos,
+      body.stmt-print-mode #stmt-preview-content td.amt-bal.neg{color:#000!important;font-weight:800!important}
+      body.stmt-print-mode #stmt-preview-content td.dash{color:#777!important}
+      body.stmt-print-mode #stmt-preview-content tr.opening td{background:#fff!important;color:#000!important;font-style:normal!important;border:1pt solid #000!important}
+      body.stmt-print-mode #stmt-preview-content tfoot tr td{background:#fff!important;color:#000!important;border:1.2pt solid #000!important;font-size:8.5pt!important;padding:2.2mm 1.5mm!important}
+      body.stmt-print-mode #stmt-preview-content .stmt-print-footer{color:#555!important;border-top:0.7pt dashed #777!important;margin-top:4mm!important;padding-top:3mm!important;font-size:7.5pt!important;break-inside:avoid!important}
+      body.stmt-print-mode #stmt-preview-content .sig-line{border-color:#000!important}
+      body.stmt-print-mode #stmt-preview-content tr{break-inside:avoid!important;page-break-inside:avoid!important}
+      body.stmt-print-mode #stmt-preview-content thead{display:table-header-group!important}
+      body.stmt-print-mode #stmt-preview-content tfoot{display:table-footer-group!important}
+      @page{size:A4 portrait;margin:0!important}
+    }
+
      /* ══ معاينة عملية البيع — نفس تنسيق صفحة المنتجات ══ */
      #merchant-invoice-modal{
        display:none;position:fixed;inset:0;background:#0008;z-index:1000;
@@ -1383,9 +1457,12 @@ function init(){
   stmtModal.addEventListener("click", e => { if(e.target === stmtModal) closeStmtModal(); });
   document.getElementById("stmt-preview-print-btn").addEventListener("click", () => {
     document.body.classList.add("stmt-print-mode");
-    window.print();
-    setTimeout(() => document.body.classList.remove("stmt-print-mode"), 1500);
+    requestAnimationFrame(()=>{
+      window.print();
+      setTimeout(() => { document.body.classList.remove("stmt-print-mode"); fitStatementPreview(); }, 1200);
+    });
   });
+  window.addEventListener("resize",()=>{ if(stmtModal.classList.contains("open")) fitStatementPreview(); });
 }
 
 /* ══════════════════════════════════════════════════════
@@ -2573,6 +2650,30 @@ function exportLedgerCSV(){
 /* ══════════════════════════════════════════════════
    طباعة كشف حساب التاجر (ترويسة تتكرر في كل صفحة)
 ══════════════════════════════════════════════════ */
+function fitStatementPreview(){
+  const host=document.getElementById("stmt-preview-content");
+  const stage=host?.querySelector(".stmt-preview-stage");
+  const paper=host?.querySelector(".stmt-paper");
+  if(!host||!stage||!paper) return;
+  paper.style.transform="none";
+  paper.style.margin="0";
+  stage.style.height="auto";
+  if(window.matchMedia("(max-width:600px)").matches){
+    const available=Math.max(260,host.clientWidth-4);
+    const base=820;
+    const scale=Math.min(1,available/base);
+    paper.style.transform=`scale(${scale})`;
+    paper.style.transformOrigin="top right";
+    stage.style.width=available+"px";
+    stage.style.height=Math.ceil(paper.scrollHeight*scale)+"px";
+    stage.style.justifyContent="flex-start";
+  }else{
+    stage.style.width="100%";
+    stage.style.height="auto";
+    stage.style.justifyContent="center";
+  }
+}
+
 function printStatement(){
   const mer=merchants.find(m=>m.id===currentMerId);
   if(!mer){ toast("لا يوجد تاجر محدد",true); return; }
@@ -2620,6 +2721,8 @@ function printStatement(){
 
   /* ── بناء محتوى الكشف (HTML داخلي فقط بدون wrapper) ── */
   const innerHTML=`
+<div class="stmt-preview-stage"><div class="stmt-paper">
+<div class="stmt-doc-title">كشف حساب التاجر</div>
 <table>
   <thead>
     <tr>
@@ -2646,6 +2749,16 @@ function printStatement(){
               ?`<span class="hdr-badge">📅 ${periodLabel}</span>`
               :`<span class="hdr-badge">جميع الفترات</span>`}
           </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="6" style="padding:0;border:none">
+        <div class="stmt-summary">
+          <div class="stmt-summary-item"><span>الرصيد الافتتاحي</span><strong>${openingBalance<0?"-":""}${fmtM(Math.abs(openingBalance))}</strong></div>
+          <div class="stmt-summary-item"><span>إجمالي مدفوعات التاجر</span><strong>${fmtM(totalIn)}</strong></div>
+          <div class="stmt-summary-item"><span>إجمالي مسحوبات / ديون التاجر</span><strong>${fmtM(totalOut)}</strong></div>
+          <div class="stmt-summary-item"><span>الرصيد الختامي</span><strong>${runBal<0?"-":""}${fmtM(Math.abs(runBal))}</strong></div>
         </div>
       </td>
     </tr>
@@ -2692,14 +2805,19 @@ function printStatement(){
     <div>التوقيع والختم</div>
   </div>
   <div>Ahmed And Hamdy — نظام المحاسبة الداخلي</div>
-</div>`;
+</div>
+</div></div>`;
 
   /* ── حقن المحتوى وفتح المودال ── */
   document.getElementById("stmt-preview-title").textContent = "كشف حساب — " + mer.name;
   document.getElementById("stmt-preview-content").innerHTML = innerHTML;
   document.getElementById("stmt-preview-modal").classList.add("open");
   // تمرير لأعلى عند كل فتح
-  setTimeout(()=>{ document.getElementById("stmt-preview-content").scrollTop = 0; }, 50);
+  setTimeout(()=>{
+    const host=document.getElementById("stmt-preview-content");
+    host.scrollTop=0;
+    fitStatementPreview();
+  }, 50);
 }
 
 </script>
