@@ -1034,6 +1034,141 @@
       *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
     }
 
+
+
+    /* ═══════════════════════════════════════════════
+       كشف الحساب V9 — معاينة A4 حقيقية على الهاتف والكمبيوتر
+       ═══════════════════════════════════════════════ */
+    #stmt-preview-modal{
+      padding:18px!important;
+      align-items:flex-start!important;
+      overflow:hidden!important;
+    }
+    #stmt-preview-modal .stmt-modal-box{
+      width:min(940px,100%)!important;
+      max-width:940px!important;
+      height:min(94dvh,980px)!important;
+      max-height:min(94dvh,980px)!important;
+      margin:auto!important;
+      overflow:hidden!important;
+      border-radius:16px!important;
+    }
+    #stmt-preview-modal .stmt-modal-header{
+      min-height:58px;
+      padding:14px 18px!important;
+      background:#fff;
+      z-index:5;
+    }
+    #stmt-preview-modal .stmt-modal-header h3{
+      font-size:16px!important;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    #stmt-preview-content{
+      flex:1 1 auto!important;
+      min-height:0!important;
+      overflow:auto!important;
+      overscroll-behavior:contain;
+      -webkit-overflow-scrolling:touch;
+      padding:22px!important;
+      background:#eceeef!important;
+    }
+    #stmt-preview-content .stmt-preview-stage{
+      position:relative!important;
+      display:block!important;
+      flex:none!important;
+      margin:0 auto!important;
+      overflow:visible!important;
+    }
+    #stmt-preview-content .stmt-paper{
+      position:absolute;
+      top:0;
+      left:0;
+      width:794px!important;
+      max-width:none!important;
+      min-height:1123px;
+      padding:34px 40px 30px!important;
+      background:#fff!important;
+      border:1px solid #d2d5d8;
+      box-shadow:0 8px 28px rgba(0,0,0,.13);
+      box-sizing:border-box!important;
+      transform-origin:top left!important;
+    }
+    #stmt-preview-content .stmt-doc-title{margin-top:0!important}
+    #stmt-preview-footer{
+      min-height:68px;
+      padding:12px 18px!important;
+      background:#fff!important;
+      z-index:5;
+    }
+
+    @media(max-width:600px){
+      #stmt-preview-modal{
+        padding:0!important;
+        background:#fff!important;
+        align-items:stretch!important;
+      }
+      #stmt-preview-modal .stmt-modal-box{
+        width:100%!important;
+        max-width:none!important;
+        height:100dvh!important;
+        max-height:100dvh!important;
+        margin:0!important;
+        border-radius:0!important;
+        box-shadow:none!important;
+      }
+      #stmt-preview-modal .stmt-modal-header{
+        min-height:54px!important;
+        padding:11px 13px!important;
+        border-bottom:1px solid #ddd!important;
+      }
+      #stmt-preview-modal .stmt-modal-header h3{font-size:14px!important}
+      #stmt-preview-modal .modal-close{
+        width:38px!important;height:38px!important;min-width:38px!important;
+      }
+      #stmt-preview-content{
+        padding:12px 8px 18px!important;
+        background:#e9ebed!important;
+        overflow:auto!important;
+      }
+      #stmt-preview-content .stmt-preview-stage{
+        margin:0 auto!important;
+      }
+      #stmt-preview-content .stmt-paper{
+        width:794px!important;
+        max-width:none!important;
+        min-height:1123px!important;
+        padding:34px 40px 30px!important;
+      }
+      /* لا نسمح لأي CSS خاص بالهاتف أن يغيّر شكل المستند */
+      #stmt-preview-content table{font-size:11.5px!important;table-layout:fixed!important}
+      #stmt-preview-content tbody tr td{padding:7px 10px!important;font-size:11.5px!important}
+      #stmt-preview-content .col-hdr th{padding:10px 10px!important;font-size:13px!important}
+      #stmt-preview-content .hdr-top{display:flex!important;flex-direction:row!important;align-items:flex-start!important}
+      #stmt-preview-content .hdr-bill{display:flex!important;flex-direction:row!important;align-items:flex-end!important}
+      #stmt-preview-content .stmt-summary{display:grid!important;grid-template-columns:repeat(4,1fr)!important}
+      #stmt-preview-footer{
+        min-height:70px!important;
+        padding:10px 10px max(10px,env(safe-area-inset-bottom))!important;
+        gap:8px!important;
+      }
+      #stmt-preview-footer .btn{min-height:48px!important;flex:1!important;margin:0!important}
+    }
+
+    @media print{
+      body.stmt-print-mode #stmt-preview-modal .stmt-modal-box{
+        height:auto!important;max-height:none!important;overflow:visible!important;border-radius:0!important
+      }
+      body.stmt-print-mode #stmt-preview-content .stmt-preview-stage{
+        position:static!important;height:auto!important;min-height:0!important;margin:0!important
+      }
+      body.stmt-print-mode #stmt-preview-content .stmt-paper{
+        position:static!important;left:auto!important;top:auto!important;
+        min-height:0!important;border:0!important;box-shadow:none!important;
+        transform:none!important;transform-origin:initial!important
+      }
+    }
 </style>
 </head>
 <body>
@@ -1459,10 +1594,11 @@ function init(){
     document.body.classList.add("stmt-print-mode");
     requestAnimationFrame(()=>{
       window.print();
-      setTimeout(() => { document.body.classList.remove("stmt-print-mode"); fitStatementPreview(); }, 1200);
+      setTimeout(() => { document.body.classList.remove("stmt-print-mode"); scheduleStatementPreviewFit(); }, 1200);
     });
   });
-  window.addEventListener("resize",()=>{ if(stmtModal.classList.contains("open")) fitStatementPreview(); });
+  window.addEventListener("resize",()=>{ if(stmtModal.classList.contains("open")) scheduleStatementPreviewFit(); });
+  window.addEventListener("orientationchange",()=>{ if(stmtModal.classList.contains("open")) setTimeout(scheduleStatementPreviewFit,120); });
 }
 
 /* ══════════════════════════════════════════════════════
@@ -1658,7 +1794,7 @@ function showMerchantSalePreview(data){
       </div>
       <div class="inv-doc-type-line">
         <span class="inv-doc-type-badge">فاتورة بيع</span>
-        <span class="inv-payment-state ${paymentStatusClass}">حالة الدفع عند تنفيذ البيع: ${paymentStatusText}</span>
+        <span class="inv-payment-state ${paymentStatusClass}">حالة الدفع لهذه الفاتورة: ${paymentStatusText}</span>
       </div>
       <div class="inv-doc-party-grid">
         <div class="inv-doc-party-card">
@@ -2654,24 +2790,38 @@ function fitStatementPreview(){
   const host=document.getElementById("stmt-preview-content");
   const stage=host?.querySelector(".stmt-preview-stage");
   const paper=host?.querySelector(".stmt-paper");
-  if(!host||!stage||!paper) return;
-  paper.style.transform="none";
+  if(!host||!stage||!paper||document.body.classList.contains("stmt-print-mode")) return;
+
+  const BASE_W=794; // A4 portrait عند 96dpi تقريباً
+  const horizontalGap=window.matchMedia("(max-width:600px)").matches?16:30;
+  const available=Math.max(250,host.clientWidth-horizontalGap);
+  const scale=Math.min(1,available/BASE_W);
+
+  /* نقيس الورقة بحجمها الحقيقي ثم نصغّرها بصرياً فقط */
+  paper.style.width=BASE_W+"px";
+  paper.style.position="absolute";
+  paper.style.left="0";
+  paper.style.top="0";
   paper.style.margin="0";
-  stage.style.height="auto";
-  if(window.matchMedia("(max-width:600px)").matches){
-    const available=Math.max(260,host.clientWidth-4);
-    const base=820;
-    const scale=Math.min(1,available/base);
-    paper.style.transform=`scale(${scale})`;
-    paper.style.transformOrigin="top right";
-    stage.style.width=available+"px";
-    stage.style.height=Math.ceil(paper.scrollHeight*scale)+"px";
-    stage.style.justifyContent="flex-start";
-  }else{
-    stage.style.width="100%";
-    stage.style.height="auto";
-    stage.style.justifyContent="center";
-  }
+  paper.style.transformOrigin="top left";
+  paper.style.transform="none";
+
+  const naturalH=Math.max(1123,paper.scrollHeight);
+  paper.style.transform=`scale(${scale})`;
+
+  stage.style.width=Math.ceil(BASE_W*scale)+"px";
+  stage.style.height=Math.ceil(naturalH*scale)+"px";
+  stage.style.minHeight=stage.style.height;
+  stage.style.margin="0 auto";
+}
+
+function scheduleStatementPreviewFit(){
+  requestAnimationFrame(()=>{
+    fitStatementPreview();
+    setTimeout(fitStatementPreview,80);
+    setTimeout(fitStatementPreview,260);
+  });
+  if(document.fonts?.ready){document.fonts.ready.then(()=>fitStatementPreview()).catch(()=>{});}
 }
 
 function printStatement(){
@@ -2816,8 +2966,9 @@ function printStatement(){
   setTimeout(()=>{
     const host=document.getElementById("stmt-preview-content");
     host.scrollTop=0;
-    fitStatementPreview();
-  }, 50);
+    host.scrollLeft=0;
+    scheduleStatementPreviewFit();
+  }, 30);
 }
 
 </script>
