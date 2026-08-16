@@ -275,16 +275,6 @@
     .rpt-page-footer .rpt-foot-page{text-align:center;font-weight:900;border:1px solid #111;padding:2px 9px;white-space:nowrap}
     .rpt-page-footer .rpt-foot-right{text-align:left}
 
-    /* ── وضع تجهيز PDF: أبعاد A4 فعلية بدون أي ترويسة/URL من المتصفح ── */
-    body.pdf-capture-cash-report #cash-rpt-body{max-width:none!important}
-    body.pdf-capture-cash-report .rpt-page{
-      width:297mm!important;height:210mm!important;min-height:210mm!important;
-      margin:0!important;padding:9mm 11mm 8mm!important;box-shadow:none!important;
-      color:#000!important;background:#fff!important;zoom:1!important;
-    }
-    body.pdf-capture-cash-report .rpt-page-inner{height:193mm!important;min-height:193mm!important}
-    body.pdf-capture-cash-report .rpt-page + .rpt-page{margin-top:8px!important}
-
     /* ── معاينة مخصصة للهاتف و Android WebView ── */
     @media(max-width:720px){
       #cash-rpt-overlay{background:#e9ece9;overscroll-behavior:contain}
@@ -319,9 +309,6 @@
       }
       .rpt-page-inner{height:193mm!important;min-height:193mm!important}
       .rpt-page:last-child{margin-bottom:0!important}
-      body.pdf-capture-cash-report #cash-rpt-body{overflow:visible!important;padding:0!important}
-      body.pdf-capture-cash-report #cash-rpt-mobile-note{display:none!important}
-      body.pdf-capture-cash-report .rpt-page{zoom:1!important}
     }
 
     /* ── طباعة overlay التقرير ── */
@@ -335,6 +322,7 @@
       body.printing-cash-report #cash-rpt-bar{display:none!important}
       body.printing-cash-report #cash-rpt-body{max-width:none!important;margin:0!important;padding:0!important;background:#fff!important}
       body.printing-cash-report .rpt-page{
+        page:cashReport;
         width:297mm!important;height:210mm!important;min-height:210mm!important;margin:0!important;
         padding:9mm 11mm 8mm!important;box-shadow:none!important;page-break-after:always;break-after:page;
         color:#000!important;background:#fff!important;
@@ -342,7 +330,7 @@
       body.printing-cash-report .rpt-page:last-child{page-break-after:auto;break-after:auto}
       body.printing-cash-report .rpt-page-inner{height:193mm!important;min-height:193mm!important}
       body.printing-cash-report *{-webkit-print-color-adjust:economy!important;print-color-adjust:economy!important}
-      @page{size:A4 landscape;margin:0}
+      @page cashReport{size:A4 landscape;margin:0}
     }
 
     /* ── فلتر فترة صندوق الكاش ── */
@@ -458,13 +446,14 @@
       body.printing-tx-detail #tx-detail-content{display:block!important}
 
       /* ── تخطيط صفحة الطباعة ── */
-      @page{
+      @page txDetail{
         size:A4 portrait;
         margin:18mm 20mm 22mm 20mm;
       }
 
       /* ── أنماط الوثيقة الرسمية عند الطباعة ── */
       .doc-page{
+        page:txDetail;
         font-family:Cairo,"Segoe UI",sans-serif;
         direction:rtl;width:100%;
         -webkit-print-color-adjust:exact;
@@ -984,9 +973,9 @@
   <div id="cash-rpt-bar">
     <button class="crb-btn" id="cash-rpt-close-btn">✕ إغلاق</button>
     <span id="cash-rpt-bar-title">معاينة تقرير صندوق المالية</span>
-    <button class="crb-btn" id="cash-rpt-print-btn" title="إنشاء PDF نظيف ثم طباعته بدون عنوان URL">🖨️ طباعة</button>
+    <button class="crb-btn" id="cash-rpt-print-btn" title="طباعة التقرير مباشرة على ورق A4">🖨️ طباعة A4</button>
   </div>
-  <div id="cash-rpt-body"><div id="cash-rpt-mobile-note">معاينة مصغّرة للورقة — سيتم إنشاء PDF بالحجم الكامل عند الطباعة</div></div>
+  <div id="cash-rpt-body"><div id="cash-rpt-mobile-note">معاينة مصغّرة لورقة A4 — الطباعة ستكون بالحجم الكامل</div></div>
 </div>
 
 <!-- ═══════ نافذة دفعة التاجر السريعة ═══════ -->
@@ -1292,8 +1281,6 @@ let editTxId      = null;
 let cashPeriodMode = "month"; // "all" | "month" | "day"
 let cashPeriodYM   = "";      // "YYYY-MM"
 let cashPeriodDay  = "";      // "YYYY-MM-DD"
-let cashReportPdfCache=null;
-let cashReportPdfPreparing=null;
 let cashReportSelection = null; // {mode:"range"|"all", from, to, label}
 
 const TYPE_CFG = {
@@ -1659,25 +1646,13 @@ function openCashReportPreview(){
   const {periodLabel,html}=buildReportHTML(selection);
   closeCashReportRangeDialog();
   document.getElementById("cash-rpt-bar-title").textContent=`معاينة تقرير صندوق المالية — ${periodLabel}`;
-  document.getElementById("cash-rpt-body").innerHTML=`<div id="cash-rpt-mobile-note">معاينة مصغّرة للورقة — ملف PDF سيبقى بالحجم الكامل</div>${html}`;
+  document.getElementById("cash-rpt-body").innerHTML=`<div id="cash-rpt-mobile-note">معاينة مصغّرة لورقة A4 — الطباعة ستكون بالحجم الكامل</div>${html}`;
   document.getElementById("cash-rpt-overlay").classList.add("open");
   document.body.style.overflow="hidden";
   fitCashReportMobilePreview();
-  prepareCashReportPdfForWebView();
 }
 
 
-function isAndroidLike(){
-  return /Android/i.test(navigator.userAgent||"");
-}
-function isAndroidWebView(){
-  const ua=navigator.userAgent||"";
-  return /; wv\)/i.test(ua)||(/Android/i.test(ua)&&/Version\/4\.0/i.test(ua))||!!window.Android;
-}
-function cashReportSelectionKey(){
-  const s=cashReportSelection||{};
-  return [s.mode||"",s.from||"",s.to||"",s.label||""].join("|");
-}
 function fitCashReportMobilePreview(){
   const body=document.getElementById("cash-rpt-body");
   if(!body) return;
@@ -1685,195 +1660,61 @@ function fitCashReportMobilePreview(){
     body.style.removeProperty("--cash-rpt-mobile-zoom");
     return;
   }
-  /* A4 landscape = قرابة 1123px على 96dpi. نلائم الورقة بالكامل لعرض الهاتف بدون ضغط الجدول. */
+  /* الورقة دائماً A4 أفقي؛ نُصغّر المعاينة فقط كي تظهر كاملة على الهاتف. */
   const usable=Math.max(260,window.innerWidth-14);
   const zoom=Math.max(.23,Math.min(.62,usable/1123));
   body.style.setProperty("--cash-rpt-mobile-zoom",String(zoom));
 }
-async function prepareCashReportPdfForWebView(){
-  if(!isAndroidLike()) return;
-  const btn=document.getElementById("cash-rpt-print-btn");
-  const key=cashReportSelectionKey();
-  cashReportPdfCache=null;
-  if(btn){btn.disabled=true;btn.textContent="جارِ تجهيز الطباعة…";}
-  try{
-    const p=createCashReportPdf();
-    cashReportPdfPreparing=p;
-    const result=await p;
-    if(cashReportPdfPreparing!==p||key!==cashReportSelectionKey()) return;
-    cashReportPdfCache={key,...result};
-    if(btn){
-      btn.disabled=false;
-      const canShare=typeof navigator.share==="function";
-      btn.textContent=canShare?"طباعة / مشاركة":"حفظ PDF";
-    }
-  }catch(err){
-    console.error("mobile pdf prepare failed",err);
-    if(btn){btn.disabled=false;btn.textContent="إعادة المحاولة";}
-  }finally{
-    if(cashReportPdfPreparing&&key===cashReportSelectionKey()) cashReportPdfPreparing=null;
-  }
-}
-function downloadPdfFallback(blob,fileName){
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url;a.download=fileName;a.rel="noopener";a.style.display="none";
-  document.body.appendChild(a);a.click();a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),120000);
-}
-async function sharePdfFile(blob,fileName){
-  if(typeof navigator.share!=="function") return false;
-  try{
-    const file=new File([blob],fileName,{type:"application/pdf",lastModified:Date.now()});
-    if(typeof navigator.canShare==="function"&&!navigator.canShare({files:[file]})) return false;
-    await navigator.share({title:"تقرير صندوق المالية",text:"تقرير صندوق المالية",files:[file]});
-    return true;
-  }catch(err){
-    if(err?.name==="AbortError") return true;
-    console.warn("PDF share failed",err);
-    return false;
-  }
-}
 
-/* ══════════════════════════════════════
-   PDF نظيف للطباعة — لا يستخدم window.print وبالتالي لا يطبع URL الصفحة
-══════════════════════════════════════ */
-function loadFinancePdfScript(src, readyCheck){
-  if(readyCheck()) return Promise.resolve();
-  return new Promise((resolve,reject)=>{
-    const existing=[...document.scripts].find(s=>s.src===src);
-    if(existing){
-      existing.addEventListener("load",()=>readyCheck()?resolve():reject(new Error("تعذر تهيئة مكتبة PDF")),{once:true});
-      existing.addEventListener("error",()=>reject(new Error("تعذر تحميل مكتبة PDF")),{once:true});
+/*
+  طباعة مباشرة فقط — لا يتم إنشاء أو تنزيل PDF إطلاقاً.
+  اختيار "حفظ كـ PDF"، إن ظهر في نافذة الطباعة، يبقى خياراً بيد المستخدم.
+  في Android WebView يجب أن يدعم تطبيق الـ APK خدمة الطباعة الأصلية كي يستجيب window.print().
+*/
+function printCashReportA4(btn){
+  const oldTitle=document.title;
+  const oldText=btn?.textContent||"🖨️ طباعة A4";
+  if(btn){btn.disabled=true;btn.textContent="جارِ فتح الطباعة…";}
+  document.body.classList.add("printing-cash-report");
+
+  /* نقلل أي عنوان نصي يضيفه المتصفح، بينما يبقى التقرير نفسه بترويسته الداخلية. */
+  try{document.title=" ";}catch(_){ }
+
+  let cleaned=false;
+  const cleanup=()=>{
+    if(cleaned)return;
+    cleaned=true;
+    document.body.classList.remove("printing-cash-report");
+    try{document.title=oldTitle;}catch(_){ }
+    if(btn){btn.disabled=false;btn.textContent=oldText;}
+    window.removeEventListener("afterprint",cleanup);
+  };
+  window.addEventListener("afterprint",cleanup,{once:true});
+
+  try{
+    /* بعض تطبيقات WebView تضيف جسر طباعة أصلي. نستخدمه إن كان موجوداً، وإلا نعتمد window.print(). */
+    if(window.AndroidPrint && typeof window.AndroidPrint.print==="function"){
+      window.AndroidPrint.print();
+      setTimeout(cleanup,1200);
       return;
     }
-    const s=document.createElement("script");
-    s.src=src;s.async=true;s.crossOrigin="anonymous";
-    s.onload=()=>readyCheck()?resolve():reject(new Error("تعذر تهيئة مكتبة PDF"));
-    s.onerror=()=>reject(new Error("تعذر تحميل مكتبة PDF"));
-    document.head.appendChild(s);
-  });
-}
-async function ensureFinancePdfLibraries(){
-  await loadFinancePdfScript(
-    "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",
-    ()=>typeof window.html2canvas==="function"
-  );
-  await loadFinancePdfScript(
-    "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
-    ()=>!!window.jspdf?.jsPDF
-  );
-}
-function openPdfPreparingWindow(){
-  let w=null;
-  try{ w=window.open("","_blank"); }catch(_){ }
-  if(!w) return null;
-  try{
-    w.document.open();
-    w.document.write(`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>تقرير صندوق المالية</title><style>
-      html,body{height:100%;margin:0}body{display:grid;place-items:center;font-family:Arial,sans-serif;background:#f5f5f5;color:#111}
-      .box{background:#fff;border:1px solid #bbb;padding:28px 34px;text-align:center;min-width:260px}.spin{width:28px;height:28px;border:3px solid #ddd;border-top-color:#111;border-radius:50%;margin:0 auto 14px;animation:s .8s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
-      b{display:block;margin-bottom:6px}small{color:#666}
-    </style></head><body><div class="box"><div class="spin"></div><b>جارِ تجهيز ملف PDF…</b><small>سيتم فتح التقرير فور اكتماله</small></div></body></html>`);
-    w.document.close();
-  }catch(_){ }
-  return w;
-}
-async function createCashReportPdf(){
-  const pages=[...document.querySelectorAll("#cash-rpt-body .rpt-page")];
-  if(!pages.length) throw new Error("لا توجد صفحات تقرير للمعالجة");
-
-  await ensureFinancePdfLibraries();
-  if(document.fonts?.ready){ try{ await document.fonts.ready; }catch(_){ } }
-
-  document.body.classList.add("pdf-capture-cash-report");
-  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-
-  try{
-    const {jsPDF}=window.jspdf;
-    const pdf=new jsPDF({orientation:"landscape",unit:"mm",format:"a4",compress:true,putOnlyUsedFonts:true});
-    const pageW=297,pageH=210;
-
-    for(let i=0;i<pages.length;i++){
-      const page=pages[i];
-      const scale=Math.min(2,Math.max(1.45,window.devicePixelRatio||1));
-      const canvas=await window.html2canvas(page,{
-        scale,
-        backgroundColor:"#ffffff",
-        useCORS:true,
-        allowTaint:false,
-        logging:false,
-        imageTimeout:12000,
-        scrollX:0,
-        scrollY:0,
-        windowWidth:Math.max(1200,page.scrollWidth),
-        windowHeight:Math.max(900,page.scrollHeight)
-      });
-      if(i>0) pdf.addPage("a4","landscape");
-      const img=canvas.toDataURL("image/jpeg",0.94);
-      pdf.addImage(img,"JPEG",0,0,pageW,pageH,undefined,"FAST");
-      canvas.width=1;canvas.height=1;
-    }
-
-    const meta=buildReportHTML(cashReportSelection||{mode:"all",from:"",to:"",label:"جميع الفترات"});
-    pdf.setProperties({
-      title:`تقرير صندوق المالية - ${meta.periodLabel}`,
-      subject:"تقرير صندوق المالية",
-      author:"Ahmed And hamdy",
-      creator:"Ahmed And hamdy - Finance System"
-    });
-    return {blob:pdf.output("blob"),fileName:`Finance-Report-${meta.reportNo}.pdf`};
-  }finally{
-    document.body.classList.remove("pdf-capture-cash-report");
-  }
-}
-async function printCashReportAsPdf(btn){
-  const oldText=btn.textContent;
-  const mobile=isAndroidLike();
-  let prepWindow=null;
-  if(!mobile) prepWindow=openPdfPreparingWindow();
-  btn.disabled=true;btn.textContent="جارِ تجهيز PDF…";
-  try{
-    const key=cashReportSelectionKey();
-    let result=(cashReportPdfCache&&cashReportPdfCache.key===key)?cashReportPdfCache:null;
-    if(!result){
-      if(cashReportPdfPreparing){
-        try{ result=await cashReportPdfPreparing; }catch(_){ result=null; }
-      }
-      if(!result) result=await createCashReportPdf();
-      cashReportPdfCache={key,...result};
-    }
-    const {blob,fileName}=result;
-
-    /* Android / WebView: لا نعتمد على window.open لأنه غالباً محجوب داخل APK.
-       نستخدم مشاركة ملف PDF الأصلية في أندرويد؛ ومنها يمكن اختيار الطباعة أو حفظ الملف. */
-    if(mobile){
-      const shared=await sharePdfFile(blob,fileName);
-      if(!shared){
-        downloadPdfFallback(blob,fileName);
-        toast(isAndroidWebView()?"تم تجهيز ملف PDF. إذا لم يبدأ الحفظ، فعّل تنزيل الملفات داخل إعدادات الـ WebView.":"تم تجهيز ملف PDF وحفظه.");
-      }
+    if(window.Android && typeof window.Android.printPage==="function"){
+      window.Android.printPage();
+      setTimeout(cleanup,1200);
       return;
     }
-
-    const url=URL.createObjectURL(blob);
-    if(prepWindow&&!prepWindow.closed){
-      try{ prepWindow.document.title=fileName; }catch(_){ }
-      prepWindow.location.replace(url);
-    }else{
-      downloadPdfFallback(blob,fileName);
-      toast("تم إنشاء ملف PDF جاهز للطباعة بدون عنوان URL.");
+    if(typeof window.print==="function"){
+      window.print();
+      /* بعض WebView لا يطلق afterprint */
+      setTimeout(cleanup,3000);
+      return;
     }
-    setTimeout(()=>URL.revokeObjectURL(url),10*60*1000);
+    cleanup();
+    toast("الطباعة غير مدعومة داخل عارض التطبيق الحالي.",true);
   }catch(err){
-    console.error("cash report PDF failed",err);
-    try{ if(prepWindow&&!prepWindow.closed) prepWindow.close(); }catch(_){ }
-    toast("تعذر تجهيز ملف PDF. أعد المحاولة بعد اكتمال تحميل الصفحة.",true);
-  }finally{
-    btn.disabled=false;
-    if(isAndroidLike()){
-      btn.textContent=(typeof navigator.share==="function")?"طباعة / مشاركة":"حفظ PDF";
-    }else btn.textContent=oldText;
+    console.error("A4 print failed",err);
+    cleanup();
+    toast("تعذر فتح نافذة الطباعة داخل التطبيق.",true);
   }
 }
 
@@ -1897,7 +1738,7 @@ function setupCashReportModal(){
     document.body.style.overflow="";
   });
   document.getElementById("cash-rpt-print-btn").addEventListener("click",e=>{
-    printCashReportAsPdf(e.currentTarget);
+    printCashReportA4(e.currentTarget);
   });
   window.addEventListener("resize",fitCashReportMobilePreview,{passive:true});
   window.addEventListener("orientationchange",()=>setTimeout(fitCashReportMobilePreview,120),{passive:true});
