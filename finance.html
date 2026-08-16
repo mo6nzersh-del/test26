@@ -214,6 +214,7 @@
     #cash-rpt-body{
       max-width:900px;margin:20px auto;padding:0 16px 40px;
     }
+    #cash-rpt-mobile-note{display:none}
 
     /* ── محتوى التقرير — وثيقة شركات أحادية اللون ── */
     #cash-rpt-body{color:#111}
@@ -273,6 +274,55 @@
     .rpt-page-footer .rpt-foot-left{text-align:right;font-weight:700}
     .rpt-page-footer .rpt-foot-page{text-align:center;font-weight:900;border:1px solid #111;padding:2px 9px;white-space:nowrap}
     .rpt-page-footer .rpt-foot-right{text-align:left}
+
+    /* ── وضع تجهيز PDF: أبعاد A4 فعلية بدون أي ترويسة/URL من المتصفح ── */
+    body.pdf-capture-cash-report #cash-rpt-body{max-width:none!important}
+    body.pdf-capture-cash-report .rpt-page{
+      width:297mm!important;height:210mm!important;min-height:210mm!important;
+      margin:0!important;padding:9mm 11mm 8mm!important;box-shadow:none!important;
+      color:#000!important;background:#fff!important;zoom:1!important;
+    }
+    body.pdf-capture-cash-report .rpt-page-inner{height:193mm!important;min-height:193mm!important}
+    body.pdf-capture-cash-report .rpt-page + .rpt-page{margin-top:8px!important}
+
+    /* ── معاينة مخصصة للهاتف و Android WebView ── */
+    @media(max-width:720px){
+      #cash-rpt-overlay{background:#e9ece9;overscroll-behavior:contain}
+      #cash-rpt-bar{
+        display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;
+        gap:7px;padding:8px 9px;min-height:54px;box-shadow:0 2px 8px rgba(0,0,0,.18)
+      }
+      #cash-rpt-bar-title{
+        min-width:0;font-size:11.5px;line-height:1.35;font-weight:800;text-align:center;
+        white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+      }
+      .crb-btn{min-height:38px;padding:7px 10px;border-radius:9px;font-size:11.5px;white-space:nowrap}
+      #cash-rpt-close-btn{order:1}
+      #cash-rpt-bar-title{order:2}
+      #cash-rpt-print-btn{order:3}
+      #cash-rpt-body{
+        --cash-rpt-mobile-zoom:.36;
+        max-width:none!important;width:100%;margin:0!important;padding:10px 7px 74px!important;
+        overflow-x:hidden!important;box-sizing:border-box
+      }
+      #cash-rpt-mobile-note{
+        display:flex;align-items:center;justify-content:center;gap:6px;
+        margin:1px 0 9px;padding:7px 9px;border:1px solid #c9ceca;background:#fff;
+        color:#454b47;font-size:10.5px;font-weight:700;border-radius:8px
+      }
+      .rpt-page{
+        width:297mm!important;min-width:297mm!important;height:210mm!important;min-height:210mm!important;
+        max-width:none!important;margin:0 auto 14px!important;padding:9mm 11mm 8mm!important;
+        box-shadow:0 3px 14px rgba(0,0,0,.14)!important;
+        zoom:var(--cash-rpt-mobile-zoom)!important;
+        transform:none!important;box-sizing:border-box
+      }
+      .rpt-page-inner{height:193mm!important;min-height:193mm!important}
+      .rpt-page:last-child{margin-bottom:0!important}
+      body.pdf-capture-cash-report #cash-rpt-body{overflow:visible!important;padding:0!important}
+      body.pdf-capture-cash-report #cash-rpt-mobile-note{display:none!important}
+      body.pdf-capture-cash-report .rpt-page{zoom:1!important}
+    }
 
     /* ── طباعة overlay التقرير ── */
     @media print{
@@ -934,9 +984,9 @@
   <div id="cash-rpt-bar">
     <button class="crb-btn" id="cash-rpt-close-btn">✕ إغلاق</button>
     <span id="cash-rpt-bar-title">معاينة تقرير صندوق المالية</span>
-    <button class="crb-btn" id="cash-rpt-print-btn">🖨️ طباعة</button>
+    <button class="crb-btn" id="cash-rpt-print-btn" title="إنشاء PDF نظيف ثم طباعته بدون عنوان URL">🖨️ طباعة</button>
   </div>
-  <div id="cash-rpt-body"></div>
+  <div id="cash-rpt-body"><div id="cash-rpt-mobile-note">معاينة مصغّرة للورقة — سيتم إنشاء PDF بالحجم الكامل عند الطباعة</div></div>
 </div>
 
 <!-- ═══════ نافذة دفعة التاجر السريعة ═══════ -->
@@ -1242,6 +1292,8 @@ let editTxId      = null;
 let cashPeriodMode = "month"; // "all" | "month" | "day"
 let cashPeriodYM   = "";      // "YYYY-MM"
 let cashPeriodDay  = "";      // "YYYY-MM-DD"
+let cashReportPdfCache=null;
+let cashReportPdfPreparing=null;
 let cashReportSelection = null; // {mode:"range"|"all", from, to, label}
 
 const TYPE_CFG = {
@@ -1607,9 +1659,222 @@ function openCashReportPreview(){
   const {periodLabel,html}=buildReportHTML(selection);
   closeCashReportRangeDialog();
   document.getElementById("cash-rpt-bar-title").textContent=`معاينة تقرير صندوق المالية — ${periodLabel}`;
-  document.getElementById("cash-rpt-body").innerHTML=html;
+  document.getElementById("cash-rpt-body").innerHTML=`<div id="cash-rpt-mobile-note">معاينة مصغّرة للورقة — ملف PDF سيبقى بالحجم الكامل</div>${html}`;
   document.getElementById("cash-rpt-overlay").classList.add("open");
   document.body.style.overflow="hidden";
+  fitCashReportMobilePreview();
+  prepareCashReportPdfForWebView();
+}
+
+
+function isAndroidLike(){
+  return /Android/i.test(navigator.userAgent||"");
+}
+function isAndroidWebView(){
+  const ua=navigator.userAgent||"";
+  return /; wv\)/i.test(ua)||(/Android/i.test(ua)&&/Version\/4\.0/i.test(ua))||!!window.Android;
+}
+function cashReportSelectionKey(){
+  const s=cashReportSelection||{};
+  return [s.mode||"",s.from||"",s.to||"",s.label||""].join("|");
+}
+function fitCashReportMobilePreview(){
+  const body=document.getElementById("cash-rpt-body");
+  if(!body) return;
+  if(window.innerWidth>720){
+    body.style.removeProperty("--cash-rpt-mobile-zoom");
+    return;
+  }
+  /* A4 landscape = قرابة 1123px على 96dpi. نلائم الورقة بالكامل لعرض الهاتف بدون ضغط الجدول. */
+  const usable=Math.max(260,window.innerWidth-14);
+  const zoom=Math.max(.23,Math.min(.62,usable/1123));
+  body.style.setProperty("--cash-rpt-mobile-zoom",String(zoom));
+}
+async function prepareCashReportPdfForWebView(){
+  if(!isAndroidLike()) return;
+  const btn=document.getElementById("cash-rpt-print-btn");
+  const key=cashReportSelectionKey();
+  cashReportPdfCache=null;
+  if(btn){btn.disabled=true;btn.textContent="جارِ تجهيز الطباعة…";}
+  try{
+    const p=createCashReportPdf();
+    cashReportPdfPreparing=p;
+    const result=await p;
+    if(cashReportPdfPreparing!==p||key!==cashReportSelectionKey()) return;
+    cashReportPdfCache={key,...result};
+    if(btn){
+      btn.disabled=false;
+      const canShare=typeof navigator.share==="function";
+      btn.textContent=canShare?"طباعة / مشاركة":"حفظ PDF";
+    }
+  }catch(err){
+    console.error("mobile pdf prepare failed",err);
+    if(btn){btn.disabled=false;btn.textContent="إعادة المحاولة";}
+  }finally{
+    if(cashReportPdfPreparing&&key===cashReportSelectionKey()) cashReportPdfPreparing=null;
+  }
+}
+function downloadPdfFallback(blob,fileName){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download=fileName;a.rel="noopener";a.style.display="none";
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),120000);
+}
+async function sharePdfFile(blob,fileName){
+  if(typeof navigator.share!=="function") return false;
+  try{
+    const file=new File([blob],fileName,{type:"application/pdf",lastModified:Date.now()});
+    if(typeof navigator.canShare==="function"&&!navigator.canShare({files:[file]})) return false;
+    await navigator.share({title:"تقرير صندوق المالية",text:"تقرير صندوق المالية",files:[file]});
+    return true;
+  }catch(err){
+    if(err?.name==="AbortError") return true;
+    console.warn("PDF share failed",err);
+    return false;
+  }
+}
+
+/* ══════════════════════════════════════
+   PDF نظيف للطباعة — لا يستخدم window.print وبالتالي لا يطبع URL الصفحة
+══════════════════════════════════════ */
+function loadFinancePdfScript(src, readyCheck){
+  if(readyCheck()) return Promise.resolve();
+  return new Promise((resolve,reject)=>{
+    const existing=[...document.scripts].find(s=>s.src===src);
+    if(existing){
+      existing.addEventListener("load",()=>readyCheck()?resolve():reject(new Error("تعذر تهيئة مكتبة PDF")),{once:true});
+      existing.addEventListener("error",()=>reject(new Error("تعذر تحميل مكتبة PDF")),{once:true});
+      return;
+    }
+    const s=document.createElement("script");
+    s.src=src;s.async=true;s.crossOrigin="anonymous";
+    s.onload=()=>readyCheck()?resolve():reject(new Error("تعذر تهيئة مكتبة PDF"));
+    s.onerror=()=>reject(new Error("تعذر تحميل مكتبة PDF"));
+    document.head.appendChild(s);
+  });
+}
+async function ensureFinancePdfLibraries(){
+  await loadFinancePdfScript(
+    "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",
+    ()=>typeof window.html2canvas==="function"
+  );
+  await loadFinancePdfScript(
+    "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+    ()=>!!window.jspdf?.jsPDF
+  );
+}
+function openPdfPreparingWindow(){
+  let w=null;
+  try{ w=window.open("","_blank"); }catch(_){ }
+  if(!w) return null;
+  try{
+    w.document.open();
+    w.document.write(`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>تقرير صندوق المالية</title><style>
+      html,body{height:100%;margin:0}body{display:grid;place-items:center;font-family:Arial,sans-serif;background:#f5f5f5;color:#111}
+      .box{background:#fff;border:1px solid #bbb;padding:28px 34px;text-align:center;min-width:260px}.spin{width:28px;height:28px;border:3px solid #ddd;border-top-color:#111;border-radius:50%;margin:0 auto 14px;animation:s .8s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
+      b{display:block;margin-bottom:6px}small{color:#666}
+    </style></head><body><div class="box"><div class="spin"></div><b>جارِ تجهيز ملف PDF…</b><small>سيتم فتح التقرير فور اكتماله</small></div></body></html>`);
+    w.document.close();
+  }catch(_){ }
+  return w;
+}
+async function createCashReportPdf(){
+  const pages=[...document.querySelectorAll("#cash-rpt-body .rpt-page")];
+  if(!pages.length) throw new Error("لا توجد صفحات تقرير للمعالجة");
+
+  await ensureFinancePdfLibraries();
+  if(document.fonts?.ready){ try{ await document.fonts.ready; }catch(_){ } }
+
+  document.body.classList.add("pdf-capture-cash-report");
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+
+  try{
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:"landscape",unit:"mm",format:"a4",compress:true,putOnlyUsedFonts:true});
+    const pageW=297,pageH=210;
+
+    for(let i=0;i<pages.length;i++){
+      const page=pages[i];
+      const scale=Math.min(2,Math.max(1.45,window.devicePixelRatio||1));
+      const canvas=await window.html2canvas(page,{
+        scale,
+        backgroundColor:"#ffffff",
+        useCORS:true,
+        allowTaint:false,
+        logging:false,
+        imageTimeout:12000,
+        scrollX:0,
+        scrollY:0,
+        windowWidth:Math.max(1200,page.scrollWidth),
+        windowHeight:Math.max(900,page.scrollHeight)
+      });
+      if(i>0) pdf.addPage("a4","landscape");
+      const img=canvas.toDataURL("image/jpeg",0.94);
+      pdf.addImage(img,"JPEG",0,0,pageW,pageH,undefined,"FAST");
+      canvas.width=1;canvas.height=1;
+    }
+
+    const meta=buildReportHTML(cashReportSelection||{mode:"all",from:"",to:"",label:"جميع الفترات"});
+    pdf.setProperties({
+      title:`تقرير صندوق المالية - ${meta.periodLabel}`,
+      subject:"تقرير صندوق المالية",
+      author:"Ahmed And hamdy",
+      creator:"Ahmed And hamdy - Finance System"
+    });
+    return {blob:pdf.output("blob"),fileName:`Finance-Report-${meta.reportNo}.pdf`};
+  }finally{
+    document.body.classList.remove("pdf-capture-cash-report");
+  }
+}
+async function printCashReportAsPdf(btn){
+  const oldText=btn.textContent;
+  const mobile=isAndroidLike();
+  let prepWindow=null;
+  if(!mobile) prepWindow=openPdfPreparingWindow();
+  btn.disabled=true;btn.textContent="جارِ تجهيز PDF…";
+  try{
+    const key=cashReportSelectionKey();
+    let result=(cashReportPdfCache&&cashReportPdfCache.key===key)?cashReportPdfCache:null;
+    if(!result){
+      if(cashReportPdfPreparing){
+        try{ result=await cashReportPdfPreparing; }catch(_){ result=null; }
+      }
+      if(!result) result=await createCashReportPdf();
+      cashReportPdfCache={key,...result};
+    }
+    const {blob,fileName}=result;
+
+    /* Android / WebView: لا نعتمد على window.open لأنه غالباً محجوب داخل APK.
+       نستخدم مشاركة ملف PDF الأصلية في أندرويد؛ ومنها يمكن اختيار الطباعة أو حفظ الملف. */
+    if(mobile){
+      const shared=await sharePdfFile(blob,fileName);
+      if(!shared){
+        downloadPdfFallback(blob,fileName);
+        toast(isAndroidWebView()?"تم تجهيز ملف PDF. إذا لم يبدأ الحفظ، فعّل تنزيل الملفات داخل إعدادات الـ WebView.":"تم تجهيز ملف PDF وحفظه.");
+      }
+      return;
+    }
+
+    const url=URL.createObjectURL(blob);
+    if(prepWindow&&!prepWindow.closed){
+      try{ prepWindow.document.title=fileName; }catch(_){ }
+      prepWindow.location.replace(url);
+    }else{
+      downloadPdfFallback(blob,fileName);
+      toast("تم إنشاء ملف PDF جاهز للطباعة بدون عنوان URL.");
+    }
+    setTimeout(()=>URL.revokeObjectURL(url),10*60*1000);
+  }catch(err){
+    console.error("cash report PDF failed",err);
+    try{ if(prepWindow&&!prepWindow.closed) prepWindow.close(); }catch(_){ }
+    toast("تعذر تجهيز ملف PDF. أعد المحاولة بعد اكتمال تحميل الصفحة.",true);
+  }finally{
+    btn.disabled=false;
+    if(isAndroidLike()){
+      btn.textContent=(typeof navigator.share==="function")?"طباعة / مشاركة":"حفظ PDF";
+    }else btn.textContent=oldText;
+  }
 }
 
 function setupCashReportModal(){
@@ -1631,18 +1896,11 @@ function setupCashReportModal(){
     document.getElementById("cash-rpt-overlay").classList.remove("open");
     document.body.style.overflow="";
   });
-  document.getElementById("cash-rpt-print-btn").addEventListener("click",()=>{
-    const oldTitle=document.title;
-    document.title="";
-    document.body.classList.add("printing-cash-report");
-    const cleanup=()=>{
-      document.body.classList.remove("printing-cash-report");
-      document.title=oldTitle;
-    };
-    window.addEventListener("afterprint",cleanup,{once:true});
-    window.print();
-    setTimeout(cleanup,3000);
+  document.getElementById("cash-rpt-print-btn").addEventListener("click",e=>{
+    printCashReportAsPdf(e.currentTarget);
   });
+  window.addEventListener("resize",fitCashReportMobilePreview,{passive:true});
+  window.addEventListener("orientationchange",()=>setTimeout(fitCashReportMobilePreview,120),{passive:true});
   document.addEventListener("keydown",e=>{
     if(e.key!=="Escape") return;
     if(rangeOverlay.classList.contains("open")) closeCashReportRangeDialog();
