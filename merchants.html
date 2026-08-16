@@ -483,7 +483,7 @@
      .merchant-invoice-box .inv-doc-brand-sub{font-size:11px;color:#777;margin-top:1px}
      .merchant-invoice-box .inv-doc-nums{text-align:left;min-width:170px}
      .merchant-invoice-box .inv-doc-num-row{
-       display:flex;justify-content:space-between;gap:16px;font-size:12.5px;margin-b�ttom:5px
+       display:flex;justify-content:space-between;gap:16px;font-size:12.5px;margin-bottom:5px
      }
      .merchant-invoice-box .inv-doc-num-row span{color:#777}
      .merchant-invoice-box .inv-doc-num-row strong{color:#111;font-weight:700}
@@ -565,7 +565,121 @@
        *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
      }
   
-      /* ══ شاشة التحميل ══ */
+ 
+
+     /* ═══════════════════════════════════════════════════════════════
+        تحسين وثائق التاجر — بيع + حركة مالية
+        أبيض وأسود / A4 / ترتيب رسمي وبسيط
+     ═══════════════════════════════════════════════════════════════ */
+     .merchant-invoice-box .inv-doc{
+       max-width:760px;border:1px solid #d7d7d7;padding:26px 28px;border-radius:8px;
+       box-shadow:0 3px 14px rgba(0,0,0,.035)
+     }
+     .merchant-invoice-box .inv-doc-head{padding-bottom:16px;margin-bottom:16px;border-bottom:2px solid #111}
+     .merchant-invoice-box .inv-doc-brand{font-size:19px;letter-spacing:.1px;margin-top:0}
+     .merchant-invoice-box .inv-doc-brand-sub{font-size:10.5px;color:#666}
+     .merchant-invoice-box .inv-doc-nums{min-width:220px;border:1px solid #d9d9d9;border-radius:6px;padding:8px 10px}
+     .merchant-invoice-box .inv-doc-num-row{font-size:11.5px;margin-bottom:5px;padding-bottom:5px;border-bottom:1px dotted #ddd}
+     .merchant-invoice-box .inv-doc-num-row:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
+     .merchant-invoice-box .inv-doc-type-line{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+     .merchant-invoice-box .inv-doc-type-badge{background:#fff;color:#111;border:1px solid #111;border-radius:3px;margin:0;padding:4px 11px}
+     .merchant-invoice-box .inv-doc-copy-note{font-size:10px;color:#777}
+     .merchant-invoice-box .inv-doc-party-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-bottom:16px}
+     .merchant-invoice-box .inv-doc-party-card{border:1px solid #d8d8d8;padding:10px 12px;border-radius:5px;min-height:64px}
+     .merchant-invoice-box .inv-doc-party-label{font-size:9.5px;color:#777;font-weight:800;margin-bottom:4px}
+     .merchant-invoice-box .inv-doc-party-value{font-size:13.5px;color:#111;font-weight:800;line-height:1.6}
+     .merchant-invoice-box .inv-doc-party-sub{font-size:10.5px;color:#666;margin-top:2px}
+     .merchant-invoice-box .inv-doc-table{font-size:11.5px;table-layout:fixed}
+     .merchant-invoice-box .inv-doc-table th{background:#f5f5f5;color:#111;border-color:#bbb;padding:8px 9px;font-size:10.5px}
+     .merchant-invoice-box .inv-doc-table td{padding:8px 9px;border-color:#d0d0d0}
+     .merchant-invoice-box .inv-doc-table tr:nth-child(even) td{background:#fff}
+     .merchant-invoice-box .inv-doc-total-wrap{border-color:#bbb;background:#fff}
+     .merchant-invoice-box .inv-doc-total-table{min-width:285px}
+     .merchant-invoice-box .inv-doc-total-table tr:last-child td{background:#fff;border-top:2px solid #111}
+     .merchant-invoice-box .inv-doc-balance{margin-top:14px;border:1px solid #cfcfcf;padding:0;border-radius:5px;overflow:hidden;line-height:normal}
+     .merchant-invoice-box .inv-bal-title{font-size:11px;font-weight:900;padding:8px 10px;border-bottom:1px solid #ccc;background:#f7f7f7}
+     .merchant-invoice-box .inv-bal-grid{display:grid;grid-template-columns:1fr 1fr}
+     .merchant-invoice-box .inv-bal-cell{padding:10px 12px}
+     .merchant-invoice-box .inv-bal-cell+ .inv-bal-cell{border-right:1px solid #ddd}
+     .merchant-invoice-box .inv-bal-lbl{font-size:9.5px;color:#777;margin-bottom:4px}
+     .merchant-invoice-box .inv-bal-val{font-size:13px;font-weight:900;color:#111}
+     .merchant-invoice-box .inv-doc-note{background:#fff;border:1px dashed #bbb;border-right:3px solid #222;color:#333;border-radius:0;padding:9px 12px}
+     .merchant-invoice-box .inv-doc-footer{color:#777;border-color:#aaa;margin-top:22px}
+
+     /* ── المستند المالي الجديد ── */
+     .financial-document{direction:rtl;font-family:Cairo,sans-serif;color:#111;background:#fff;box-sizing:border-box}
+     .fin-doc-screen{border:1px solid #d4d4d4;border-radius:8px;padding:22px 24px;box-shadow:0 3px 14px rgba(0,0,0,.035)}
+     .fin-doc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding-bottom:14px;border-bottom:2px solid #111}
+     .fin-company{min-width:0}
+     .fin-company-name{font-size:19px;font-weight:900;line-height:1.35}
+     .fin-company-sub{font-size:10.5px;color:#666;margin-top:3px}
+     .fin-doc-title{text-align:left;min-width:190px}
+     .fin-doc-kind{font-size:16px;font-weight:900;margin-bottom:5px}
+     .fin-doc-id{display:inline-block;border:1px solid #111;border-radius:3px;padding:3px 9px;font:800 11.5px monospace,Cairo,sans-serif;direction:ltr}
+     .fin-doc-status{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #bbb;font-size:10.5px}
+     .fin-doc-status strong{font-size:12px}
+     .fin-doc-section{margin-top:16px}
+     .fin-doc-section-title{font-size:10px;font-weight:900;letter-spacing:.1px;color:#555;margin-bottom:6px}
+     .fin-info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid #bbb;border-radius:4px;overflow:hidden}
+     .fin-info-item{padding:9px 11px;min-height:54px;border-bottom:1px solid #ddd}
+     .fin-info-item:nth-child(odd){border-left:1px solid #ddd}
+     .fin-info-item:nth-last-child(-n+2){border-bottom:0}
+     .fin-info-label{font-size:9px;color:#777;font-weight:700;margin-bottom:3px}
+     .fin-info-value{font-size:12.5px;font-weight:800;line-height:1.55;word-break:break-word}
+     .fin-amount-box{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;border:2px solid #111;padding:13px 15px;margin-top:16px}
+     .fin-amount-label{font-size:10px;font-weight:800;color:#555}
+     .fin-amount-words{font-size:10.5px;color:#555;margin-top:3px}
+     .fin-amount-value{font-size:25px;font-weight:900;white-space:nowrap;direction:rtl}
+     .fin-balance-box{margin-top:14px;border:1px solid #bbb;border-radius:4px;overflow:hidden}
+     .fin-balance-title{padding:7px 10px;background:#f5f5f5;border-bottom:1px solid #bbb;font-size:10.5px;font-weight:900}
+     .fin-balance-grid{display:grid;grid-template-columns:1fr 32px 1fr;align-items:stretch}
+     .fin-balance-cell{padding:10px 12px;text-align:center}
+     .fin-balance-arrow{display:grid;place-items:center;border-left:1px solid #ddd;border-right:1px solid #ddd;font-size:16px;font-weight:900}
+     .fin-balance-lbl{font-size:9px;color:#777;margin-bottom:4px}
+     .fin-balance-val{font-size:13px;font-weight:900}
+     .fin-desc-box{border:1px solid #bbb;padding:10px 12px;min-height:58px;font-size:11.5px;line-height:1.8}
+     .fin-meta-strip{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #ccc;border-top:0;font-size:9px;color:#666}
+     .fin-meta-strip>div{padding:6px 8px;text-align:center}
+     .fin-meta-strip>div+div{border-right:1px solid #ddd}
+     .fin-signatures{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:34px;text-align:center}
+     .fin-signature-label{font-size:9.5px;font-weight:800;margin-bottom:28px}
+     .fin-signature-line{border-top:1px solid #333;padding-top:4px;font-size:8.5px;color:#777}
+     .fin-doc-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:20px;padding-top:8px;border-top:1px solid #aaa;font-size:8.5px;color:#777}
+     .fin-doc-footer .fin-footer-id{font-family:monospace;direction:ltr;font-weight:800;color:#444}
+
+     @media(max-width:600px){
+       .merchant-invoice-box .inv-doc{padding:15px 12px;border:0;box-shadow:none}
+       .merchant-invoice-box .inv-doc-head{display:block}
+       .merchant-invoice-box .inv-doc-nums{margin-top:10px;min-width:0}
+       .merchant-invoice-box .inv-doc-party-grid{grid-template-columns:1fr}
+       .merchant-invoice-box .inv-doc-table{font-size:9.5px}
+       .merchant-invoice-box .inv-doc-table th,.merchant-invoice-box .inv-doc-table td{padding:6px 4px}
+       .merchant-invoice-box .inv-doc-total-table{min-width:220px}
+       .fin-doc-screen{padding:15px 12px;border:0;box-shadow:none}
+       .fin-doc-head{display:block}.fin-doc-title{text-align:right;min-width:0;margin-top:10px}
+       .fin-info-grid{grid-template-columns:1fr}.fin-info-item:nth-child(odd){border-left:0}.fin-info-item{border-bottom:1px solid #ddd!important}.fin-info-item:last-child{border-bottom:0!important}
+       .fin-amount-box{grid-template-columns:1fr}.fin-amount-value{font-size:22px}
+       .fin-signatures{gap:10px}.fin-signature-label{margin-bottom:22px}
+     }
+
+     @media print{
+       body.tx-print-mode #tx-detail-modal{position:absolute!important;inset:0!important;width:210mm!important;min-height:297mm!important;margin:0!important;padding:0!important;background:#fff!important}
+       body.tx-print-mode #tx-detail-modal .modal-box{width:210mm!important;min-height:297mm!important;max-width:none!important;margin:0!important;padding:0!important;background:#fff!important}
+       body.tx-print-mode #tx-detail-balance-box{display:none!important}
+       body.tx-print-mode .fin-doc-print{display:block!important;width:210mm!important;min-height:297mm!important;padding:14mm 15mm 12mm!important;box-sizing:border-box!important;background:#fff!important;color:#111!important}
+       body.tx-print-mode .financial-document *{color:#111!important;background-color:#fff!important;box-shadow:none!important;text-shadow:none!important}
+       body.tx-print-mode .fin-balance-title{background:#f5f5f5!important}
+       body.tx-print-mode .fin-doc-footer{margin-top:auto}
+       body.tx-print-mode .fin-doc-print{display:flex!important;flex-direction:column!important}
+       body.merchant-invoice-print-mode #merchant-invoice-modal{padding:12mm 13mm!important;background:#fff!important}
+       body.merchant-invoice-print-mode .merchant-invoice-box .inv-doc{max-width:none!important;width:184mm!important;padding:0!important;border:0!important;box-shadow:none!important;border-radius:0!important}
+       body.merchant-invoice-print-mode .merchant-invoice-box .inv-doc *{color:#111!important;box-shadow:none!important;text-shadow:none!important}
+       body.merchant-invoice-print-mode .merchant-invoice-box .inv-doc-type-badge{background:#fff!important;border-color:#111!important}
+       body.merchant-invoice-print-mode .merchant-invoice-box .inv-doc-table th,
+       body.merchant-invoice-print-mode .merchant-invoice-box .inv-bal-title{background:#f5f5f5!important}
+     }
+
+     /* ══ شاشة التحميل ══ */
       #page-loader {
         position: fixed; inset: 0; z-index: 9999;
         background: linear-gradient(145deg, #1a6b3a, #2d9f5f);
@@ -851,7 +965,7 @@
       <button type="button" class="btn" id="tx-detail-print-btn">🖨️ طباعة</button>
       <button type="button" class="btn outline" id="tx-detail-close2">إغلاق</button>
     </div>
-    <div id="tx-detail-balance-box" style="display:none;margin-top:14px"></div>
+    <div id="tx-detail-balance-box" class="mer-screen-only" style="display:none;margin-top:14px"></div>
   </div>
 </div>
 
@@ -908,21 +1022,8 @@ const app = initializeApp({
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
-onAuthStateChanged(auth, async user => {
-  if (!user) { window.location.href = "/index.html"; return; }
-  try {
-    const blockedSnap = await getDocs(query(
-      collection(db, "blockedUsers"),
-      where("email", "==", String(user.email || "").trim().toLowerCase())
-    ));
-    if (!blockedSnap.empty) {
-      await signOut(auth);
-      window.location.replace("/index.html");
-      return;
-    }
-  } catch (err) {
-    console.error("blocked user check failed", err);
-  }
+onAuthStateChanged(auth, user => {
+  if (!user) { window.location.href = "/"; return; }
   renderNav(user);
   init();
 });
@@ -1170,7 +1271,6 @@ async function openMerchantSalePreview(raw,seqLabel){
 }
 
 function showMerchantSalePreview(data){
-  const modal=document.getElementById("merchant-invoice-modal");
   const content=document.getElementById("merchant-invoice-content");
   const now=data.createdAt?fmtOperationDate(data.createdAt):"—";
   const shortId=data.seqLabel||(data.opId?data.opId.slice(0,8).toUpperCase():"—");
@@ -1179,14 +1279,16 @@ function showMerchantSalePreview(data){
       <td>${esc(line.productName)}</td>
       <td style="text-align:center">${fmtNum(line.qty)} ${esc(line.unit)}</td>
       <td style="text-align:center">${fmtMoney(line.price)}</td>
-      <td style="text-align:center;font-weight:700">${fmtMoney(line.total)}</td>
+      <td style="text-align:center;font-weight:800">${fmtMoney(line.total)}</td>
     </tr>`).join("");
   const fmtBalance=value=>value<0?`-${fmtMoney(-value)}`:fmtMoney(value);
   const balanceSection=data.merchantBalanceBefore!==undefined?`
     <div class="inv-doc-balance">
-      <div style="font-weight:700">المبلغ المستحق على التاجر — ${esc(data.merchantName||"")}</div>
-      <div>الحساب قبل الطلب: <strong>${fmtBalance(data.merchantBalanceBefore)}</strong></div>
-      <div>الحساب بعد الطلب: <strong>${fmtBalance(data.merchantBalanceAfter??0)}</strong></div>
+      <div class="inv-bal-title">المبلغ المستحق على التاجر — ${esc(data.merchantName||"")}</div>
+      <div class="inv-bal-grid">
+        <div class="inv-bal-cell"><div class="inv-bal-lbl">الحساب قبل الطلب</div><div class="inv-bal-val">${fmtBalance(data.merchantBalanceBefore)}</div></div>
+        <div class="inv-bal-cell"><div class="inv-bal-lbl">الحساب بعد الطلب</div><div class="inv-bal-val">${fmtBalance(data.merchantBalanceAfter??0)}</div></div>
+      </div>
     </div>`:"";
   const printNow=new Date().toLocaleString("ar-EG-u-nu-latn",{
     timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"
@@ -1197,7 +1299,7 @@ function showMerchantSalePreview(data){
       <div class="inv-doc-head">
         <div class="inv-doc-logo-wrap">
           <div class="inv-doc-brand">Ahmed And Hamdy</div>
-          <div class="inv-doc-brand-sub">نظام المحاسبة الداخلي — معاينة حركة سابقة</div>
+          <div class="inv-doc-brand-sub">النظام المحاسبي الداخلي — فاتورة حركة بيع</div>
         </div>
         <div class="inv-doc-nums">
           <div class="inv-doc-num-row"><span>رقم الفاتورة</span><strong>${esc(shortId)}</strong></div>
@@ -1205,16 +1307,26 @@ function showMerchantSalePreview(data){
           <div class="inv-doc-num-row"><span>نفّذها</span><strong>${esc(data.performedBy||"—")}</strong></div>
         </div>
       </div>
-      <span class="inv-doc-type-badge">فاتورة بيع</span>
-      <div class="inv-doc-bill">
-        <div class="inv-doc-bill-label">إلى</div>
-        <div class="inv-doc-bill-name">${esc(data.merchantName||"")}</div>
-        <div class="inv-doc-bill-detail">من مخزن: ${esc(data.warehouseName||"")}</div>
+      <div class="inv-doc-type-line">
+        <span class="inv-doc-type-badge">فاتورة بيع</span>
+        <span class="inv-doc-copy-note">نسخة النظام — تفاصيل العملية كما سُجلت وقت البيع</span>
+      </div>
+      <div class="inv-doc-party-grid">
+        <div class="inv-doc-party-card">
+          <div class="inv-doc-party-label">الفاتورة إلى</div>
+          <div class="inv-doc-party-value">${esc(data.merchantName||"—")}</div>
+          <div class="inv-doc-party-sub">التاجر / العميل</div>
+        </div>
+        <div class="inv-doc-party-card">
+          <div class="inv-doc-party-label">المخزن المصدر</div>
+          <div class="inv-doc-party-value">${esc(data.warehouseName||"—")}</div>
+          <div class="inv-doc-party-sub">المخزن الذي خرجت منه البضاعة</div>
+        </div>
       </div>
       <table class="inv-doc-table">
         <thead><tr>
-          <th>الصنف</th><th style="text-align:center">الكمية</th>
-          <th style="text-align:center">سعر الوحدة</th><th style="text-align:center">الإجمالي</th>
+          <th style="width:42%">الصنف</th><th style="text-align:center;width:18%">الكمية</th>
+          <th style="text-align:center;width:20%">سعر الوحدة</th><th style="text-align:center;width:20%">الإجمالي</th>
         </tr></thead>
         <tbody>${lineRows||`<tr><td colspan="4" style="text-align:center">لا توجد أصناف</td></tr>`}</tbody>
       </table>
@@ -1223,13 +1335,13 @@ function showMerchantSalePreview(data){
         <tr><td class="tot-lbl"><strong>الإجمالي</strong></td><td class="tot-val"><strong>${fmtMoney(data.totalAmount)}</strong></td></tr>
       </table></div>
       ${balanceSection}
-      ${data.note?`<div class="inv-doc-note">ملاحظة: ${esc(data.note)}</div>`:""}
+      ${data.note?`<div class="inv-doc-note"><strong>ملاحظة:</strong> ${esc(data.note)}</div>`:""}
       <div class="inv-doc-footer">
-        <div>تمت معاينتها بتاريخ: ${esc(printNow)}</div>
+        <div>تمت معاينة المستند: ${esc(printNow)}</div>
         <div class="inv-doc-sig"><div class="inv-doc-sig-line"></div><div>التوقيع والختم</div></div>
       </div>
     </div>`;
-  document.getElementById("merchant-invoice-title").textContent="معاينة الحركة";
+  document.getElementById("merchant-invoice-title").textContent="معاينة فاتورة البيع";
 }
 
 const _TX_TYPE_CFG={
@@ -1301,88 +1413,107 @@ function renderTxBalanceBox(tx){
 function openTxDetail(t){
   if(!t) return;
   const cfg=_TX_TYPE_CFG[t.type]??{label:t.type||"—",badge:"tb-other"};
-  const icon=_TX_ICONS[t.type]??"📝";
-  const dirClass=t.dir==="in"?"dir-in":"dir-out";
   const fD=s=>s?new Date(s+"T00:00:00").toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"long",day:"numeric"}):"—";
   const fM=s=>{ if(!s) return ""; const [y,m]=s.split("-"); return new Date(Number(y),Number(m)-1,1).toLocaleDateString("ar-EG-u-nu-latn",{month:"long",year:"numeric"}); };
   const fN=n=>new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(n||0)+" ج.م";
   const eS=s=>{ const d=document.createElement("div"); d.textContent=s??""; return d.innerHTML; };
   const party=t.type==="advance"?(t.employeeName||"—"):t.type==="merchant"?(t.merchantName||t.partyName||"—"):(t.partyName||"—");
-  const infoRows=[
-    `<tr><td class="lbl">رقم الحركة</td><td class="val" style="font-family:monospace;font-weight:800;font-size:13px">${eS(t.finId||"—")}</td></tr>`,
-    `<tr><td class="lbl">التاريخ</td><td class="val">${eS(fD(t.date))}</td></tr>`,
-    `<tr><td class="lbl">نوع العملية</td><td class="val">${eS(cfg.label)}</td></tr>`,
-    t.type==="merchant"
-      ? `<tr><td class="lbl">نوع الحركة</td><td class="val ${dirClass}">${t.dir==="out"?"تسديد مستحقات (تقليل الدين) ↓":"زيادة دين على التاجر ↑"}</td></tr>`
-      : `<tr><td class="lbl">اتجاه العملية</td><td class="val ${dirClass}">${t.dir==="in"?"إيداع في الصندوق ↓":"سحب من الصندوق ↑"}</td></tr>`,
-    t.type==="merchant"?`<tr><td class="lbl">التاجر</td><td class="val">${eS(party)}</td></tr>`:
-    t.type==="advance"?`<tr><td class="lbl">الموظف</td><td class="val">${eS(party)}</td></tr>${t.deductMonth?`<tr><td class="lbl">شهر الخصم</td><td class="val">${eS(fM(t.deductMonth))}</td></tr>`:""}`:
-    t.partyName?`<tr><td class="lbl">الجهة</td><td class="val">${eS(party)}</td></tr>`:"",
-    t.sourcePage?`<tr><td class="lbl">أُضيفت من صفحة</td><td class="val">${eS(t.sourcePage)}</td></tr>`:""
-  ];
-  let partyRow="";
-  if(t.type==="advance") partyRow=`<div class="dm-item"><div class="dm-label">الموظف</div><div class="dm-val">${eS(party)}</div></div>${t.deductMonth?`<div class="dm-item"><div class="dm-label">شهر الخصم</div><div class="dm-val">${eS(fM(t.deductMonth))}</div></div>`:""}`;
-  else if(t.type==="merchant") partyRow=`<div class="dm-item"><div class="dm-label">التاجر</div><div class="dm-val">${eS(party)}</div></div>`;
-  else if(t.partyName) partyRow=`<div class="dm-item"><div class="dm-label">الجهة</div><div class="dm-val">${eS(party)}</div></div>`;
-  if(t.sourcePage) partyRow+=`<div class="dm-item"><div class="dm-label">أُضيفت من صفحة</div><div class="dm-val">${eS(t.sourcePage)}</div></div>`;
-  const printDate=new Date().toLocaleDateString("ar-EG-u-nu-latn",{timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric"});
+  const isMerchant=t.type==="merchant";
+  const isIn=t.dir==="in";
+
+  // في دفتر التاجر: in = دفعة/تسديد، out = إضافة دين.
+  // في الحركات النقدية العامة: in = قبض/إيداع، out = صرف/سحب.
+  const movementLabel=isMerchant
+    ? (isIn?"تسديد مستحقات التاجر":"إضافة مبلغ على حساب التاجر")
+    : (isIn?"إيداع / قبض":"سحب / صرف");
+  const documentTitle=isMerchant
+    ? (isIn?"سند تسديد مستحقات":"سند إضافة على الحساب")
+    : (isIn?"سند قبض":"سند صرف");
+  const directionExplanation=isMerchant
+    ? (isIn?"تُخفّض هذه الحركة المبلغ المستحق على التاجر":"تزيد هذه الحركة المبلغ المستحق على التاجر")
+    : (isIn?"حركة داخلة إلى الصندوق":"حركة خارجة من الصندوق");
+  const partyLabel=isMerchant?"التاجر":t.type==="advance"?"الموظف":"الجهة";
+  const createdText=t.createdAt?fmtOperationDate(t.createdAt):"—";
+  const printText=new Date().toLocaleString("ar-EG-u-nu-latn",{timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});
+  const balCtx=isMerchant?calcMerchantBalanceBeforeAfter(t):null;
+  const fmtSignedBalance=v=>`${v<0?"-":""}${fN(Math.abs(v||0))}`;
+
+  const balanceHtml=balCtx?`
+    <div class="fin-balance-box">
+      <div class="fin-balance-title">أثر الحركة على حساب التاجر</div>
+      <div class="fin-balance-grid">
+        <div class="fin-balance-cell"><div class="fin-balance-lbl">الرصيد قبل الحركة</div><div class="fin-balance-val">${fmtSignedBalance(balCtx.before)}</div></div>
+        <div class="fin-balance-arrow">←</div>
+        <div class="fin-balance-cell"><div class="fin-balance-lbl">الرصيد بعد الحركة</div><div class="fin-balance-val">${fmtSignedBalance(balCtx.after)}</div></div>
+      </div>
+    </div>`:"";
+
+  const documentInner=`
+      <div class="fin-doc-head">
+        <div class="fin-company">
+          <div class="fin-company-name">Ahmed And Hamdy</div>
+          <div class="fin-company-sub">النظام المحاسبي الداخلي — إدارة حسابات التجار</div>
+        </div>
+        <div class="fin-doc-title">
+          <div class="fin-doc-kind">${eS(documentTitle)}</div>
+          <span class="fin-doc-id">${eS(t.finId||"—")}</span>
+        </div>
+      </div>
+
+      <div class="fin-doc-status">
+        <span><strong>${eS(cfg.label)}</strong> — ${eS(movementLabel)}</span>
+        <span>${eS(directionExplanation)}</span>
+      </div>
+
+      <div class="fin-doc-section">
+        <div class="fin-doc-section-title">بيانات الحركة</div>
+        <div class="fin-info-grid">
+          <div class="fin-info-item"><div class="fin-info-label">رقم المعاملة</div><div class="fin-info-value" style="font-family:monospace;direction:ltr;text-align:right">${eS(t.finId||"—")}</div></div>
+          <div class="fin-info-item"><div class="fin-info-label">تاريخ الحركة</div><div class="fin-info-value">${eS(fD(t.date))}</div></div>
+          <div class="fin-info-item"><div class="fin-info-label">${eS(partyLabel)}</div><div class="fin-info-value">${eS(party)}</div></div>
+          <div class="fin-info-item"><div class="fin-info-label">نوع الحركة</div><div class="fin-info-value">${eS(movementLabel)}</div></div>
+          ${t.type==="advance"&&t.deductMonth?`<div class="fin-info-item"><div class="fin-info-label">شهر الخصم</div><div class="fin-info-value">${eS(fM(t.deductMonth))}</div></div>`:""}
+          ${t.sourcePage?`<div class="fin-info-item"><div class="fin-info-label">مصدر التسجيل</div><div class="fin-info-value">${eS(t.sourcePage)}</div></div>`:""}
+        </div>
+      </div>
+
+      <div class="fin-amount-box">
+        <div>
+          <div class="fin-amount-label">قيمة الحركة</div>
+          <div class="fin-amount-words">فقط ${eS(amountInWords(t.amount))} لا غير</div>
+        </div>
+        <div class="fin-amount-value">${eS(fN(t.amount))}</div>
+      </div>
+
+      ${balanceHtml}
+
+      <div class="fin-doc-section">
+        <div class="fin-doc-section-title">البيان / الملاحظات</div>
+        <div class="fin-desc-box">${t.description?eS(t.description):"لا توجد ملاحظات مسجلة لهذه الحركة."}</div>
+        <div class="fin-meta-strip">
+          <div>تاريخ التسجيل: ${eS(createdText)}</div>
+          <div>نوع السجل: ${eS(cfg.label)}</div>
+          <div>حالة السجل: فعّال</div>
+        </div>
+      </div>
+
+      <div class="fin-signatures">
+        <div><div class="fin-signature-label">المحاسب / مُعدّ الحركة</div><div class="fin-signature-line">الاسم والتوقيع</div></div>
+        <div><div class="fin-signature-label">${isMerchant?"التاجر / المندوب":t.type==="advance"?"الموظف / المستلم":"الجهة المعنية"}</div><div class="fin-signature-line">${eS(party!=="—"?party:"الاسم والتوقيع")}</div></div>
+        <div><div class="fin-signature-label">الاعتماد</div><div class="fin-signature-line">التوقيع والختم</div></div>
+      </div>
+
+      <div class="fin-doc-footer">
+        <span>مستند محاسبي داخلي — طُبع بتاريخ ${eS(printText)}</span>
+        <span class="fin-footer-id">${eS(t.finId||"—")}</span>
+        <span>Ahmed And Hamdy</span>
+      </div>`;
+
   document.getElementById("tx-detail-content").innerHTML=`
-  <div class="mer-screen-only">
-    <div class="tx-detail-header">
-      <div class="tx-detail-mark">${icon}</div>
-      <div class="tx-detail-company">Ahmed And hamdy</div>
-      <div class="tx-detail-subtitle">نظام المحاسبة الداخلي</div>
-      <div class="tx-detail-id-row"><span class="tx-detail-id-badge">${eS(t.finId||"—")}</span></div>
-      <div style="margin-top:8px"><span class="type-badge ${cfg.badge}">${eS(cfg.label)}</span></div>
-    </div>
-    <div class="tx-detail-meta-grid">
-      <div class="dm-item"><div class="dm-label">التاريخ</div><div class="dm-val">${eS(fD(t.date))}</div></div>
-      <div class="dm-item"><div class="dm-label">${t.type==="merchant"?"نوع الحركة":"الاتجاه"}</div><div class="dm-val ${dirClass}">${t.type==="merchant"?(t.dir==="out"?"← تسديد مستحقات":"← زيادة دين"):(t.dir==="in"?"← إيداع":"← سحب")}</div></div>
-      ${partyRow}
-    </div>
-    <div class="tx-detail-amount-row">
-      <div class="tx-detail-amount-label">المبلغ الإجمالي</div>
-      <div class="tx-detail-amount-val ${t.dir==="in"?"in":"out"}">${fN(t.amount)}</div>
-    </div>
-    ${t.description?`<div class="tx-detail-desc-box"><strong>📝 الوصف / الملاحظات</strong>${eS(t.description)}</div>`:""}
-    <div class="tx-detail-footer"><span>رقم الحركة: ${eS(t.finId||"—")}</span><span>نظام Ahmed And hamdy © ${new Date().getFullYear()}</span></div>
-  </div>
-  <div class="doc-page mer-print-only" style="display:none">
-    <div class="doc-watermark">Ahmed And hamdy</div>
-    <div class="doc-outer-border"><div class="doc-inner-border">
-      <div class="doc-top-bar">
-        <div class="doc-top-bar-left"><div class="doc-doc-title">سند ${t.dir==="in"?"قبض":"صرف"}</div></div>
-        <div class="doc-top-bar-center"><div class="doc-company-name">Ahmed And hamdy</div><div class="doc-company-sub">نظام المحاسبة الداخلي</div></div>
-        <div><div class="doc-serial-badge">${eS(t.finId||"—")}</div></div>
-      </div>
-      <div class="doc-body">
-        <div class="doc-type-ribbon">
-          <span class="doc-type-icon">${icon}</span>
-          <span class="doc-type-name">${eS(cfg.label)}</span>
-          <span class="doc-type-dir ${t.dir==="in"?"in":"out"}">${t.dir==="in"?"إيداع في الصندوق ↓":"سحب من الصندوق ↑"}</span>
-        </div>
-        <table class="doc-info-table">${infoRows.join("")}</table>
-        <div class="doc-amount-section">
-          <div>
-            <div class="doc-amount-label">إجمالي مبلغ ${t.dir==="in"?"الإيداع":"السحب"}</div>
-            <div class="doc-amount-words">فقط ${amountInWords(t.amount)} لا غير</div>
-          </div>
-          <div class="doc-amount-number ${t.dir==="in"?"in":"out"}">${fN(t.amount)}</div>
-        </div>
-        ${t.description?`<div class="doc-desc-section"><div class="doc-desc-lbl">البيان / الملاحظات</div><div class="doc-desc-val">${eS(t.description)}</div></div>`:""}
-        <div class="doc-sigs">
-          <div class="doc-sig-box"><div class="sig-label">المحاسب / المُعِدّ</div><div class="sig-line"></div><div class="sig-name">الاسم والتوقيع</div></div>
-          <div class="doc-sig-box"><div class="sig-label">${t.type==="merchant"?"التاجر / المستلم":t.type==="advance"?"الموظف / المستلم":"الجهة المعنية"}</div><div class="sig-line"></div><div class="sig-name">${eS(party!=="—"?party:"الاسم والتوقيع")}</div></div>
-          <div class="doc-sig-box"><div class="sig-label">المدير المفوّض</div><div class="sig-line"></div><div class="sig-name">الاسم والتوقيع والختم</div></div>
-        </div>
-      </div>
-      <div class="doc-bottom-bar">
-        <div>تاريخ الطباعة: ${printDate}</div>
-        <div class="doc-bottom-barcode">${eS(t.finId||"—")} — Ahmed And hamdy</div>
-        <div>هذا المستند صادر من نظام المحاسبة الداخلي</div>
-      </div>
-    </div></div>
-  </div>`;
+    <div class="financial-document fin-doc-screen mer-screen-only">${documentInner}</div>
+    <div class="financial-document fin-doc-print mer-print-only" style="display:none">${documentInner}</div>`;
+
+  // صندوق الرصيد القديم يبقى للواجهة فقط كملخص إضافي ولا يدخل في الطباعة.
   renderTxBalanceBox(t);
   document.getElementById("tx-detail-modal").classList.add("open");
 }
