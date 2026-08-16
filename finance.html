@@ -311,26 +311,41 @@
       .rpt-page:last-child{margin-bottom:0!important}
     }
 
-    /* ── طباعة overlay التقرير ── */
+    /* ── جذر طباعة داخلي: يبقى داخل نفس صفحة المالية ولا يفتح أي صفحة جديدة ── */
+    #cash-print-root{display:none}
+
+    /* ── طباعة تقرير الصندوق فقط ── */
     @media print{
-      html,body{background:#fff!important}
+      html,body{
+        width:297mm!important;min-width:297mm!important;max-width:297mm!important;
+        margin:0!important;padding:0!important;background:#fff!important;overflow:visible!important
+      }
+      /* أثناء تقرير الصندوق لا نطبع أي عنصر من الصفحة الأصلية */
       body.printing-cash-report > *{display:none!important}
-      body.printing-cash-report #cash-rpt-overlay{
-        display:block!important;position:static!important;inset:auto!important;
-        background:#fff!important;overflow:visible!important;
+      body.printing-cash-report > #cash-print-root{
+        display:block!important;position:static!important;
+        width:297mm!important;min-width:297mm!important;max-width:297mm!important;
+        margin:0!important;padding:0!important;background:#fff!important;overflow:visible!important
       }
-      body.printing-cash-report #cash-rpt-bar{display:none!important}
-      body.printing-cash-report #cash-rpt-body{max-width:none!important;margin:0!important;padding:0!important;background:#fff!important}
-      body.printing-cash-report .rpt-page{
-        page:cashReport;
-        width:297mm!important;height:210mm!important;min-height:210mm!important;margin:0!important;
-        padding:9mm 11mm 8mm!important;box-shadow:none!important;page-break-after:always;break-after:page;
-        color:#000!important;background:#fff!important;
+      body.printing-cash-report #cash-print-root .rpt-page{
+        page:auto!important;display:block!important;
+        width:297mm!important;min-width:297mm!important;max-width:297mm!important;
+        height:210mm!important;min-height:210mm!important;max-height:210mm!important;
+        margin:0!important;padding:9mm 11mm 8mm!important;
+        box-sizing:border-box!important;box-shadow:none!important;border:0!important;
+        color:#000!important;background:#fff!important;overflow:hidden!important;
+        page-break-before:auto!important;break-before:auto!important;
+        page-break-after:always!important;break-after:page!important
       }
-      body.printing-cash-report .rpt-page:last-child{page-break-after:auto;break-after:auto}
-      body.printing-cash-report .rpt-page-inner{height:193mm!important;min-height:193mm!important}
-      body.printing-cash-report *{-webkit-print-color-adjust:economy!important;print-color-adjust:economy!important}
-      @page cashReport{size:A4 landscape;margin:0}
+      body.printing-cash-report #cash-print-root .rpt-page:last-child{
+        page-break-after:auto!important;break-after:auto!important
+      }
+      body.printing-cash-report #cash-print-root .rpt-page-inner{
+        width:100%!important;height:193mm!important;min-height:193mm!important;max-height:193mm!important
+      }
+      body.printing-cash-report #cash-print-root *{
+        -webkit-print-color-adjust:economy!important;print-color-adjust:economy!important
+      }
     }
 
     /* ── فلتر فترة صندوق الكاش ── */
@@ -975,7 +990,7 @@
     <span id="cash-rpt-bar-title">معاينة تقرير صندوق المالية</span>
     <button class="crb-btn" id="cash-rpt-print-btn" title="طباعة التقرير مباشرة على ورق A4">🖨️ طباعة A4</button>
   </div>
-  <div id="cash-rpt-body"><div id="cash-rpt-mobile-note">معاينة مصغّرة لورقة A4 — الطباعة ستكون بالحجم الكامل</div></div>
+  <div id="cash-rpt-body"><div id="cash-rpt-mobile-note">معاينة A4 أفقي — ستُطبع الورقة بالحجم الحقيقي 297 × 210 مم</div></div>
 </div>
 
 <!-- ═══════ نافذة دفعة التاجر السريعة ═══════ -->
@@ -1646,7 +1661,7 @@ function openCashReportPreview(){
   const {periodLabel,html}=buildReportHTML(selection);
   closeCashReportRangeDialog();
   document.getElementById("cash-rpt-bar-title").textContent=`معاينة تقرير صندوق المالية — ${periodLabel}`;
-  document.getElementById("cash-rpt-body").innerHTML=`<div id="cash-rpt-mobile-note">معاينة مصغّرة لورقة A4 — الطباعة ستكون بالحجم الكامل</div>${html}`;
+  document.getElementById("cash-rpt-body").innerHTML=`<div id="cash-rpt-mobile-note">معاينة A4 أفقي — ستُطبع الورقة بالحجم الحقيقي 297 × 210 مم</div>${html}`;
   document.getElementById("cash-rpt-overlay").classList.add("open");
   document.body.style.overflow="hidden";
   fitCashReportMobilePreview();
@@ -1671,13 +1686,56 @@ function fitCashReportMobilePreview(){
   اختيار "حفظ كـ PDF"، إن ظهر في نافذة الطباعة، يبقى خياراً بيد المستخدم.
   في Android WebView يجب أن يدعم تطبيق الـ APK خدمة الطباعة الأصلية كي يستجيب window.print().
 */
+function ensureCashPrintRoot(){
+  let root=document.getElementById("cash-print-root");
+  if(root) root.remove();
+  root=document.createElement("div");
+  root.id="cash-print-root";
+  root.setAttribute("aria-hidden","true");
+
+  /* ننسخ أوراق التقرير فقط، لا الـ overlay ولا شريط الأزرار. */
+  const pages=[...document.querySelectorAll("#cash-rpt-body .rpt-page")];
+  root.innerHTML=pages.map(p=>p.outerHTML).join("");
+  document.body.appendChild(root);
+  return root;
+}
+
+/*
+  طباعة A4 من نفس صفحة finance.html فقط:
+  - لا window.open
+  - لا PDF تلقائي
+  - لا تبويب أو صفحة خارجية
+  - مقاس الورقة 297×210mm (A4 Landscape)
+  - margin:0 على @page حتى لا تُنشأ صفحة تمهيدية بهوامش المتصفح
+*/
 function printCashReportA4(btn){
   const oldTitle=document.title;
   const oldText=btn?.textContent||"🖨️ طباعة A4";
   if(btn){btn.disabled=true;btn.textContent="جارِ فتح الطباعة…";}
+
+  const pages=document.querySelectorAll("#cash-rpt-body .rpt-page");
+  if(!pages.length){
+    if(btn){btn.disabled=false;btn.textContent=oldText;}
+    toast("اعرض التقرير أولاً قبل الطباعة.",true);
+    return;
+  }
+
+  const printRoot=ensureCashPrintRoot();
   document.body.classList.add("printing-cash-report");
 
-  /* نقلل أي عنوان نصي يضيفه المتصفح، بينما يبقى التقرير نفسه بترويسته الداخلية. */
+  /* قاعدة عامة مؤقتة مهمة: الصفحة الأولى أيضاً A4 أفقي وبدون هامش متصفح. */
+  let pageStyle=document.getElementById("cash-rpt-page-style");
+  if(pageStyle) pageStyle.remove();
+  pageStyle=document.createElement("style");
+  pageStyle.id="cash-rpt-page-style";
+  pageStyle.media="print";
+  pageStyle.textContent=`
+    @page { size: 297mm 210mm; margin: 0; }
+    @page :first { size: 297mm 210mm; margin: 0; }
+  `;
+  document.head.appendChild(pageStyle);
+
+  /* العنوان الداخلي في التقرير يغني عن عنوان نافذة المتصفح. */
   try{document.title=" ";}catch(_){ }
 
   let cleaned=false;
@@ -1686,27 +1744,29 @@ function printCashReportA4(btn){
     cleaned=true;
     document.body.classList.remove("printing-cash-report");
     try{document.title=oldTitle;}catch(_){ }
+    document.getElementById("cash-rpt-page-style")?.remove();
+    document.getElementById("cash-print-root")?.remove();
     if(btn){btn.disabled=false;btn.textContent=oldText;}
     window.removeEventListener("afterprint",cleanup);
   };
   window.addEventListener("afterprint",cleanup,{once:true});
 
   try{
-    /* بعض تطبيقات WebView تضيف جسر طباعة أصلي. نستخدمه إن كان موجوداً، وإلا نعتمد window.print(). */
+    /* لا نغادر الصفحة. إن كان الـAPK يوفّر PrintManager نستخدمه مباشرة. */
     if(window.AndroidPrint && typeof window.AndroidPrint.print==="function"){
       window.AndroidPrint.print();
-      setTimeout(cleanup,1200);
+      setTimeout(cleanup,1800);
       return;
     }
     if(window.Android && typeof window.Android.printPage==="function"){
       window.Android.printPage();
-      setTimeout(cleanup,1200);
+      setTimeout(cleanup,1800);
       return;
     }
     if(typeof window.print==="function"){
       window.print();
-      /* بعض WebView لا يطلق afterprint */
-      setTimeout(cleanup,3000);
+      /* WebView قد لا يرسل afterprint؛ تنظيف احتياطي بعد رجوع المستخدم. */
+      setTimeout(cleanup,5000);
       return;
     }
     cleanup();
