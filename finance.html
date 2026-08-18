@@ -788,6 +788,117 @@
         font-size: 14px; font-weight: 600;
         letter-spacing: .3px;
       }
+
+
+    /* ══════════════════════════════════════
+       قوائم بحث سريعة — الموظفين والتجار فقط
+    ══════════════════════════════════════ */
+    .fin-search-select{position:relative;width:100%;margin-top:4px}
+    .fin-search-native{position:absolute!important;inline-size:1px!important;block-size:1px!important;opacity:0!important;pointer-events:none!important;overflow:hidden!important;clip-path:inset(50%)!important}
+    .fin-search-trigger{
+      width:100%;min-height:44px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface);
+      color:var(--ink);font:600 13.5px Cairo,sans-serif;padding:8px 11px;cursor:pointer;display:flex;
+      align-items:center;justify-content:space-between;gap:10px;text-align:right;outline:none;transition:.14s ease
+    }
+    .fin-search-trigger:hover{border-color:#b7c7bd;background:#fff}
+    .fin-search-trigger:focus,.fin-search-trigger.open{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+    .fin-search-trigger-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+    .fin-search-chevron{font-size:11px;color:var(--muted);transition:transform .14s;flex:0 0 auto}
+    .fin-search-trigger.open .fin-search-chevron{transform:rotate(180deg)}
+    #fin-search-popover{
+      position:fixed;z-index:15000;display:none;background:var(--surface,#fff);border:1.5px solid var(--border,#dfe5e0);
+      border-radius:12px;box-shadow:0 18px 50px rgba(15,23,42,.20);overflow:hidden;direction:rtl
+    }
+    #fin-search-popover.open{display:block}
+    .fin-search-head{padding:9px;background:#f7f9f7;border-bottom:1px solid var(--border);position:relative}
+    .fin-search-input{
+      width:100%;height:42px;border:1.5px solid var(--border);border-radius:9px;background:#fff;color:var(--ink);
+      font:600 13px Cairo,sans-serif;padding:8px 36px 8px 10px;outline:none
+    }
+    .fin-search-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+    .fin-search-head::before{
+      content:"";position:absolute;right:19px;top:20px;width:17px;height:17px;background:var(--muted);opacity:.75;pointer-events:none;
+      -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10.5 3a7.5 7.5 0 0 1 5.93 12.1l4.23 4.22a1 1 0 1 1-1.41 1.42l-4.23-4.23A7.5 7.5 0 1 1 10.5 3Zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z'/%3E%3C/svg%3E") center/contain no-repeat;
+      mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10.5 3a7.5 7.5 0 0 1 5.93 12.1l4.23 4.22a1 1 0 1 1-1.41 1.42l-4.23-4.23A7.5 7.5 0 1 1 10.5 3Zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z'/%3E%3C/svg%3E") center/contain no-repeat
+    }
+    .fin-search-options{max-height:260px;overflow:auto;padding:5px;overscroll-behavior:contain}
+    .fin-search-option{
+      width:100%;min-height:40px;border:0;background:transparent;border-radius:8px;color:var(--ink);
+      font:600 13px Cairo,sans-serif;padding:8px 10px;text-align:right;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px
+    }
+    .fin-search-option:hover,.fin-search-option.active{background:var(--primary-soft);color:var(--primary-dark)}
+    .fin-search-option.selected{font-weight:900;background:#eef7f2;color:var(--primary-dark)}
+    .fin-search-option.selected::after{content:"✓";font-weight:900;color:var(--primary);margin-right:auto}
+    .fin-search-empty{padding:20px 12px;text-align:center;color:var(--muted);font-size:12px;font-weight:700}
+
+    /* ══ تحسينات واجهة المالية على الهاتف فقط ══ */
+    @media(max-width:900px){
+      .page{padding-left:11px!important;padding-right:11px!important}
+      .page-header{margin-bottom:13px!important}
+      .page-header h2{font-size:18px!important}
+      .page-header p{font-size:10.5px!important;line-height:1.5!important}
+      .fund-title{font-size:12.5px!important;margin:15px 0 8px!important}
+      .stats-grid{gap:8px!important;margin-bottom:14px!important}
+      .stat-card{padding:10px 10px 11px!important;gap:0!important;border-radius:14px!important;min-height:122px!important}
+      .stat-card .sc-label{gap:6px!important;margin-bottom:7px!important;align-items:center!important}
+      .sc-icon{width:34px!important;height:34px!important;border-radius:9px!important;font-size:17px!important}
+      .sc-text{font-size:10.5px!important;line-height:1.3!important}
+      .stat-card .sc-val{font-size:22px!important;line-height:1.12!important;letter-spacing:-.45px!important}
+      .stat-card .sc-sub{font-size:9.5px!important;line-height:1.45!important;margin-top:4px!important}
+      .wh-inline-select{font-size:11px!important;padding:5px 7px!important;margin-top:5px!important;height:37px!important}
+
+      .quick-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px!important;margin-bottom:14px!important}
+      .qa-btn{width:100%!important;min-height:44px!important;justify-content:center!important;padding:7px 8px!important;border-radius:9px!important;font-size:11.5px!important;line-height:1.35!important;gap:5px!important;box-shadow:none!important}
+      #open-mp-modal-btn{grid-column:1/-1;min-height:46px!important}
+
+      .panel{border-radius:14px!important}
+      .panel-header{padding:12px 12px!important}
+      .panel-header h3{font-size:15px!important}
+      #tx-count{font-size:11px!important}
+      .filters-bar{gap:7px!important;padding:10px!important}
+      .filter-select,.search-input{font-size:11.5px!important;min-height:39px!important;padding-top:6px!important;padding-bottom:6px!important}
+      #reset-filters{font-size:11px!important;min-height:38px!important}
+
+      .mob-tx-list{gap:7px!important}
+      .mob-tx-card{border-radius:12px!important;padding:10px 10px 8px!important;gap:6px!important;box-shadow:none!important}
+      .mob-tx-date{font-size:10px!important}
+      .mob-tx-dir{font-size:10.5px!important}
+      .mob-tx-amount{font-size:16.5px!important;letter-spacing:-.25px!important}
+      .mob-tx-meta{font-size:10.5px!important;gap:1px!important}
+      .mob-tx-meta .mob-meta-lbl{font-size:9.5px!important}
+      .mob-tx-meta .mob-meta-val{font-size:11px!important}
+      .mob-tx-actions-row{padding-top:6px!important;gap:5px!important}
+      .mob-tx-actions-row .mob-btn-edit,.mob-tx-actions-row .mob-btn-del{padding:6px 0!important;font-size:10.5px!important;border-radius:8px!important}
+      .mob-tx-actions-row .mob-btn-stat{padding:6px 9px!important;font-size:12px!important;border-radius:8px!important}
+
+      .modal-box{max-width:calc(100vw - 18px)!important}
+      .modal-box-header{padding-top:12px!important;padding-bottom:12px!important}
+      .modal-box-header h3{font-size:15px!important}
+      .mp-type-opt{padding:10px 11px!important;gap:10px!important}
+      .mp-type-label{font-size:12px!important}
+      .mp-type-sub{font-size:10px!important}
+      .mp-cash-row{padding:10px 11px!important;margin:11px 0!important}
+      .mp-cash-label{font-size:11.5px!important}
+      .mp-cash-note{font-size:10px!important}
+    }
+    @media(max-width:720px){
+      #fin-search-popover{left:9px!important;right:9px!important;bottom:max(9px,env(safe-area-inset-bottom))!important;top:auto!important;width:auto!important;border-radius:16px;box-shadow:0 -8px 38px rgba(15,23,42,.24)}
+      .fin-search-head{padding:10px}
+      .fin-search-input{height:44px;font-size:14px}
+      .fin-search-options{max-height:min(48vh,330px);padding:6px}
+      .fin-search-option{min-height:44px;font-size:13px;padding:9px 10px}
+      .fin-search-trigger{min-height:44px;font-size:13px}
+    }
+    @media(max-width:390px){
+      .stats-grid{gap:7px!important}
+      .stat-card{padding:9px!important;min-height:116px!important}
+      .sc-icon{width:31px!important;height:31px!important;font-size:16px!important}
+      .sc-text{font-size:9.8px!important}
+      .stat-card .sc-val{font-size:20px!important}
+      .stat-card .sc-sub{font-size:9px!important}
+      .qa-btn{font-size:10.8px!important;padding:6px 6px!important}
+    }
+
 </style>
 </head>
 <body>
@@ -1811,11 +1922,127 @@ function setupCashReportModal(){
   });
 }
 
+
+
+/* ══════════════════════════════════════
+   اختيار قابل للبحث — قوائم الموظفين والتجار
+   يبقي الـ select الأصلي كمصدر القيمة حتى لا يتغير منطق الحفظ.
+══════════════════════════════════════ */
+let finSearchActive=null;
+function normalizeFinSearchText(v){
+  return String(v??"").toLowerCase().trim()
+    .replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه")
+    .replace(/[ًٌٍَُِّْـ]/g,"");
+}
+function ensureFinSearchPopover(){
+  let pop=document.getElementById("fin-search-popover");
+  if(pop) return pop;
+  pop=document.createElement("div");
+  pop.id="fin-search-popover";
+  pop.innerHTML=`<div class="fin-search-head"><input class="fin-search-input" type="search" autocomplete="off" /></div><div class="fin-search-options"></div>`;
+  document.body.appendChild(pop);
+  pop.addEventListener("click",e=>e.stopPropagation());
+  pop.querySelector(".fin-search-input").addEventListener("input",renderFinSearchOptions);
+  return pop;
+}
+function finSearchLabelFor(select){
+  const opt=select.options[select.selectedIndex];
+  return opt?.textContent?.trim()||select.dataset.finSearchPlaceholder||"اختر من القائمة";
+}
+function syncFinSearchSelect(select){
+  if(!select) return;
+  const trigger=select.closest(".fin-search-select")?.querySelector(".fin-search-trigger-label");
+  if(trigger) trigger.textContent=finSearchLabelFor(select);
+}
+function syncAllFinSearchSelects(){
+  document.querySelectorAll("select.fin-search-native").forEach(syncFinSearchSelect);
+}
+function closeFinSearchSelect(){
+  const pop=document.getElementById("fin-search-popover");
+  if(pop) pop.classList.remove("open");
+  if(finSearchActive?.trigger) finSearchActive.trigger.classList.remove("open");
+  finSearchActive=null;
+}
+function positionFinSearchPopover(){
+  if(!finSearchActive) return;
+  const pop=ensureFinSearchPopover();
+  if(window.innerWidth<=720){
+    pop.style.left="9px";pop.style.right="9px";pop.style.width="auto";pop.style.top="auto";
+    return;
+  }
+  const r=finSearchActive.trigger.getBoundingClientRect();
+  const width=Math.max(250,r.width);
+  pop.style.right="auto";pop.style.width=width+"px";pop.style.left=Math.max(8,Math.min(r.left,window.innerWidth-width-8))+"px";
+  pop.style.bottom="auto";
+  const estimated=Math.min(330,80+Math.max(1,finSearchActive.select.options.length)*40);
+  const below=window.innerHeight-r.bottom-8;
+  pop.style.top=(below>=Math.min(estimated,260)?r.bottom+5:Math.max(8,r.top-Math.min(estimated,300)-5))+"px";
+}
+function renderFinSearchOptions(){
+  if(!finSearchActive) return;
+  const pop=ensureFinSearchPopover();
+  const q=normalizeFinSearchText(pop.querySelector(".fin-search-input").value);
+  const options=[...finSearchActive.select.options].filter(o=>!o.disabled);
+  const filtered=options.filter(o=>!q||normalizeFinSearchText(o.textContent).includes(q));
+  const box=pop.querySelector(".fin-search-options");
+  if(!filtered.length){box.innerHTML='<div class="fin-search-empty">لا توجد نتائج مطابقة</div>';return;}
+  box.innerHTML=filtered.map(o=>`<button type="button" class="fin-search-option${o.value===finSearchActive.select.value?" selected":""}" data-value="${esc(o.value)}">${esc(o.textContent)}</button>`).join("");
+  box.querySelectorAll(".fin-search-option").forEach(btn=>btn.addEventListener("click",()=>{
+    const sel=finSearchActive?.select;if(!sel)return;
+    sel.value=btn.dataset.value;
+    sel.dispatchEvent(new Event("change",{bubbles:true}));
+    syncFinSearchSelect(sel);
+    closeFinSearchSelect();
+  }));
+}
+function openFinSearchSelect(select,trigger){
+  if(select.disabled) return;
+  const pop=ensureFinSearchPopover();
+  if(finSearchActive?.select===select&&pop.classList.contains("open")){closeFinSearchSelect();return;}
+  closeFinSearchSelect();
+  finSearchActive={select,trigger};
+  trigger.classList.add("open");
+  const input=pop.querySelector(".fin-search-input");
+  const label=select.dataset.finSearchLabel||"الاسم";
+  input.placeholder=`ابحث عن ${label}...`;
+  input.value="";
+  renderFinSearchOptions();
+  pop.classList.add("open");
+  positionFinSearchPopover();
+  setTimeout(()=>{try{input.focus({preventScroll:true});}catch(_){input.focus();}},20);
+}
+function enhanceFinSearchSelect(select,{label="الاسم",placeholder="اختر من القائمة"}={}){
+  if(!select||select.dataset.finSearchEnhanced==="1") return;
+  select.dataset.finSearchEnhanced="1";
+  select.dataset.finSearchLabel=label;
+  select.dataset.finSearchPlaceholder=placeholder;
+  const wrap=document.createElement("div");wrap.className="fin-search-select";
+  select.parentNode.insertBefore(wrap,select);wrap.appendChild(select);select.classList.add("fin-search-native");
+  const trigger=document.createElement("button");trigger.type="button";trigger.className="fin-search-trigger";
+  trigger.innerHTML='<span class="fin-search-trigger-label"></span><span class="fin-search-chevron">⌄</span>';
+  wrap.appendChild(trigger);
+  trigger.addEventListener("click",e=>{e.stopPropagation();openFinSearchSelect(select,trigger);});
+  select.addEventListener("change",()=>syncFinSearchSelect(select));
+  new MutationObserver(()=>{syncFinSearchSelect(select);if(finSearchActive?.select===select)renderFinSearchOptions();})
+    .observe(select,{childList:true,subtree:true,attributes:true});
+  syncFinSearchSelect(select);
+}
+function initFinanceSearchSelects(){
+  enhanceFinSearchSelect(document.getElementById("f-employee"),{label:"اسم الموظف",placeholder:"اختر الموظف"});
+  enhanceFinSearchSelect(document.getElementById("mp-merchant-sel"),{label:"اسم التاجر",placeholder:"اختر التاجر"});
+  enhanceFinSearchSelect(document.getElementById("f-merchant"),{label:"اسم التاجر",placeholder:"اختر التاجر"});
+  document.addEventListener("click",closeFinSearchSelect);
+  window.addEventListener("resize",positionFinSearchPopover,{passive:true});
+  window.addEventListener("scroll",()=>{if(finSearchActive&&window.innerWidth>720)positionFinSearchPopover();},{passive:true,capture:true});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&finSearchActive)closeFinSearchSelect();});
+}
+
 /* ── تهيئة ── */
 function init(){
   setupModal();
   setupDetailModal();
   setupMerchantPayModal();
+  initFinanceSearchSelects();
   setupCashReportModal();
   setupFilters();
   initCashPeriod();
@@ -2263,6 +2490,7 @@ function loadEmployees(){
       sel.appendChild(o);
     });
     if(cur) sel.value=cur;
+    syncFinSearchSelect(sel);
   });
 }
 
@@ -2287,7 +2515,10 @@ function rebuildMerchantSelect(curId=""){
   manual.value="__manual__"; manual.textContent="✏️ إدخال يدوي...";
   sel.appendChild(manual);
   if(cur) sel.value=cur;
+  syncFinSearchSelect(sel);
 
+  if(!sel.dataset.partyChangeBound){
+    sel.dataset.partyChangeBound="1";
   sel.addEventListener("change",()=>{
     const partyField=document.getElementById("party-field");
     const partyLabel=document.getElementById("party-label");
@@ -2299,6 +2530,7 @@ function rebuildMerchantSelect(curId=""){
       partyField.style.display="none";
     }
   });
+  }
 }
 
 /* ── تحميل الحركات ── */
@@ -2656,9 +2888,10 @@ function openModal(tx=null,preType=null){
     typeSel.classList.remove("locked");
     if(preType) selectType(preType);
   }
+  syncAllFinSearchSelects();
   document.getElementById("tx-modal").classList.add("open");
 }
-function closeModal(){ document.getElementById("tx-modal").classList.remove("open"); editTxId=null; selectedType=""; }
+function closeModal(){ closeFinSearchSelect(); document.getElementById("tx-modal").classList.remove("open"); editTxId=null; selectedType=""; }
 
 function selectType(type){
   if(!TYPE_CFG[type]) return;
@@ -2771,10 +3004,12 @@ function openMpModal(){
     o.value=m.id; o.textContent=m.name;
     sel.appendChild(o);
   });
+  syncFinSearchSelect(sel);
   document.getElementById("mp-modal").classList.add("open");
 }
 
 function closeMpModal(){
+  closeFinSearchSelect();
   document.getElementById("mp-modal").classList.remove("open");
 }
 
