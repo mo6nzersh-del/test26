@@ -44,6 +44,7 @@
     .smart-search-box::before{content:"";position:absolute;right:18px;top:16px;width:18px;height:18px;background:currentColor;color:var(--muted);opacity:.7;pointer-events:none;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10.5 3a7.5 7.5 0 0 1 5.93 12.1l4.23 4.22a1 1 0 1 1-1.41 1.42l-4.23-4.23A7.5 7.5 0 1 1 10.5 3Zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10.5 3a7.5 7.5 0 0 1 5.93 12.1l4.23 4.22a1 1 0 1 1-1.41 1.42l-4.23-4.23A7.5 7.5 0 1 1 10.5 3Zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z'/%3E%3C/svg%3E") center/contain no-repeat}
     #app{min-height:100vh;visibility:hidden}
     .dash-page{width:min(1180px,100%);margin:0 auto;padding:28px 22px 96px}
+    /* واجهة الترحيب أعلى الداشبورد — بقية الأقسام تبقى كما هي */
     .dash-hero{
       position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:22px;
       margin-bottom:24px;padding:24px 26px;border:1px solid var(--border);border-radius:22px;
@@ -160,6 +161,7 @@
     .file-drop{display:flex;align-items:center;gap:10px;min-height:52px;border:1.5px dashed var(--border);border-radius:11px;padding:9px 11px;background:var(--bg);cursor:pointer;color:var(--muted);font-size:12px;font-weight:700}
     .file-drop img{width:44px;height:44px;border-radius:9px;object-fit:cover;display:none}
 
+    /* واجهة التحميل الأصلية */
     #page-loader{
       position:fixed;inset:0;z-index:9999;
       background:linear-gradient(145deg,var(--grad-1),var(--grad-2));
@@ -175,6 +177,7 @@
     .pl-text{color:rgba(255,255,255,.8);font-size:14px;font-weight:600;letter-spacing:.3px}
     .spinner-mini{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;animation:pl-spin .7s linear infinite}
 
+    /* قوائم اختيار قابلة للبحث — يبقى select الأصلي للمحافظة على المنطق */
     .smart-select-wrap{position:relative;width:100%}
     .smart-native-select{position:absolute!important;inset:auto!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;padding:0!important;margin:0!important;border:0!important}
     .smart-select-btn{width:100%;min-height:46px;border:1.5px solid var(--border);border-radius:11px;background:#fbfcfb;color:var(--ink);font:600 14px Cairo,sans-serif;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:right;outline:none;transition:.15s}
@@ -216,6 +219,10 @@
     }
     @media(max-width:390px){.dash-hero{padding:16px 13px}.welcome-side{display:none}.dash-hero h1{font-size:20px}.welcome-kicker{padding:4px 8px}.action-grid{grid-template-columns:1fr}.action-card{min-height:auto;display:flex}.action-card .a-ico{margin-bottom:0}.summary-box{grid-template-columns:1fr}}
 
+    /* ══════════════════════════════════════
+       تحسين اللمس والسحب — الهاتف / Android WebView
+       لا يغيّر تصميم سطح المكتب
+    ══════════════════════════════════════ */
     html{
       -webkit-text-size-adjust:100%;
       text-size-adjust:100%;
@@ -281,20 +288,18 @@
       }
       .modal-body{touch-action:pan-y}
       #smart-select-popover{
+        /* على الهاتف تبقى القائمة مرتبطة بالحقل نفسه، وليست شريطاً بأسفل الصفحة */
         position:fixed!important;
-        left:10px!important;
-        right:10px!important;
-        top:auto!important;
-        bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;
-        width:auto!important;
-        max-height:min(58dvh,430px);
-        border-radius:16px!important;
+        max-height:min(50dvh,380px);
+        border-radius:14px!important;
         transform:translateZ(0);
+        overflow:hidden;
       }
-      .smart-search-box{padding:10px}
+      .smart-search-box{padding:9px;position:sticky;top:0;z-index:2;background:var(--surface,#fff)}
       .smart-options{
-        max-height:min(44dvh,330px)!important;
+        max-height:min(38dvh,290px)!important;
         overflow-y:auto;
+        overscroll-behavior:contain;
       }
       #bottom-nav{
         position:fixed!important;
@@ -763,7 +768,7 @@ function updateDashboardGreeting(user){
     }catch(_){ dateEl.textContent=""; }
   }
 
-
+  /* نحاول استخدام الاسم/الاسم المستعار الموجود في إدارة الحسابات بدون تعطيل تحميل الصفحة */
   const email=String(user?.email||"").trim();
   if(email){
     getDocs(query(collection(db,"appUsers"),where("email","==",email))).then(snap=>{
@@ -824,7 +829,7 @@ function startBalanceData(){
     snap.forEach(d=>{const t=d.data();if(!t.merchantId)return;merchantTxBalance[t.merchantId]=(merchantTxBalance[t.merchantId]||0)+(t.type==="out"?-1:1)*(Number(t.amount)||0);});
     recomputeMerchantBalances();
   },dataError));
-
+  /* نطلب حركات التجار فقط بدلاً من تنزيل كل الحركات المالية إلى الداشبورد */
   dataUnsubs.push(onSnapshot(query(collection(db,"finance_transactions"),where("type","==","merchant")),snap=>{
     merchantFinBalance={};
     snap.forEach(d=>{const t=d.data();if(t._active===false||!t.merchantId)return;merchantFinBalance[t.merchantId]=(merchantFinBalance[t.merchantId]||0)+(t.dir==="in"?1:-1)*(Number(t.amount)||0);});
@@ -851,7 +856,7 @@ function startData(){
     refreshEmployeeSelects();markCoreReady("employees");
   },dataError));
 
-
+  /* أرصدة التجار أقل أولوية في أول رسم للصفحة؛ نبدأها بعد أن تصبح الواجهة قابلة للمس. */
   const defer=window.requestIdleCallback||((cb)=>setTimeout(cb,320));
   defer(startBalanceData,{timeout:900});
 }
@@ -873,7 +878,10 @@ function refreshAllSelects(){
 }
 
 
-
+/* ══════════════════════════════════════
+   SEARCHABLE SELECTS
+   يحافظ على <select> الأصلي ويضيف بحثاً داخل القائمة المرئية
+══════════════════════════════════════ */
 let smartSelectPopover = null;
 let smartSelectCurrent = null;
 let smartSelectButton = null;
@@ -894,6 +902,8 @@ function ensureSmartPopover(){
   pop.id="smart-select-popover";
   pop.innerHTML=`<div class="smart-search-box"><input class="smart-search-input" type="search" autocomplete="off" /></div><div class="smart-options"></div>`;
   document.body.appendChild(pop);
+  /* يمنع لمس النتائج من تعطيل سحب القائمة عمودياً داخل WebView */
+  pop.querySelector(".smart-options").addEventListener("touchmove",()=>{}, {passive:true});
   const input=pop.querySelector(".smart-search-input");
   input.addEventListener("input",()=>renderSmartOptions(input.value));
   input.addEventListener("keydown",e=>{
@@ -905,12 +915,16 @@ function ensureSmartPopover(){
   });
   let smartPosRaf=0;
   const scheduleSmartPosition=()=>{
-    if(!smartSelectCurrent||window.innerWidth<=620)return;
+    if(!smartSelectCurrent)return;
     if(smartPosRaf)return;
     smartPosRaf=requestAnimationFrame(()=>{smartPosRaf=0;positionSmartPopover();});
   };
-  window.addEventListener("resize",()=>smartSelectCurrent&&positionSmartPopover(),{passive:true});
+  window.addEventListener("resize",scheduleSmartPosition,{passive:true});
   window.addEventListener("scroll",scheduleSmartPosition,{capture:true,passive:true});
+  if(window.visualViewport){
+    window.visualViewport.addEventListener("resize",scheduleSmartPosition,{passive:true});
+    window.visualViewport.addEventListener("scroll",scheduleSmartPosition,{passive:true});
+  }
   document.addEventListener("pointerdown",e=>{
     if(!smartSelectCurrent)return;
     if(pop.contains(e.target)||smartSelectButton?.contains(e.target))return;
@@ -951,23 +965,41 @@ function enhanceAllSelects(root=document){
 }
 function positionSmartPopover(){
   if(!smartSelectCurrent||!smartSelectButton||!smartSelectPopover)return;
-  if(window.innerWidth<=620){
-
-    smartSelectPopover.style.removeProperty("width");
-    smartSelectPopover.style.removeProperty("left");
-    smartSelectPopover.style.removeProperty("top");
-    smartSelectPopover.style.removeProperty("bottom");
-    return;
-  }
-  const r=smartSelectButton.getBoundingClientRect(), vw=document.documentElement.clientWidth, vh=document.documentElement.clientHeight;
-  const margin=8, desired=Math.min(Math.max(r.width,250),Math.min(460,vw-margin*2));
+  const r=smartSelectButton.getBoundingClientRect();
+  const vv=window.visualViewport;
+  const vw=vv?.width||document.documentElement.clientWidth||window.innerWidth;
+  const vh=vv?.height||document.documentElement.clientHeight||window.innerHeight;
+  const vTop=vv?.offsetTop||0;
+  const margin=window.innerWidth<=620?8:8;
+  const gap=5;
+  const isMobile=window.innerWidth<=620;
+  const minW=isMobile?Math.min(r.width,260):250;
+  const maxW=isMobile?vw-margin*2:Math.min(460,vw-margin*2);
+  const desired=Math.min(Math.max(r.width,minW),maxW);
   const left=Math.max(margin,Math.min(r.left,vw-desired-margin));
+
   smartSelectPopover.style.width=desired+"px";
   smartSelectPopover.style.left=left+"px";
-  const popH=Math.min(360,smartSelectPopover.scrollHeight||330);
-  const below=vh-r.bottom-margin, above=r.top-margin;
-  if(below>=Math.min(260,popH)||below>=above){smartSelectPopover.style.top=(r.bottom+5)+"px";smartSelectPopover.style.bottom="auto";}
-  else{smartSelectPopover.style.top="auto";smartSelectPopover.style.bottom=(vh-r.top+5)+"px";}
+  smartSelectPopover.style.right="auto";
+
+  /* نحدد الارتفاع بعد رسم النتائج، ثم نضع القائمة ملاصقة للحقل. */
+  const maxPopH=isMobile?Math.min(vh*.50,380):360;
+  const natural=Math.min(maxPopH,Math.max(100,smartSelectPopover.scrollHeight||260));
+  const below=(vTop+vh)-r.bottom-margin;
+  const above=r.top-vTop-margin;
+  const need=Math.min(natural,isMobile?210:260);
+
+  if(below>=need || below>=above){
+    let top=r.bottom+gap;
+    /* لا نسمح للقائمة بالخروج أسفل مجال العرض المرئي. */
+    if(top+natural>vTop+vh-margin) top=Math.max(vTop+margin,(vTop+vh-margin)-natural);
+    smartSelectPopover.style.top=top+"px";
+    smartSelectPopover.style.bottom="auto";
+  }else{
+    const top=Math.max(vTop+margin,r.top-gap-natural);
+    smartSelectPopover.style.top=top+"px";
+    smartSelectPopover.style.bottom="auto";
+  }
 }
 function openSmartSelect(select,btn){
   const pop=ensureSmartPopover();
@@ -976,7 +1008,13 @@ function openSmartSelect(select,btn){
   const input=pop.querySelector(".smart-search-input");
   input.value="";input.placeholder=`ابحث عن ${smartContextLabel(select)}...`;
   pop.classList.add("open");renderSmartOptions("");positionSmartPopover();
-  requestAnimationFrame(()=>{positionSmartPopover();input.focus();input.select();});
+  requestAnimationFrame(()=>{
+    positionSmartPopover();
+    input.focus({preventScroll:true});
+    input.select();
+    setTimeout(positionSmartPopover,80);
+    setTimeout(positionSmartPopover,260);
+  });
 }
 function closeSmartSelect(){
   smartSelectPopover?.classList.remove("open");smartSelectButton?.classList.remove("is-open");
@@ -1344,7 +1382,7 @@ async function submitMerchantPay(e){
   }catch(err){console.error(err);toast("خطأ أثناء الحفظ",true);}finally{setBusy(btn,false,"حفظ الدفعة");}
 }
 
-
+/* ── منع الضغط العرضي أثناء سحب الصفحة على الهاتف ── */
 function installMobileTapGuard(){
   if(!window.matchMedia?.("(pointer: coarse)").matches)return;
   const selector=".action-card,.section-link,#bottom-nav a,.primary-btn,.ghost-btn,.danger-btn,.type-choice,.radio-card,.add-line,.remove-line,.smart-select-btn";
