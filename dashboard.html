@@ -319,7 +319,35 @@
       }
     }
 
-  </style>
+  
+
+    /* ══ إصلاح نهائي للقوائم القابلة للبحث — القائمة داخل الحقل نفسه ══ */
+    .smart-select-wrap{position:relative!important;width:100%;isolation:isolate}
+    .smart-select-wrap.smart-open{z-index:500!important}
+    .smart-select-menu{
+      display:none;position:absolute;top:calc(100% + 6px);right:0;left:0;width:100%;
+      z-index:520;background:var(--surface,#fff);border:1.5px solid var(--border,#dfe5e0);
+      border-radius:12px;box-shadow:0 14px 34px rgba(15,23,42,.18);overflow:hidden;
+      direction:rtl;min-width:100%;
+    }
+    .smart-select-menu.open{display:block!important}
+    .smart-select-menu.drop-up{top:auto!important;bottom:calc(100% + 6px)!important}
+    .smart-select-menu .smart-search-box{position:relative!important;top:auto!important;padding:8px;background:#f8faf8;border-bottom:1px solid var(--border);z-index:2}
+    .smart-select-menu .smart-search-input{display:block;width:100%;height:42px;margin:0;border:1.5px solid var(--border);border-radius:9px;background:#fff;color:var(--ink);font:600 13px Cairo,sans-serif;padding:8px 34px 8px 10px;outline:none}
+    .smart-select-menu .smart-options{display:block;max-height:250px;overflow-y:auto;overflow-x:hidden;padding:5px;background:#fff;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+    .smart-select-menu .smart-option{display:flex!important;width:100%;min-height:42px;align-items:center;justify-content:space-between;gap:8px;border:0;background:transparent;color:var(--ink);font:600 13px Cairo,sans-serif;padding:9px 10px;border-radius:8px;text-align:right;cursor:pointer}
+    .smart-select-menu .smart-option:active,.smart-select-menu .smart-option.active{background:var(--primary-soft);color:var(--primary-dark)}
+    .smart-select-menu .smart-option.selected{font-weight:900;background:#edf6f0;color:var(--primary-dark)}
+    .smart-select-menu .smart-option.selected::after{content:'✓';font-weight:900;color:var(--primary)}
+    .smart-select-menu .smart-empty{padding:18px 12px;text-align:center;color:var(--muted);font-size:12px;font-weight:700}
+    @media(max-width:620px){
+      .smart-select-wrap.smart-open{z-index:800!important}
+      .smart-select-menu{border-radius:11px;box-shadow:0 10px 28px rgba(15,23,42,.20)}
+      .smart-select-menu .smart-options{max-height:min(36vh,270px)!important}
+      .smart-select-menu .smart-search-input{height:43px;font-size:14px}
+      .smart-select-menu .smart-option{min-height:44px;font-size:13.5px}
+    }
+</style>
 </head>
 <body>
   <div id="page-loader">
@@ -880,81 +908,142 @@ function refreshAllSelects(){
 
 
 /* ══════════════════════════════════════
-   SEARCHABLE SELECTS
-   يحافظ على <select> الأصلي ويضيف بحثاً داخل القائمة المرئية
+   SEARCHABLE SELECTS — ثابت داخل كل حقل
+   لا يستخدم position:fixed أو طبقة خارجية، لذلك يعمل بثبات في Android WebView.
 ══════════════════════════════════════ */
-let smartSelectPopover = null;
-let smartSelectCurrent = null;
-let smartSelectButton = null;
-let smartSelectFiltered = [];
-let smartActiveIndex = -1;
+let smartSelectCurrent=null;
+let smartSelectButton=null;
+let smartActiveIndex=-1;
+let searchableObserver=null;
+let smartOutsideBound=false;
 
 function smartNormalize(v){
-  return String(v??"").toLocaleLowerCase("ar").normalize("NFKD").replace(/[\u064B-\u065F\u0670]/g,"").replace(/أ|إ|آ/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").trim();
+  return String(v??"").toLocaleLowerCase("ar").normalize("NFKD")
+    .replace(/[\u064B-\u065F\u0670]/g,"").replace(/أ|إ|آ/g,"ا")
+    .replace(/ة/g,"ه").replace(/ى/g,"ي").trim();
 }
 function smartContextLabel(select){
   const field=select.closest(".field,.line-cell");
   const label=field?.querySelector("label")?.textContent?.replace(/\*/g,"").trim();
   return label||"الخيار";
 }
-function ensureSmartPopover(){
-  if(smartSelectPopover)return smartSelectPopover;
-  const pop=document.createElement("div");
-  pop.id="smart-select-popover";
-  pop.innerHTML=`<div class="smart-search-box"><input class="smart-search-input" type="search" autocomplete="off" /></div><div class="smart-options"></div>`;
-  document.body.appendChild(pop);
-  /* يمنع لمس النتائج من تعطيل سحب القائمة عمودياً داخل WebView */
-  pop.querySelector(".smart-options").addEventListener("touchmove",()=>{}, {passive:true});
-  const input=pop.querySelector(".smart-search-input");
-  input.addEventListener("input",()=>renderSmartOptions(input.value));
-  input.addEventListener("keydown",e=>{
-    const buttons=[...pop.querySelectorAll(".smart-option")];
-    if(e.key==="ArrowDown"){e.preventDefault();smartActiveIndex=Math.min(buttons.length-1,smartActiveIndex+1);paintSmartActive(buttons);}
-    else if(e.key==="ArrowUp"){e.preventDefault();smartActiveIndex=Math.max(0,smartActiveIndex-1);paintSmartActive(buttons);}
-    else if(e.key==="Enter"){e.preventDefault();const b=buttons[smartActiveIndex>=0?smartActiveIndex:0];if(b)b.click();}
-    else if(e.key==="Escape"){e.preventDefault();closeSmartSelect();}
-  });
-  let smartPosRaf=0;
-  const scheduleSmartPosition=()=>{
-    if(!smartSelectCurrent)return;
-    if(smartPosRaf)return;
-    smartPosRaf=requestAnimationFrame(()=>{smartPosRaf=0;positionSmartPopover();});
-  };
-  window.addEventListener("resize",scheduleSmartPosition,{passive:true});
-  window.addEventListener("scroll",scheduleSmartPosition,{capture:true,passive:true});
-  if(window.visualViewport){
-    window.visualViewport.addEventListener("resize",scheduleSmartPosition,{passive:true});
-    window.visualViewport.addEventListener("scroll",scheduleSmartPosition,{passive:true});
-  }
-  document.addEventListener("pointerdown",e=>{
-    if(!smartSelectCurrent)return;
-    if(pop.contains(e.target)||smartSelectButton?.contains(e.target))return;
-    closeSmartSelect();
-  });
-  return pop;
-}
-function paintSmartActive(buttons){
+function smartMenuOf(select){return select?select._smartMenu:null;}
+function smartButtonsOf(select){return [...(smartMenuOf(select)?.querySelectorAll(".smart-option")||[])];}
+function paintSmartActive(select){
+  const buttons=smartButtonsOf(select);
   buttons.forEach((b,i)=>b.classList.toggle("active",i===smartActiveIndex));
   buttons[smartActiveIndex]?.scrollIntoView({block:"nearest"});
 }
 function syncSmartSelect(select){
-  const btn=select._smartButton;if(!btn)return;
+  const btn=select?select._smartButton:null;if(!btn)return;
   const opt=select.options[select.selectedIndex];
-  btn.querySelector(".smart-select-label").textContent=opt?.textContent||select.dataset.placeholder||"اختر";
-  btn.disabled=select.disabled;
+  const label=btn.querySelector(".smart-select-label");
+  if(label)label.textContent=opt?.textContent||select.dataset.placeholder||"اختر";
+  btn.disabled=!!select.disabled;
   btn.setAttribute("aria-disabled",select.disabled?"true":"false");
-  if(smartSelectCurrent===select)renderSmartOptions(smartSelectPopover?.querySelector(".smart-search-input")?.value||"");
+  if(smartSelectCurrent===select){
+    const input=smartMenuOf(select)?.querySelector(".smart-search-input");
+    renderSmartOptions(select,input?.value||"");
+  }
+}
+function chooseSmartOption(select,opt){
+  if(!select||!opt)return;
+  const changed=select.value!==opt.value;
+  select.value=opt.value;
+  syncSmartSelect(select);
+  if(changed){
+    select.dispatchEvent(new Event("input",{bubbles:true}));
+    select.dispatchEvent(new Event("change",{bubbles:true}));
+  }
+  closeSmartSelect();
+}
+function renderSmartOptions(select,query=""){
+  const menu=smartMenuOf(select);if(!select||!menu)return;
+  const box=menu.querySelector(".smart-options");if(!box)return;
+  const q=smartNormalize(query);
+  const opts=[...select.options].filter(o=>!o.disabled&&(!q||smartNormalize(o.textContent).includes(q)));
+  smartActiveIndex=opts.length?0:-1;
+  box.innerHTML="";
+  if(!opts.length){box.innerHTML='<div class="smart-empty">لا توجد نتائج مطابقة</div>';return;}
+  opts.forEach((o,i)=>{
+    const b=document.createElement("button");
+    b.type="button";
+    b.className="smart-option"+(o.value===select.value?" selected":"")+(i===0?" active":"");
+    b.textContent=o.textContent;
+    b.setAttribute("role","option");
+    b.setAttribute("aria-selected",o.value===select.value?"true":"false");
+    b.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();chooseSmartOption(select,o);});
+    box.appendChild(b);
+  });
+}
+function placeSmartMenu(select){
+  const menu=smartMenuOf(select),btn=select?select._smartButton:null;if(!menu||!btn)return;
+  menu.classList.remove("drop-up");
+  requestAnimationFrame(()=>{
+    if(smartSelectCurrent!==select||!menu.classList.contains("open"))return;
+    const r=btn.getBoundingClientRect();
+    const modal=btn.closest(".dash-modal-box");
+    const boundary=modal?.getBoundingClientRect();
+    const lower=Math.min(window.innerHeight||9999,boundary?.bottom??9999);
+    const upper=Math.max(0,boundary?.top??0);
+    const below=lower-r.bottom;
+    const above=r.top-upper;
+    const wanted=Math.min(menu.scrollHeight||270,300);
+    if(below<Math.min(190,wanted)&&above>below)menu.classList.add("drop-up");
+  });
+}
+function openSmartSelect(select,btn=select?select._smartButton:null){
+  if(!select||!btn||select.disabled)return;
+  if(smartSelectCurrent===select&&smartMenuOf(select)?.classList.contains("open")){closeSmartSelect();return;}
+  closeSmartSelect();
+  smartSelectCurrent=select;smartSelectButton=btn;smartActiveIndex=0;
+  const wrap=select.closest(".smart-select-wrap"),menu=smartMenuOf(select),input=menu?.querySelector(".smart-search-input");
+  if(!wrap||!menu||!input)return;
+  wrap.classList.add("smart-open");
+  btn.classList.add("is-open");
+  menu.classList.add("open");
+  input.value="";
+  input.placeholder=`ابحث عن ${smartContextLabel(select)}...`;
+  renderSmartOptions(select,"");
+  placeSmartMenu(select);
+  /* على الحاسوب فقط نبدأ الكتابة فوراً؛ الهاتف يفتح القائمة أولاً بلا قفزة للكيبورد. */
+  if((window.innerWidth||0)>620)requestAnimationFrame(()=>{try{input.focus();input.select();}catch(_){}});
+}
+function closeSmartSelect(){
+  if(smartSelectCurrent){
+    const wrap=smartSelectCurrent.closest(".smart-select-wrap"),menu=smartMenuOf(smartSelectCurrent);
+    wrap?.classList.remove("smart-open");menu?.classList.remove("open","drop-up");
+  }
+  smartSelectButton?.classList.remove("is-open");
+  smartSelectCurrent=null;smartSelectButton=null;smartActiveIndex=-1;
 }
 function enhanceSelect(select){
   if(!(select instanceof HTMLSelectElement)||select.dataset.smartEnhanced==="1")return;
   select.dataset.smartEnhanced="1";
   const wrapper=document.createElement("div");wrapper.className="smart-select-wrap";
   select.parentNode.insertBefore(wrapper,select);wrapper.appendChild(select);select.classList.add("smart-native-select");
+
   const btn=document.createElement("button");btn.type="button";btn.className="smart-select-btn";btn.setAttribute("aria-haspopup","listbox");
   btn.innerHTML='<span class="smart-select-label"></span><span class="smart-select-chevron">⌄</span>';
   wrapper.appendChild(btn);select._smartButton=btn;
-  btn.addEventListener("click",()=>{if(!select.disabled)openSmartSelect(select,btn);});
+
+  const menu=document.createElement("div");menu.className="smart-select-menu";menu.setAttribute("role","listbox");
+  menu.innerHTML='<div class="smart-search-box"><input class="smart-search-input" type="search" autocomplete="off" spellcheck="false"></div><div class="smart-options"></div>';
+  wrapper.appendChild(menu);select._smartMenu=menu;
+
+  const input=menu.querySelector(".smart-search-input");
+  input.addEventListener("input",()=>renderSmartOptions(select,input.value));
+  input.addEventListener("keydown",e=>{
+    const buttons=smartButtonsOf(select);
+    if(e.key==="ArrowDown"){e.preventDefault();smartActiveIndex=Math.min(buttons.length-1,smartActiveIndex+1);paintSmartActive(select);}
+    else if(e.key==="ArrowUp"){e.preventDefault();smartActiveIndex=Math.max(0,smartActiveIndex-1);paintSmartActive(select);}
+    else if(e.key==="Enter"){e.preventDefault();buttons[smartActiveIndex>=0?smartActiveIndex:0]?.click();}
+    else if(e.key==="Escape"){e.preventDefault();closeSmartSelect();}
+  });
+  menu.addEventListener("pointerdown",e=>e.stopPropagation());
+  btn.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();openSmartSelect(select,btn);});
   select.addEventListener("change",()=>syncSmartSelect(select));
+  select.addEventListener("input",()=>syncSmartSelect(select));
   const obs=new MutationObserver(()=>syncSmartSelect(select));
   obs.observe(select,{childList:true,subtree:true,attributes:true,attributeFilter:["disabled"]});
   select._smartObserver=obs;
@@ -965,96 +1054,27 @@ function enhanceAllSelects(root=document){
   root.querySelectorAll?.("select").forEach(enhanceSelect);
 }
 function positionSmartPopover(){
-  if(!smartSelectCurrent||!smartSelectButton||!smartSelectPopover)return;
-  const r=smartSelectButton.getBoundingClientRect();
-  const vw=Math.max(280,window.innerWidth||document.documentElement.clientWidth||360);
-  const vh=Math.max(320,window.innerHeight||document.documentElement.clientHeight||640);
-  const margin=8,gap=6,isMobile=vw<=620;
-  const desired=Math.min(Math.max(r.width,isMobile?220:250),Math.min(isMobile?vw-16:460,vw-margin*2));
-  const left=Math.max(margin,Math.min(r.left,vw-desired-margin));
-  smartSelectPopover.style.width=desired+'px';
-  smartSelectPopover.style.left=left+'px';
-  smartSelectPopover.style.right='auto';
-  smartSelectPopover.style.bottom='auto';
-
-  const maxH=isMobile?Math.min(vh*.52,380):360;
-  const measured=Math.min(maxH,Math.max(150,smartSelectPopover.offsetHeight||smartSelectPopover.scrollHeight||260));
-  const below=Math.max(0,vh-r.bottom-margin);
-  const above=Math.max(0,r.top-margin);
-
-  let top;
-  if(below>=Math.min(190,measured) || below>=above){
-    top=r.bottom+gap;
-    if(top+measured>vh-margin) top=Math.max(margin,vh-measured-margin);
-  }else{
-    top=Math.max(margin,r.top-gap-measured);
-  }
-  smartSelectPopover.style.top=Math.round(top)+'px';
+  /* اسم قديم محفوظ للتوافق مع أي استدعاء سابق؛ القائمة الآن داخل الحقل. */
+  if(smartSelectCurrent)placeSmartMenu(smartSelectCurrent);
 }
-function openSmartSelect(select,btn){
-  try{
-    const pop=ensureSmartPopover();
-    if(smartSelectCurrent===select&&pop.classList.contains('open')){closeSmartSelect();return;}
-    closeSmartSelect();
-    smartSelectCurrent=select;smartSelectButton=btn;btn.classList.add('is-open');
-    const input=pop.querySelector('.smart-search-input');
-    input.value='';input.placeholder=`ابحث عن ${smartContextLabel(select)}...`;
-    pop.classList.add('open');
-    renderSmartOptions('');
-    positionSmartPopover();
-    requestAnimationFrame(()=>positionSmartPopover());
-    /* في الهاتف لا نفتـح لوحة المفاتيح تلقائياً حتى لا يقفز WebView أو يخفي القائمة. */
-    if((window.innerWidth||0)>620){
-      requestAnimationFrame(()=>{try{input.focus();input.select();}catch(_){}});
-    }
-  }catch(err){
-    console.error('smart select open failed',err);
-    closeSmartSelect();
-    /* fallback: أظهر الـ select الأصلي إذا فشل العارض المخصص لأي سبب في WebView. */
-    try{
-      select.classList.remove('smart-native-select');
-      btn.style.display='none';
-      if(typeof select.showPicker==='function') select.showPicker();
-      else select.focus();
-    }catch(_){ }
-  }
-}
-function closeSmartSelect(){
-  smartSelectPopover?.classList.remove("open");smartSelectButton?.classList.remove("is-open");
-  smartSelectCurrent=null;smartSelectButton=null;smartSelectFiltered=[];smartActiveIndex=-1;
-}
-function renderSmartOptions(query){
-  if(!smartSelectCurrent||!smartSelectPopover)return;
-  const q=smartNormalize(query), opts=[...smartSelectCurrent.options];
-  smartSelectFiltered=opts.filter(o=>!o.disabled&&(!q||smartNormalize(o.textContent).includes(q)));
-  smartActiveIndex=smartSelectFiltered.length?0:-1;
-  const box=smartSelectPopover.querySelector(".smart-options");
-  if(!smartSelectFiltered.length){box.innerHTML='<div class="smart-empty">لا توجد نتائج مطابقة</div>';positionSmartPopover();return;}
-  box.innerHTML="";
-  smartSelectFiltered.forEach((o,i)=>{
-    const b=document.createElement("button");b.type="button";b.className="smart-option"+(o.value===smartSelectCurrent.value?" selected":"")+(i===smartActiveIndex?" active":"");
-    b.textContent=o.textContent;b.dataset.value=o.value;b.setAttribute("role","option");b.setAttribute("aria-selected",o.value===smartSelectCurrent.value?"true":"false");
-    b.addEventListener("click",()=>{
-      const changed=smartSelectCurrent.value!==o.value;smartSelectCurrent.value=o.value;syncSmartSelect(smartSelectCurrent);
-      if(changed){smartSelectCurrent.dispatchEvent(new Event("input",{bubbles:true}));smartSelectCurrent.dispatchEvent(new Event("change",{bubbles:true}));}
-      closeSmartSelect();
-    });
-    box.appendChild(b);
-  });
-  positionSmartPopover();
-}
-let searchableObserver=null;
 function initSearchableSelects(){
   enhanceAllSelects(document);
-  if(searchableObserver)return;
-  searchableObserver=new MutationObserver(records=>{
-    for(const record of records){
-      for(const node of record.addedNodes){
-        if(node.nodeType===1)enhanceAllSelects(node);
-      }
-    }
-  });
-  searchableObserver.observe(document.body,{childList:true,subtree:true});
+  if(!searchableObserver){
+    searchableObserver=new MutationObserver(records=>{
+      for(const record of records)for(const node of record.addedNodes)if(node.nodeType===1)enhanceAllSelects(node);
+    });
+    searchableObserver.observe(document.body,{childList:true,subtree:true});
+  }
+  if(!smartOutsideBound){
+    smartOutsideBound=true;
+    document.addEventListener("pointerdown",e=>{
+      if(!smartSelectCurrent)return;
+      const wrap=smartSelectCurrent.closest(".smart-select-wrap");
+      if(wrap?.contains(e.target))return;
+      closeSmartSelect();
+    },true);
+    window.addEventListener("resize",()=>positionSmartPopover(),{passive:true});
+  }
   document.addEventListener("reset",()=>{
     setTimeout(()=>document.querySelectorAll('select[data-smart-enhanced="1"]').forEach(syncSmartSelect),0);
   },true);
