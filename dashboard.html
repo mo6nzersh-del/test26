@@ -1,1448 +1,1438 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>الرئيسية - Ahmed And hamdy</title>
-    <meta name="robots" content="noindex, nofollow" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="dns-prefetch" href="//firestore.googleapis.com">
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet"></noscript>
-    <!-- ضمان الأرقام اللاتينية فقط -->
-    <script>
-    (function(){
-      var _NF=Intl.NumberFormat;
-      function patchLocale(l){
-        if(!l)return"ar-EG-u-nu-latn";
-        if(typeof l==="string")return l.includes("nu-")?l:l.replace(/^ar(-EG)?/,"ar-EG-u-nu-latn");
-        if(Array.isArray(l))return l.map(patchLocale);
-        return"ar-EG-u-nu-latn";
-      }
-      Intl.NumberFormat=function(l,o){return new _NF(patchLocale(l),o)};
-      Object.assign(Intl.NumberFormat,_NF);
-      Intl.NumberFormat.prototype=_NF.prototype;
-    })();
-    </script>
-    <link rel="modulepreload" crossorigin href="/assets/auth-guard-DMMO1gWE.js">
-    <link rel="stylesheet" crossorigin href="/assets/auth-guard-C6CJ8_8i.css">
-    <style>
-      /* ══════════════════════════════════════
-         تصميم موبايل — أحمد وحمدي
-      ══════════════════════════════════════ */
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>الرئيسية - Ahmed And hamdy</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://securetoken.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://i.imgur.com" crossorigin>
+  <link rel="dns-prefetch" href="//www.gstatic.com">
+  <link rel="dns-prefetch" href="//firestore.googleapis.com">
+  <link rel="preload" as="image" href="https://i.imgur.com/NsN1HgC.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" crossorigin href="/assets/auth-guard-C6CJ8_8i.css">
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    :root{
+      --grad-1:#4f46e5;--grad-2:#7c3aed;--grad-3:#6d28d9;
+      --dash-green:#2f6f4f;--dash-green-dark:#24583e;--dash-green-soft:#eef7f2;
+      --dash-blue:#315f9c;--dash-blue-soft:#eef4fb;--dash-red:#b3432f;--dash-red-soft:#fff3f0;
+      --dash-gold:#b98325;--dash-gold-soft:#fff8e9;--dash-purple:#6652a3;--dash-purple-soft:#f4f1fb;
+      --dash-radius:18px;--dash-shadow:0 10px 30px rgba(28,37,33,.07)
+    }
+    body{background:var(--bg);overflow-x:hidden}
 
-      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    .svg-icon{width:1.15em;height:1.15em;display:inline-block;vertical-align:middle;color:currentColor;flex:0 0 auto}
+    .svg-icon svg{width:100%;height:100%;display:block;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+    .svg-icon.fill svg{fill:currentColor;stroke:none}
+    .svg-icon.duotone svg .fill{fill:currentColor;stroke:none;opacity:.18}
+    .svg-icon.duotone svg .line{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+    .welcome-wave{display:inline-flex;align-items:center;justify-content:center;width:1.05em;height:1.05em;vertical-align:-.12em}
+    .welcome-wave .svg-icon{width:.92em;height:.92em}
+    .welcome-wave.is-morning{background:linear-gradient(145deg,#fff9d8,#ffe998);color:#d59a08}
+    .welcome-wave.is-evening{background:linear-gradient(145deg,#eef1ff,#dce4ff);color:#556dd8}
+    .ops-icon .svg-icon,.a-ico .svg-icon,.m-ico .svg-icon{width:22px;height:22px}
+    .ticon .svg-icon{width:18px;height:18px}
+    .radio-card strong .svg-icon,.cash-check strong .svg-icon{width:15px;height:15px;margin-left:6px;vertical-align:-2px}
+    .modal-x .svg-icon{width:18px;height:18px}
+    .smart-search-box::before{content:"";position:absolute;right:18px;top:16px;width:18px;height:18px;background:currentColor;color:var(--muted);opacity:.7;pointer-events:none;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10.5 3a7.5 7.5 0 0 1 5.93 12.1l4.23 4.22a1 1 0 1 1-1.41 1.42l-4.23-4.23A7.5 7.5 0 1 1 10.5 3Zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10.5 3a7.5 7.5 0 0 1 5.93 12.1l4.23 4.22a1 1 0 1 1-1.41 1.42l-4.23-4.23A7.5 7.5 0 1 1 10.5 3Zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z'/%3E%3C/svg%3E") center/contain no-repeat}
+    #app{min-height:100vh;visibility:hidden}
+    .dash-page{width:min(1180px,100%);margin:0 auto;padding:28px 22px 96px}
+    /* واجهة الترحيب أعلى الداشبورد — بقية الأقسام تبقى كما هي */
+    .dash-hero{
+      position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:22px;
+      margin-bottom:24px;padding:24px 26px;border:1px solid var(--border);border-radius:22px;
+      background:
+        radial-gradient(circle at 8% 18%,rgba(47,111,79,.11),transparent 34%),
+        radial-gradient(circle at 92% 100%,rgba(49,95,156,.08),transparent 32%),
+        var(--surface);
+      box-shadow:var(--dash-shadow)
+    }
+    .dash-hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,rgba(255,255,255,.32),transparent 45%)}
+    .welcome-copy{position:relative;z-index:1;min-width:0}
+    .welcome-kicker{display:inline-flex;align-items:center;gap:7px;margin-bottom:8px;color:var(--primary-dark);font-size:11.5px;font-weight:900;background:var(--primary-soft);border-radius:999px;padding:5px 10px}
+    .welcome-kicker::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--primary)}
+    .dash-hero h1{margin:0;font-size:clamp(24px,3vw,35px);font-weight:900;letter-spacing:-.45px;color:var(--ink);line-height:1.35}
+    .greeting-name{color:var(--primary-dark)}
+    .welcome-wave{display:inline-flex;align-items:center;justify-content:center;width:1.4em;height:1.4em;border-radius:50%;margin-inline-start:.22em;vertical-align:-.18em;background:linear-gradient(145deg,#fff8d6,#fff0a8);color:#d6a21f;box-shadow:0 3px 10px rgba(214,162,31,.16)}
+    @keyframes welcomeWave{from{transform:none}to{transform:none}}
+    .dash-hero p{margin:7px 0 0;color:var(--muted);font-size:13.5px;line-height:1.8}
+    .welcome-date{margin-top:9px!important;font-size:11.5px!important;font-weight:700;color:var(--muted)!important}
+    .welcome-side{position:relative;z-index:1;display:flex;align-items:center;gap:12px;flex:0 0 auto}
+    .welcome-avatar{width:54px;height:54px;border-radius:17px;display:grid;place-items:center;background:linear-gradient(145deg,var(--dash-green),var(--dash-green-dark));color:#fff;font-size:21px;font-weight:900;box-shadow:0 8px 18px rgba(47,111,79,.19);border:3px solid rgba(255,255,255,.75);text-transform:uppercase}
+    .live-chip{display:flex;align-items:center;gap:8px;white-space:nowrap;background:rgba(255,255,255,.8);border:1px solid var(--border);border-radius:999px;padding:8px 13px;font-size:11.5px;font-weight:800;color:var(--muted);box-shadow:0 3px 12px rgba(0,0,0,.035);backdrop-filter:blur(6px)}
+    .live-dot{width:8px;height:8px;border-radius:50%;background:#3aa86b;box-shadow:0 0 0 4px rgba(58,168,107,.12)}
 
-      :root {
-        --grad-1: #4f46e5;
-        --grad-2: #7c3aed;
-        --grad-3: #6d28d9;
-        --accent:  #f59e0b;
-        --accent2: #10b981;
-        --surface: #ffffff;
-        --bg:      #f1f5f9;
-        --border:  #e2e8f0;
-        --ink:     #0f172a;
-        --muted:   #64748b;
-        --primary: #4f46e5;
-        --primary-dark: #3730a3;
-        --primary-soft: #eef2ff;
-        --danger:  #ef4444;
-        --warning: #f59e0b;
-        --success: #10b981;
-        --r-card:  16px;
-        --shadow:  0 2px 12px rgba(0,0,0,.08);
-        --shadow-lg: 0 8px 28px rgba(0,0,0,.14);
-      }
-      [data-theme="dark"] {
-        --surface: #1e1b4b;
-        --bg:      #0f0e2a;
-        --border:  #312e81;
-        --ink:     #f8fafc;
-        --muted:   #a5b4fc;
-        --primary-soft: #1e1b4b;
-      }
+    .ops-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--dash-radius);box-shadow:var(--dash-shadow);padding:20px;margin-bottom:18px}
+    .ops-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}
+    .ops-title{display:flex;align-items:center;gap:10px;min-width:0}
+    .ops-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px;flex:0 0 auto;background:var(--primary-soft)}
+    .ops-title h2{font-size:17px;margin:0;font-weight:900}
+    .ops-title p{font-size:12px;margin:2px 0 0;color:var(--muted)}
+    .section-link{font-size:12px;font-weight:800;color:var(--primary);padding:7px 10px;border-radius:9px;background:var(--primary-soft);white-space:nowrap}
+    .action-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+    .action-card{appearance:none;border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:15px;text-align:right;font-family:inherit;display:flex;gap:12px;align-items:center;min-height:86px;transition:.16s ease;box-shadow:0 2px 8px rgba(28,37,33,.025);color:var(--ink)}
+    .action-card:hover{transform:translateY(-2px);border-color:#cfd7d1;box-shadow:0 8px 20px rgba(28,37,33,.07)}
+    .action-card:active{transform:translateY(0)}
+    .action-card .a-ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:21px;flex:0 0 42px;background:var(--bg)}
+    .action-card strong{display:block;font-size:14px;font-weight:900;margin-bottom:3px}
+    .action-card small{display:block;font-size:11.5px;color:var(--muted);line-height:1.55;font-weight:600}
+    .action-card.sale{border-color:#cfe5d8;background:linear-gradient(145deg,#fff,var(--dash-green-soft))}
+    .action-card.sale .a-ico{background:#dff1e6}
+    .action-card.in .a-ico{background:#e6f5ec;color:#17643a}
+    .action-card.out .a-ico{background:#fae9e5;color:#a13e2e}
+    .action-card.other .a-ico{background:var(--dash-purple-soft)}
+    .action-card.merchant .a-ico{background:var(--dash-gold-soft)}
 
-      html, body { height: 100%; background: var(--bg); }
+    .direction-strip{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+    .direction-note{border-radius:12px;padding:10px 12px;font-size:11.5px;font-weight:700;line-height:1.6;border:1px solid var(--border);background:var(--bg);color:var(--muted)}
+    .direction-note b{color:var(--ink)}
+    .direction-note.in{background:#f2faf5;border-color:#d7ebdf}
+    .direction-note.out{background:#fff6f3;border-color:#f1d9d3}
 
-      body {
-        font-family: 'Cairo', 'Segoe UI', sans-serif;
-        color: var(--ink);
-        direction: rtl;
-        -webkit-font-smoothing: antialiased;
-        overflow-x: hidden;
-      }
+    /* modal */
+    .dash-modal{position:fixed;inset:0;z-index:2000;background:rgba(15,23,42,.46);display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
+    .dash-modal.open{display:flex}
+    .dash-modal-box{width:min(720px,100%);max-height:min(90vh,880px);overflow:auto;background:var(--surface);border-radius:20px;border:1px solid var(--border);box-shadow:0 24px 70px rgba(0,0,0,.22);animation:modalIn .16s ease}
+    .dash-modal-box.wide{width:min(860px,100%)}
+    @keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
+    .modal-head{position:sticky;top:0;z-index:3;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--border)}
+    .modal-title-wrap{display:flex;align-items:center;gap:10px}
+    .modal-title-wrap .m-ico{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:var(--primary-soft);font-size:19px}
+    .modal-head h3{font-size:16px;margin:0;font-weight:900}
+    .modal-head p{font-size:11px;color:var(--muted);margin:2px 0 0}
+    .modal-x{width:38px;height:38px;border:0;border-radius:10px;background:var(--bg);color:var(--muted);font-size:24px;line-height:1;display:grid;place-items:center}
+    .modal-x:hover{background:var(--danger-soft);color:var(--danger)}
+    .modal-body{padding:18px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .field{margin-bottom:13px}
+    .field label{display:block;font-size:12.5px;font-weight:800;margin-bottom:6px;color:var(--ink)}
+    .field .help{font-weight:500;color:var(--muted);font-size:10.5px;margin-right:4px}
+    .field input,.field select,.field textarea{width:100%;min-height:46px;border:1.5px solid var(--border);border-radius:11px;background:#fbfcfb;color:var(--ink);font:600 14px Cairo,sans-serif;padding:10px 12px;outline:none;transition:.15s}
+    .field textarea{min-height:78px;resize:vertical}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);background:#fff}
+    .field input[readonly],.field select:disabled{background:var(--bg);color:var(--muted);cursor:not-allowed}
+    .mini-title{font-size:12px;font-weight:900;color:var(--muted);margin:4px 0 9px}
+    .line-list{display:flex;flex-direction:column;gap:9px;margin-bottom:10px}
+    .line-row{display:grid;grid-template-columns:minmax(190px,2fr) minmax(95px,.7fr) minmax(95px,.8fr) auto;gap:8px;align-items:end;background:var(--bg);border:1px solid var(--border);border-radius:13px;padding:10px}
+    .line-row.production{grid-template-columns:minmax(190px,2fr) minmax(110px,.7fr) auto}
+    .line-cell label{display:block;font-size:10.5px;color:var(--muted);font-weight:800;margin-bottom:4px}
+    .line-cell input,.line-cell select{width:100%;height:42px;border:1px solid var(--border);border-radius:9px;background:#fff;font:600 13px Cairo;padding:7px 9px;color:var(--ink)}
+    .line-meta{grid-column:1/-1;font-size:10.5px;color:var(--muted);padding-top:1px}
+    .remove-line{height:42px;border:0;border-radius:9px;background:#fff0ed;color:var(--danger);font-size:11px;font-weight:900;padding:0 11px}
+    .remove-line:disabled{opacity:.4;cursor:not-allowed}
+    .add-line{border:1px dashed #b7c8bd;border-radius:10px;background:#f7fbf8;color:var(--primary-dark);font-size:12px;font-weight:900;padding:10px 13px}
+    .type-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:14px}
+    .type-choice{border:1.5px solid var(--border);border-radius:12px;background:#fff;padding:12px;display:flex;gap:10px;align-items:center;text-align:right;font-family:inherit;color:var(--ink)}
+    .type-choice.selected{border-color:var(--primary);background:var(--primary-soft)}
+    .type-choice.danger.selected{border-color:#d56b59;background:#fff2ef}
+    .type-choice .ticon{font-size:19px}
+    .type-choice strong{font-size:12.5px;display:block}
+    .type-choice small{font-size:10.5px;color:var(--muted);display:block;margin-top:1px}
+    .dir-box{border-radius:11px;padding:10px 12px;font-size:12px;font-weight:900;margin-bottom:13px;border:1px solid var(--border)}
+    .dir-box.in{background:#eef9f2;color:#17643a;border-color:#d4eadc}
+    .dir-box.out{background:#fff2ef;color:#a23f2e;border-color:#f1d5ce}
+    .dir-box.custom{background:var(--bg);color:var(--muted)}
+    .radio-cards{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:13px}
+    .radio-card{position:relative;border:1.5px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;background:#fff}
+    .radio-card input{position:absolute;opacity:0;pointer-events:none}
+    .radio-card.active-in{border-color:#6db88c;background:#eff9f3}
+    .radio-card.active-out{border-color:#d88676;background:#fff3f0}
+    .radio-card strong{font-size:12.5px;display:block}
+    .radio-card small{font-size:10.5px;color:var(--muted);display:block;margin-top:3px;line-height:1.5}
+    .cash-check{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border);border-radius:12px;background:var(--bg);padding:11px 12px;margin-bottom:13px}
+    .cash-check input{margin-top:4px;transform:scale(1.15)}
+    .cash-check strong{font-size:12px;display:block}.cash-check small{font-size:10.5px;color:var(--muted);line-height:1.5;display:block;margin-top:2px}
+    .summary-box{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:13px;padding:10px;margin:12px 0 14px}
+    .summary-item{text-align:center;padding:7px 5px}.summary-item span{display:block;font-size:10px;color:var(--muted);font-weight:700}.summary-item strong{display:block;font-size:14px;margin-top:2px;font-weight:900;color:var(--ink)}
+    .modal-actions{display:flex;gap:9px;justify-content:flex-start;margin-top:4px}
+    .primary-btn,.ghost-btn{min-height:45px;border-radius:11px;padding:10px 17px;font:800 13px Cairo;border:0}
+    .primary-btn{background:var(--primary);color:#fff;box-shadow:0 5px 14px rgba(47,111,79,.18)}
+    .primary-btn:hover{background:var(--primary-dark)}
+    .primary-btn:disabled{opacity:.55;cursor:not-allowed}
+    .ghost-btn{background:var(--bg);color:var(--muted);border:1px solid var(--border)}
+    .danger-btn{background:var(--danger);color:#fff}
+    .file-drop{display:flex;align-items:center;gap:10px;min-height:52px;border:1.5px dashed var(--border);border-radius:11px;padding:9px 11px;background:var(--bg);cursor:pointer;color:var(--muted);font-size:12px;font-weight:700}
+    .file-drop img{width:44px;height:44px;border-radius:9px;object-fit:cover;display:none}
 
-      /* ══ شاشة التحميل ══ */
-      #page-loader {
-        position: fixed; inset: 0; z-index: 9999;
-        background: linear-gradient(145deg, var(--grad-1), var(--grad-2));
-        display: flex; flex-direction: column;
-        align-items: center; justify-content: center;
-        gap: 20px;
-        transition: opacity .35s ease;
-      }
-      #page-loader.pl-hide { opacity: 0; pointer-events: none; }
-      .pl-logo {
-        width: 90px; height: 90px; border-radius: 22px;
-        background: rgba(255,255,255,.18);
-        border: 2px solid rgba(255,255,255,.35);
-        display: flex; align-items: center; justify-content: center;
-        overflow: hidden;
-      }
-      .pl-logo-img {
-        width: 100%; height: 100%;
-        object-fit: contain;
-        padding: 10px;
-      }
-      .pl-logo-fallback {
-        display: none;
-        font-size: 26px; font-weight: 900; color: #fff;
-        letter-spacing: 1px;
-      }
-      .pl-spinner {
-        width: 36px; height: 36px;
-        border: 3.5px solid rgba(255,255,255,.3);
-        border-top-color: #fff;
-        border-radius: 50%;
-        animation: pl-spin .75s linear infinite;
-      }
-      @keyframes pl-spin { to { transform: rotate(360deg); } }
-      .pl-text {
-        color: rgba(255,255,255,.8);
-        font-size: 14px; font-weight: 600;
-        letter-spacing: .3px;
-      }
+    /* واجهة التحميل الأصلية */
+    #page-loader{
+      position:fixed;inset:0;z-index:9999;
+      background:linear-gradient(145deg,var(--grad-1),var(--grad-2));
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+      transition:opacity .20s ease;
+    }
+    #page-loader.pl-hide{opacity:0;pointer-events:none}
+    .pl-logo{width:90px;height:90px;border-radius:22px;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .pl-logo-img{width:100%;height:100%;object-fit:contain;padding:10px}
+    .pl-logo-fallback{display:none;font-size:26px;font-weight:900;color:#fff;letter-spacing:1px}
+    .pl-spinner{width:36px;height:36px;border:3.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:pl-spin .75s linear infinite}
+    @keyframes pl-spin{to{transform:rotate(360deg)}}
+    .pl-text{color:rgba(255,255,255,.8);font-size:14px;font-weight:600;letter-spacing:.3px}
+    .spinner-mini{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;animation:pl-spin .7s linear infinite}
 
-      /* إخفاء التوبار والنافبار القديمَين دائماً */
-      #topbar { display: none !important; }
-      #bottom-nav { display: none !important; }
-      /* إلغاء الـ padding الذي يضيفه CSS القديم للنافبار القديم */
-      .page { padding-bottom: 0 !important; }
+    /* قوائم اختيار قابلة للبحث — يبقى select الأصلي للمحافظة على المنطق */
+    .smart-select-wrap{position:relative;width:100%}
+    .smart-native-select{position:absolute!important;inset:auto!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;padding:0!important;margin:0!important;border:0!important}
+    .smart-select-btn{width:100%;min-height:46px;border:1.5px solid var(--border);border-radius:11px;background:#fbfcfb;color:var(--ink);font:600 14px Cairo,sans-serif;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:right;outline:none;transition:.15s}
+    .smart-select-btn:hover{background:#fff;border-color:#cbd5cf}
+    .smart-select-btn:focus,.smart-select-btn.is-open{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);background:#fff}
+    .smart-select-btn:disabled{background:var(--bg);color:var(--muted);cursor:not-allowed;opacity:.72}
+    .smart-select-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
+    .smart-select-chevron{font-size:13px;color:var(--muted);transition:transform .15s;flex:0 0 auto}
+    .smart-select-btn.is-open .smart-select-chevron{transform:rotate(180deg)}
+    #smart-select-popover{position:fixed;z-index:7000;display:none;background:var(--surface,#fff);border:1.5px solid var(--border);border-radius:13px;box-shadow:0 18px 50px rgba(15,23,42,.20);overflow:hidden;direction:rtl}
+    #smart-select-popover.open{display:block}
+    .smart-search-box{padding:9px;border-bottom:1px solid var(--border);background:#f8faf8;position:sticky;top:0;z-index:1}
+    .smart-search-input{width:100%;height:42px;border:1.5px solid var(--border);border-radius:9px;background:#fff;color:var(--ink);font:600 13px Cairo,sans-serif;padding:8px 34px 8px 10px;outline:none}
+    .smart-search-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+    .smart-options{max-height:260px;overflow:auto;padding:5px}
+    .smart-option{width:100%;border:0;background:transparent;color:var(--ink);font:600 13px Cairo,sans-serif;padding:9px 10px;border-radius:8px;text-align:right;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:39px}
+    .smart-option:hover,.smart-option.active{background:var(--primary-soft);color:var(--primary-dark)}
+    .smart-option.selected{font-weight:900;background:#edf6f0;color:var(--primary-dark)}
+    .smart-option.selected::after{content:'✓';font-weight:900;color:var(--primary)}
+    .smart-empty{padding:18px 12px;text-align:center;color:var(--muted);font-size:12px;font-weight:700}
+    .line-cell .smart-select-btn{height:42px;min-height:42px;border-radius:9px;font-size:13px;padding:7px 9px}
+    @media(max-width:620px){
+      #smart-select-popover{border-radius:14px;box-shadow:0 14px 44px rgba(15,23,42,.24)}
+      .smart-options{max-height:min(42vh,300px)}
+      .smart-search-input{height:44px;font-size:14px}
+      .smart-option{min-height:44px;font-size:13.5px}
+    }
 
-      /* ═══ الصفحة الرئيسية ═══ */
-      .page {
-        width: 100%;
-        min-height: calc(100vh - 68px);
-        padding: 0;
-        background: var(--bg);
-        position: relative;
-      }
+    @media(max-width:900px){
+      .dash-page{padding:20px 16px 92px}.action-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.dash-hero{align-items:flex-start}.direction-strip{grid-template-columns:1fr}
+    }
+    @media(max-width:620px){
+      .dash-page{padding:14px 11px 88px}.dash-hero{margin-bottom:15px;padding:18px 16px;border-radius:18px;align-items:flex-start;gap:12px}.dash-hero h1{font-size:22px}.dash-hero p{font-size:11.5px;line-height:1.7}.welcome-kicker{font-size:10.5px;margin-bottom:7px}.welcome-date{font-size:10.5px!important;margin-top:7px!important}.welcome-side{align-self:flex-start}.welcome-avatar{width:45px;height:45px;border-radius:14px;font-size:18px}.live-chip{display:none}
+      .ops-section{padding:13px;border-radius:15px;margin-bottom:12px}.ops-head{margin-bottom:11px}.ops-icon{width:36px;height:36px;border-radius:10px}.ops-title h2{font-size:15px}.ops-title p{font-size:10.5px}.section-link{font-size:10.5px;padding:6px 8px}
+      .action-grid{grid-template-columns:1fr 1fr;gap:8px}.action-card{min-height:96px;padding:11px;display:block}.action-card .a-ico{width:37px;height:37px;margin-bottom:8px;font-size:18px}.action-card strong{font-size:12.5px}.action-card small{font-size:10px;line-height:1.45}
+      .direction-strip{margin-top:10px}.direction-note{font-size:10.5px;padding:9px}
+      .dash-modal{padding:0;align-items:flex-end}.dash-modal-box,.dash-modal-box.wide{width:100%;max-height:92dvh;border-radius:22px 22px 0 0;border-bottom:0;animation:sheetIn .18s ease}@keyframes sheetIn{from{transform:translateY(18px);opacity:.7}to{transform:none;opacity:1}}
+      .modal-head{padding:13px 14px}.modal-body{padding:14px}.form-grid{grid-template-columns:1fr}.line-row,.line-row.production{grid-template-columns:1fr 1fr}.line-row .line-cell:first-child{grid-column:1/-1}.line-row .remove-line{grid-column:1/-1;height:38px}.line-meta{grid-column:1/-1}.type-grid,.radio-cards{grid-template-columns:1fr}.summary-box{grid-template-columns:1fr 1fr}.summary-item:last-child:nth-child(3){grid-column:1/-1}.modal-actions{position:sticky;bottom:-14px;background:linear-gradient(transparent,var(--surface) 20%);padding:18px 0 4px}.modal-actions .primary-btn{flex:1}.modal-actions .ghost-btn{min-width:88px}
+    }
+    @media(max-width:390px){.dash-hero{padding:16px 13px}.welcome-side{display:none}.dash-hero h1{font-size:20px}.welcome-kicker{padding:4px 8px}.action-grid{grid-template-columns:1fr}.action-card{min-height:auto;display:flex}.action-card .a-ico{margin-bottom:0}.summary-box{grid-template-columns:1fr}}
 
-      /* ═══ شاشات سطح المكتب: نمركز #app كاملاً ═══ */
-      @media (min-width: 900px) {
-        body { background: #dde3ee; }
-        #app {
-          max-width: 960px;
-          margin: 0 auto;
-          min-height: 100vh;
-          background: var(--bg);
-          box-shadow: 0 0 60px rgba(0,0,0,.18);
-          position: relative;
-        }
-        /* شبكة البطاقات: 3 أعمدة */
-        .dash-grid { grid-template-columns: repeat(3, 1fr); }
-        /* الاختصارات: 4 أعمدة */
-        .shortcuts-grid { grid-template-columns: repeat(4, 1fr); }
-        /* القائمة السفلية تتبع #app */
-        .bottom-nav {
-          position: sticky;
-          bottom: 0;
-          left: unset;
-          right: unset;
-          transform: none;
-          width: 100%;
-          border-radius: 0;
-        }
-      }
-
-      /* ═══ هيدر بطولي ═══ */
-      .dash-hero {
-        background: linear-gradient(145deg, var(--grad-1) 0%, var(--grad-2) 55%, var(--grad-3) 100%);
-        padding: 0 0 52px;
-        position: relative;
-        overflow: hidden;
-      }
-      .dash-hero::before {
-        content: "";
-        position: absolute;
-        top: -80px; left: -80px;
-        width: 260px; height: 260px;
-        border-radius: 50%;
-        background: rgba(255,255,255,.07);
-        pointer-events: none;
-      }
-      .dash-hero::after {
-        content: "";
-        position: absolute;
-        bottom: -60px; right: -40px;
-        width: 200px; height: 200px;
-        border-radius: 50%;
-        background: rgba(255,255,255,.05);
-        pointer-events: none;
-      }
-
-      /* ─── شريط التطبيق العلوي ─── */
-      .app-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 14px 18px 10px;
-        position: relative; z-index: 2;
-      }
-      .app-bar-brand {
-        display: flex; align-items: center; gap: 8px;
-      }
-      .app-bar-mark {
-        width: 36px; height: 36px;
-        border-radius: 10px;
-        background: rgba(255,255,255,.22);
-        border: 1.5px solid rgba(255,255,255,.3);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 15px; font-weight: 900; color: #fff;
-        flex-shrink: 0;
-      }
-      .app-bar-name {
-        font-size: 13px; font-weight: 900; color: #fff;
-        line-height: 1.2;
-        letter-spacing: -.2px;
-      }
-      .app-bar-sub {
-        font-size: 10px; opacity: .65; font-weight: 600;
-        margin-top: 1px;
-      }
-      .app-bar-actions {
-        display: flex; align-items: center; gap: 8px;
-      }
-      .app-bar-btn {
-        width: 36px; height: 36px;
-        border-radius: 50%;
-        background: rgba(255,255,255,.15);
-        border: 1.5px solid rgba(255,255,255,.25);
-        display: flex; align-items: center; justify-content: center;
-        cursor: pointer; color: #fff;
-      }
-
-      /* ─── معلومات المستخدم ─── */
-      .user-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 6px 18px 18px;
-        position: relative; z-index: 2;
-      }
-      .user-greeting { color: rgba(255,255,255,.75); font-size: 12px; font-weight: 600; }
-      .user-name-big {
-        font-size: 18px; font-weight: 900; color: #fff;
-        line-height: 1.2; margin-top: 2px;
-        max-width: 180px;
-        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-      }
-      .user-avatar-wrap {
-        position: relative;
-      }
-      .user-avatar {
-        width: 52px; height: 52px;
-        border-radius: 50%;
-        background: rgba(255,255,255,.2);
-        border: 2.5px solid rgba(255,255,255,.5);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 22px; color: #fff;
-        overflow: hidden;
-      }
-      .user-avatar-badge {
-        position: absolute;
-        bottom: 1px; left: 1px;
-        width: 14px; height: 14px;
-        border-radius: 50%;
-        background: var(--success);
-        border: 2px solid #fff;
-      }
-
-      /* ─── بطاقة المبلغ الرئيسي ─── */
-      .hero-metric-card {
-        margin: 0 16px;
-        background: rgba(255,255,255,.12);
-        border: 1.5px solid rgba(255,255,255,.2);
-        border-radius: 20px;
-        padding: 18px 20px 20px;
-        backdrop-filter: blur(10px);
-        position: relative; z-index: 2;
-      }
-      .hero-metric-label {
-        display: flex; align-items: center; gap: 8px;
-        font-size: 12px; font-weight: 700;
-        color: rgba(255,255,255,.8);
-        margin-bottom: 10px;
-      }
-      .hero-metric-label-icon {
-        width: 26px; height: 26px;
-        border-radius: 7px;
-        background: rgba(255,255,255,.2);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 13px;
-      }
-      .hero-metric-value {
-        font-size: 36px; font-weight: 900;
-        color: #fff;
-        letter-spacing: -1.5px;
-        line-height: 1;
-        margin-bottom: 6px;
-      }
-      .hero-metric-sub {
-        font-size: 11px; color: rgba(255,255,255,.6);
-        font-weight: 600;
-      }
-      .hero-metric-divider {
-        height: 1px;
-        background: rgba(255,255,255,.15);
-        margin: 14px 0;
-      }
-      .hero-metric-row {
-        display: grid; grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-      .hero-sub-item {}
-      .hero-sub-label {
-        font-size: 10px; color: rgba(255,255,255,.6);
-        font-weight: 600; margin-bottom: 3px;
-      }
-      .hero-sub-val {
-        font-size: 13px; font-weight: 800; color: #fff;
-        letter-spacing: -.3px;
-      }
-      .hero-sub-val.money { font-size: 12px; }
-
-      /* ═══ بطاقة عائمة (العدادات السريعة) ═══ */
-      .float-card {
-        margin: -32px 16px 20px;
-        background: var(--surface);
-        border-radius: 18px;
-        box-shadow: 0 8px 32px rgba(79,70,229,.2);
-        border: 1px solid var(--border);
-        position: relative; z-index: 5;
-        overflow: hidden;
-      }
-      .float-inner {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-      }
-      .float-item {
-        padding: 16px 8px 14px;
-        text-align: center;
-        position: relative;
-        transition: background .15s;
-      }
-      .float-item:active { background: var(--bg); }
-      .float-item + .float-item::before {
-        content: "";
-        position: absolute;
-        top: 20%; bottom: 20%;
-        right: 0; /* RTL: separator on right */
-        width: 1px;
-        background: var(--border);
-      }
-      .float-icon {
-        width: 40px; height: 40px;
-        border-radius: 12px;
-        margin: 0 auto 8px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 19px;
-      }
-      .fi-green  { background: #dcfce7; }
-      .fi-blue   { background: #dbeafe; }
-      .fi-orange { background: #ffedd5; }
-      .float-label {
-        font-size: 10px; color: var(--muted); font-weight: 700;
-        margin-bottom: 4px; line-height: 1.3;
-      }
-      .float-val {
-        font-size: 22px; font-weight: 900; color: var(--ink);
-        line-height: 1;
-      }
-
-      /* ═══ شريط الفترة ═══ */
-      .period-wrap {
-        padding: 0 16px 20px;
-      }
-      .period-scroll {
-        background: var(--surface);
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        padding: 5px;
-        display: flex; gap: 4px;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        box-shadow: var(--shadow);
-      }
-      .period-scroll::-webkit-scrollbar { display: none }
-      .period-scroll button {
-        flex: 0 0 auto;
-        padding: 8px 14px;
-        border: none; border-radius: 8px;
-        background: transparent;
-        font-family: inherit; font-size: 12.5px; font-weight: 700;
-        color: var(--muted); cursor: pointer;
-        transition: background .15s, color .15s;
-        white-space: nowrap;
-      }
-      .period-scroll button.active {
-        background: var(--primary);
-        color: #fff;
-        box-shadow: 0 3px 10px rgba(79,70,229,.35);
-      }
-
-      /* ═══ رأس القسم ═══ */
-      .sec-head {
-        display: flex; align-items: center; gap: 10px;
-        padding: 0 16px 12px;
-      }
-      .sec-icon {
-        width: 34px; height: 34px;
-        border-radius: 10px;
-        background: var(--primary-soft);
-        color: var(--primary-dark);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 16px; flex-shrink: 0;
-      }
-      .sec-title {
-        font-size: 15px; font-weight: 900; color: var(--ink);
-        letter-spacing: -.2px;
-      }
-
-      /* ═══ شبكة البطاقات ═══ */
-      .dash-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        padding: 0 16px 24px;
-      }
-      .dash-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--r-card);
-        padding: 16px 14px 16px;
-        box-shadow: var(--shadow);
-        display: flex; flex-direction: column;
-        position: relative;
-        overflow: hidden;
-        transition: transform .13s, box-shadow .13s;
-      }
-      .dash-card:active {
-        transform: scale(.97);
-        box-shadow: var(--shadow-lg);
-      }
-      .dash-card.wide { grid-column: 1 / -1; }
-      .dash-card.featured {
-        background: linear-gradient(135deg, #4f46e5 0%, #6d28d9 100%);
-        border-color: transparent;
-      }
-      .dash-card.featured .dash-card-label { color: rgba(255,255,255,.75); }
-      .dash-card.featured .dash-card-value { color: #fff; }
-      .dash-card.featured .card-bar { background: rgba(255,255,255,.3); }
-
-      .dash-card-head {
-        display: flex; align-items: flex-start;
-        justify-content: space-between;
-        margin-bottom: 12px;
-      }
-      .dash-card-icon {
-        width: 40px; height: 40px;
-        border-radius: 11px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 19px; flex-shrink: 0;
-      }
-      .dc-green  { background: #dcfce7; }
-      .dc-teal   { background: #ccfbf1; }
-      .dc-blue   { background: #dbeafe; }
-      .dc-gold   { background: #fef3c7; }
-      .dc-red    { background: #fee2e2; }
-      .dc-purple { background: #ede9fe; }
-      .dc-navy   { background: #e0e7ff; }
-      .dc-orange { background: #ffedd5; }
-      .dc-white  { background: rgba(255,255,255,.25); }
-
-      .dash-card-label {
-        font-size: 11px; font-weight: 700;
-        color: var(--muted); line-height: 1.4;
-        margin-top: 2px;
-      }
-      .dash-card-value {
-        font-size: 26px; font-weight: 900;
-        color: var(--ink); line-height: 1;
-        margin-bottom: 4px;
-      }
-      .dash-card-value.money {
-        font-size: 16px;
-        color: var(--primary-dark);
-      }
-      .dash-card.featured .dash-card-value.money { color: #fff; }
-      .card-bar {
-        height: 3px;
-        border-radius: 99px;
-        margin-top: 10px;
-        opacity: .55;
-      }
-      .bar-green  { background: #10b981; }
-      .bar-teal   { background: #14b8a6; }
-      .bar-blue   { background: #3b82f6; }
-      .bar-gold   { background: #f59e0b; }
-      .bar-red    { background: #ef4444; }
-      .bar-navy   { background: #6366f1; }
-      .bar-orange { background: #f97316; }
-      .bar-purple { background: #8b5cf6; }
-
-      /* ═══ قسم آخر العمليات ═══ */
-      .activity-wrap {
-        margin: 0 16px 24px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        box-shadow: var(--shadow);
-        overflow: hidden;
-      }
-      .activity-header {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 16px 16px 12px;
-        border-bottom: 1px solid var(--border);
-      }
-      .activity-title-row {
-        display: flex; align-items: center; gap: 8px;
-        font-size: 14px; font-weight: 900; color: var(--ink);
-      }
-      .activity-badge {
-        background: var(--primary-soft);
-        color: var(--primary-dark);
-        font-size: 10px; font-weight: 700;
-        padding: 2px 8px;
-        border-radius: 99px;
-      }
-      .activity-sub-text { font-size: 11px; color: var(--muted); font-weight: 600; }
-
-      #recent-activity-list {
-        display: flex; flex-direction: column;
-      }
-      .activity-item {
-        display: flex; align-items: center; gap: 12px;
-        padding: 12px 16px;
-        border-bottom: 1px solid var(--border);
-        transition: background .12s;
-      }
-      .activity-item:last-child { border-bottom: none; }
-      .activity-item:active { background: var(--bg); }
-      .activity-icon {
-        flex: 0 0 auto; width: 40px; height: 40px;
-        border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 18px;
-      }
-      .act-prod     { background: #ede9fe; }
-      .act-transfer { background: #dbeafe; }
-      .act-loading  { background: #ffedd5; }
-      .act-in       { background: #dcfce7; }
-      .act-out      { background: #fee2e2; }
-      .act-att      { background: #faf5ff; }
-      .activity-body { flex: 1 1 auto; min-width: 0; }
-      .activity-title {
-        font-weight: 800; font-size: 13px; color: var(--ink);
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      }
-      .activity-sub {
-        font-size: 11px; color: var(--muted);
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        margin-top: 2px;
-      }
-      .activity-time {
-        flex: 0 0 auto; font-size: 10.5px; color: var(--muted);
-        white-space: nowrap; padding-inline-start: 6px;
-      }
-      .activity-panel .panel-head { display: none; }
-      #recent-activity-list .empty-state {
-        padding: 28px 16px;
-        text-align: center;
-        color: var(--muted);
-        font-size: 13px;
-      }
-
-      /* ═══ روابط سريعة ═══ */
-      .shortcuts-head {
-        display: flex; align-items: center; gap: 8px;
-        padding: 0 16px 14px;
-        font-size: 15px; font-weight: 900; color: var(--ink);
-      }
-      .shortcuts-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        padding: 0 16px 24px;
-      }
-      .shortcut-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--r-card);
-        padding: 18px 10px 16px;
-        box-shadow: var(--shadow);
-        display: flex; flex-direction: column;
-        align-items: center; gap: 8px;
-        text-align: center; color: var(--ink);
-        text-decoration: none;
-        transition: transform .13s, box-shadow .13s;
-      }
-      .shortcut-card:active {
-        transform: scale(.95);
-        box-shadow: var(--shadow-lg);
-      }
-      .sc-icon {
-        width: 48px; height: 48px;
-        border-radius: 14px;
-        background: var(--primary-soft);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 22px;
-        transition: background .12s;
-      }
-      .sc-label { font-size: 12px; font-weight: 800; color: var(--ink); }
-
-      /* ═══ شريط التنقل السفلي — نفس تصميم النظام الأصلي ═══ */
-      .bottom-nav {
-        position: sticky;
-        bottom: 0;
-        width: 100%;
-        background: var(--surface);
-        border-top: 1px solid var(--border);
-        display: flex;
-        direction: rtl;
-        z-index: 100;
-        padding-bottom: env(safe-area-inset-bottom, 0px);
-        box-shadow: 0 -3px 16px rgba(0,0,0,.09);
-      }
-      .bottom-nav-item {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        padding: 10px 4px 9px;
-        color: var(--muted);
-        font-size: 11px;
-        font-weight: 700;
-        text-decoration: none;
-        font-family: Cairo, sans-serif;
-        -webkit-tap-highlight-color: transparent;
-        transition: color .15s;
-      }
-      .bottom-nav-icon {
-        width: 30px; height: 30px;
-        display: flex; align-items: center; justify-content: center;
-        border-radius: 999px;
-      }
-      .bottom-nav-icon svg {
-        width: 22px; height: 22px;
-        fill: currentColor;
-      }
-      .bottom-nav-item.active { color: #e53935; }
-      .bottom-nav-item.active .bottom-nav-icon {
-        background: #e53935;
-        color: #fff;
-      }
-      .bottom-nav-label {
-        font-size: 11px; font-weight: 700;
-        white-space: nowrap;
-      }
-
-      /* ═══ تحسينات إضافية ═══ */
-      .custom-range {
-        display: none;
-        gap: 8px;
-        align-items: center;
-        margin-top: 10px;
-      }
-      .custom-range input[type="date"] {
-        flex: 1;
-        padding: 8px 10px;
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        font-family: inherit;
-        font-size: 12px;
-        background: var(--surface);
-        color: var(--ink);
-      }
-      .custom-range .btn {
-        padding: 8px 14px;
-        border: none;
-        border-radius: 10px;
-        background: var(--primary);
-        color: #fff;
-        font-family: inherit;
-        font-size: 12px;
-        font-weight: 700;
-        cursor: pointer;
-        white-space: nowrap;
-      }
-
-      /* ═══ تمرير ناعم ═══ */
-      html { scroll-behavior: smooth; }
-
-      /* ═══ تأثير الدخول ═══ */
-      @keyframes slideUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to   { opacity: 1; transform: translateY(0); }
-      }
-      .float-card { animation: slideUp .4s ease both .1s; }
-      .period-wrap { animation: slideUp .4s ease both .15s; }
-      .dash-grid   { animation: slideUp .4s ease both .2s; }
-      .activity-wrap { animation: slideUp .4s ease both .25s; }
-      .shortcuts-grid { animation: slideUp .4s ease both .3s; }
-
-
-      /* ══════════════════════════════════════
-         تحسين اللمس والأداء داخل Android WebView / الهاتف
-         ══════════════════════════════════════ */
-      html{
-        -webkit-text-size-adjust:100%;
-        text-size-adjust:100%;
-        overscroll-behavior-y:none;
-      }
-      body{
-        min-height:100dvh;
-        overscroll-behavior-y:none;
-        -webkit-overflow-scrolling:touch;
-      }
-      button,a,.app-bar-btn,.bottom-nav-item,.shortcut-card{
-        -webkit-tap-highlight-color:transparent;
+    /* ══════════════════════════════════════
+       تحسين اللمس والسحب — الهاتف / Android WebView
+       لا يغيّر تصميم سطح المكتب
+    ══════════════════════════════════════ */
+    html{
+      -webkit-text-size-adjust:100%;
+      text-size-adjust:100%;
+      overscroll-behavior-y:none;
+      scroll-behavior:auto;
+    }
+    body{
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior-y:none;
+      touch-action:pan-y;
+    }
+    button,a,label,input,textarea,select{
+      -webkit-tap-highlight-color:transparent;
+    }
+    .dash-page,.ops-section,.action-grid{
+      touch-action:pan-y;
+    }
+    .action-card,.section-link,.primary-btn,.ghost-btn,.danger-btn,.type-choice,
+    .radio-card,.add-line,.remove-line,.modal-x,.smart-select-btn,.smart-option,
+    #bottom-nav a,.icon-btn{
+      touch-action:manipulation;
+    }
+    .dash-modal-box,.modal-body,.smart-options{
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior:contain;
+      touch-action:pan-y;
+    }
+    .smart-options{contain:content}
+    #smart-select-popover{will-change:auto}
+    @media (hover:none) and (pointer:coarse){
+      .action-card,.shortcut-card,.type-choice,.radio-card,.smart-option,
+      .primary-btn,.ghost-btn,.section-link{
+        transition:none!important;
+      }
+      .action-card:hover{
+        transform:none!important;
+        box-shadow:0 2px 8px rgba(28,37,33,.025)!important;
+      }
+      .dash-modal{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+      .modal-head{
+        backdrop-filter:none!important;
+        -webkit-backdrop-filter:none!important;
+        background:var(--surface)!important;
+      }
+      .live-chip{
+        backdrop-filter:none!important;
+        -webkit-backdrop-filter:none!important;
+      }
+    }
+    @media(max-width:620px){
+      body{padding-bottom:env(safe-area-inset-bottom,0px)}
+      .dash-page{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))!important}
+      .dash-modal{
+        overscroll-behavior:none;
+        touch-action:pan-y;
+      }
+      .dash-modal-box,.dash-modal-box.wide{
+        max-height:calc(100dvh - env(safe-area-inset-top,0px));
+        overflow-y:auto;
+        overflow-x:hidden;
+        touch-action:pan-y;
+        overscroll-behavior:contain;
+      }
+      .modal-body{touch-action:pan-y}
+      #smart-select-popover{
+        position:fixed!important;
+        left:10px!important;
+        right:10px!important;
+        top:auto!important;
+        bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;
+        width:auto!important;
+        max-height:min(58dvh,430px);
+        border-radius:16px!important;
+        transform:translateZ(0);
+      }
+      .smart-search-box{padding:10px}
+      .smart-options{
+        max-height:min(44dvh,330px)!important;
+        overflow-y:auto;
+      }
+      #bottom-nav{
+        position:fixed!important;
+        left:0!important;
+        right:0!important;
+        bottom:0!important;
+        z-index:1500!important;
+        transform:translateZ(0);
+        backface-visibility:hidden;
+        contain:layout paint;
+      }
+      #bottom-nav .bot-nav-item{
         touch-action:manipulation;
-      }
-      button,.app-bar-btn,.bottom-nav-item,.shortcut-card{
-        -webkit-user-select:none;
         user-select:none;
-        -webkit-touch-callout:none;
+        -webkit-user-select:none;
       }
-      .period-scroll{
-        overscroll-behavior-inline:contain;
-        overscroll-behavior-x:contain;
-        scroll-behavior:auto;
-        touch-action:auto;
-      }
-      .period-scroll button{min-height:40px}
+    }
 
-      @media (max-width:899px){
-        html{scroll-behavior:auto!important}
-        body{
-          overflow-x:hidden;
-          overflow-y:auto;
-          min-height:100dvh;
-        }
-        #app,.page{min-height:100dvh}
-        .page{
-          padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))!important;
-        }
-        /* fixed أكثر ثباتاً من sticky داخل WebView عند السحب */
-        .bottom-nav{
-          position:fixed!important;
-          left:0;right:0;bottom:0;
-          width:100%;
-          transform:translateZ(0);
-          backface-visibility:hidden;
-        }
-        /* blur والـ transforms أثناء اللمس من أكثر أسباب التقطيع في WebView */
-        .hero-metric-card{
-          -webkit-backdrop-filter:none!important;
-          backdrop-filter:none!important;
-          background:rgba(255,255,255,.14)!important;
-        }
-        .dash-card:active,.shortcut-card:active,.float-item:active,.activity-item:active{
-          transform:none!important;
-          box-shadow:var(--shadow)!important;
-        }
-        .dash-card,.shortcut-card,.float-card,.activity-wrap{
-          transition:none!important;
-        }
-        /* أنيميشن الدخول جميل على الكمبيوتر لكنه يسبب jank على WebView */
-        .float-card,.period-wrap,.dash-grid,.activity-wrap,.shortcuts-grid{
-          animation:none!important;
-        }
-        .period-scroll{
-          -webkit-overflow-scrolling:touch;
-          scroll-snap-type:none!important;
-        }
-      }
-
-      @media (max-width:420px){
-        .app-bar{padding-inline:14px}
-        .user-row{padding-inline:14px}
-        .hero-metric-card{margin-inline:12px}
-        .float-card{margin-inline:12px}
-        .period-wrap,.sec-head{padding-inline:12px}
-        .dash-grid,.shortcuts-grid{padding-inline:12px;gap:9px}
-        .activity-wrap{margin-inline:12px}
-      }
-
-      @media (prefers-reduced-motion:reduce){
-        *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
-      }
-    </style>
-  </head>
-
-  <!-- ══ أيقونات SVG المشتركة ══ -->
-  <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-    <symbol id="ic-user" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-    </symbol>
-    <symbol id="ic-users" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-    </symbol>
-    <symbol id="ic-box" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/>
-    </symbol>
-    <symbol id="ic-briefcase" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M20 6h-2.18c.07-.44.18-.86.18-1 0-2.21-1.79-4-4-4s-4 1.79-4 4c0 .14.11.56.18 1H8c-1.11 0-1.99.89-1.99 2L6 19c0 1.11.89 2 2 2h12c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4c-.28 0-.5-.22-.5-.5C9.5 4.12 10.62 3 12 3s2.5 1.12 2.5 2.5c0 .28-.22.5-.5.5z"/>
-    </symbol>
-    <symbol id="ic-handshake" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M11 6H9L7 4H3L1 6v4l2 2h1v5h2v-5h1l2 2h2l1-1V8l-1-2zm0 5H9.41L7 8.59V6.83L8.83 5H9l2 3v3zM23 4h-4l-2 2h-2l-1 2v5l1 1h2l2-2h1v5h2v-5h1l2-2V6l-2-2zm0 5.17L20.17 12H19l-2-3V6h.17L19 4.83V9l-2 2.59V13h.59L20 11h1l2-1.83V9.17z"/>
-    </symbol>
-    <symbol id="ic-tag" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>
-    </symbol>
-    <symbol id="ic-chart" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/>
-    </symbol>
-    <symbol id="ic-store" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M20 4H4v2l8 5 8-5V4zm0 14H4V8l8 5 8-5v10z"/>
-    </symbol>
-    <symbol id="ic-payment" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
-    </symbol>
-    <symbol id="ic-flash" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M7 2v11h3v9l7-12h-4l4-8z"/>
-    </symbol>
-    <symbol id="ic-link" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
-    </symbol>
-    <symbol id="ic-home" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-    </symbol>
-    <symbol id="ic-finance" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H7.1c.12 2.19 1.76 3.42 3.7 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
-    </symbol>
-    <symbol id="ic-bell" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-    </symbol>
-    <symbol id="ic-search" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-    </symbol>
-  </svg>
-
-  <body>
-
-    <!-- ══ شاشة التحميل — تختفي بعد تهيؤ Firebase ══ -->
-    <div id="page-loader">
-      <div class="pl-logo">
-        <img src="https://i.imgur.com/NsN1HgC.png" alt="logo" class="pl-logo-img"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <span class="pl-logo-fallback">AH</span>
-      </div>
-      <div class="pl-spinner"></div>
-      <div class="pl-text">جارِ التحميل…</div>
+  </style>
+</head>
+<body>
+  <div id="page-loader">
+    <div class="pl-logo">
+      <img src="https://i.imgur.com/NsN1HgC.png" alt="logo" class="pl-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <span class="pl-logo-fallback">AH</span>
     </div>
+    <div class="pl-spinner"></div>
+    <div class="pl-text">جارِ التحميل…</div>
+  </div>
 
-    <div id="app">
-      <header id="topbar" class="topbar"></header>
-
-      <main class="page">
-
-        <!-- ══ هيدر بطولي ══ -->
-        <div class="dash-hero">
-
-          <!-- شريط التطبيق العلوي -->
-          <div class="app-bar">
-            <div class="app-bar-brand">
-              <img id="dashboard-secret-logo" src="https://i.imgur.com/NsN1HgC.png" alt="logo" draggable="false"
-                style="height:38px;object-fit:contain;border-radius:8px;background:rgba(255,255,255,.2);padding:3px 6px;border:1.5px solid rgba(255,255,255,.3);flex-shrink:0;"
-                onerror="this.style.display='none';document.getElementById('brand-fallback').style.display='flex'">
-              <div id="brand-fallback" style="display:none;width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.3);align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;flex-shrink:0;">AH</div>
-              <div>
-                <div class="app-bar-name">Ahmed & Hamdy</div>
-                <div class="app-bar-sub">نظام المحاسبة الداخلي</div>
-              </div>
-            </div>
-            <div class="app-bar-actions">
-              <div class="app-bar-btn">
-                <svg width="18" height="18"><use href="#ic-bell"/></svg>
-              </div>
-              <div class="app-bar-btn">
-                <svg width="18" height="18"><use href="#ic-search"/></svg>
-              </div>
-            </div>
-          </div>
-
-          <!-- معلومات المستخدم -->
-          <div class="user-row">
-            <div>
-              <div class="user-greeting">مرحباً بعودتك 👋</div>
-              <div class="user-name-big" id="dash-user-name">جارِ التحميل...</div>
-            </div>
-            <div class="user-avatar-wrap">
-              <div class="user-avatar">
-                <svg width="24" height="24"><use href="#ic-user"/></svg>
-              </div>
-              <div class="user-avatar-badge"></div>
-            </div>
-          </div>
-
-          <!-- بطاقة المبلغ الرئيسي -->
-          <div class="hero-metric-card">
-            <div class="hero-metric-label">
-              <div class="hero-metric-label-icon">
-                <svg width="14" height="14" style="color:#fff"><use href="#ic-briefcase"/></svg>
-              </div>
-              إجمالي صندوق المنتجات
-            </div>
-            <div class="hero-metric-value" id="hero-pf-total">جارِ التحميل...</div>
-            <div class="hero-metric-sub">قيمة المخزون + مستحقات التجار</div>
-            <div class="hero-metric-divider"></div>
-            <div class="hero-metric-row">
-              <div class="hero-sub-item">
-                <div class="hero-sub-label">قيمة المخزون</div>
-                <div class="hero-sub-val money" id="stat-pf-inventory">—</div>
-              </div>
-              <div class="hero-sub-item">
-                <div class="hero-sub-label">مستحقات التجار</div>
-                <div class="hero-sub-val money" id="stat-pf-dues">—</div>
-              </div>
-            </div>
-          </div>
-
-        </div><!-- /dash-hero -->
-
-        <!-- ══ البطاقة العائمة: عدادات سريعة ══ -->
-        <div class="float-card">
-          <div class="float-inner">
-            <div class="float-item">
-              <div class="float-icon fi-green">
-                <svg width="20" height="20" style="color:#16a34a"><use href="#ic-box"/></svg>
-              </div>
-              <div class="float-label">المنتجات</div>
-              <div class="float-val" id="float-products-count">—</div>
-            </div>
-            <div class="float-item">
-              <div class="float-icon fi-blue">
-                <svg width="20" height="20" style="color:#1d4ed8"><use href="#ic-handshake"/></svg>
-              </div>
-              <div class="float-label">التجار</div>
-              <div class="float-val" id="float-merchants-count">—</div>
-            </div>
-            <div class="float-item">
-              <div class="float-icon fi-orange">
-                <svg width="20" height="20" style="color:#ea580c"><use href="#ic-user"/></svg>
-              </div>
-              <div class="float-label">الموظفون</div>
-              <div class="float-val" id="float-employees-count">—</div>
-            </div>
-          </div>
+  <div id="app">
+    <header id="topbar" class="topbar"></header>
+    <main class="dash-page">
+      <section class="dash-hero" aria-label="رسالة الترحيب">
+        <div class="welcome-copy">
+          <div class="welcome-kicker">الرئيسية</div>
+          <h1><span id="greeting-text">مرحباً</span>، <span class="greeting-name" id="greeting-name">...</span> <span class="welcome-wave" aria-hidden="true"><span class="svg-icon" data-svg-icon="sun"></span></span></h1>
+          <p>أهلاً بعودتك، يمكنك الوصول إلى أهم عملياتك بسرعة من الأقسام الموجودة بالأسفل.</p>
+          <p class="welcome-date" id="welcome-date"></p>
         </div>
-
-        <!-- ══ شريط الفترة الزمنية ══ -->
-        <div class="period-wrap">
-          <div class="period-scroll" id="period-toggle">
-            <button type="button" class="active" data-period="today">اليوم</button>
-            <button type="button" data-period="week">آخر أسبوع</button>
-            <button type="button" data-period="2weeks">آخر أسبوعين</button>
-            <button type="button" data-period="month">آخر شهر</button>
-            <button type="button" data-period="custom">تاريخ مخصص</button>
-          </div>
-          <div class="custom-range" id="custom-range" style="display:none;margin-top:10px;display:none;gap:8px;align-items:center;">
-            <input type="date" id="range-from" />
-            <span style="color:var(--muted);font-size:12px;font-weight:700;">إلى</span>
-            <input type="date" id="range-to" />
-            <button type="button" class="btn small" id="range-apply-btn" style="padding:8px 14px;border:none;border-radius:10px;background:var(--primary);color:#fff;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;">تطبيق</button>
-          </div>
+        <div class="welcome-side">
+          <div class="live-chip"><span class="live-dot"></span><span id="data-status">جارِ ربط البيانات…</span></div>
+          <div class="welcome-avatar" id="welcome-avatar" aria-hidden="true">A</div>
         </div>
+      </section>
 
-        <!-- ══ قسم المنتجات ══ -->
-        <div class="sec-head">
-          <div class="sec-icon">
-            <svg width="17" height="17" style="color:var(--primary-dark)"><use href="#ic-box"/></svg>
-          </div>
-          <div class="sec-title">إحصائيات المنتجات</div>
+      <section class="ops-section">
+        <div class="ops-head">
+          <div class="ops-title"><div class="ops-icon"><span class="svg-icon" data-svg-icon="box-stack"></span></div><div><h2>المنتجات والمخزون</h2><p>بيع، إنتاج، تحويل وإدارة سريعة للمخزون</p></div></div>
+          <a class="section-link" href="/products.html">فتح صفحة المنتجات</a>
         </div>
-        <div class="dash-grid">
-          <div class="dash-card">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-green">
-                <svg width="20" height="20" style="color:#16a34a"><use href="#ic-tag"/></svg>
-              </div>
-              <div class="dash-card-label">عدد<br>المنتجات</div>
-            </div>
-            <div class="dash-card-value" id="stat-products-count">—</div>
-            <div class="card-bar bar-green"></div>
-          </div>
-          <div class="dash-card">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-teal">
-                <svg width="20" height="20" style="color:#0d9488"><use href="#ic-chart"/></svg>
-              </div>
-              <div class="dash-card-label">الكمية<br>الإجمالية</div>
-            </div>
-            <div class="dash-card-value" id="stat-products-qty">—</div>
-            <div class="card-bar bar-teal"></div>
-          </div>
-          <div class="dash-card wide">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-navy">
-                <svg width="20" height="20" style="color:#4338ca"><use href="#ic-store"/></svg>
-              </div>
-              <div class="dash-card-label">قيمة المخزون الإجمالية</div>
-            </div>
-            <div class="dash-card-value money" id="stat-products-value">—</div>
-            <div class="card-bar bar-navy"></div>
-          </div>
+        <div class="action-grid">
+          <button class="action-card sale" data-open="sale-modal"><span class="a-ico"><span class="svg-icon" data-svg-icon="cart"></span></span><span><strong>بيع لتاجر</strong><small>خروج بضاعة من المخزن وتسجيل المستحق حسب حالة الدفع</small></span></button>
+          <button class="action-card" data-open="production-modal"><span class="a-ico"><span class="svg-icon" data-svg-icon="factory"></span></span><span><strong>عملية إنتاج</strong><small>خصم مواد من المصدر وإضافة المنتجات إلى مخزن الإنتاج</small></span></button>
+          <button class="action-card" data-open="transfer-modal"><span class="a-ico"><span class="svg-icon" data-svg-icon="transfer"></span></span><span><strong>تحويل بين مخازن</strong><small>خصم من المخزن المصدر وإضافة نفس الكمية إلى الهدف</small></span></button>
+          <button class="action-card" data-open="adjust-modal"><span class="a-ico"><span class="svg-icon" data-svg-icon="scale"></span></span><span><strong>تعديل مخزون</strong><small>إضافة كمية أو استهلاك كمية من صنف محدد</small></span></button>
+          <button class="action-card" data-open="product-modal"><span class="a-ico"><span class="svg-icon" data-svg-icon="tag"></span></span><span><strong>إضافة / تعديل منتج</strong><small>إنشاء منتج أو تحديث بيانات منتج موجود</small></span></button>
+          <button class="action-card" data-open="warehouse-modal"><span class="a-ico"><span class="svg-icon" data-svg-icon="store"></span></span><span><strong>إضافة مخزن</strong><small>إنشاء مخزن جديد لاستخدامه في الحركات</small></span></button>
         </div>
+      </section>
 
-        <!-- ══ قسم صندوق المنتجات ══ -->
-        <div class="sec-head">
-          <div class="sec-icon">
-            <svg width="17" height="17" style="color:var(--primary-dark)"><use href="#ic-briefcase"/></svg>
-          </div>
-          <div class="sec-title">صندوق المنتجات</div>
+      <section class="ops-section">
+        <div class="ops-head">
+          <div class="ops-title"><div class="ops-icon"><span class="svg-icon" data-svg-icon="wallet"></span></div><div><h2>العمليات المالية</h2><p>كل أنواع الحركات السريعة الموجودة في صفحة المالية</p></div></div>
+          <a class="section-link" href="/finance.html">فتح صفحة المالية</a>
         </div>
-        <div class="dash-grid" id="products-fund-panel">
-          <div class="dash-card">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-navy">
-                <svg width="20" height="20" style="color:#4338ca"><use href="#ic-store"/></svg>
-              </div>
-              <div class="dash-card-label">قيمة المخزون<br>بالمخازن</div>
-            </div>
-            <div class="dash-card-value money" id="stat-pf-inventory-2">—</div>
-            <div class="card-bar bar-navy"></div>
-          </div>
-          <div class="dash-card">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-gold">
-                <svg width="20" height="20" style="color:#d97706"><use href="#ic-handshake"/></svg>
-              </div>
-              <div class="dash-card-label">مستحقات<br>التجار</div>
-            </div>
-            <div class="dash-card-value money" id="stat-pf-dues-2">—</div>
-            <div class="card-bar bar-gold"></div>
-          </div>
-          <div class="dash-card wide featured">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-white">
-                <svg width="20" height="20" style="color:#fff"><use href="#ic-briefcase"/></svg>
-              </div>
-              <div class="dash-card-label" style="font-size:13px;font-weight:800;">إجمالي صندوق المنتجات</div>
-            </div>
-            <div class="dash-card-value money" id="stat-pf-total" style="font-size:20px;color:#fff;">—</div>
-            <div class="card-bar" style="background:rgba(255,255,255,.35);opacity:1;"></div>
-          </div>
+        <div class="action-grid">
+          <button class="action-card in" data-fin-type="deposit"><span class="a-ico"><span class="svg-icon" data-svg-icon="deposit"></span></span><span><strong>إيداع في الصندوق</strong><small>اتجاه الحركة: داخل إلى الصندوق</small></span></button>
+          <button class="action-card out" data-fin-type="withdrawal"><span class="a-ico"><span class="svg-icon" data-svg-icon="withdraw"></span></span><span><strong>سحب من الصندوق</strong><small>اتجاه الحركة: خارج من الصندوق</small></span></button>
+          <button class="action-card out" data-fin-type="advance"><span class="a-ico"><span class="svg-icon" data-svg-icon="user"></span></span><span><strong>سلفة موظف</strong><small>اتجاه الحركة: خارج من الصندوق + شهر خصم</small></span></button>
+          <button class="action-card other" data-fin-type="other"><span class="a-ico"><span class="svg-icon" data-svg-icon="note"></span></span><span><strong>عملية أخرى</strong><small>تحدد بنفسك: داخل إلى الصندوق أو خارج منه</small></span></button>
+          <button class="action-card merchant" data-open="merchant-pay-modal"><span class="a-ico"><span class="svg-icon" data-svg-icon="handshake"></span></span><span><strong>دفعة تاجر</strong><small>تسديد مستحقات أو إضافة مبلغ على حساب التاجر</small></span></button>
         </div>
-
-        <!-- ══ التجار والموظفون ══ -->
-        <div class="sec-head">
-          <div class="sec-icon">
-            <svg width="17" height="17" style="color:var(--primary-dark)"><use href="#ic-users"/></svg>
-          </div>
-          <div class="sec-title">التجار والموظفون</div>
+        <div class="direction-strip">
+          <div class="direction-note in"><b>داخل الصندوق = `dir: in`</b> — الإيداع وتحصيل النقد من التاجر يزيدان رصيد الصندوق.</div>
+          <div class="direction-note out"><b>خارج الصندوق = `dir: out`</b> — السحب والسلفة والدفع النقدي الخارج يخفضان رصيد الصندوق.</div>
         </div>
-        <div class="dash-grid">
-          <div class="dash-card">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-blue">
-                <svg width="20" height="20" style="color:#1d4ed8"><use href="#ic-handshake"/></svg>
-              </div>
-              <div class="dash-card-label">عدد<br>التجار</div>
-            </div>
-            <div class="dash-card-value" id="stat-merchants-count">—</div>
-            <div class="card-bar bar-blue"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- SALE -->
+  <div class="dash-modal" id="sale-modal">
+    <div class="dash-modal-box wide">
+      <div class="modal-head"><div class="modal-title-wrap"><div class="m-ico"><span class="svg-icon" data-svg-icon="cart"></span></div><div><h3>بيع بضاعة لتاجر</h3><p>المخزن ← خروج بضاعة / التاجر ← مستحق أو دفع فوري</p></div></div><button class="modal-x" data-close><span class="svg-icon" data-svg-icon="close"></span></button></div>
+      <div class="modal-body">
+        <form id="sale-form">
+          <div class="form-grid">
+            <div class="field"><label>المخزن المصدر *</label><select id="sale-warehouse" required><option value="">اختر مخزناً</option></select></div>
+            <div class="field"><label>التاجر *</label><select id="sale-merchant" required><option value="">اختر تاجراً</option></select></div>
           </div>
-          <div class="dash-card">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-orange">
-                <svg width="20" height="20" style="color:#ea580c"><use href="#ic-user"/></svg>
-              </div>
-              <div class="dash-card-label">عدد<br>الموظفين</div>
-            </div>
-            <div class="dash-card-value" id="stat-employees-count">—</div>
-            <div class="card-bar bar-orange"></div>
+          <div class="mini-title">البضائع المرسلة</div>
+          <div class="line-list" id="sale-lines"></div>
+          <button type="button" class="add-line" id="sale-add-line">+ إضافة صنف</button>
+          <div class="field" style="margin-top:13px"><label>ملاحظات <span class="help">اختياري</span></label><input id="sale-note" type="text" placeholder="مثال: دفعة أغسطس…"></div>
+          <div class="mini-title">حالة الدفع</div>
+          <div class="radio-cards" id="sale-pay-cards">
+            <label class="radio-card active-out" data-sale-pay="unpaid"><input type="radio" name="sale-pay" value="unpaid" checked><strong>⏳ غير مدفوع</strong><small>تُسجل الفاتورة ديناً على التاجر.</small></label>
+            <label class="radio-card" data-sale-pay="paid"><input type="radio" name="sale-pay" value="paid"><strong>✅ تم الدفع</strong><small>يُسجل دفع فوري وإيداع نقدي؛ لا يبقى دين.</small></label>
           </div>
-          <div class="dash-card wide">
-            <div class="dash-card-head">
-              <div class="dash-card-icon dc-red">
-                <svg width="20" height="20" style="color:#dc2626"><use href="#ic-payment"/></svg>
-              </div>
-              <div class="dash-card-label" id="stat-payroll-label">الرواتب المستحقة</div>
-            </div>
-            <div class="dash-card-value money" id="stat-payroll">—</div>
-            <div class="card-bar bar-red"></div>
-          </div>
-        </div>
+          <div class="summary-box"><div class="summary-item"><span>عدد الأصناف</span><strong id="sale-summary-count">0</strong></div><div class="summary-item"><span>إجمالي البيع</span><strong id="sale-summary-total">0 ج.م</strong></div><div class="summary-item"><span>رصيد التاجر بعد العملية</span><strong id="sale-summary-balance">—</strong></div></div>
+          <div class="modal-actions"><button class="primary-btn" id="sale-submit" type="submit">تنفيذ عملية البيع</button><button type="button" class="ghost-btn" data-close>إلغاء</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
 
-        <!-- ══ آخر العمليات ══ -->
-        <div class="activity-wrap activity-panel">
-          <div class="activity-header">
-            <div class="activity-title-row">
-              <svg width="16" height="16" style="color:#f59e0b;flex-shrink:0"><use href="#ic-flash"/></svg>
-              آخر العمليات
-              <span class="activity-badge">حسب الفترة</span>
-            </div>
-            <div class="activity-sub-text">أحدث 12 عملية</div>
-          </div>
-          <!-- panel-head مخفي — تستخدمه activity-panel JS -->
-          <div class="panel-head" style="display:none"><h3></h3><p></p></div>
-          <div id="recent-activity-list">
-            <div class="empty-state">جارِ التحميل...</div>
-          </div>
-        </div>
+  <!-- PRODUCTION -->
+  <div class="dash-modal" id="production-modal">
+    <div class="dash-modal-box wide">
+      <div class="modal-head"><div class="modal-title-wrap"><div class="m-ico"><span class="svg-icon" data-svg-icon="factory"></span></div><div><h3>عملية إنتاج</h3><p>المواد تُخصم من المصدر والمنتجات الناتجة تُضاف إلى الهدف</p></div></div><button class="modal-x" data-close><span class="svg-icon" data-svg-icon="close"></span></button></div>
+      <div class="modal-body"><form id="production-form">
+        <div class="form-grid"><div class="field"><label>مخزن المواد الخام (المصدر) *</label><select id="prod-from-wh"><option value="">اختر مخزناً</option></select></div><div class="field"><label>مخزن الإنتاج (الهدف) *</label><select id="prod-to-wh"><option value="">اختر مخزناً</option></select></div></div>
+        <div class="mini-title">⬇ المواد المستهلكة — تُخصم من المصدر</div><div class="line-list" id="prod-input-lines"></div><button type="button" class="add-line" id="prod-add-input">+ إضافة مادة</button>
+        <div class="mini-title" style="margin-top:15px">⬆ المنتجات الناتجة — تُضاف إلى الهدف</div><div class="line-list" id="prod-output-lines"></div><button type="button" class="add-line" id="prod-add-output">+ إضافة منتج ناتج</button>
+        <div class="field" style="margin-top:13px"><label>ملاحظات <span class="help">اختياري</span></label><input id="prod-note" type="text" placeholder="مثال: دفعة إنتاج رقم 5"></div>
+        <div class="modal-actions"><button class="primary-btn" id="prod-submit" type="submit">تنفيذ عملية الإنتاج</button><button type="button" class="ghost-btn" data-close>إلغاء</button></div>
+      </form></div>
+    </div>
+  </div>
 
-        <!-- ══ وصول سريع ══ -->
-        <div class="shortcuts-head">
-          <svg width="17" height="17" style="color:var(--primary-dark)"><use href="#ic-link"/></svg>
-          وصول سريع
-        </div>
-        <div class="shortcuts-grid">
-          <a class="shortcut-card" href="/products.html">
-            <div class="sc-icon">
-              <svg width="24" height="24" style="color:#16a34a"><use href="#ic-box"/></svg>
-            </div>
-            <div class="sc-label">المنتجات</div>
-          </a>
-          <a class="shortcut-card" href="/merchants.html">
-            <div class="sc-icon">
-              <svg width="24" height="24" style="color:#1d4ed8"><use href="#ic-handshake"/></svg>
-            </div>
-            <div class="sc-label">التجار</div>
-          </a>
-          <a class="shortcut-card" href="/employees.html">
-            <div class="sc-icon">
-              <svg width="24" height="24" style="color:#ea580c"><use href="#ic-users"/></svg>
-            </div>
-            <div class="sc-label">الموظفون</div>
-          </a>
-        </div>
+  <!-- TRANSFER -->
+  <div class="dash-modal" id="transfer-modal">
+    <div class="dash-modal-box">
+      <div class="modal-head"><div class="modal-title-wrap"><div class="m-ico"><span class="svg-icon" data-svg-icon="transfer"></span></div><div><h3>تحويل بين مخازن</h3><p>خصم من المصدر وإضافة إلى مخزن الوجهة</p></div></div><button class="modal-x" data-close><span class="svg-icon" data-svg-icon="close"></span></button></div>
+      <div class="modal-body"><form id="transfer-form">
+        <div class="form-grid"><div class="field"><label>من مخزن *</label><select id="trans-from-wh"><option value="">اختر مخزناً</option></select></div><div class="field"><label>إلى مخزن *</label><select id="trans-to-wh"><option value="">اختر مخزناً</option></select></div></div>
+        <div class="field"><label>الصنف المحوّل *</label><select id="trans-product"><option value="">اختر صنفاً من المخزن المصدر</option></select></div>
+        <div class="form-grid"><div class="field"><label>الكمية *</label><input type="number" id="trans-qty" min="0.01" step="0.01" value="1"></div><div class="field"><label>الصنف المقابل في مخزن الوجهة</label><select id="trans-dest-product"><option value="">إنشاء صنف زائر تلقائياً</option></select></div></div>
+        <div class="field"><label>ملاحظات <span class="help">اختياري</span></label><input id="trans-note" type="text"></div>
+        <div class="dir-box custom">المصدر: <b>خصم الكمية</b> ← الوجهة: <b>إضافة نفس الكمية</b></div>
+        <div class="modal-actions"><button class="primary-btn" id="trans-submit" type="submit">تنفيذ التحويل</button><button type="button" class="ghost-btn" data-close>إلغاء</button></div>
+      </form></div>
+    </div>
+  </div>
 
-      </main><!-- /page -->
+  <!-- STOCK ADJUST -->
+  <div class="dash-modal" id="adjust-modal">
+    <div class="dash-modal-box">
+      <div class="modal-head"><div class="modal-title-wrap"><div class="m-ico"><span class="svg-icon" data-svg-icon="scale"></span></div><div><h3>تعديل المخزون</h3><p>إضافة كمية أو استهلاكها من صنف موجود</p></div></div><button class="modal-x" data-close><span class="svg-icon" data-svg-icon="close"></span></button></div>
+      <div class="modal-body"><form id="adjust-form">
+        <div class="field"><label>المخزن *</label><select id="adj-warehouse"><option value="">اختر مخزناً</option></select></div>
+        <div class="type-grid"><button type="button" class="type-choice selected" data-adj-type="add"><span class="ticon"><span class="svg-icon" data-svg-icon="plus-circle"></span></span><span><strong>إضافة للمخزون</strong><small>ترفع الكمية الحالية</small></span></button><button type="button" class="type-choice danger" data-adj-type="consume"><span class="ticon"><span class="svg-icon" data-svg-icon="minus-circle"></span></span><span><strong>استهلاك من المخزون</strong><small>تخفض الكمية الحالية</small></span></button></div>
+        <div class="field"><label>الصنف *</label><select id="adj-product"><option value="">اختر صنفاً</option></select></div>
+        <div class="summary-box" style="grid-template-columns:1fr 1fr"><div class="summary-item"><span>الكمية الحالية</span><strong id="adj-before">—</strong></div><div class="summary-item"><span>بعد التعديل</span><strong id="adj-after">—</strong></div></div>
+        <div class="field"><label>الكمية *</label><input type="number" id="adj-qty" min="0.001" step="0.001" value="1"></div>
+        <div class="field"><label>ملاحظة <span class="help">اختياري</span></label><input id="adj-note" type="text" placeholder="مثال: جرد شهري، تلف، كسر…"></div>
+        <div class="modal-actions"><button class="primary-btn" id="adj-submit" type="submit">تنفيذ التعديل</button><button type="button" class="ghost-btn" data-close>إلغاء</button></div>
+      </form></div>
+    </div>
+  </div>
 
-      <!-- ══ شريط التنقل السفلي — نفس تصميم النظام الأصلي ══ -->
-      <nav class="bottom-nav">
-        <a class="bottom-nav-item active" href="/dashboard.html">
-          <span class="bottom-nav-icon">
-            <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-          </span>
-          <span>الرئيسية</span>
-        </a>
-        <a class="bottom-nav-item" href="/merchants.html">
-          <span class="bottom-nav-icon">
-            <svg viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
-          </span>
-          <span>التجار</span>
-        </a>
-        <a class="bottom-nav-item" href="/products.html">
-          <span class="bottom-nav-icon">
-            <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.9 18 9 18h12v-2H9.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H19c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0023.47 5H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-          </span>
-          <span>المنتجات</span>
-        </a>
-        <a class="bottom-nav-item" href="/employees.html">
-          <span class="bottom-nav-icon">
-            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-          </span>
-          <span>الموظفين</span>
-        </a>
-        <a class="bottom-nav-item" href="/finance.html">
-          <span class="bottom-nav-icon">
-            <svg viewBox="0 0 24 24"><path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"/></svg>
-          </span>
-          <span>المالية</span>
-        </a>
-      </nav>
+  <!-- PRODUCT -->
+  <div class="dash-modal" id="product-modal">
+    <div class="dash-modal-box">
+      <div class="modal-head"><div class="modal-title-wrap"><div class="m-ico"><span class="svg-icon" data-svg-icon="tag"></span></div><div><h3>إضافة / تعديل منتج</h3><p>نفس بيانات المنتج المستخدمة في صفحة المنتجات</p></div></div><button class="modal-x" data-close><span class="svg-icon" data-svg-icon="close"></span></button></div>
+      <div class="modal-body"><form id="product-form">
+        <div class="type-grid"><button type="button" class="type-choice selected" data-product-mode="add"><span class="ticon"><span class="svg-icon" data-svg-icon="plus-circle"></span></span><span><strong>منتج جديد</strong><small>يبدأ بكمية 0</small></span></button><button type="button" class="type-choice" data-product-mode="edit"><span class="ticon"><span class="svg-icon" data-svg-icon="edit"></span></span><span><strong>تعديل منتج</strong><small>تحديث البيانات فقط</small></span></button></div>
+        <div class="field" id="product-existing-wrap" style="display:none"><label>اختر المنتج *</label><select id="product-existing"><option value="">اختر منتجاً</option></select></div>
+        <div class="field"><label>المخزن *</label><select id="product-warehouse"><option value="">اختر مخزناً</option></select></div>
+        <div class="field"><label>اسم المنتج *</label><input id="product-name" type="text" placeholder="مثال: أرز بسمتي"></div>
+        <div class="field"><label>رقم التعريف التسلسلي</label><input id="product-serial" type="text" readonly placeholder="يُولد تلقائياً"></div>
+        <div class="field"><label>صورة المنتج <span class="help">اختياري</span></label><label class="file-drop" for="product-image"><img id="product-image-preview" alt=""><span id="product-image-text">اضغط لاختيار صورة</span></label><input id="product-image" type="file" accept="image/*" style="display:none"></div>
+        <div class="field"><label>الوصف</label><input id="product-desc" type="text" placeholder="وصف مختصر"></div>
+        <div class="form-grid"><div class="field"><label>نوع الكمية</label><select id="product-unit"><option>قطعة</option><option>حبة</option><option>كيلوغرام</option><option>جرام</option><option>طن</option><option>لتر</option><option>متر</option><option>صندوق</option><option>كرتون</option><option>باكيت</option><option>فلوس</option><option>عنصر</option><option>وحدة</option><option>زجاجة</option><option>علبة</option></select></div><div class="field"><label>السعر (ج.م)</label><input id="product-price" type="number" min="0" step="0.01" value="0"></div></div>
+        <div class="field"><label>الكمية الحالية <span class="help">للعرض فقط — التعديل من «تعديل مخزون»</span></label><input id="product-current-qty" type="number" readonly value="0"></div>
+        <div class="modal-actions"><button class="primary-btn" id="product-submit" type="submit">حفظ المنتج</button><button type="button" class="ghost-btn" data-close>إلغاء</button></div>
+      </form></div>
+    </div>
+  </div>
 
-    </div><!-- /app -->
+  <!-- WAREHOUSE -->
+  <div class="dash-modal" id="warehouse-modal">
+    <div class="dash-modal-box" style="max-width:520px">
+      <div class="modal-head"><div class="modal-title-wrap"><div class="m-ico"><span class="svg-icon" data-svg-icon="store"></span></div><div><h3>إضافة مخزن</h3><p>سيظهر مباشرةً في كل قوائم المخازن</p></div></div><button class="modal-x" data-close><span class="svg-icon" data-svg-icon="close"></span></button></div>
+      <div class="modal-body"><form id="warehouse-form"><div class="field"><label>اسم المخزن *</label><input id="warehouse-name" type="text" placeholder="مثال: مخزن المواد الخام"></div><div class="modal-actions"><button class="primary-btn" id="warehouse-submit" type="submit">حفظ المخزن</button><button type="button" class="ghost-btn" data-close>إلغاء</button></div></form></div>
+    </div>
+  </div>
 
-    <!-- ══ مراقب شاشة التحميل — لا ينتظر بيانات Firestore بعد نجاح المصادقة ══ -->
-    <script>
-    (function(){
-      var loader=document.getElementById("page-loader");
-      var app=document.getElementById("app");
-      if(!loader||!app)return;
-      window.__hideDashboardLoader=function(){
-        if(loader.dataset.closed==="1")return;
-        loader.dataset.closed="1";
-        loader.classList.add("pl-hide");
-        setTimeout(function(){loader.style.display="none";},260);
-      };
-      /* auth-guard قد يُظهر #app بنفسه؛ عندها نخفي شاشة التحميل فوراً. */
-      var obs=new MutationObserver(function(){
-        if(app.style.visibility!=="hidden") window.__hideDashboardLoader();
-      });
-      obs.observe(app,{attributes:true,attributeFilter:["style","class"]});
-      window.addEventListener("dashboard-auth-ready",function(){
-        obs.disconnect();
-        window.__hideDashboardLoader();
-      },{once:true});
-    })();
-    </script>
+  <!-- FINANCE -->
+  <div class="dash-modal" id="finance-modal">
+    <div class="dash-modal-box">
+      <div class="modal-head"><div class="modal-title-wrap"><div class="m-ico" id="fin-modal-icon"><span class="svg-icon" data-svg-icon="wallet"></span></div><div><h3 id="fin-modal-title">حركة مالية</h3><p id="fin-modal-sub">اتجاه الحركة مطابق لصفحة المالية</p></div></div><button class="modal-x" data-close><span class="svg-icon" data-svg-icon="close"></span></button></div>
+      <div class="modal-body"><form id="finance-form">
+        <div class="dir-box custom" id="fin-dir-hint">اختر العملية</div>
+        <div class="field" id="fin-dir-field" style="display:none"><label>اتجاه العملية *</label><div class="radio-cards"><label class="radio-card" data-fin-dir="in"><input type="radio" name="fin-dir" value="in"><strong><span class="svg-icon" data-svg-icon="deposit"></span>داخل — إيداع / تحصيل</strong><small>تُضاف إلى رصيد الصندوق.</small></label><label class="radio-card" data-fin-dir="out"><input type="radio" name="fin-dir" value="out"><strong><span class="svg-icon" data-svg-icon="withdraw"></span>خارج — دفع / صرف</strong><small>تُخصم من رصيد الصندوق.</small></label></div></div>
+        <div class="field" id="fin-employee-field" style="display:none"><label>الموظف *</label><select id="fin-employee"><option value="">اختر الموظف</option></select></div>
+        <div class="field" id="fin-month-field" style="display:none"><label>شهر الخصم من الراتب *</label><select id="fin-deduct-month"></select></div>
+        <div class="field" id="fin-party-field" style="display:none"><label id="fin-party-label">اسم الجهة</label><input id="fin-party" type="text" placeholder="اختياري"></div>
+        <div class="form-grid"><div class="field"><label>المبلغ (ج.م) *</label><input id="fin-amount" type="number" min="0.01" step="0.01" placeholder="0.00"></div><div class="field"><label>التاريخ *</label><input id="fin-date" type="date"></div></div>
+        <div class="field"><label>الوصف / الملاحظات</label><input id="fin-desc" type="text" placeholder="اختياري"></div>
+        <div class="modal-actions"><button class="primary-btn" id="fin-submit" type="submit">حفظ العملية</button><button type="button" class="ghost-btn" data-close>إلغاء</button></div>
+      </form></div>
+    </div>
+  </div>
+
+  <!-- MERCHANT PAYMENT -->
+  <div class="dash-modal" id="merchant-pay-modal">
+    <div class="dash-modal-box">
+      <div class="modal-head"><div class="modal-title-wrap"><div class="m-ico"><span class="svg-icon" data-svg-icon="handshake"></span></div><div><h3>دفعة مالية للتاجر</h3><p>تسديد مستحقات أو زيادة دين بنفس منطق صفحة المالية</p></div></div><button class="modal-x" data-close><span class="svg-icon" data-svg-icon="close"></span></button></div>
+      <div class="modal-body"><form id="merchant-pay-form">
+        <div class="field"><label>اسم التاجر *</label><select id="mp-merchant"><option value="">اختر التاجر</option></select></div>
+        <div class="mini-title">نوع الحركة</div>
+        <div class="radio-cards" id="mp-type-cards"><label class="radio-card active-in" data-mp-type="in"><input type="radio" name="mp-type" value="in" checked><strong><span class="svg-icon" data-svg-icon="receipt-check"></span>التاجر دفع — تسديد مستحقات</strong><small>يقل دين التاجر، وإذا كانت نقدية يدخل المبلغ إلى الصندوق.</small></label><label class="radio-card" data-mp-type="out"><input type="radio" name="mp-type" value="out"><strong><span class="svg-icon" data-svg-icon="wallet-plus"></span>إضافة مبلغ على حساب التاجر</strong><small>يزيد دين التاجر، وإذا كانت نقدية يخرج المبلغ من الصندوق.</small></label></div>
+        <label class="cash-check"><input type="checkbox" id="mp-cash" checked><span><strong><span class="svg-icon" data-svg-icon="wallet"></span>هذه الحركة نقدية فعلياً</strong><small>فعّلها فقط إذا دخل أو خرج نقد حقيقي من صندوق الكاش. عطّلها للتسويات غير النقدية.</small></span></label>
+        <div class="form-grid"><div class="field"><label>المبلغ (ج.م) *</label><input id="mp-amount" type="number" min="0.01" step="0.01" placeholder="0.00"></div><div class="field"><label>التاريخ *</label><input id="mp-date" type="date"></div></div>
+        <div class="field"><label>الوصف / الملاحظات</label><input id="mp-desc" type="text" placeholder="اختياري"></div>
+        <div class="dir-box in" id="mp-dir-hint">تسديد مستحقات: يقل دين التاجر، والنقد — إن وُجد — يدخل الصندوق.</div>
+        <div class="modal-actions"><button class="primary-btn" id="mp-submit" type="submit">حفظ الدفعة</button><button type="button" class="ghost-btn" data-close>إلغاء</button></div>
+      </form></div>
+    </div>
+  </div>
 
 
-  
 
 
-  <!-- ═══════ Dashboard سريع — تحميل واحد + حساب محلي للفترات ═══════ -->
-  <script type="module">
-  import { r as onAuthorized, g as getDocs, c as collection, d as db, e as onSnapshot }
-    from "/assets/auth-guard-DMMO1gWE.js";
-
-  const state={
-    products:[], productMovements:[], productionMovements:[], merchants:[], employees:[],
-    attendance:[], activityLog:[], finance:[], dailyAttendance:[], merchantTransactions:[],
-    coreReady:false, detailReady:false, loading:null, lastLoaded:0
-  };
-  let period="today", rangeFrom="", rangeTo="";
-  let emailToAlias={};
-  let uiBound=false;
-
-  const fmtMoney=n=>new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(Number(n)||0)+" ج.م";
-  const fmtNum=n=>new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(Number(n)||0);
-  const toDate=v=>v?(v.toDate?v.toDate():new Date(v)):null;
-  const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-
-  function periodLabel(p){
-    return p==="today"?"اليوم":p==="week"?"آخر أسبوع":p==="2weeks"?"آخر أسبوعين":p==="month"?"آخر شهر":p==="custom"?"الفترة المحددة":"";
-  }
-  function periodRange(){
-    const now=new Date(); let from;
-    if(period==="today"){from=new Date(now);from.setHours(0,0,0,0);}
-    else if(period==="week") from=new Date(now.getTime()-7*24*60*60*1000);
-    else if(period==="2weeks") from=new Date(now.getTime()-14*24*60*60*1000);
-    else if(period==="month") from=new Date(now.getTime()-30*24*60*60*1000);
-    else if(period==="custom") return {from:rangeFrom?new Date(rangeFrom+"T00:00:00"):new Date(0),to:rangeTo?new Date(rangeTo+"T23:59:59"):now};
-    else from=new Date(0);
-    return {from,to:now};
-  }
-  function payrollForHours(hours,emp){
-    const daily=Number(emp?.dailyHours)||8, hourly=Number(emp?.hourlyRate)||0, overtime=Number(emp?.overtimeRate)||hourly;
-    return Math.min(hours,daily)*hourly+Math.max(0,hours-daily)*overtime;
-  }
-
-  function setText(id,value){const el=document.getElementById(id);if(el)el.textContent=value;}
-  function setUserName(user){
-    let name="";
-    try{name=localStorage.getItem("ahDisplay")||localStorage.getItem("displayName")||"";}catch(_){ }
-    name=name||user?.displayName||(user?.email?user.email.split("@")[0]:"")||"مستخدم";
-    setText("dash-user-name",name);
-  }
-  function revealApp(){
-    const app=document.getElementById("app");
-    if(app)app.style.visibility="visible";
-    window.dispatchEvent(new Event("dashboard-auth-ready"));
-    if(typeof window.__hideDashboardLoader==="function")window.__hideDashboardLoader();
-  }
-
-  function cacheKey(uid){return "dashboard-summary-v3:"+(uid||"user");}
-  function restoreCache(uid){
-    try{
-      const raw=sessionStorage.getItem(cacheKey(uid)); if(!raw)return;
-      const c=JSON.parse(raw); if(!c||Date.now()-c.at>20*60*1000)return;
-      Object.entries(c.values||{}).forEach(([id,value])=>setText(id,value));
-      if(c.activity){const el=document.getElementById("recent-activity-list");if(el)el.innerHTML=c.activity;}
-    }catch(_){ }
-  }
-  function saveCache(uid){
-    try{
-      const ids=["stat-products-count","stat-products-qty","stat-products-value","stat-merchants-count","stat-employees-count","stat-payroll","stat-pf-inventory","stat-pf-dues","stat-pf-total","hero-pf-total","float-products-count","float-merchants-count","float-employees-count","stat-pf-inventory-2","stat-pf-dues-2"];
-      const values={};ids.forEach(id=>{const el=document.getElementById(id);if(el)values[id]=el.textContent;});
-      sessionStorage.setItem(cacheKey(uid),JSON.stringify({at:Date.now(),values,activity:document.getElementById("recent-activity-list")?.innerHTML||""}));
-    }catch(_){ }
-  }
-
-  function renderCore(){
-    const qtyByProduct={};
-    state.productMovements.forEach(t=>{const q=Number(t.quantity)||0;qtyByProduct[t.productId]=(qtyByProduct[t.productId]||0)+(t.type==="out"?-q:q);});
-    state.productionMovements.forEach(t=>{const q=Number(t.quantity)||0;if(t.toWarehouseId)qtyByProduct[t.productId]=(qtyByProduct[t.productId]||0)+q;if(t.fromWarehouseId)qtyByProduct[t.productId]=(qtyByProduct[t.productId]||0)-q;});
-    let totalQty=0,totalValue=0;
-    state.products.forEach(p=>{const q=qtyByProduct[p.id]||0;totalQty+=q;totalValue+=q*(Number(p.price)||0);});
-    setText("stat-products-count",state.products.length);
-    setText("stat-products-qty",fmtNum(totalQty));
-    setText("stat-products-value",fmtMoney(totalValue));
-    setText("stat-merchants-count",state.merchants.length);
-    setText("stat-employees-count",state.employees.length);
-    setText("float-products-count",state.products.length);
-    setText("float-merchants-count",state.merchants.length);
-    setText("float-employees-count",state.employees.length);
-  }
-
-  function renderProductsFund(){
-    if(!state.products.length && !state.detailReady)return;
-    const inventoryValue=state.products.reduce((s,p)=>s+(Number(p.quantity)||0)*(Number(p.price)||0),0);
-    const byMerchant={};
-    state.merchantTransactions.forEach(t=>{
-      if(!t.merchantId)return;
-      byMerchant[t.merchantId]=(byMerchant[t.merchantId]||0)+(t.type==="out"?-1:1)*(Number(t.amount)||0);
-    });
-    state.finance.forEach(t=>{
-      if(t._active===false||t.type!=="merchant"||!t.merchantId)return;
-      byMerchant[t.merchantId]=(byMerchant[t.merchantId]||0)+(t.dir==="in"?1:-1)*(Number(t.amount)||0);
-    });
-    const dues=Object.values(byMerchant).reduce((s,b)=>s+Math.max(0,-b),0);
-    const total=inventoryValue+dues;
-    setText("stat-pf-inventory",fmtMoney(inventoryValue));
-    setText("stat-pf-inventory-2",fmtMoney(inventoryValue));
-    setText("stat-pf-dues",fmtMoney(dues));
-    setText("stat-pf-dues-2",fmtMoney(dues));
-    setText("stat-pf-total",fmtMoney(total));
-    setText("hero-pf-total",fmtMoney(total));
-  }
-
-  const activityIcons={production:["🏭","act-prod"],transfer:["🔁","act-transfer"],loading:["🚚","act-loading"],in:["💰","act-in"],out:["💸","act-out"],att:["🕒","act-att"]};
-  function resolveAlias(v){return(!v||v==="—")?v:(emailToAlias[v]||v);}
-  function renderPeriodData(){
-    setText("stat-payroll-label",`الرواتب المستحقة (${periodLabel(period)})`);
-    if(!state.detailReady)return;
-    const {from,to}=periodRange();
-    const empMap=Object.fromEntries(state.employees.map(e=>[e.id,e]));
-    let payroll=0;
-    state.attendance.forEach(a=>{
-      const cin=toDate(a.checkIn),cout=toDate(a.checkOut);if(!cin||!cout||cin<from||cin>to)return;
-      payroll+=payrollForHours((cout-cin)/3600000,empMap[a.employeeId]);
-    });
-    setText("stat-payroll",fmtMoney(payroll));
-
-    const rows=[];
-    state.activityLog.forEach(x=>{const ts=toDate(x.createdAt);if(ts&&ts>=from&&ts<=to)rows.push({ts,kind:"log",...x});});
-    state.finance.forEach(x=>{if(x._active===false)return;const ts=toDate(x.createdAt);if(ts&&ts>=from&&ts<=to)rows.push({ts,kind:"fin",...x});});
-    state.dailyAttendance.forEach(x=>{const ts=x.date?new Date(x.date+"T12:00:00"):toDate(x.createdAt);if(ts&&ts>=from&&ts<=to)rows.push({ts,kind:"att",...x});});
-    rows.sort((a,b)=>b.ts-a.ts);
-    renderRecent(rows.slice(0,12));
-  }
-  function renderRecent(rows){
-    const el=document.getElementById("recent-activity-list");if(!el)return;
-    if(!rows.length){el.innerHTML='<div class="empty-state">لا توجد عمليات في هذه الفترة</div>';return;}
-    el.innerHTML=rows.map(r=>{
-      let icon,cls,title,sub;
-      if(r.kind==="log"){
-        [icon,cls]=activityIcons[r.type]||["📋","act-log"];
-        title=esc(r.summary||"");sub=esc([r.details,resolveAlias(r.performedBy)].filter(Boolean).join(" — "));
-      }else if(r.kind==="fin"){
-        [icon,cls]=activityIcons[r.dir]||["💳","act-fin"];
-        title=esc(r.description||(r.dir==="in"?"عملية تحصيل":"عملية صرف"));
-        sub=esc([fmtMoney(r.amount),r.partyName||r.employeeName].filter(Boolean).join(" — "));
-      }else{
-        [icon,cls]=activityIcons.att;title=`تسجيل حضور: ${esc(r.employeeName||"—")}`;sub=r.status==="present"?"حاضر":"غائب";
-      }
-      const time=r.ts?r.ts.toLocaleString("ar-EG-u-nu-latn",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"";
-      return `<div class="activity-item"><div class="activity-icon ${cls}">${icon}</div><div class="activity-body"><div class="activity-title">${title}</div>${sub?`<div class="activity-sub">${sub}</div>`:""}</div><div class="activity-time">${time}</div></div>`;
-    }).join("");
-  }
-
-  async function refreshData(force=false,uid=""){
-    const now=Date.now();
-    if(state.loading)return state.loading;
-    if(!force&&state.lastLoaded&&now-state.lastLoaded<45000)return;
-
-    const phase1=Promise.all([
-      getDocs(collection(db,"products")),getDocs(collection(db,"productMovements")),getDocs(collection(db,"productionMovements")),
-      getDocs(collection(db,"merchants")),getDocs(collection(db,"employees"))
-    ]);
-    const phase2=Promise.all([
-      getDocs(collection(db,"attendance")),getDocs(collection(db,"activityLog")),getDocs(collection(db,"finance_transactions")),
-      getDocs(collection(db,"daily_attendance")),getDocs(collection(db,"merchantTransactions"))
-    ]);
-
-    state.loading=(async()=>{
-      const p1=phase1.then(([products,moves,prodMoves,merchants,employees])=>{
-        state.products=products.docs.map(x=>({id:x.id,...x.data()}));
-        state.productMovements=moves.docs.map(x=>x.data());
-        state.productionMovements=prodMoves.docs.map(x=>x.data());
-        state.merchants=merchants.docs.map(x=>({id:x.id,...x.data()}));
-        state.employees=employees.docs.map(x=>({id:x.id,...x.data()}));
-        state.coreReady=true;renderCore();renderProductsFund();
-      }).catch(err=>{console.error("dashboard core load",err);});
-
-      const p2=phase2.then(([attendance,activity,finance,daily,merchantTx])=>{
-        state.attendance=attendance.docs.map(x=>x.data());
-        state.activityLog=activity.docs.map(x=>x.data());
-        state.finance=finance.docs.map(x=>({id:x.id,...x.data()}));
-        state.dailyAttendance=daily.docs.map(x=>x.data());
-        state.merchantTransactions=merchantTx.docs.map(x=>x.data());
-        state.detailReady=true;renderPeriodData();renderProductsFund();
-      }).catch(err=>{
-        console.error("dashboard detail load",err);
-        const el=document.getElementById("recent-activity-list");if(el&&el.textContent.includes("جارِ"))el.innerHTML='<div class="empty-state">تعذر تحديث آخر العمليات — اسحب الصفحة أو أعد فتحها للمحاولة</div>';
-      });
-
-      await Promise.allSettled([p1,p2]);
-      state.lastLoaded=Date.now();saveCache(uid);
-    })().finally(()=>{state.loading=null;});
-    return state.loading;
-  }
-
-  function bindUI(uid){
-    if(uiBound)return;uiBound=true;
-    const toggle=document.getElementById("period-toggle"),custom=document.getElementById("custom-range"),apply=document.getElementById("range-apply-btn");
-    toggle?.querySelectorAll("button").forEach(btn=>btn.addEventListener("click",()=>{
-      toggle.querySelectorAll("button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");
-      period=btn.dataset.period||"today";custom.style.display=period==="custom"?"flex":"none";
-      if(period!=="custom"){renderPeriodData();saveCache(uid);}
-    }));
-    apply?.addEventListener("click",()=>{
-      rangeFrom=document.getElementById("range-from")?.value||"";rangeTo=document.getElementById("range-to")?.value||"";
-      if(!rangeFrom&&!rangeTo)return;renderPeriodData();saveCache(uid);
-    });
-
-    /* منع الضغط العرضي على زر/رابط إذا كانت الحركة في الأصل سحباً للشاشة. */
-    if("ontouchstart" in window){
-      let sx=0,sy=0,moved=false,suppressUntil=0;
-      document.addEventListener("touchstart",e=>{const t=e.touches[0];if(!t)return;sx=t.clientX;sy=t.clientY;moved=false;},{passive:true,capture:true});
-      document.addEventListener("touchmove",e=>{const t=e.touches[0];if(!t)return;if(Math.abs(t.clientX-sx)>9||Math.abs(t.clientY-sy)>9)moved=true;},{passive:true,capture:true});
-      document.addEventListener("touchend",()=>{if(moved)suppressUntil=performance.now()+140;},{passive:true,capture:true});
-      document.addEventListener("click",e=>{
-        if(performance.now()<suppressUntil&&e.target.closest("a,button,.app-bar-btn")){e.preventDefault();e.stopImmediatePropagation();}
-      },true);
-    }
-
-    /* الضغطة الطويلة على الشعار تبقى منفصلة عن السحب ولا تمنعه. */
-    const logo=document.getElementById("dashboard-secret-logo");
-    if(logo){
-      let timer=null,startX=0,startY=0;
-      const cancel=()=>{if(timer){clearTimeout(timer);timer=null;}};
-      logo.addEventListener("pointerdown",e=>{if(e.pointerType==="mouse"&&e.button!==0)return;startX=e.clientX;startY=e.clientY;cancel();timer=setTimeout(()=>{location.href="/DeepLog.html";},900);});
-      logo.addEventListener("pointermove",e=>{if(Math.abs(e.clientX-startX)>8||Math.abs(e.clientY-startY)>8)cancel();});
-      ["pointerup","pointercancel","pointerleave"].forEach(ev=>logo.addEventListener(ev,cancel));
-      logo.addEventListener("contextmenu",e=>e.preventDefault());
+<script>
+(function(){
+  window.__dashboardReady=false;
+  var loader=document.getElementById('page-loader');
+  var app=document.getElementById('app');
+  function reveal(){
+    if(app) app.style.visibility='visible';
+    if(loader){
+      loader.classList.add('pl-hide');
+      setTimeout(function(){loader.style.display='none';},220);
     }
   }
+  // نفس فكرة الحماية في الداشبورد القديم: لا تترك شاشة التحميل عالقة أبداً.
+  setTimeout(function(){ if(!window.__dashboardReady) reveal(); },1400);
+  // إذا لم يكتمل تشغيل وظائف الصفحة بعد مدة أطول نظهر تنبيهاً واضحاً بدل التحميل الأبدي.
+  setTimeout(function(){
+    if(window.__dashboardReady) return;
+    var s=document.getElementById('data-status');
+    if(s) s.textContent='تعذر إكمال الاتصال — حدّث الصفحة';
+  },8000);
+})();
+</script>
 
-  function startAliasListener(){
-    try{
-      onSnapshot(collection(db,"appUsers"),snap=>{
-        emailToAlias={};snap.forEach(dc=>{const {email,alias}=dc.data();if(email&&alias)emailToAlias[email]=alias;});
-        if(state.detailReady)renderPeriodData();
-      },()=>{});
-    }catch(_){ }
-  }
-
-  onAuthorized(async user=>{
-    const uid=user?.uid||user?.email||"user";
-    setUserName(user);restoreCache(uid);bindUI(uid);revealApp();
-    /* أول رسم للواجهة قبل أي انتظار لشبكة Firestore. */
-    requestAnimationFrame(()=>{
-      if("requestIdleCallback" in window)requestIdleCallback(startAliasListener,{timeout:1200});else setTimeout(startAliasListener,300);
-      refreshData(true,uid);
-    });
-
-    /* تحديث صامت فقط عند الحاجة، وليس عند كل تغيير للفترة. */
-    document.addEventListener("visibilitychange",()=>{
-      if(document.visibilityState==="visible"&&Date.now()-state.lastLoaded>60000)refreshData(false,uid);
-    });
-    window.addEventListener("focus",()=>{if(Date.now()-state.lastLoaded>60000)refreshData(false,uid);},{passive:true});
-    setInterval(()=>{if(document.visibilityState==="visible")refreshData(false,uid);},120000);
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, collection, doc, addDoc, updateDoc, getDoc, getDocs,
+  query, where, onSnapshot, serverTimestamp, writeBatch, runTransaction
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+function compressImage(file){
+  return new Promise((resolve,reject)=>{
+    const img=new Image(), url=URL.createObjectURL(file);
+    img.onload=()=>{
+      URL.revokeObjectURL(url);
+      let {width,height}=img;
+      if(width>height&&width>480){height=Math.round(height*480/width);width=480;}
+      else if(height>480){width=Math.round(width*480/height);height=480;}
+      const canvas=document.createElement("canvas");
+      canvas.width=width; canvas.height=height;
+      canvas.getContext("2d").drawImage(img,0,0,width,height);
+      const data=canvas.toDataURL("image/jpeg",.7);
+      if(data.length>716800){reject(new Error("الصورة كبيرة جدًا حتى بعد الضغط، جرب صورة أصغر"));return;}
+      resolve(data);
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error("تعذر قراءة الصورة"));};
+    img.src=url;
   });
-  </script>
+}
 
-  </body>
+const firebaseConfig = {
+  apiKey: "AIzaSyDQsaNVskKiV2cwPVlJDixpTD1S-Dhp7gs",
+  authDomain: "reta-and-hamd.firebaseapp.com",
+  projectId: "reta-and-hamd",
+  storageBucket: "reta-and-hamd.firebasestorage.app",
+  messagingSenderId: "220767743863",
+  appId: "1:220767743863:web:2ecd37bd5830a39ec1bb72"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+
+const SVG_ICONS = {
+  wave: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 11V5.5a1.5 1.5 0 0 1 3 0V9"/><path d="M11 9V4.8a1.5 1.5 0 0 1 3 0V9"/><path d="M14 9V5.8a1.5 1.5 0 0 1 3 0V11"/><path d="M8 10 6.7 8.9a1.6 1.6 0 0 0-2.3 2.2l2.9 3c.8.8 1.9 1.3 3.1 1.3h3.2c2.4 0 4.4-2 4.4-4.4V9.6"/></svg>`,
+  "box-stack": `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 7 3.5-7 3.5-7-3.5L12 3Z"/><path d="m5 11 7 3.5 7-3.5"/><path d="m5 15 7 3.5 7-3.5"/><path d="M5 6.5v8.5m14-8.5v8.5M12 10v8.5"/></svg>`,
+  cart: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="19" r="1.6"/><circle cx="17" cy="19" r="1.6"/><path d="M3 4h2l2.4 9.5a1 1 0 0 0 1 .8h9.8a1 1 0 0 0 1-.8L21 7H7.4"/></svg>`,
+  factory: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21V9l6 3V9l6 3V5l6 3v13"/><path d="M3 21h18"/><path d="M7 21v-4m4 4v-3m4 3v-4m4 4v-3"/></svg>`,
+  transfer: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h12"/><path d="m15 3 4 4-4 4"/><path d="M17 17H5"/><path d="m9 13-4 4 4 4"/></svg>`,
+  scale: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v14"/><path d="M8 8h8"/><path d="M12 4h5"/><path d="m6 8-3 5h6l-3-5Zm12 0-3 5h6l-3-5Z"/><path d="M9 18h6"/></svg>`,
+  tag: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10 11 19 3 11V4h7l10 6Z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg>`,
+  store: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16l-1 4a2 2 0 0 1-2 1.5H7A2 2 0 0 1 5 12L4 8Z"/><path d="M5 13.5V20h14v-6.5"/><path d="M9 20v-4h6v4"/><path d="M6 8V5h12v3"/></svg>`,
+  wallet: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18a2 2 0 0 1 2 2v1.5"/><path d="M4 9h15.5A1.5 1.5 0 0 1 21 10.5v7A1.5 1.5 0 0 1 19.5 19H6.5A2.5 2.5 0 0 1 4 16.5V7.5Z"/><circle cx="17" cy="14" r=".8"/></svg>`,
+  deposit: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12"/><path d="m8 8 4-4 4 4"/><path d="M5 16v1a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-1"/></svg>`,
+  withdraw: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V8"/><path d="m8 16 4 4 4-4"/><path d="M5 8V7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v1"/></svg>`,
+  user: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.3"/><path d="M5 19a7 7 0 0 1 14 0"/></svg>`,
+  note: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>`,
+  handshake: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 12 6.8 14.2a2 2 0 0 1-2.8 0L2.5 12.7a2 2 0 0 1 0-2.8L5.3 7"/><path d="m15 12 2.2 2.2a2 2 0 0 0 2.8 0l1.5-1.5a2 2 0 0 0 0-2.8L18.7 7"/><path d="m8 9 2.4-2.1a2.8 2.8 0 0 1 3.7.1L18 10.5"/><path d="m9.7 14.5 1.6 1.6m.8-2.8 1.8 1.8m.7-3 2.1 2.1"/><path d="m6.6 9.5 3.2 3.2a1.8 1.8 0 0 0 2.5 0l1.9-1.8"/></svg>`,
+  close: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 18 18M18 6 6 18"/></svg>`,
+  "plus-circle": `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/></svg>`,
+  "minus-circle": `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8 12h8"/></svg>`,
+  edit: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16v4Z"/><path d="m12.5 7.5 4 4"/></svg>`,
+  card: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/></svg>`,
+  sun: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.3M12 19.2v2.3M21.5 12h-2.3M4.8 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9 5.3 5.3"/></svg>`,
+  moon: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a8.5 8.5 0 1 0 9.5 9.5Z"/></svg>`,
+  "receipt-check": `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v18l-2.2-1.5L12 21l-2.8-1.5L7 21V3Z"/><path d="M9.5 8.5h5M9.5 12h5"/><path d="m9.3 15.5 1.4 1.4 3-3"/></svg>`,
+  "wallet-plus": `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18a2 2 0 0 1 2 2v1.5"/><path d="M4 9h15.5A1.5 1.5 0 0 1 21 10.5v7A1.5 1.5 0 0 1 19.5 19H6.5A2.5 2.5 0 0 1 4 16.5V7.5Z"/><path d="M9 14h5M11.5 11.5v5"/></svg>`
+};
+function svgIcon(name){ return SVG_ICONS[name] || SVG_ICONS.note; }
+function setSvgIcon(el,name){ if(el) el.innerHTML = `<span class="svg-icon" data-icon-rendered="${name}">${svgIcon(name)}</span>`; }
+function renderSvgIcons(root=document){ root.querySelectorAll('[data-svg-icon]').forEach(el=>{ const name=el.getAttribute('data-svg-icon'); if(name) el.innerHTML = svgIcon(name); }); }
+
+let currentUser = null;
+let uiBound = false;
+let warehouses = [];
+let products = [];
+let merchants = [];
+let employees = [];
+let merchantTxBalance = {};
+let merchantFinBalance = {};
+let merchantBalances = {};
+
+let saleLines = [];
+let saleLineId = 0;
+let prodInputs = [];
+let prodOutputs = [];
+let prodLineId = 0;
+let adjustType = "add";
+let productMode = "add";
+let productEditingId = null;
+let pendingProductFile = null;
+let financeType = null;
+
+const FIN_TYPES = {
+  advance:    { label: "سلفة موظف",        icon: "user",     dir: "out", fixed: true  },
+  withdrawal: { label: "سحب من الصندوق",  icon: "withdraw", dir: "out", fixed: true  },
+  deposit:    { label: "إيداع في الصندوق", icon: "deposit",  dir: "in",  fixed: true  },
+  other:      { label: "عملية أخرى",       icon: "note",     dir: null,  fixed: false }
+};
+
+function esc(value){
+  const d = document.createElement("div");
+  d.textContent = value ?? "";
+  return d.innerHTML;
+}
+function num(value){
+  return new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:3}).format(Number(value)||0);
+}
+function money(value){
+  return new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(Number(value)||0)+" ج.م";
+}
+function today(){
+  return new Date().toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
+}
+function opId(){
+  return `${Date.now()}-${Math.random().toString(36).slice(2,7)}`;
+}
+function adjustTxId(){
+  return "WA-"+Date.now().toString(36).toUpperCase()+"-"+Math.random().toString(36).slice(2,7).toUpperCase();
+}
+function toast(message,error=false){
+  let t=document.getElementById("toast");
+  if(!t){t=document.createElement("div");t.id="toast";t.className="toast";document.body.appendChild(t);}
+  t.textContent=message;
+  t.className=`toast show${error?" error-toast":""}`;
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>{t.className="toast";},2800);
+}
+function setBusy(btn,busy,label){
+  btn.disabled=busy;
+  btn.innerHTML=busy?'<span class="spinner-mini"></span>':label;
+}
+function recomputeMerchantBalances(){
+  const ids=new Set([...Object.keys(merchantTxBalance),...Object.keys(merchantFinBalance)]);
+  merchantBalances={};
+  ids.forEach(id=>merchantBalances[id]=(merchantTxBalance[id]||0)+(merchantFinBalance[id]||0));
+  updateSaleSummary();
+}
+
+/* ══════════════════════════════════════
+   navigation — same structure as other pages
+══════════════════════════════════════ */
+const NAV_ITEMS=[
+  ["dashboard.html","الرئيسية","M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"],
+  ["merchants.html","التجار","M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"],
+  ["products.html","المنتجات","M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.9 18 9 18h12v-2H9.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H19c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0023.47 5H5.21l-.94-2H1z"],
+  ["employees.html","الموظفين","M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13z"],
+  ["finance.html","المالية","M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"]
+];
+function renderNav(user){
+  const top=document.getElementById("topbar");
+  top.innerHTML=`<div class="topbar-inner">
+    <div class="brand"><img id="dashboard-secret-logo" src="https://i.imgur.com/NsN1HgC.png" alt="logo" draggable="false" style="height:30px;object-fit:contain;border-radius:5px;background:#fff;padding:2px 4px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation" onerror="this.style.display='none'"><span>Ahmed And hamdy</span></div>
+    <nav class="nav-tabs">${NAV_ITEMS.map(([href,label])=>`<a href="/${href}" class="${href==="dashboard.html"?"active":""}">${label}</a>`).join("")}</nav>
+    <div class="user-chip"><span>${esc(user?.email||"")}</span><button class="icon-btn" id="logout-btn">خروج</button></div>
+  </div>`;
+  document.getElementById("logout-btn").addEventListener("click",async()=>{await signOut(auth);location.href="/index.html";});
+
+  // انتقال سري إلى DeepLog: ضغطة طويلة على شعار الصفحة الرئيسية فقط
+  const secretLogo=document.getElementById("dashboard-secret-logo");
+  if(secretLogo){
+    let holdTimer=null;
+    let holdTriggered=false;
+    let holdStartX=0,holdStartY=0;
+    const HOLD_MS=900;
+    const cancelHold=()=>{
+      if(holdTimer){ clearTimeout(holdTimer); holdTimer=null; }
+    };
+    secretLogo.addEventListener("pointerdown",e=>{
+      if(e.pointerType==="mouse" && e.button!==0) return;
+      holdTriggered=false;
+      holdStartX=e.clientX;holdStartY=e.clientY;
+      cancelHold();
+      holdTimer=setTimeout(()=>{
+        holdTriggered=true;
+        location.href="/DeepLog.html";
+      },HOLD_MS);
+    },{passive:true});
+    secretLogo.addEventListener("pointermove",e=>{
+      if(Math.abs(e.clientX-holdStartX)>10||Math.abs(e.clientY-holdStartY)>10) cancelHold();
+    },{passive:true});
+    ["pointerup","pointercancel","pointerleave"].forEach(type=>secretLogo.addEventListener(type,cancelHold,{passive:true}));
+    secretLogo.addEventListener("dragstart",e=>e.preventDefault());
+    secretLogo.addEventListener("contextmenu",e=>e.preventDefault());
+    secretLogo.addEventListener("click",e=>{
+      // الضغط العادي على الشعار لا ينفذ شيئاً
+      if(!holdTriggered) e.preventDefault();
+    });
+  }
+
+  let bottom=document.getElementById("bottom-nav");
+  if(!bottom){bottom=document.createElement("nav");bottom.id="bottom-nav";document.body.appendChild(bottom);}
+  bottom.innerHTML=`<div class="bot-nav-inner">${NAV_ITEMS.map(([href,label,path])=>`<a href="/${href}" class="bot-nav-item${href==="dashboard.html"?" active":""}"><span class="bot-nav-icon"><svg viewBox="0 0 24 24"><path d="${path}"/></svg></span><span>${label}</span></a>`).join("")}</div>`;
+}
+renderSvgIcons();
+
+function updateDashboardGreeting(user){
+  const hour=new Date().getHours();
+  const isMorning=hour<12;
+  const greeting=isMorning?"صباح الخير":"مساء الخير";
+  const greetingEl=document.getElementById("greeting-text");
+  const nameEl=document.getElementById("greeting-name");
+  const avatarEl=document.getElementById("welcome-avatar");
+  const dateEl=document.getElementById("welcome-date");
+  const greetIconWrap=document.querySelector('.welcome-wave');
+  if(greetingEl) greetingEl.textContent=greeting;
+  if(greetIconWrap){
+    greetIconWrap.classList.toggle('is-morning', isMorning);
+    greetIconWrap.classList.toggle('is-evening', !isMorning);
+    greetIconWrap.innerHTML = `<span class="svg-icon">${svgIcon(isMorning?"sun":"moon")}</span>`;
+  }
+
+  let fallbackName=(user?.displayName||"").trim();
+  if(!fallbackName){
+    try{ fallbackName=(localStorage.getItem("ahDisplay")||localStorage.getItem("displayName")||"").trim(); }catch(_){}
+  }
+  if(!fallbackName) fallbackName=String(user?.email||"مستخدم").split("@")[0];
+
+  const applyName=name=>{
+    const clean=String(name||fallbackName||"مستخدم").trim();
+    if(nameEl) nameEl.textContent=clean;
+    if(avatarEl) avatarEl.textContent=(clean.match(/[\p{L}\p{N}]/u)?.[0]||"A").toUpperCase();
+  };
+  applyName(fallbackName);
+
+  if(dateEl){
+    try{
+      dateEl.textContent=new Intl.DateTimeFormat("ar-EG",{weekday:"long",day:"numeric",month:"long"}).format(new Date());
+    }catch(_){ dateEl.textContent=""; }
+  }
+
+  /* نحاول استخدام الاسم/الاسم المستعار الموجود في إدارة الحسابات بدون تعطيل تحميل الصفحة */
+  const email=String(user?.email||"").trim();
+  if(email){
+    getDocs(query(collection(db,"appUsers"),where("email","==",email))).then(snap=>{
+      if(snap.empty) return;
+      const data=snap.docs[0].data()||{};
+      applyName(data.alias||data.name||fallbackName);
+    }).catch(()=>{});
+  }
+}
+
+function hideLoader(){
+  const loader=document.getElementById("page-loader");
+  if(!loader)return;
+  loader.classList.add("pl-hide");
+  setTimeout(()=>loader.style.display="none",220);
+}
+
+/* ══════════════════════════════════════
+   data listeners
+══════════════════════════════════════ */
+let dataStarted=false;
+let balanceDataStarted=false;
+const dataUnsubs=[];
+const coreReady=new Set();
+function markCoreReady(name){
+  coreReady.add(name);
+  if(coreReady.size>=4){
+    const s=document.getElementById("data-status");
+    if(s)s.textContent="البيانات متصلة";
+  }
+}
+
+function isModalOpen(id){
+  return document.getElementById(id)?.classList.contains("open");
+}
+function refreshWarehouseSelects(){
+  ["sale-warehouse","prod-from-wh","prod-to-wh","trans-from-wh","trans-to-wh","adj-warehouse","product-warehouse"]
+    .forEach(id=>fillSelect(id,warehouses,"اختر مخزناً",w=>w.name||"—"));
+}
+function refreshMerchantSelects(){
+  ["sale-merchant","mp-merchant"].forEach(id=>fillSelect(id,merchants,"اختر تاجراً",m=>m.name||"—"));
+}
+function refreshEmployeeSelects(){
+  fillSelect("fin-employee",employees,"اختر الموظف",e=>e.name||"—");
+}
+function refreshProductUI(){
+  refreshProductExisting();
+  refreshTransferProducts();
+  refreshAdjustProducts();
+  if(isModalOpen("sale-modal")) renderSaleLines();
+  if(isModalOpen("production-modal")){ renderProdLines("input"); renderProdLines("output"); }
+}
+function startBalanceData(){
+  if(balanceDataStarted)return;
+  balanceDataStarted=true;
+  dataUnsubs.push(onSnapshot(collection(db,"merchantTransactions"),snap=>{
+    merchantTxBalance={};
+    snap.forEach(d=>{const t=d.data();if(!t.merchantId)return;merchantTxBalance[t.merchantId]=(merchantTxBalance[t.merchantId]||0)+(t.type==="out"?-1:1)*(Number(t.amount)||0);});
+    recomputeMerchantBalances();
+  },dataError));
+  /* نطلب حركات التجار فقط بدلاً من تنزيل كل الحركات المالية إلى الداشبورد */
+  dataUnsubs.push(onSnapshot(query(collection(db,"finance_transactions"),where("type","==","merchant")),snap=>{
+    merchantFinBalance={};
+    snap.forEach(d=>{const t=d.data();if(t._active===false||!t.merchantId)return;merchantFinBalance[t.merchantId]=(merchantFinBalance[t.merchantId]||0)+(t.dir==="in"?1:-1)*(Number(t.amount)||0);});
+    recomputeMerchantBalances();
+  },dataError));
+}
+function startData(){
+  if(dataStarted)return;
+  dataStarted=true;
+  dataUnsubs.push(onSnapshot(collection(db,"warehouses"),snap=>{
+    warehouses=snap.docs.map(d=>({id:d.id,...d.data()}));
+    refreshWarehouseSelects();markCoreReady("warehouses");
+  },dataError));
+  dataUnsubs.push(onSnapshot(collection(db,"products"),snap=>{
+    products=snap.docs.map(d=>({id:d.id,...d.data()}));
+    refreshProductUI();markCoreReady("products");
+  },dataError));
+  dataUnsubs.push(onSnapshot(collection(db,"merchants"),snap=>{
+    merchants=snap.docs.map(d=>({id:d.id,...d.data()}));
+    refreshMerchantSelects();markCoreReady("merchants");
+  },dataError));
+  dataUnsubs.push(onSnapshot(collection(db,"employees"),snap=>{
+    employees=snap.docs.map(d=>({id:d.id,...d.data()}));
+    refreshEmployeeSelects();markCoreReady("employees");
+  },dataError));
+
+  /* أرصدة التجار أقل أولوية في أول رسم للصفحة؛ نبدأها بعد أن تصبح الواجهة قابلة للمس. */
+  const defer=window.requestIdleCallback||((cb)=>setTimeout(cb,320));
+  defer(startBalanceData,{timeout:900});
+}
+function dataError(err){
+  console.error(err);
+  const s=document.getElementById("data-status"); if(s)s.textContent="تعذر تحديث بعض البيانات";
+}
+function fillSelect(id,items,placeholder,labelFn){
+  const el=document.getElementById(id); if(!el)return;
+  const prev=el.value;
+  el.innerHTML=`<option value="">${placeholder}</option>`+items.map(item=>`<option value="${esc(item.id)}">${esc(labelFn(item))}</option>`).join("");
+  if(items.some(x=>x.id===prev))el.value=prev;
+}
+function refreshAllSelects(){
+  refreshWarehouseSelects();
+  refreshMerchantSelects();
+  refreshEmployeeSelects();
+  refreshProductExisting();
+}
+
+
+/* ══════════════════════════════════════
+   SEARCHABLE SELECTS
+   يحافظ على <select> الأصلي ويضيف بحثاً داخل القائمة المرئية
+══════════════════════════════════════ */
+let smartSelectPopover = null;
+let smartSelectCurrent = null;
+let smartSelectButton = null;
+let smartSelectFiltered = [];
+let smartActiveIndex = -1;
+
+function smartNormalize(v){
+  return String(v??"").toLocaleLowerCase("ar").normalize("NFKD").replace(/[\u064B-\u065F\u0670]/g,"").replace(/أ|إ|آ/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").trim();
+}
+function smartContextLabel(select){
+  const field=select.closest(".field,.line-cell");
+  const label=field?.querySelector("label")?.textContent?.replace(/\*/g,"").trim();
+  return label||"الخيار";
+}
+function ensureSmartPopover(){
+  if(smartSelectPopover)return smartSelectPopover;
+  const pop=document.createElement("div");
+  pop.id="smart-select-popover";
+  pop.innerHTML=`<div class="smart-search-box"><input class="smart-search-input" type="search" autocomplete="off" /></div><div class="smart-options"></div>`;
+  document.body.appendChild(pop);
+  const input=pop.querySelector(".smart-search-input");
+  input.addEventListener("input",()=>renderSmartOptions(input.value));
+  input.addEventListener("keydown",e=>{
+    const buttons=[...pop.querySelectorAll(".smart-option")];
+    if(e.key==="ArrowDown"){e.preventDefault();smartActiveIndex=Math.min(buttons.length-1,smartActiveIndex+1);paintSmartActive(buttons);}
+    else if(e.key==="ArrowUp"){e.preventDefault();smartActiveIndex=Math.max(0,smartActiveIndex-1);paintSmartActive(buttons);}
+    else if(e.key==="Enter"){e.preventDefault();const b=buttons[smartActiveIndex>=0?smartActiveIndex:0];if(b)b.click();}
+    else if(e.key==="Escape"){e.preventDefault();closeSmartSelect();}
+  });
+  let smartPosRaf=0;
+  const scheduleSmartPosition=()=>{
+    if(!smartSelectCurrent||window.innerWidth<=620)return;
+    if(smartPosRaf)return;
+    smartPosRaf=requestAnimationFrame(()=>{smartPosRaf=0;positionSmartPopover();});
+  };
+  window.addEventListener("resize",()=>smartSelectCurrent&&positionSmartPopover(),{passive:true});
+  window.addEventListener("scroll",scheduleSmartPosition,{capture:true,passive:true});
+  document.addEventListener("pointerdown",e=>{
+    if(!smartSelectCurrent)return;
+    if(pop.contains(e.target)||smartSelectButton?.contains(e.target))return;
+    closeSmartSelect();
+  });
+  return pop;
+}
+function paintSmartActive(buttons){
+  buttons.forEach((b,i)=>b.classList.toggle("active",i===smartActiveIndex));
+  buttons[smartActiveIndex]?.scrollIntoView({block:"nearest"});
+}
+function syncSmartSelect(select){
+  const btn=select._smartButton;if(!btn)return;
+  const opt=select.options[select.selectedIndex];
+  btn.querySelector(".smart-select-label").textContent=opt?.textContent||select.dataset.placeholder||"اختر";
+  btn.disabled=select.disabled;
+  btn.setAttribute("aria-disabled",select.disabled?"true":"false");
+  if(smartSelectCurrent===select)renderSmartOptions(smartSelectPopover?.querySelector(".smart-search-input")?.value||"");
+}
+function enhanceSelect(select){
+  if(!(select instanceof HTMLSelectElement)||select.dataset.smartEnhanced==="1")return;
+  select.dataset.smartEnhanced="1";
+  const wrapper=document.createElement("div");wrapper.className="smart-select-wrap";
+  select.parentNode.insertBefore(wrapper,select);wrapper.appendChild(select);select.classList.add("smart-native-select");
+  const btn=document.createElement("button");btn.type="button";btn.className="smart-select-btn";btn.setAttribute("aria-haspopup","listbox");
+  btn.innerHTML='<span class="smart-select-label"></span><span class="smart-select-chevron">⌄</span>';
+  wrapper.appendChild(btn);select._smartButton=btn;
+  btn.addEventListener("click",()=>{if(!select.disabled)openSmartSelect(select,btn);});
+  select.addEventListener("change",()=>syncSmartSelect(select));
+  const obs=new MutationObserver(()=>syncSmartSelect(select));
+  obs.observe(select,{childList:true,subtree:true,attributes:true,attributeFilter:["disabled"]});
+  select._smartObserver=obs;
+  syncSmartSelect(select);
+}
+function enhanceAllSelects(root=document){
+  if(root instanceof HTMLSelectElement)enhanceSelect(root);
+  root.querySelectorAll?.("select").forEach(enhanceSelect);
+}
+function positionSmartPopover(){
+  if(!smartSelectCurrent||!smartSelectButton||!smartSelectPopover)return;
+  if(window.innerWidth<=620){
+    /* على الهاتف القائمة Bottom Sheet ثابتة؛ لا نعيد حساب موضعها أثناء كل حركة Scroll. */
+    smartSelectPopover.style.removeProperty("width");
+    smartSelectPopover.style.removeProperty("left");
+    smartSelectPopover.style.removeProperty("top");
+    smartSelectPopover.style.removeProperty("bottom");
+    return;
+  }
+  const r=smartSelectButton.getBoundingClientRect(), vw=document.documentElement.clientWidth, vh=document.documentElement.clientHeight;
+  const margin=8, desired=Math.min(Math.max(r.width,250),Math.min(460,vw-margin*2));
+  const left=Math.max(margin,Math.min(r.left,vw-desired-margin));
+  smartSelectPopover.style.width=desired+"px";
+  smartSelectPopover.style.left=left+"px";
+  const popH=Math.min(360,smartSelectPopover.scrollHeight||330);
+  const below=vh-r.bottom-margin, above=r.top-margin;
+  if(below>=Math.min(260,popH)||below>=above){smartSelectPopover.style.top=(r.bottom+5)+"px";smartSelectPopover.style.bottom="auto";}
+  else{smartSelectPopover.style.top="auto";smartSelectPopover.style.bottom=(vh-r.top+5)+"px";}
+}
+function openSmartSelect(select,btn){
+  const pop=ensureSmartPopover();
+  if(smartSelectCurrent===select&&pop.classList.contains("open")){closeSmartSelect();return;}
+  closeSmartSelect();smartSelectCurrent=select;smartSelectButton=btn;btn.classList.add("is-open");
+  const input=pop.querySelector(".smart-search-input");
+  input.value="";input.placeholder=`ابحث عن ${smartContextLabel(select)}...`;
+  pop.classList.add("open");renderSmartOptions("");positionSmartPopover();
+  requestAnimationFrame(()=>{positionSmartPopover();input.focus();input.select();});
+}
+function closeSmartSelect(){
+  smartSelectPopover?.classList.remove("open");smartSelectButton?.classList.remove("is-open");
+  smartSelectCurrent=null;smartSelectButton=null;smartSelectFiltered=[];smartActiveIndex=-1;
+}
+function renderSmartOptions(query){
+  if(!smartSelectCurrent||!smartSelectPopover)return;
+  const q=smartNormalize(query), opts=[...smartSelectCurrent.options];
+  smartSelectFiltered=opts.filter(o=>!o.disabled&&(!q||smartNormalize(o.textContent).includes(q)));
+  smartActiveIndex=smartSelectFiltered.length?0:-1;
+  const box=smartSelectPopover.querySelector(".smart-options");
+  if(!smartSelectFiltered.length){box.innerHTML='<div class="smart-empty">لا توجد نتائج مطابقة</div>';positionSmartPopover();return;}
+  box.innerHTML="";
+  smartSelectFiltered.forEach((o,i)=>{
+    const b=document.createElement("button");b.type="button";b.className="smart-option"+(o.value===smartSelectCurrent.value?" selected":"")+(i===smartActiveIndex?" active":"");
+    b.textContent=o.textContent;b.dataset.value=o.value;b.setAttribute("role","option");b.setAttribute("aria-selected",o.value===smartSelectCurrent.value?"true":"false");
+    b.addEventListener("click",()=>{
+      const changed=smartSelectCurrent.value!==o.value;smartSelectCurrent.value=o.value;syncSmartSelect(smartSelectCurrent);
+      if(changed){smartSelectCurrent.dispatchEvent(new Event("input",{bubbles:true}));smartSelectCurrent.dispatchEvent(new Event("change",{bubbles:true}));}
+      closeSmartSelect();
+    });
+    box.appendChild(b);
+  });
+  positionSmartPopover();
+}
+let searchableObserver=null;
+function initSearchableSelects(){
+  enhanceAllSelects(document);
+  if(searchableObserver)return;
+  searchableObserver=new MutationObserver(records=>{
+    for(const record of records){
+      for(const node of record.addedNodes){
+        if(node.nodeType===1)enhanceAllSelects(node);
+      }
+    }
+  });
+  searchableObserver.observe(document.body,{childList:true,subtree:true});
+  document.addEventListener("reset",()=>{
+    setTimeout(()=>document.querySelectorAll('select[data-smart-enhanced="1"]').forEach(syncSmartSelect),0);
+  },true);
+}
+
+/* ══════════════════════════════════════
+   modal shell
+══════════════════════════════════════ */
+function openModal(id){
+  const modal=document.getElementById(id); if(!modal)return;
+  if(id==="sale-modal"||id==="merchant-pay-modal") startBalanceData();
+  if(id==="sale-modal") resetSale();
+  if(id==="production-modal") resetProduction();
+  if(id==="transfer-modal") resetTransfer();
+  if(id==="adjust-modal") resetAdjust();
+  if(id==="product-modal") resetProductForm();
+  if(id==="warehouse-modal") document.getElementById("warehouse-form").reset();
+  if(id==="merchant-pay-modal") resetMerchantPay();
+  modal.classList.add("open");
+  document.body.style.overflow="hidden";
+  document.documentElement.style.overflow="hidden";
+}
+function closeModal(modal){
+  closeSmartSelect();
+  (typeof modal==="string"?document.getElementById(modal):modal)?.classList.remove("open");
+  if(!document.querySelector(".dash-modal.open")){
+    document.body.style.overflow="";
+    document.documentElement.style.overflow="";
+  }
+}
+function bindModalShell(){
+  document.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openModal(b.dataset.open)));
+  document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>closeModal(b.closest(".dash-modal"))));
+  document.querySelectorAll(".dash-modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)closeModal(m);}));
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){const m=document.querySelector(".dash-modal.open");if(m)closeModal(m);}});
+}
+
+/* ══════════════════════════════════════
+   SALE — same direction/schema as products page
+══════════════════════════════════════ */
+function resetSale(){
+  document.getElementById("sale-form").reset();
+  saleLines=[{id:++saleLineId,productId:"",qty:1,price:0}];
+  document.querySelector('input[name="sale-pay"][value="unpaid"]').checked=true;
+  updateSalePayStyle(); renderSaleLines(); updateSaleSummary();
+}
+function renderSaleLines(){
+  const box=document.getElementById("sale-lines"); if(!box)return;
+  const whId=document.getElementById("sale-warehouse")?.value;
+  const list=whId?products.filter(p=>p.warehouseId===whId):[];
+  box.innerHTML="";
+  saleLines.forEach(line=>{
+    const row=document.createElement("div"); row.className="line-row";
+    row.innerHTML=`
+      <div class="line-cell"><label>الصنف</label><select class="sale-prod"><option value="">اختر صنفاً</option>${list.map(p=>`<option value="${p.id}" ${p.id===line.productId?"selected":""}>${esc(p.name)} (${num(p.quantity)} ${esc(p.quantityType||"")})</option>`).join("")}</select></div>
+      <div class="line-cell"><label>الكمية</label><input class="sale-qty" type="number" min="0.01" step="0.01" value="${line.qty}"></div>
+      <div class="line-cell"><label>السعر</label><input class="sale-price" type="number" min="0" step="0.01" value="${line.price}"></div>
+      <button class="remove-line" type="button" ${saleLines.length===1?"disabled":""}>حذف</button>
+      <div class="line-meta"></div>`;
+    const sel=row.querySelector(".sale-prod"),qty=row.querySelector(".sale-qty"),price=row.querySelector(".sale-price"),meta=row.querySelector(".line-meta");
+    const updateMeta=()=>{const p=products.find(x=>x.id===line.productId);meta.textContent=p?`متوفر: ${num(p.quantity)} ${p.quantityType||""} — إجمالي السطر: ${money(line.qty*line.price)}`:"";};
+    sel.addEventListener("change",()=>{line.productId=sel.value;const p=products.find(x=>x.id===line.productId);if(p&&(!line.price||line.price===0)){line.price=Number(p.price)||0;price.value=line.price;}updateMeta();updateSaleSummary();});
+    qty.addEventListener("input",()=>{line.qty=Number(qty.value)||1;updateMeta();updateSaleSummary();});
+    price.addEventListener("input",()=>{line.price=Number(price.value)||0;updateMeta();updateSaleSummary();});
+    row.querySelector(".remove-line").addEventListener("click",()=>{saleLines=saleLines.filter(x=>x.id!==line.id);renderSaleLines();updateSaleSummary();});
+    updateMeta(); box.appendChild(row);
+  });
+}
+function updateSalePayStyle(){
+  const paid=document.querySelector('input[name="sale-pay"]:checked')?.value==="paid";
+  document.querySelectorAll("[data-sale-pay]").forEach(c=>{c.classList.remove("active-in","active-out");if(c.dataset.salePay===(paid?"paid":"unpaid"))c.classList.add(paid?"active-in":"active-out");});
+  updateSaleSummary();
+}
+function updateSaleSummary(){
+  const valid=saleLines.filter(l=>l.productId&&l.qty>0);
+  const total=valid.reduce((s,l)=>s+l.qty*l.price,0);
+  const merchantId=document.getElementById("sale-merchant")?.value;
+  const before=merchantId?(merchantBalances[merchantId]??0):null;
+  const paid=document.querySelector('input[name="sale-pay"]:checked')?.value==="paid";
+  document.getElementById("sale-summary-count")&&(document.getElementById("sale-summary-count").textContent=String(valid.length));
+  document.getElementById("sale-summary-total")&&(document.getElementById("sale-summary-total").textContent=money(total));
+  document.getElementById("sale-summary-balance")&&(document.getElementById("sale-summary-balance").textContent=before===null?"—":money(paid?before:before-total));
+}
+async function reserveFinIdInBatch(batch){
+  const counterRef=doc(db,"counters","finance_trans");
+  const snap=await getDoc(counterRef);
+  const seq=(snap.exists()?Number(snap.data().seq)||0:0)+1;
+  batch.set(counterRef,{seq},{merge:true});
+  return "F-"+String(seq).padStart(4,"0");
+}
+async function submitSale(e){
+  e.preventDefault();
+  const whId=document.getElementById("sale-warehouse").value;
+  const merchantId=document.getElementById("sale-merchant").value;
+  const note=document.getElementById("sale-note").value.trim();
+  const isPaid=document.querySelector('input[name="sale-pay"]:checked')?.value==="paid";
+  const valid=saleLines.filter(l=>l.productId&&l.qty>0);
+  if(!whId)return toast("اختر المخزن",true);
+  if(!merchantId)return toast("اختر التاجر",true);
+  if(!valid.length)return toast("أضف صنفاً واحداً على الأقل",true);
+  const btn=document.getElementById("sale-submit"); setBusy(btn,true,"تنفيذ عملية البيع");
+  try{
+    const batch=writeBatch(db), id=opId();
+    const wh=warehouses.find(w=>w.id===whId), merchant=merchants.find(m=>m.id===merchantId);
+    const lines=[]; let total=0;
+    for(const line of valid){
+      const p=products.find(x=>x.id===line.productId); if(!p)continue;
+      const lineTotal=line.qty*line.price; total+=lineTotal;
+      batch.update(doc(db,"products",p.id),{quantity:Math.max(0,(Number(p.quantity)||0)-line.qty),updatedAt:serverTimestamp()});
+      lines.push({productId:p.id,productName:p.name,qty:line.qty,unit:p.quantityType||"",price:line.price,total:lineTotal});
+    }
+    const before=merchantBalances[merchantId]??0;
+    const after=isPaid?before:before-total;
+    batch.set(doc(collection(db,"loadingOperations")),{
+      type:"loading",opId:id,warehouseId:whId,warehouseName:wh?.name??"",merchantId,merchantName:merchant?.name??"",
+      lines,totalAmount:total,note,merchantBalanceBefore:before,merchantBalanceAfter:after,performedBy:currentUser?.email??"—",createdAt:serverTimestamp()
+    });
+    const date=today(), txId=`TL-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+    batch.set(doc(collection(db,"merchantTransactions")),{
+      merchantId,merchantName:merchant?.name??"",amount:total,type:"out",
+      note:`بيع من مخزن ${wh?.name??""}${isPaid?" — نقدي":""}${note?" — "+note:""}`,
+      date,txId,opId:id,source:"loading",paid:isPaid,createdAt:serverTimestamp()
+    });
+    if(isPaid&&total>0){
+      const finId=await reserveFinIdInBatch(batch);
+      batch.set(doc(collection(db,"finance_transactions")),{
+        type:"merchant",dir:"in",amount:total,date,merchantId,merchantName:merchant?.name??"",txId:`PY-${Date.now().toString(36).toUpperCase().slice(-6)}`,
+        opId:id,finId,_active:true,source:"auto-payment",sourcePage:"المنتجات",
+        description:`دفع فوري — بيع نقدي من مخزن ${wh?.name??""}${note?" — "+note:""}`,affectsCash:true,performedBy:currentUser?.email??"—",createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+      });
+      batch.set(doc(collection(db,"finance_transactions")),{
+        type:"deposit",dir:"in",amount:total,date,txId:`DP-${Date.now().toString(36).toUpperCase().slice(-6)}`,
+        opId:id,finId,_active:true,source:"auto-payment",sourcePage:"المنتجات",
+        description:`إيداع نقدي — بيع للتاجر ${merchant?.name??""}${note?" — "+note:""}`,performedBy:currentUser?.email??"—",createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+      });
+    }
+    batch.set(doc(collection(db,"activityLog")),{type:"loading",summary:`بيع: ${wh?.name??""} → ${merchant?.name??""}`,details:`${lines.length} صنف — إجمالي: ${money(total)}`,opId:id,note,merchantBalanceBefore:before,merchantBalanceAfter:after,performedBy:currentUser?.email??"—",createdAt:serverTimestamp()});
+    batch.set(doc(collection(db,"auditLog")),{action:"إضافة",entity:"عملية بيع",page:"المنتجات",details:`بيع: ${wh?.name??""} → ${merchant?.name??""} — ${lines.length} صنف — إجمالي: ${money(total)}`,userEmail:currentUser?.email??"—",createdAt:serverTimestamp()});
+    await batch.commit(); closeModal("sale-modal"); toast("تمت عملية البيع بنجاح");
+  }catch(err){console.error(err);toast("حدث خطأ أثناء تنفيذ البيع",true);}finally{setBusy(btn,false,"تنفيذ عملية البيع");}
+}
+
+/* ══════════════════════════════════════
+   PRODUCTION
+══════════════════════════════════════ */
+function resetProduction(){
+  document.getElementById("production-form").reset();
+  prodInputs=[{id:++prodLineId,productId:"",qty:1}];
+  prodOutputs=[{id:++prodLineId,productId:"",qty:1}];
+  renderProdLines("input"); renderProdLines("output");
+}
+function renderProdLines(direction){
+  const box=document.getElementById(direction==="input"?"prod-input-lines":"prod-output-lines"); if(!box)return;
+  const arr=direction==="input"?prodInputs:prodOutputs;
+  const whId=document.getElementById(direction==="input"?"prod-from-wh":"prod-to-wh")?.value;
+  const list=whId?products.filter(p=>p.warehouseId===whId):[];
+  box.innerHTML="";
+  arr.forEach(line=>{
+    const row=document.createElement("div");row.className="line-row production";
+    row.innerHTML=`<div class="line-cell"><label>${direction==="input"?"المادة":"المنتج الناتج"}</label><select class="prod-product"><option value="">اختر منتجاً</option>${list.map(p=>`<option value="${p.id}" ${p.id===line.productId?"selected":""}>${esc(p.name)} (${num(p.quantity)} ${esc(p.quantityType||"")})</option>`).join("")}</select></div><div class="line-cell"><label>الكمية</label><input class="prod-qty" type="number" min="0.01" step="0.01" value="${line.qty}"></div><button type="button" class="remove-line" ${arr.length===1?"disabled":""}>حذف</button><div class="line-meta"></div>`;
+    const sel=row.querySelector(".prod-product"),qty=row.querySelector(".prod-qty"),meta=row.querySelector(".line-meta");
+    const hint=()=>{const p=products.find(x=>x.id===line.productId);meta.textContent=p?`متوفر حالياً: ${num(p.quantity)} ${p.quantityType||""}`:"";};
+    sel.addEventListener("change",()=>{line.productId=sel.value;hint();}); qty.addEventListener("input",()=>line.qty=Number(qty.value)||1);
+    row.querySelector(".remove-line").addEventListener("click",()=>{if(direction==="input")prodInputs=prodInputs.filter(x=>x.id!==line.id);else prodOutputs=prodOutputs.filter(x=>x.id!==line.id);renderProdLines(direction);});
+    hint();box.appendChild(row);
+  });
+}
+async function submitProduction(e){
+  e.preventDefault();
+  const fromId=document.getElementById("prod-from-wh").value,toId=document.getElementById("prod-to-wh").value,note=document.getElementById("prod-note").value.trim();
+  if(!fromId||!toId)return toast("اختر مخزن المصدر والهدف",true);
+  if(fromId===toId)return toast("يجب أن يكون المخزنان مختلفين",true);
+  const inputs=prodInputs.filter(l=>l.productId&&l.qty>0),outputs=prodOutputs.filter(l=>l.productId&&l.qty>0);
+  if(!inputs.length)return toast("أضف مادة مستهلكة واحدة على الأقل",true);
+  if(!outputs.length)return toast("أضف منتجاً ناتجاً واحداً على الأقل",true);
+  const btn=document.getElementById("prod-submit");setBusy(btn,true,"تنفيذ عملية الإنتاج");
+  try{
+    const batch=writeBatch(db),id=opId(),from=warehouses.find(w=>w.id===fromId),to=warehouses.find(w=>w.id===toId),inputDetails=[],outputDetails=[];
+    inputs.forEach(line=>{const p=products.find(x=>x.id===line.productId);if(!p)return;batch.update(doc(db,"products",p.id),{quantity:(Number(p.quantity)||0)-line.qty,updatedAt:serverTimestamp()});inputDetails.push({productId:p.id,productName:p.name,qty:line.qty,unit:p.quantityType||""});});
+    outputs.forEach(line=>{const p=products.find(x=>x.id===line.productId);if(!p)return;batch.update(doc(db,"products",p.id),{quantity:(Number(p.quantity)||0)+line.qty,updatedAt:serverTimestamp()});outputDetails.push({productId:p.id,productName:p.name,qty:line.qty,unit:p.quantityType||""});});
+    batch.set(doc(collection(db,"warehouseOperations")),{type:"production",opId:id,fromWarehouseId:fromId,fromWarehouseName:from?.name??"",toWarehouseId:toId,toWarehouseName:to?.name??"",inputs:inputDetails,outputs:outputDetails,note,performedBy:currentUser?.email??"—",createdAt:serverTimestamp()});
+    batch.set(doc(collection(db,"activityLog")),{type:"production",summary:`إنتاج: ${from?.name??""} ← ${to?.name??""}`,details:`مدخلات: ${inputs.length} | مخرجات: ${outputs.length}`,opId:id,note,performedBy:currentUser?.email??"—",createdAt:serverTimestamp()});
+    batch.set(doc(collection(db,"auditLog")),{action:"إضافة",entity:"عملية إنتاج",page:"المنتجات",details:`إنتاج: ${from?.name??""} ← ${to?.name??""} — مدخلات: ${inputs.length} | مخرجات: ${outputs.length}`,userEmail:currentUser?.email??"—",createdAt:serverTimestamp()});
+    await batch.commit();closeModal("production-modal");toast("تمت عملية الإنتاج بنجاح");
+  }catch(err){console.error(err);toast("حدث خطأ أثناء التنفيذ",true);}finally{setBusy(btn,false,"تنفيذ عملية الإنتاج");}
+}
+
+/* ══════════════════════════════════════
+   TRANSFER
+══════════════════════════════════════ */
+function resetTransfer(){document.getElementById("transfer-form").reset();document.getElementById("trans-qty").value="1";refreshTransferProducts();}
+function refreshTransferProducts(){
+  const fromId=document.getElementById("trans-from-wh")?.value,toId=document.getElementById("trans-to-wh")?.value;
+  fillSelect("trans-product",fromId?products.filter(p=>p.warehouseId===fromId):[],"اختر صنفاً من المخزن المصدر",p=>`${p.name} (${num(p.quantity)} ${p.quantityType||""})`);
+  fillSelect("trans-dest-product",toId?products.filter(p=>p.warehouseId===toId):[],"إنشاء صنف زائر تلقائياً",p=>`${p.name} (${num(p.quantity)} ${p.quantityType||""})`);
+}
+async function submitTransfer(e){
+  e.preventDefault();
+  const fromId=document.getElementById("trans-from-wh").value,toId=document.getElementById("trans-to-wh").value,srcId=document.getElementById("trans-product").value,destId=document.getElementById("trans-dest-product").value,qty=Number(document.getElementById("trans-qty").value)||0,note=document.getElementById("trans-note").value.trim();
+  if(!fromId||!toId)return toast("اختر المخزنين",true);if(fromId===toId)return toast("يجب أن يكون المخزنان مختلفين",true);if(!srcId)return toast("اختر الصنف المراد تحويله",true);if(qty<=0)return toast("أدخل كمية صحيحة",true);
+  const src=products.find(p=>p.id===srcId);if(!src)return;if((Number(src.quantity)||0)<qty)return toast(`الكمية المتوفرة (${num(src.quantity)}) أقل من المطلوب`,true);
+  const btn=document.getElementById("trans-submit");setBusy(btn,true,"تنفيذ التحويل");
+  try{
+    const batch=writeBatch(db),id=opId(),from=warehouses.find(w=>w.id===fromId),to=warehouses.find(w=>w.id===toId);let destFinal=destId||"";
+    batch.update(doc(db,"products",srcId),{quantity:(Number(src.quantity)||0)-qty,updatedAt:serverTimestamp()});
+    if(destId){const dp=products.find(p=>p.id===destId);if(dp)batch.update(doc(db,"products",destId),{quantity:(Number(dp.quantity)||0)+qty,updatedAt:serverTimestamp()});}
+    else{const ref=doc(collection(db,"products"));destFinal=ref.id;batch.set(ref,{name:src.name,serialId:src.serialId||"",description:src.description||"",quantity:qty,quantityType:src.quantityType||"قطعة",price:src.price||0,imageUrl:src.imageUrl||null,warehouseId:toId,warehouseName:to?.name??"",isVisiting:true,sourceProductId:srcId,sourceWarehouseId:fromId,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});}
+    batch.set(doc(collection(db,"warehouseOperations")),{type:"transfer",opId:id,fromWarehouseId:fromId,fromWarehouseName:from?.name??"",toWarehouseId:toId,toWarehouseName:to?.name??"",productId:srcId,productName:src.name,destProductId:destFinal,quantity:qty,unit:src.quantityType||"",note,performedBy:currentUser?.email??"—",createdAt:serverTimestamp()});
+    batch.set(doc(collection(db,"activityLog")),{type:"transfer",summary:`تحويل: ${src.name} من ${from?.name??""} إلى ${to?.name??""}`,details:`${num(qty)} ${src.quantityType||""}`,opId:id,note,performedBy:currentUser?.email??"—",createdAt:serverTimestamp()});
+    batch.set(doc(collection(db,"auditLog")),{action:"إضافة",entity:"عملية تحويل",page:"المنتجات",details:`تحويل: ${src.name} من ${from?.name??""} إلى ${to?.name??""} — ${num(qty)} ${src.quantityType||""}`,userEmail:currentUser?.email??"—",createdAt:serverTimestamp()});
+    await batch.commit();closeModal("transfer-modal");toast("تم التحويل بنجاح");
+  }catch(err){console.error(err);toast("حدث خطأ أثناء التنفيذ",true);}finally{setBusy(btn,false,"تنفيذ التحويل");}
+}
+
+/* ══════════════════════════════════════
+   STOCK ADJUST
+══════════════════════════════════════ */
+function resetAdjust(){document.getElementById("adjust-form").reset();document.getElementById("adj-qty").value="1";adjustType="add";updateAdjustTypeUI();refreshAdjustProducts();updateAdjustPreview();}
+function updateAdjustTypeUI(){document.querySelectorAll("[data-adj-type]").forEach(b=>b.classList.toggle("selected",b.dataset.adjType===adjustType));updateAdjustPreview();}
+function refreshAdjustProducts(){const whId=document.getElementById("adj-warehouse")?.value;fillSelect("adj-product",whId?products.filter(p=>p.warehouseId===whId):[],"اختر صنفاً",p=>`${p.name} (${num(p.quantity)} ${p.quantityType||""})`);updateAdjustPreview();}
+function updateAdjustPreview(){
+  const p=products.find(x=>x.id===document.getElementById("adj-product")?.value),qty=Number(document.getElementById("adj-qty")?.value)||0,before=Number(p?.quantity)||0,after=adjustType==="add"?before+qty:Math.max(0,before-qty);
+  const unit=p?.quantityType||"";if(document.getElementById("adj-before"))document.getElementById("adj-before").textContent=p?`${num(before)} ${unit}`:"—";if(document.getElementById("adj-after"))document.getElementById("adj-after").textContent=p?`${num(after)} ${unit}`:"—";
+}
+async function submitAdjust(e){
+  e.preventDefault();const whId=document.getElementById("adj-warehouse").value,prodId=document.getElementById("adj-product").value,qty=Number(document.getElementById("adj-qty").value)||0,note=document.getElementById("adj-note").value.trim();
+  if(!whId)return toast("اختر المخزن",true);if(!prodId)return toast("اختر صنفاً",true);if(qty<=0)return toast("أدخل كمية صحيحة",true);
+  const p=products.find(x=>x.id===prodId),wh=warehouses.find(x=>x.id===whId);if(!p)return;const before=Number(p.quantity)||0;if(adjustType==="consume"&&qty>before)return toast(`الكمية المطلوبة (${num(qty)}) أكبر من المتوفر (${num(before)})`,true);const after=adjustType==="add"?before+qty:Math.max(0,before-qty);
+  const btn=document.getElementById("adj-submit");setBusy(btn,true,"تنفيذ التعديل");
+  try{
+    await updateDoc(doc(db,"products",prodId),{quantity:after,updatedAt:serverTimestamp()});
+    const tid=adjustTxId();
+    await addDoc(collection(db,"warehouseAdjustments"),{warehouseId:whId,warehouseName:wh?.name??whId,productId:prodId,productName:p.name,productUnit:p.quantityType||"",type:adjustType,qty,qtyBefore:before,qtyAfter:after,note,txId:tid,performedBy:currentUser?.email||"—",createdAt:serverTimestamp()});
+    await addDoc(collection(db,"auditLog"),{action:adjustType==="add"?"إضافة":"استهلاك",entity:"تعديل مخزون",page:"المنتجات",details:(adjustType==="add"?"إضافة ":"استهلاك ")+num(qty)+" "+(p.quantityType||"")+" من "+p.name+" في "+(wh?.name??whId)+" | قبل: "+num(before)+" | بعد: "+num(after),userEmail:currentUser?.email||"—",createdAt:serverTimestamp()}).catch(()=>{});
+    closeModal("adjust-modal");toast(adjustType==="add"?"تمت الإضافة بنجاح ✓":"تم الاستهلاك بنجاح ✓");
+  }catch(err){console.error(err);toast("حدث خطأ أثناء الحفظ",true);}finally{setBusy(btn,false,"تنفيذ التعديل");}
+}
+
+/* ══════════════════════════════════════
+   PRODUCT + WAREHOUSE
+══════════════════════════════════════ */
+function generateSerial(warehouseId){const idx=warehouses.findIndex(w=>w.id===warehouseId),whNum=idx>=0?idx+1:1,count=products.filter(p=>p.warehouseId===warehouseId).length+1;return `W${whNum}-${String(count).padStart(5,"0")}`;}
+function refreshProductExisting(){fillSelect("product-existing",products,"اختر منتجاً",p=>`${p.name} — ${p.warehouseName||warehouses.find(w=>w.id===p.warehouseId)?.name||""}`);}
+function resetProductForm(){
+  document.getElementById("product-form").reset();productMode="add";productEditingId=null;pendingProductFile=null;document.getElementById("product-image-preview").style.display="none";document.getElementById("product-image-text").textContent="اضغط لاختيار صورة";setProductMode("add");
+}
+function setProductMode(mode){
+  productMode=mode;productEditingId=null;document.querySelectorAll("[data-product-mode]").forEach(b=>b.classList.toggle("selected",b.dataset.productMode===mode));document.getElementById("product-existing-wrap").style.display=mode==="edit"?"block":"none";document.getElementById("product-warehouse").disabled=mode==="edit";
+  if(mode==="add"){document.getElementById("product-existing").value="";document.getElementById("product-name").value="";document.getElementById("product-desc").value="";document.getElementById("product-current-qty").value="0";document.getElementById("product-price").value="0";document.getElementById("product-unit").value="قطعة";document.getElementById("product-serial").value=document.getElementById("product-warehouse").value?generateSerial(document.getElementById("product-warehouse").value):"";}
+}
+function loadProductForEdit(){
+  const p=products.find(x=>x.id===document.getElementById("product-existing").value);productEditingId=p?.id||null;if(!p)return;
+  document.getElementById("product-warehouse").value=p.warehouseId||"";document.getElementById("product-name").value=p.name||"";document.getElementById("product-serial").value=p.serialId||generateSerial(p.warehouseId);document.getElementById("product-desc").value=p.description||"";document.getElementById("product-current-qty").value=Number(p.quantity)||0;document.getElementById("product-unit").value=p.quantityType||"قطعة";document.getElementById("product-price").value=Number(p.price)||0;
+  const img=document.getElementById("product-image-preview");if(p.imageUrl){img.src=p.imageUrl;img.style.display="block";document.getElementById("product-image-text").textContent="الصورة الحالية — اضغط للتغيير";}else{img.style.display="none";document.getElementById("product-image-text").textContent="اضغط لاختيار صورة";}
+}
+async function submitProduct(e){
+  e.preventDefault();const name=document.getElementById("product-name").value.trim(),warehouseId=document.getElementById("product-warehouse").value;if(!warehouseId)return toast("اختر المخزن",true);if(!name)return toast("أدخل اسم المنتج",true);if(productMode==="edit"&&!productEditingId)return toast("اختر المنتج المراد تعديله",true);
+  const old=products.find(p=>p.id===productEditingId),serialId=document.getElementById("product-serial").value.trim()||(old?.serialId||generateSerial(warehouseId)),description=document.getElementById("product-desc").value.trim(),quantity=productEditingId?(Number(old?.quantity)||0):0,quantityType=document.getElementById("product-unit").value,price=Number(document.getElementById("product-price").value)||0,wh=warehouses.find(w=>w.id===warehouseId),btn=document.getElementById("product-submit");setBusy(btn,true,"حفظ المنتج");
+  try{
+    let imageUrl=old?.imageUrl??null;if(pendingProductFile)imageUrl=await compressImage(pendingProductFile);
+    const data={name,serialId,description,quantity,quantityType,price,imageUrl,warehouseId,warehouseName:wh?.name??"",updatedAt:serverTimestamp()};
+    if(productEditingId){await updateDoc(doc(db,"products",productEditingId),data);await writeAudit("تعديل","منتج",`${name} — ${serialId}`,"المنتجات");toast("تم تحديث المنتج");}
+    else{await addDoc(collection(db,"products"),{...data,createdAt:serverTimestamp()});await writeAudit("إضافة","منتج",`${name} — ${serialId}`,"المنتجات");toast("تمت إضافة المنتج");}
+    closeModal("product-modal");
+  }catch(err){console.error(err);toast("حدث خطأ أثناء حفظ المنتج",true);}finally{setBusy(btn,false,"حفظ المنتج");}
+}
+async function submitWarehouse(e){
+  e.preventDefault();const name=document.getElementById("warehouse-name").value.trim();if(!name)return toast("أدخل اسم المخزن",true);const btn=document.getElementById("warehouse-submit");setBusy(btn,true,"حفظ المخزن");
+  try{await addDoc(collection(db,"warehouses"),{name,createdAt:serverTimestamp()});await writeAudit("إضافة","مخزن",name,"المنتجات");closeModal("warehouse-modal");toast("تمت إضافة المخزن");}catch(err){console.error(err);toast("حدث خطأ",true);}finally{setBusy(btn,false,"حفظ المخزن");}
+}
+
+/* ══════════════════════════════════════
+   FINANCE — same dir/type semantics as finance page
+══════════════════════════════════════ */
+async function nextFinId(){
+  const ref=doc(db,"counters","finance_trans");let seq=1;
+  await runTransaction(db,async tx=>{const snap=await tx.get(ref);seq=(snap.exists()?Number(snap.data().seq)||0:0)+1;tx.set(ref,{seq},{merge:true});});
+  return "F-"+String(seq).padStart(4,"0");
+}
+async function writeAudit(action,entity,details,page="المالية"){
+  try{await addDoc(collection(db,"auditLog"),{action,entity,page,details,userEmail:currentUser?.email||"—",createdAt:serverTimestamp()});}catch(err){console.error("auditLog",err);}
+}
+function buildDeductMonths(){
+  const sel=document.getElementById("fin-deduct-month"),now=new Date(),curY=now.getFullYear(),curM=now.getMonth(),next=new Date(curY,curM+1,1);
+  const opts=[new Date(curY,curM,1),next];sel.innerHTML=opts.map((d,i)=>{const val=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`,label=d.toLocaleDateString("ar-EG-u-nu-latn",{month:"long",year:"numeric"});return `<option value="${val}">${i===0?"الشهر الحالي":"الشهر القادم"} — ${label}</option>`;}).join("");
+}
+function openFinance(type){
+  const cfg=FIN_TYPES[type];if(!cfg)return;financeType=type;document.getElementById("finance-form").reset();document.getElementById("fin-date").value=today();document.getElementById("fin-modal-title").textContent=cfg.label;setSvgIcon(document.getElementById("fin-modal-icon"), cfg.icon);
+  document.getElementById("fin-dir-field").style.display=cfg.fixed?"none":"block";document.getElementById("fin-employee-field").style.display=type==="advance"?"block":"none";document.getElementById("fin-month-field").style.display=type==="advance"?"block":"none";document.getElementById("fin-party-field").style.display=(type==="withdrawal"||type==="deposit"||type==="other")?"block":"none";
+  if(type==="advance")buildDeductMonths();
+  if(type==="withdrawal"||type==="deposit"){document.getElementById("fin-party-label").textContent="جهة الصرف / المصدر";document.getElementById("fin-party").placeholder="مثال: إيجار، مصروفات إدارية…";}else if(type==="other"){document.getElementById("fin-party-label").textContent="اسم الجهة";document.getElementById("fin-party").placeholder="اختياري";}
+  document.querySelectorAll("[data-fin-dir]").forEach(c=>c.classList.remove("active-in","active-out"));
+  if(cfg.fixed){const r=document.querySelector(`input[name="fin-dir"][value="${cfg.dir}"]`);if(r)r.checked=true;}
+  updateFinanceDirHint();document.getElementById("finance-modal").classList.add("open");document.body.style.overflow="hidden";
+}
+function updateFinanceDirHint(){
+  const cfg=FIN_TYPES[financeType],hint=document.getElementById("fin-dir-hint");if(!cfg){hint.className="dir-box custom";hint.textContent="اختر العملية";return;}
+  const dir=cfg.fixed?cfg.dir:document.querySelector('input[name="fin-dir"]:checked')?.value;
+  document.querySelectorAll("[data-fin-dir]").forEach(c=>{c.classList.remove("active-in","active-out");if(c.dataset.finDir===dir)c.classList.add(dir==="in"?"active-in":"active-out");});
+  if(!dir){hint.className="dir-box custom";hint.textContent="حدد اتجاه العملية";}else if(dir==="in"){hint.className="dir-box in";hint.textContent="✅ هذه العملية ستُضاف إلى رصيد الصندوق";}else{hint.className="dir-box out";hint.textContent="⚠️ هذه العملية ستُخصم من رصيد الصندوق";}
+}
+async function submitFinance(e){
+  e.preventDefault();const cfg=FIN_TYPES[financeType];if(!cfg)return toast("اختر نوع العملية",true);const amount=Number(document.getElementById("fin-amount").value);if(!amount||amount<=0)return toast("أدخل مبلغاً صحيحاً",true);const dir=cfg.fixed?cfg.dir:document.querySelector('input[name="fin-dir"]:checked')?.value;if(!dir)return toast("حدد اتجاه العملية",true);
+  const empId=financeType==="advance"?document.getElementById("fin-employee").value:"";if(financeType==="advance"&&!empId)return toast("اختر الموظف أولاً",true);const emp=employees.find(x=>x.id===empId);const deductMonth=financeType==="advance"?document.getElementById("fin-deduct-month").value:"";if(financeType==="advance"&&!deductMonth)return toast("حدد شهر الخصم من الراتب",true);
+  const partyName=document.getElementById("fin-party").value.trim();let merchantId="",merchantName="";const matched=partyName?merchants.find(m=>(m.name||"").trim().toLowerCase()===partyName.toLowerCase()):null;if(matched){merchantId=matched.id;merchantName=matched.name;}
+  const date=document.getElementById("fin-date").value;if(!date)return toast("اختر التاريخ",true);const btn=document.getElementById("fin-submit");setBusy(btn,true,"حفظ العملية");
+  try{const finId=await nextFinId(),data={type:financeType,dir,amount,date,description:document.getElementById("fin-desc").value.trim(),partyName,merchantId,merchantName,employeeId:empId,employeeName:emp?.name??"",deductMonth:financeType==="advance"?deductMonth:"",sourcePage:"المالية",_active:true};await addDoc(collection(db,"finance_transactions"),{...data,finId,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});await writeAudit("إضافة","حركة مالية",`${finId} — ${data.type} — ${data.amount} ج.م${data.employeeName?" — "+data.employeeName:""}${data.merchantName?" — "+data.merchantName:""}`);closeModal("finance-modal");toast("تمت الإضافة — المعرف: "+finId);}catch(err){console.error(err);toast("خطأ أثناء الحفظ",true);}finally{setBusy(btn,false,"حفظ العملية");}
+}
+
+/* ══════════════════════════════════════
+   MERCHANT PAYMENT
+══════════════════════════════════════ */
+function resetMerchantPay(){
+  document.getElementById("merchant-pay-form").reset();document.getElementById("mp-date").value=today();document.querySelector('input[name="mp-type"][value="in"]').checked=true;document.getElementById("mp-cash").checked=true;updateMerchantPayStyle();
+}
+function updateMerchantPayStyle(){
+  const type=document.querySelector('input[name="mp-type"]:checked')?.value||"in";
+  document.querySelectorAll("[data-mp-type]").forEach(c=>{c.classList.remove("active-in","active-out");if(c.dataset.mpType===type)c.classList.add(type==="in"?"active-in":"active-out");});
+  const hint=document.getElementById("mp-dir-hint");if(type==="in"){hint.className="dir-box in";hint.textContent="تسديد مستحقات: يقل دين التاجر، والنقد — إن وُجد — يدخل الصندوق.";}else{hint.className="dir-box out";hint.textContent="إضافة على الحساب: يزيد دين التاجر، والنقد — إن وُجد — يخرج من الصندوق.";}
+}
+async function submitMerchantPay(e){
+  e.preventDefault();const merchantId=document.getElementById("mp-merchant").value,merchant=merchants.find(m=>m.id===merchantId);if(!merchant)return toast("اختر التاجر أولاً",true);const payType=document.querySelector('input[name="mp-type"]:checked')?.value;if(!payType)return toast("اختر نوع الحركة",true);const amount=Number(document.getElementById("mp-amount").value);if(!amount||amount<=0)return toast("أدخل مبلغاً صحيحاً",true);const date=document.getElementById("mp-date").value;if(!date)return toast("اختر التاريخ",true);const isCash=document.getElementById("mp-cash").checked,desc=document.getElementById("mp-desc").value.trim(),autoDesc=desc||(payType==="in"?`دفعة من ${merchant.name}`:`إضافة لحساب ${merchant.name}`),btn=document.getElementById("mp-submit");setBusy(btn,true,"حفظ الدفعة");
+  try{
+    const finId=await nextFinId(),batch=writeBatch(db);
+    batch.set(doc(collection(db,"finance_transactions")),{type:"merchant",dir:payType,amount,date,description:autoDesc,merchantId,merchantName:merchant.name,partyName:merchant.name,employeeId:"",employeeName:"",finId,_active:true,sourcePage:"المالية",createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
+    if(isCash)batch.set(doc(collection(db,"finance_transactions")),{type:payType==="in"?"deposit":"withdrawal",dir:payType==="in"?"in":"out",amount,date,description:`دفعة تاجر (${merchant.name}) — ${autoDesc}`,partyName:merchant.name,merchantId:"",merchantName:"",employeeId:"",employeeName:"",finId,_active:true,sourcePage:"المالية",createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
+    await batch.commit();await writeAudit("إضافة","دفعة تاجر",`${merchant.name} — ${payType==="in"?"تسديد مستحقات":"زيادة دين"} — ${amount} ج.م${isCash?" (نقدي)":""}`);closeModal("merchant-pay-modal");toast("تم الحفظ — "+finId);
+  }catch(err){console.error(err);toast("خطأ أثناء الحفظ",true);}finally{setBusy(btn,false,"حفظ الدفعة");}
+}
+
+/* ── منع الضغط العرضي أثناء سحب الصفحة على الهاتف ── */
+function installMobileTapGuard(){
+  if(!window.matchMedia?.("(pointer: coarse)").matches)return;
+  const selector=".action-card,.section-link,#bottom-nav a,.primary-btn,.ghost-btn,.danger-btn,.type-choice,.radio-card,.add-line,.remove-line,.smart-select-btn";
+  let active=null,startX=0,startY=0,moved=false,suppressUntil=0;
+  document.addEventListener("pointerdown",e=>{
+    if(e.pointerType==="mouse")return;
+    active=e.target.closest(selector);
+    if(!active)return;
+    startX=e.clientX;startY=e.clientY;moved=false;
+  },{capture:true,passive:true});
+  document.addEventListener("pointermove",e=>{
+    if(!active||e.pointerType==="mouse")return;
+    if(Math.abs(e.clientX-startX)>11||Math.abs(e.clientY-startY)>11)moved=true;
+  },{capture:true,passive:true});
+  document.addEventListener("pointerup",()=>{
+    if(active&&moved)suppressUntil=performance.now()+450;
+    active=null;
+  },{capture:true,passive:true});
+  document.addEventListener("pointercancel",()=>{active=null;moved=false;},{capture:true,passive:true});
+  document.addEventListener("click",e=>{
+    if(performance.now()>suppressUntil)return;
+    if(e.target.closest(selector)){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      suppressUntil=0;
+    }
+  },true);
+}
+
+/* ══════════════════════════════════════
+   UI binding
+══════════════════════════════════════ */
+function bindUI(){
+  if(uiBound)return;uiBound=true;bindModalShell();
+  document.querySelectorAll("[data-fin-type]").forEach(b=>b.addEventListener("click",()=>openFinance(b.dataset.finType)));
+
+  document.getElementById("sale-warehouse").addEventListener("change",()=>{saleLines.forEach(l=>l.productId="");renderSaleLines();updateSaleSummary();});
+  document.getElementById("sale-merchant").addEventListener("change",updateSaleSummary);
+  document.getElementById("sale-add-line").addEventListener("click",()=>{saleLines.push({id:++saleLineId,productId:"",qty:1,price:0});renderSaleLines();});
+  document.querySelectorAll("[data-sale-pay]").forEach(c=>c.addEventListener("click",()=>{c.querySelector("input").checked=true;updateSalePayStyle();}));
+  document.getElementById("sale-form").addEventListener("submit",submitSale);
+
+  document.getElementById("prod-from-wh").addEventListener("change",()=>{prodInputs.forEach(l=>l.productId="");renderProdLines("input");});
+  document.getElementById("prod-to-wh").addEventListener("change",()=>{prodOutputs.forEach(l=>l.productId="");renderProdLines("output");});
+  document.getElementById("prod-add-input").addEventListener("click",()=>{prodInputs.push({id:++prodLineId,productId:"",qty:1});renderProdLines("input");});
+  document.getElementById("prod-add-output").addEventListener("click",()=>{prodOutputs.push({id:++prodLineId,productId:"",qty:1});renderProdLines("output");});
+  document.getElementById("production-form").addEventListener("submit",submitProduction);
+
+  document.getElementById("trans-from-wh").addEventListener("change",refreshTransferProducts);document.getElementById("trans-to-wh").addEventListener("change",refreshTransferProducts);document.getElementById("transfer-form").addEventListener("submit",submitTransfer);
+
+  document.querySelectorAll("[data-adj-type]").forEach(b=>b.addEventListener("click",()=>{adjustType=b.dataset.adjType;updateAdjustTypeUI();}));document.getElementById("adj-warehouse").addEventListener("change",refreshAdjustProducts);document.getElementById("adj-product").addEventListener("change",updateAdjustPreview);document.getElementById("adj-qty").addEventListener("input",updateAdjustPreview);document.getElementById("adjust-form").addEventListener("submit",submitAdjust);
+
+  document.querySelectorAll("[data-product-mode]").forEach(b=>b.addEventListener("click",()=>setProductMode(b.dataset.productMode)));document.getElementById("product-existing").addEventListener("change",loadProductForEdit);document.getElementById("product-warehouse").addEventListener("change",()=>{if(productMode==="add")document.getElementById("product-serial").value=generateSerial(document.getElementById("product-warehouse").value);});document.getElementById("product-image").addEventListener("change",()=>{const f=document.getElementById("product-image").files[0];if(!f)return;pendingProductFile=f;const img=document.getElementById("product-image-preview");img.src=URL.createObjectURL(f);img.style.display="block";document.getElementById("product-image-text").textContent=f.name;});document.getElementById("product-form").addEventListener("submit",submitProduct);document.getElementById("warehouse-form").addEventListener("submit",submitWarehouse);
+
+  document.querySelectorAll("[data-fin-dir]").forEach(c=>c.addEventListener("click",()=>{c.querySelector("input").checked=true;updateFinanceDirHint();}));document.getElementById("finance-form").addEventListener("submit",submitFinance);
+
+  document.querySelectorAll("[data-mp-type]").forEach(c=>c.addEventListener("click",()=>{const type=c.dataset.mpType;c.querySelector("input").checked=true;if(type==="out")document.getElementById("mp-cash").checked=false;else document.getElementById("mp-cash").checked=true;updateMerchantPayStyle();}));document.getElementById("merchant-pay-form").addEventListener("submit",submitMerchantPay);
+}
+
+onAuthStateChanged(auth, async user=>{
+  if(!user){location.href="/index.html";return;}
+  try{
+    const blockedSnap=await getDocs(query(
+      collection(db,"blockedUsers"),
+      where("email","==",String(user.email||"").trim().toLowerCase())
+    ));
+    if(!blockedSnap.empty){
+      await signOut(auth);
+      window.location.replace("/index.html");
+      return;
+    }
+  }catch(err){
+    console.error("blocked user check failed",err);
+  }
+  currentUser=user;renderNav(user);updateDashboardGreeting(user);initSearchableSelects();installMobileTapGuard();bindUI();startData();window.__dashboardReady=true;document.getElementById("app").style.visibility="visible";hideLoader();
+});
+
+</script>
+
+</body>
 </html>
