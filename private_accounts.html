@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>حسابات خاصة - Ahmed And hamdy</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script>
+    // هذه الصفحة لا يظهر لها رابط في أي صفحة أخرى. يلزم الدخول إليها من الداشبورد أولاً.
+    try{
+      if(sessionStorage.getItem('privateAccountsEntry')!=='dashboard') location.replace('/dashboard.html');
+    }catch(_){ location.replace('/dashboard.html'); }
+  </script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    :root{
+      --bg:#f4f7f5;--surface:#fff;--ink:#17211b;--muted:#738078;--border:#dfe6e1;
+      --primary:#2f6f4f;--primary-dark:#24583e;--primary-soft:#eef7f2;
+      --red:#b3432f;--red-soft:#fff3f0;--gold:#9a6b1d;--gold-soft:#fff8e9;
+      --blue:#315f9c;--blue-soft:#eef4fb;--purple:#6652a3;--purple-soft:#f4f1fb;
+      --shadow:0 10px 30px rgba(28,37,33,.07);--radius:18px;
+    }
+    html{background:var(--bg);-webkit-text-size-adjust:100%}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Cairo,"Segoe UI",sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+    button,input,textarea,select{font-family:inherit}
+    button,a{-webkit-tap-highlight-color:transparent}
+    button{touch-action:manipulation}
+    #app{min-height:100vh;visibility:hidden}
+    .page{width:min(1180px,100%);margin:auto;padding:20px 20px 90px}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow);margin-bottom:16px;position:sticky;top:8px;z-index:50}
+    .brand{display:flex;align-items:center;gap:10px;min-width:0}.brand img{width:38px;height:38px;object-fit:contain;border-radius:10px;background:#fff}.brand b{display:block;font-size:15px}.brand small{display:block;color:var(--muted);font-size:10.5px;margin-top:1px}
+    .back-btn{border:1px solid var(--border);background:var(--surface);color:var(--primary-dark);border-radius:11px;padding:9px 13px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}
+    .hero{display:flex;align-items:center;justify-content:space-between;gap:18px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:20px 22px;box-shadow:var(--shadow);margin-bottom:16px}
+    .hero h1{margin:0;font-size:23px;font-weight:900}.hero p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.75}.private-chip{flex:0 0 auto;border:1px solid #d6e8dc;background:var(--primary-soft);color:var(--primary-dark);border-radius:999px;padding:7px 11px;font-size:10.5px;font-weight:900}
+    .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}.sum-card{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:14px 15px;box-shadow:0 3px 14px rgba(28,37,33,.04)}.sum-card span{display:block;color:var(--muted);font-size:10.5px;font-weight:700}.sum-card strong{display:block;margin-top:5px;font-size:18px;font-weight:900}.sum-card.net strong{color:var(--primary-dark)}
+    .layout{display:grid;grid-template-columns:minmax(300px,.82fr) minmax(0,1.6fr);gap:14px;align-items:start}.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.panel-head{padding:14px 15px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px}.panel-head h2{font-size:15px;margin:0;font-weight:900}.panel-head small{font-size:10.5px;color:var(--muted)}
+    .tools{padding:11px 12px;border-bottom:1px solid var(--border);display:flex;gap:8px}.search{position:relative;flex:1}.search input{width:100%;height:42px;border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;background:#fbfcfb;color:var(--ink);font-size:13px;outline:none}.search input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);background:#fff}.btn{border:0;border-radius:10px;min-height:42px;padding:8px 13px;font-size:12px;font-weight:900;cursor:pointer}.btn.primary{background:var(--primary);color:#fff}.btn.outline{border:1px solid var(--border);background:#fff;color:var(--ink)}.btn.danger{background:var(--red-soft);color:var(--red);border:1px solid #efd5cf}.btn.small{min-height:34px;padding:6px 10px;font-size:10.5px}
+    .people{max-height:65vh;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}.person{padding:12px 13px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;transition:background .12s}.person:last-child{border-bottom:0}.person:hover,.person.active{background:var(--primary-soft)}.person-main{min-width:0}.person-name{font-weight:900;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.person-meta{font-size:10.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.person-bal{text-align:left;white-space:nowrap;font-size:11px;font-weight:900}.bal-pos{color:var(--red)}.bal-neg{color:var(--blue)}.bal-zero{color:var(--muted)}
+    .empty{padding:32px 16px;text-align:center;color:var(--muted);font-size:12px}.detail-empty{min-height:390px;display:grid;place-items:center;padding:30px;text-align:center;color:var(--muted)}
+    .detail{display:none}.detail.show{display:block}.account-head{padding:16px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;border-bottom:1px solid var(--border)}.account-name{font-size:18px;font-weight:900}.account-sub{font-size:11px;color:var(--muted);margin-top:3px}.account-actions{display:flex;gap:6px;flex-wrap:wrap}.balance-box{margin:14px 15px;background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:13px 15px;display:flex;align-items:center;justify-content:space-between;gap:12px}.balance-box span{font-size:11px;color:var(--muted);font-weight:700}.balance-box strong{font-size:19px;font-weight:900}.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 15px 14px}.quick{border:1px solid var(--border);background:#fff;border-radius:11px;padding:10px 8px;font-size:10.5px;font-weight:900;cursor:pointer;min-height:52px}.quick.debt-on{background:var(--red-soft);border-color:#efd4ce;color:#943725}.quick.pay-from{background:var(--primary-soft);border-color:#d3e7da;color:var(--primary-dark)}.quick.debt-to{background:var(--blue-soft);border-color:#d8e2f0;color:#294f83}.quick.pay-to{background:var(--gold-soft);border-color:#eadbbf;color:#795316}
+    .tx-tools{padding:11px 15px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center}.tx-tools input{flex:1;height:40px;border:1px solid var(--border);border-radius:9px;padding:7px 10px;font-size:12px;outline:none}.tx-tools input:focus{border-color:var(--primary)}
+    .table-wrap{overflow:auto;-webkit-overflow-scrolling:touch}.tx-table{width:100%;border-collapse:collapse;min-width:720px}.tx-table th{background:#f6f8f6;color:var(--muted);font-size:10.5px;font-weight:900;padding:8px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}.tx-table td{padding:8px;border-bottom:1px solid var(--border);font-size:11px;vertical-align:middle}.tx-table tr:last-child td{border-bottom:0}.txid{font-family:monospace;font-size:10px;font-weight:800}.amount{font-weight:900;white-space:nowrap}.after{font-weight:800;white-space:nowrap}.tx-actions{display:flex;gap:5px}.kind{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:3px 7px;font-size:9.5px;font-weight:800;white-space:nowrap}.kind.pos{background:var(--red-soft);color:var(--red)}.kind.neg{background:var(--blue-soft);color:var(--blue)}
+    .mobile-txs{display:none;padding:10px}.m-tx{border:1px solid var(--border);border-radius:12px;padding:10px;margin-bottom:8px;background:#fff}.m-tx:last-child{margin-bottom:0}.m-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.m-date{font-size:10px;color:var(--muted)}.m-mid{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:7px}.m-note{font-size:10.5px;color:var(--muted);margin-top:6px}.m-actions{display:flex;gap:6px;border-top:1px solid var(--border);padding-top:8px;margin-top:8px}
+    .overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(15,23,42,.46);align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)}.overlay.open{display:flex}.modal{width:min(520px,100%);max-height:90vh;overflow:auto;background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.22)}.modal.wide{width:min(860px,100%)}.modal-head{position:sticky;top:0;background:rgba(255,255,255,.97);z-index:2;padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:10px}.modal-head h3{font-size:15px;margin:0}.x{width:36px;height:36px;border:0;border-radius:9px;background:var(--bg);font-size:20px;color:var(--muted);cursor:pointer}.modal-body{padding:15px}.field{margin-bottom:12px}.field label{display:block;font-size:11.5px;font-weight:800;margin-bottom:5px}.field input,.field textarea,.field select{width:100%;min-height:44px;border:1.5px solid var(--border);border-radius:10px;padding:9px 10px;background:#fbfcfb;color:var(--ink);font-size:13px;outline:none}.field textarea{min-height:72px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);background:#fff}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.choice{border:1.5px solid var(--border);border-radius:11px;background:#fff;padding:10px;text-align:right;font-size:11px;font-weight:900;cursor:pointer;color:var(--ink)}.choice.selected{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-soft)}.choice small{display:block;color:var(--muted);font-size:9.5px;margin-top:2px;font-weight:600}.modal-actions{display:flex;gap:8px;margin-top:14px}.modal-actions .btn.primary{flex:1}
+    .statement{background:#fff;color:#111;direction:rtl}.stmt-page{width:190mm;min-height:270mm;margin:0 auto 12px;background:#fff;padding:12mm;position:relative;border:1px solid #ddd}.stmt-head{display:flex;justify-content:space-between;gap:18px;padding-bottom:9px;border-bottom:2px solid #111}.stmt-brand{font-size:17px;font-weight:900}.stmt-brand small{display:block;font-size:9px;font-weight:500;margin-top:2px;color:#555}.stmt-meta{font-size:9.5px;min-width:170px}.stmt-meta div{display:flex;justify-content:space-between;gap:12px;margin-bottom:3px}.stmt-title{text-align:center;margin:12px 0 9px}.stmt-title h2{font-size:16px;margin:0}.stmt-title p{font-size:9.5px;margin:3px 0 0}.stmt-summary{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #111;margin-bottom:10px}.stmt-summary div{padding:7px;text-align:center;border-left:1px solid #111}.stmt-summary div:last-child{border-left:0}.stmt-summary span{display:block;font-size:8.5px}.stmt-summary strong{font-size:11px}.stmt-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:8.5px}.stmt-table th,.stmt-table td{border:1px solid #333;padding:5px;text-align:right}.stmt-table th{font-weight:900}.stmt-foot{position:absolute;bottom:8mm;left:12mm;right:12mm;display:flex;justify-content:space-between;border-top:1px solid #777;padding-top:4px;font-size:8px}.stmt-print-actions{display:flex;gap:8px;padding:12px 15px;border-top:1px solid var(--border);background:#fff;position:sticky;bottom:0}
+    .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);background:#17211b;color:#fff;padding:10px 14px;border-radius:10px;font-size:11.5px;font-weight:800;opacity:0;pointer-events:none;transition:.18s;z-index:3000}.toast.show{opacity:1;transform:translate(-50%,0)}.toast.error{background:#8f3526}
+    .loader{position:fixed;inset:0;z-index:5000;background:#f4f7f5;display:grid;place-items:center;transition:opacity .22s}.loader.hide{opacity:0;pointer-events:none}.loader-inner{text-align:center;color:var(--primary-dark)}.spinner{width:34px;height:34px;border:3px solid #cfddd4;border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px}@keyframes spin{to{transform:rotate(360deg)}}.loader-inner div{font-size:11.5px;font-weight:800}
+    @media(max-width:820px){.page{padding:12px 10px 84px}.top{top:4px;border-radius:14px;padding:10px 11px}.brand small{display:none}.hero{padding:15px;border-radius:15px}.hero h1{font-size:19px}.hero p{font-size:10.5px}.private-chip{font-size:9px}.summary{grid-template-columns:1fr 1fr;gap:7px}.sum-card{padding:10px 11px;border-radius:12px}.sum-card strong{font-size:15px}.layout{grid-template-columns:1fr}.people{max-height:300px}.detail-empty{min-height:180px}.quick-grid{grid-template-columns:1fr 1fr}.tx-table{display:none}.mobile-txs{display:block}.panel-head{padding:12px}.account-head{padding:13px}.balance-box{margin:11px 12px;padding:11px}.balance-box strong{font-size:16px}.quick-grid{padding:0 12px 11px}.tx-tools{padding:9px 12px}.overlay{padding:0;align-items:flex-end;backdrop-filter:none}.modal,.modal.wide{width:100%;max-height:92dvh;border-radius:20px 20px 0 0;border-bottom:0;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}.form-grid{grid-template-columns:1fr}.stmt-page{transform-origin:top center}.statement{overflow:hidden}.stmt-print-actions{padding-bottom:max(12px,env(safe-area-inset-bottom))}}
+    @media(max-width:380px){.hero{align-items:flex-start}.private-chip{display:none}.summary{grid-template-columns:1fr 1fr}.account-head{display:block}.account-actions{margin-top:9px}.people{max-height:250px}}
+    @media print{
+      @page{size:A4 portrait;margin:0}
+      body.print-statement *{visibility:hidden!important}
+      body.print-statement #statement-content,body.print-statement #statement-content *{visibility:visible!important}
+      body.print-statement #statement-content{position:absolute!important;inset:0!important;width:210mm!important;background:#fff!important;padding:0!important;margin:0!important}
+      body.print-statement .stmt-page{width:210mm!important;height:297mm!important;min-height:297mm!important;margin:0!important;padding:12mm!important;border:0!important;page-break-after:always!important;break-after:page!important;box-shadow:none!important;transform:none!important}
+      body.print-statement .stmt-page:last-child{page-break-after:auto!important;break-after:auto!important}
+    }
+  </style>
+</head>
+<body>
+  <div class="loader" id="loader"><div class="loader-inner"><div class="spinner"></div><div>جارِ فتح الحسابات الخاصة…</div></div></div>
+  <div id="app">
+    <main class="page">
+      <header class="top">
+        <div class="brand"><img src="https://i.imgur.com/NsN1HgC.png" alt="logo" onerror="this.style.display='none'"><div><b>Ahmed And hamdy</b><small>دفتر الحسابات الخاصة</small></div></div>
+        <button type="button" class="back-btn" id="back-dashboard">← العودة للداشبورد</button>
+      </header>
+
+      <section class="hero">
+        <div><h1>حسابات خاصة</h1><p>دفتر مستقل للأشخاص والحركات الخاصة. لا يتصل بالتجار أو المنتجات أو المخازن أو الصناديق أو التقارير الأخرى.</p></div>
+        <div class="private-chip">مستقل عن النظام</div>
+      </section>
+
+      <section class="summary">
+        <div class="sum-card"><span>عدد الأشخاص</span><strong id="sum-people">0</strong></div>
+        <div class="sum-card"><span>إجمالي مبالغ عليهم لك</span><strong id="sum-receivable">0 ج.م</strong></div>
+        <div class="sum-card"><span>إجمالي مبالغ لهم عليك</span><strong id="sum-payable">0 ج.م</strong></div>
+        <div class="sum-card net"><span>صافي الحسابات الخاصة</span><strong id="sum-net">0 ج.م</strong></div>
+      </section>
+
+      <section class="layout">
+        <div class="panel">
+          <div class="panel-head"><div><h2>الأشخاص</h2><small id="people-count">0 شخص</small></div><button class="btn primary small" id="add-person">+ إضافة شخص</button></div>
+          <div class="tools"><div class="search"><input type="search" id="people-search" placeholder="ابحث عن اسم أو هاتف…" autocomplete="off"></div></div>
+          <div class="people" id="people-list"><div class="empty">جارِ تحميل الأشخاص…</div></div>
+        </div>
+
+        <div class="panel">
+          <div class="detail-empty" id="detail-empty"><div><b>اختر شخصاً من القائمة</b><div style="margin-top:5px;font-size:10.5px">ستظهر هنا تفاصيل الحساب والحركات الخاصة به.</div></div></div>
+          <div class="detail" id="detail">
+            <div class="account-head">
+              <div><div class="account-name" id="detail-name">—</div><div class="account-sub" id="detail-sub">—</div></div>
+              <div class="account-actions"><button class="btn outline small" id="statement-btn">كشف حساب</button><button class="btn outline small" id="edit-person">تعديل</button><button class="btn danger small" id="delete-person">حذف</button></div>
+            </div>
+            <div class="balance-box"><span>الرصيد الحالي</span><strong id="detail-balance">—</strong></div>
+            <div class="quick-grid">
+              <button class="quick debt-on" data-tx-type="debt_on">+ مبلغ عليه</button>
+              <button class="quick pay-from" data-tx-type="payment_from">دفعة منه</button>
+              <button class="quick debt-to" data-tx-type="debt_to">+ مبلغ له</button>
+              <button class="quick pay-to" data-tx-type="payment_to">دفعة له</button>
+            </div>
+            <div class="tx-tools"><input type="search" id="tx-search" placeholder="ابحث في الحركات أو الملاحظات…"><span id="tx-count" style="font-size:10.5px;color:var(--muted);white-space:nowrap"></span></div>
+            <div class="table-wrap"><table class="tx-table"><thead><tr><th>رقم الحركة</th><th>التاريخ</th><th>الحركة</th><th>المبلغ</th><th>الرصيد بعدها</th><th>الوصف</th><th></th></tr></thead><tbody id="tx-tbody"></tbody></table></div>
+            <div class="mobile-txs" id="mobile-txs"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="overlay" id="person-modal"><div class="modal"><div class="modal-head"><h3 id="person-modal-title">إضافة شخص</h3><button class="x" data-close="person-modal">×</button></div><div class="modal-body">
+    <form id="person-form"><input type="hidden" id="person-id">
+      <div class="field"><label>اسم الشخص *</label><input id="person-name" required autocomplete="off"></div>
+      <div class="field"><label>رقم الهاتف <span style="color:var(--muted);font-weight:500">اختياري</span></label><input id="person-phone" inputmode="tel" autocomplete="off"></div>
+      <div class="field"><label>ملاحظات</label><textarea id="person-note" placeholder="أي ملاحظة خاصة بهذا الحساب"></textarea></div>
+      <div id="opening-wrap">
+        <div class="field"><label>رصيد افتتاحي <span style="color:var(--muted);font-weight:500">اختياري</span></label><input id="opening-amount" type="number" min="0" step="0.01" value="0"></div>
+        <div class="choice-grid"><button type="button" class="choice selected" data-opening="on">المبلغ عليه لك<small>سيبدأ الحساب برصيد موجب</small></button><button type="button" class="choice" data-opening="to">المبلغ له عليك<small>سيبدأ الحساب برصيد سالب</small></button></div>
+      </div>
+      <div class="modal-actions"><button class="btn primary" id="person-save" type="submit">حفظ الشخص</button><button class="btn outline" type="button" data-close="person-modal">إلغاء</button></div>
+    </form>
+  </div></div></div>
+
+  <div class="overlay" id="tx-modal"><div class="modal"><div class="modal-head"><h3 id="tx-modal-title">إضافة حركة</h3><button class="x" data-close="tx-modal">×</button></div><div class="modal-body">
+    <form id="tx-form"><input type="hidden" id="tx-id"><input type="hidden" id="tx-type">
+      <div class="field"><label>نوع الحركة</label><input id="tx-type-label" readonly></div>
+      <div class="form-grid"><div class="field"><label>المبلغ (ج.م) *</label><input id="tx-amount" type="number" min="0.01" step="0.01" required></div><div class="field"><label>التاريخ *</label><input id="tx-date" type="date" required></div></div>
+      <div class="field"><label>الوصف / الملاحظات</label><textarea id="tx-note" placeholder="مثال: دفعة جزئية، قرض، مصروف خاص…"></textarea></div>
+      <div class="modal-actions"><button class="btn primary" id="tx-save" type="submit">حفظ الحركة</button><button class="btn outline" type="button" data-close="tx-modal">إلغاء</button></div>
+    </form>
+  </div></div></div>
+
+  <div class="overlay" id="statement-modal"><div class="modal wide"><div class="modal-head"><h3 id="statement-title">كشف حساب</h3><button class="x" data-close="statement-modal">×</button></div><div class="modal-body" style="padding:10px;background:#ecefed;overflow:auto"><div id="statement-content" class="statement"></div></div><div class="stmt-print-actions"><button class="btn primary" id="statement-print">طباعة A4</button><button class="btn outline" type="button" data-close="statement-modal">إغلاق</button></div></div></div>
+
+  <div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, getDocs, getDoc, query, where, onSnapshot, serverTimestamp, runTransaction, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const app=initializeApp({apiKey:"AIzaSyDQsaNVskKiV2cwPVlJDixpTD1S-Dhp7gs",authDomain:"reta-and-hamd.firebaseapp.com",projectId:"reta-and-hamd",storageBucket:"reta-and-hamd.firebasestorage.app",messagingSenderId:"220767743863",appId:"1:220767743863:web:2ecd37bd5830a39ec1bb72"});
+const auth=getAuth(app), db=getFirestore(app);
+
+// لا تستخدم هذه الصفحة أي Collection من التجار/المالية/المنتجات.
+const PEOPLE_COL="private_accounts_people";
+const TX_COL="private_accounts_transactions";
+const META_COL="private_accounts_meta";
+
+let currentUser=null,people=[],txs=[],selectedPersonId="",openingSide="on",unsubs=[];
+const TYPE_CFG={
+  debt_on:{label:"إضافة مبلغ عليه",delta:1,cls:"pos"},
+  payment_from:{label:"دفعة منه",delta:-1,cls:"neg"},
+  debt_to:{label:"إضافة مبلغ له",delta:-1,cls:"neg"},
+  payment_to:{label:"دفعة له",delta:1,cls:"pos"},
+  opening_on:{label:"رصيد افتتاحي — عليه لك",delta:1,cls:"pos"},
+  opening_to:{label:"رصيد افتتاحي — له عليك",delta:-1,cls:"neg"}
+};
+const esc=v=>{const d=document.createElement('div');d.textContent=v??'';return d.innerHTML};
+const money=n=>new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(Math.abs(Number(n)||0))+" ج.م";
+const today=()=>new Date().toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
+const fmtDate=s=>s?new Date(s+"T12:00:00").toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"long",day:"numeric"}):"—";
+function norm(s){return String(s||'').toLowerCase().normalize('NFKD').replace(/[\u064B-\u065F\u0670]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').trim()}
+function toast(msg,err=false){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(err?' error':'');clearTimeout(t._t);t._t=setTimeout(()=>t.className='toast',2500)}
+function show(el,on=true){el.classList.toggle('open',on)}
+function closeModal(id){show(document.getElementById(id),false);document.body.style.overflow=''}
+function openModal(id){show(document.getElementById(id),true);document.body.style.overflow='hidden'}
+function personById(id){return people.find(p=>p.id===id)}
+function personTxs(id){return txs.filter(t=>t.personId===id)}
+function balanceFor(id){return personTxs(id).reduce((s,t)=>s+(Number(t.delta)||0),0)}
+function balanceText(v){v=Number(v)||0;return v>0.005?`عليه لك ${money(v)}`:v<-0.005?`له عليك ${money(v)}`:"الحساب مسدد"}
+function balanceClass(v){return v>0.005?'bal-pos':v<-0.005?'bal-neg':'bal-zero'}
+function txTime(t){return t.createdAt?.seconds||0}
+function sortTx(a,b){if((a.date||'')!==(b.date||''))return (a.date||'')<(b.date||'')?-1:1;return txTime(a)-txTime(b)}
+
+async function nextTxId(){
+  const ref=doc(db,META_COL,"counter");let seq=1;
+  await runTransaction(db,async tr=>{const snap=await tr.get(ref);seq=(snap.exists()?Number(snap.data().txSeq)||0:0)+1;tr.set(ref,{txSeq:seq,updatedAt:serverTimestamp()},{merge:true})});
+  return "PA-"+String(seq).padStart(5,"0");
+}
+
+function updateSummary(){
+  const balances=people.map(p=>balanceFor(p.id));
+  const rec=balances.reduce((s,b)=>s+Math.max(0,b),0),pay=balances.reduce((s,b)=>s+Math.max(0,-b),0);
+  document.getElementById('sum-people').textContent=people.length;
+  document.getElementById('sum-receivable').textContent=money(rec);
+  document.getElementById('sum-payable').textContent=money(pay);
+  const net=rec-pay;document.getElementById('sum-net').textContent=(net<0?'-':'')+money(net);
+}
+function renderPeople(){
+  updateSummary();
+  const q=norm(document.getElementById('people-search').value);
+  const rows=people.filter(p=>!q||norm([p.name,p.phone,p.note].join(' ')).includes(q)).sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar'));
+  document.getElementById('people-count').textContent=`${rows.length} شخص`;
+  const box=document.getElementById('people-list');
+  if(!rows.length){box.innerHTML='<div class="empty">لا توجد أسماء مطابقة</div>';return}
+  box.innerHTML=rows.map(p=>{const b=balanceFor(p.id);const pts=[p.phone,p.note].filter(Boolean).join(' — ');return `<div class="person${p.id===selectedPersonId?' active':''}" data-person="${p.id}"><div class="person-main"><div class="person-name">${esc(p.name)}</div><div class="person-meta">${esc(pts||'بدون بيانات إضافية')}</div></div><div class="person-bal ${balanceClass(b)}">${esc(balanceText(b))}</div></div>`}).join('');
+  box.querySelectorAll('[data-person]').forEach(el=>el.addEventListener('click',()=>selectPerson(el.dataset.person)));
+}
+function selectPerson(id){selectedPersonId=id;renderPeople();renderDetail()}
+function runningRowsFor(id){
+  let run=0;return [...personTxs(id)].sort(sortTx).map(t=>{run+=Number(t.delta)||0;return {...t,runBal:run}});
+}
+function renderDetail(){
+  const p=personById(selectedPersonId),empty=document.getElementById('detail-empty'),detail=document.getElementById('detail');
+  if(!p){empty.style.display='grid';detail.classList.remove('show');return}
+  empty.style.display='none';detail.classList.add('show');
+  document.getElementById('detail-name').textContent=p.name||'—';document.getElementById('detail-sub').textContent=[p.phone,p.note].filter(Boolean).join(' — ')||'حساب خاص مستقل';
+  const bal=balanceFor(p.id),bEl=document.getElementById('detail-balance');bEl.textContent=balanceText(bal);bEl.className=balanceClass(bal);
+  const q=norm(document.getElementById('tx-search').value);
+  let rows=runningRowsFor(p.id).filter(t=>!q||norm([TYPE_CFG[t.type]?.label,t.note,t.txId,t.date].join(' ')).includes(q)).sort((a,b)=>-sortTx(a,b));
+  document.getElementById('tx-count').textContent=`${rows.length} حركة`;
+  const tbody=document.getElementById('tx-tbody'),mob=document.getElementById('mobile-txs');
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="7"><div class="empty">لا توجد حركات</div></td></tr>';mob.innerHTML='<div class="empty">لا توجد حركات</div>';return}
+  tbody.innerHTML=rows.map(t=>{const c=TYPE_CFG[t.type]||{label:t.type,cls:Number(t.delta)>=0?'pos':'neg'};return `<tr><td class="txid">${esc(t.txId||'—')}</td><td>${esc(fmtDate(t.date))}</td><td><span class="kind ${c.cls}">${esc(c.label)}</span></td><td class="amount">${money(t.amount)}</td><td class="after ${balanceClass(t.runBal)}">${esc(balanceText(t.runBal))}</td><td>${esc(t.note||'—')}</td><td><div class="tx-actions"><button class="btn outline small" data-edit-tx="${t.id}">تعديل</button><button class="btn danger small" data-del-tx="${t.id}">حذف</button></div></td></tr>`}).join('');
+  mob.innerHTML=rows.map(t=>{const c=TYPE_CFG[t.type]||{label:t.type,cls:Number(t.delta)>=0?'pos':'neg'};return `<div class="m-tx"><div class="m-head"><span class="txid">${esc(t.txId||'—')}</span><span class="m-date">${esc(fmtDate(t.date))}</span></div><div class="m-mid"><span class="kind ${c.cls}">${esc(c.label)}</span><strong>${money(t.amount)}</strong></div><div class="m-note">الرصيد بعدها: <b class="${balanceClass(t.runBal)}">${esc(balanceText(t.runBal))}</b>${t.note?`<br>${esc(t.note)}`:''}</div><div class="m-actions"><button class="btn outline small" data-edit-tx="${t.id}">تعديل</button><button class="btn danger small" data-del-tx="${t.id}">حذف</button></div></div>`}).join('');
+  [...tbody.querySelectorAll('[data-edit-tx]'),...mob.querySelectorAll('[data-edit-tx]')].forEach(b=>b.addEventListener('click',()=>openTxEdit(b.dataset.editTx)));
+  [...tbody.querySelectorAll('[data-del-tx]'),...mob.querySelectorAll('[data-del-tx]')].forEach(b=>b.addEventListener('click',()=>deleteTx(b.dataset.delTx)));
+}
+
+function openPerson(add=true){
+  const p=add?null:personById(selectedPersonId);document.getElementById('person-form').reset();
+  document.getElementById('person-id').value=p?.id||'';document.getElementById('person-name').value=p?.name||'';document.getElementById('person-phone').value=p?.phone||'';document.getElementById('person-note').value=p?.note||'';
+  document.getElementById('person-modal-title').textContent=p?'تعديل بيانات الشخص':'إضافة شخص';document.getElementById('opening-wrap').style.display=p?'none':'block';openingSide='on';document.querySelectorAll('[data-opening]').forEach(b=>b.classList.toggle('selected',b.dataset.opening==='on'));openModal('person-modal');setTimeout(()=>document.getElementById('person-name').focus(),80)
+}
+async function savePerson(e){
+  e.preventDefault();const id=document.getElementById('person-id').value,name=document.getElementById('person-name').value.trim(),phone=document.getElementById('person-phone').value.trim(),note=document.getElementById('person-note').value.trim();if(!name)return;
+  const btn=document.getElementById('person-save');btn.disabled=true;
+  try{
+    if(id){await updateDoc(doc(db,PEOPLE_COL,id),{name,phone,note,updatedAt:serverTimestamp()});toast('تم تحديث الشخص')}
+    else{
+      const ref=await addDoc(collection(db,PEOPLE_COL),{name,phone,note,createdAt:serverTimestamp(),updatedAt:serverTimestamp(),createdBy:currentUser?.email||''});
+      const opening=Number(document.getElementById('opening-amount').value)||0;
+      if(opening>0){const type=openingSide==='on'?'opening_on':'opening_to',txId=await nextTxId();await addDoc(collection(db,TX_COL),{txId,personId:ref.id,personName:name,type,amount:opening,delta:opening*(TYPE_CFG[type].delta),date:today(),note:'رصيد افتتاحي',createdAt:serverTimestamp(),updatedAt:serverTimestamp(),createdBy:currentUser?.email||''})}
+      selectedPersonId=ref.id;toast('تمت إضافة الشخص');
+    }
+    closeModal('person-modal');
+  }catch(err){console.error(err);toast('تعذر حفظ البيانات',true)}finally{btn.disabled=false}
+}
+async function deletePerson(){
+  const p=personById(selectedPersonId);if(!p)return;if(!confirm(`حذف ${p.name} وكل حركاته من الحسابات الخاصة نهائياً؟`))return;
+  try{
+    const snap=await getDocs(query(collection(db,TX_COL),where('personId','==',p.id)));const refs=snap.docs.map(d=>d.ref);refs.push(doc(db,PEOPLE_COL,p.id));
+    for(let i=0;i<refs.length;i+=450){const batch=writeBatch(db);refs.slice(i,i+450).forEach(r=>batch.delete(r));await batch.commit()}
+    selectedPersonId='';renderDetail();toast('تم حذف الحساب الخاص نهائياً');
+  }catch(err){console.error(err);toast('تعذر الحذف',true)}
+}
+function openTx(type){const p=personById(selectedPersonId);if(!p)return;document.getElementById('tx-form').reset();document.getElementById('tx-id').value='';document.getElementById('tx-type').value=type;document.getElementById('tx-type-label').value=TYPE_CFG[type]?.label||type;document.getElementById('tx-date').value=today();document.getElementById('tx-modal-title').textContent=`${TYPE_CFG[type]?.label||'حركة'} — ${p.name}`;openModal('tx-modal');setTimeout(()=>document.getElementById('tx-amount').focus(),80)}
+function openTxEdit(id){const t=txs.find(x=>x.id===id);if(!t)return;document.getElementById('tx-id').value=t.id;document.getElementById('tx-type').value=t.type;document.getElementById('tx-type-label').value=TYPE_CFG[t.type]?.label||t.type;document.getElementById('tx-amount').value=t.amount||'';document.getElementById('tx-date').value=t.date||today();document.getElementById('tx-note').value=t.note||'';document.getElementById('tx-modal-title').textContent='تعديل الحركة';openModal('tx-modal')}
+async function saveTx(e){
+  e.preventDefault();const p=personById(selectedPersonId);if(!p)return;const id=document.getElementById('tx-id').value,type=document.getElementById('tx-type').value,amount=Number(document.getElementById('tx-amount').value),date=document.getElementById('tx-date').value,note=document.getElementById('tx-note').value.trim();if(!TYPE_CFG[type]||!amount||amount<=0||!date){toast('أدخل بيانات الحركة بشكل صحيح',true);return}
+  const data={personId:p.id,personName:p.name,type,amount,delta:amount*TYPE_CFG[type].delta,date,note,updatedAt:serverTimestamp()};const btn=document.getElementById('tx-save');btn.disabled=true;
+  try{if(id){await updateDoc(doc(db,TX_COL,id),data);toast('تم تحديث الحركة')}else{const txId=await nextTxId();await addDoc(collection(db,TX_COL),{...data,txId,createdAt:serverTimestamp(),createdBy:currentUser?.email||''});toast('تم حفظ الحركة')}closeModal('tx-modal')}catch(err){console.error(err);toast('تعذر حفظ الحركة',true)}finally{btn.disabled=false}
+}
+async function deleteTx(id){const t=txs.find(x=>x.id===id);if(!t||!confirm(`حذف الحركة ${t.txId||''} نهائياً؟`))return;try{await deleteDoc(doc(db,TX_COL,id));toast('تم حذف الحركة')}catch(err){console.error(err);toast('تعذر حذف الحركة',true)}}
+
+function buildStatement(){
+  const p=personById(selectedPersonId);if(!p)return;const rows=runningRowsFor(p.id),opening=0,final=balanceFor(p.id),chunkSize=22,pages=[];if(rows.length){for(let i=0;i<rows.length;i+=chunkSize)pages.push(rows.slice(i,i+chunkSize))}else pages.push([]);const total=pages.length,printed=new Date().toLocaleString('ar-EG-u-nu-latn',{timeZone:'Africa/Cairo',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  document.getElementById('statement-title').textContent='كشف حساب — '+p.name;
+  document.getElementById('statement-content').innerHTML=pages.map((chunk,idx)=>`<section class="stmt-page"><div class="stmt-head"><div class="stmt-brand">Ahmed And hamdy<small>حسابات خاصة — دفتر مستقل</small></div><div class="stmt-meta"><div><span>اسم الشخص</span><b>${esc(p.name)}</b></div><div><span>الهاتف</span><b>${esc(p.phone||'—')}</b></div><div><span>تاريخ الطباعة</span><b>${esc(printed)}</b></div></div></div><div class="stmt-title"><h2>كشف حساب خاص</h2><p>هذا الكشف مستقل عن التجار والمنتجات والصناديق</p></div>${idx===0?`<div class="stmt-summary"><div><span>عدد الحركات</span><strong>${rows.length}</strong></div><div><span>الرصيد الحالي</span><strong>${esc(balanceText(final))}</strong></div><div><span>ملاحظات الحساب</span><strong>${esc(p.note||'—')}</strong></div></div>`:''}<table class="stmt-table"><thead><tr><th style="width:16%">رقم الحركة</th><th style="width:14%">التاريخ</th><th style="width:22%">الحركة</th><th style="width:13%">المبلغ</th><th style="width:18%">الرصيد بعدها</th><th>الوصف</th></tr></thead><tbody>${chunk.length?chunk.map(t=>`<tr><td>${esc(t.txId||'—')}</td><td>${esc(fmtDate(t.date))}</td><td>${esc(TYPE_CFG[t.type]?.label||t.type)}</td><td>${money(t.amount)}</td><td>${esc(balanceText(t.runBal))}</td><td>${esc(t.note||'—')}</td></tr>`).join(''):'<tr><td colspan="6" style="text-align:center;padding:18px">لا توجد حركات</td></tr>'}</tbody></table><div class="stmt-foot"><span>حسابات خاصة</span><b>صفحة ${idx+1} من ${total}</b><span>${esc(p.name)}</span></div></section>`).join('');openModal('statement-modal');fitStatement();
+}
+function fitStatement(){if(innerWidth>820)return;document.querySelectorAll('.stmt-page').forEach(page=>{page.style.transform='';page.style.marginBottom='12px'});requestAnimationFrame(()=>{const usable=Math.max(280,innerWidth-32),base=718,scale=Math.min(1,usable/base);document.querySelectorAll('.stmt-page').forEach(page=>{page.style.transform=`scale(${scale})`;page.style.marginBottom=`-${page.offsetHeight*(1-scale)}px`})})}
+function printStatement(){document.body.classList.add('print-statement');const clean=()=>document.body.classList.remove('print-statement');window.addEventListener('afterprint',clean,{once:true});window.print();setTimeout(clean,4000)}
+
+function bind(){
+  document.getElementById('back-dashboard').addEventListener('click',()=>location.href='/dashboard.html');
+  document.getElementById('people-search').addEventListener('input',renderPeople);document.getElementById('tx-search').addEventListener('input',renderDetail);document.getElementById('add-person').addEventListener('click',()=>openPerson(true));document.getElementById('edit-person').addEventListener('click',()=>openPerson(false));document.getElementById('delete-person').addEventListener('click',deletePerson);document.querySelectorAll('[data-tx-type]').forEach(b=>b.addEventListener('click',()=>openTx(b.dataset.txType)));document.getElementById('person-form').addEventListener('submit',savePerson);document.getElementById('tx-form').addEventListener('submit',saveTx);document.querySelectorAll('[data-opening]').forEach(b=>b.addEventListener('click',()=>{openingSide=b.dataset.opening;document.querySelectorAll('[data-opening]').forEach(x=>x.classList.toggle('selected',x===b))}));document.getElementById('statement-btn').addEventListener('click',buildStatement);document.getElementById('statement-print').addEventListener('click',printStatement);document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id)}));window.addEventListener('resize',fitStatement,{passive:true});document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(o=>closeModal(o.id))});
+}
+function startData(){
+  let pReady=false,tReady=false;const ready=()=>{if(pReady&&tReady){document.getElementById('loader').classList.add('hide');setTimeout(()=>document.getElementById('loader').style.display='none',250)}};
+  unsubs.push(onSnapshot(collection(db,PEOPLE_COL),snap=>{people=snap.docs.map(d=>({id:d.id,...d.data()}));pReady=true;if(selectedPersonId&&!personById(selectedPersonId))selectedPersonId='';renderPeople();renderDetail();ready()},err=>{console.error(err);pReady=true;ready();toast('تعذر تحميل الأشخاص',true)}));
+  unsubs.push(onSnapshot(collection(db,TX_COL),snap=>{txs=snap.docs.map(d=>({id:d.id,...d.data()}));tReady=true;renderPeople();renderDetail();ready()},err=>{console.error(err);tReady=true;ready();toast('تعذر تحميل الحركات',true)}));
+}
+bind();
+onAuthStateChanged(auth,async user=>{
+  if(!user){location.replace('/index.html');return}
+  try{const blocked=await getDocs(query(collection(db,'blockedUsers'),where('email','==',String(user.email||'').trim().toLowerCase())));if(!blocked.empty){await signOut(auth);location.replace('/index.html');return}}catch(err){console.error(err)}
+  currentUser=user;document.getElementById('app').style.visibility='visible';startData();setTimeout(()=>{const l=document.getElementById('loader');if(l&&l.style.display!=='none'){l.classList.add('hide');setTimeout(()=>l.style.display='none',250)}},1800)
+});
+</script>
+</body>
+</html>
