@@ -407,6 +407,19 @@
           <div class="direction-note out"><b>خارج الصندوق = `dir: out`</b> — السحب والسلفة والدفع النقدي الخارج يخفضان رصيد الصندوق.</div>
         </div>
       </section>
+
+      <section class="ops-section private-accounts-section">
+        <div class="ops-head">
+          <div class="ops-title"><div class="ops-icon"><span class="svg-icon" data-svg-icon="note"></span></div><div><h2>حسابات خاصة</h2><p>دفتر مستقل للأشخاص والحسابات الخاصة — لا يرتبط بأي جزء من النظام</p></div></div>
+          <button type="button" class="section-link" id="private-accounts-open-top" style="border:0;font-family:inherit;cursor:pointer">فتح الصفحة</button>
+        </div>
+        <div class="action-grid" style="grid-template-columns:1fr">
+          <button type="button" class="action-card private-account-entry" id="private-accounts-open">
+            <span class="a-ico" style="background:var(--dash-purple-soft);color:var(--dash-purple)"><span class="svg-icon" data-svg-icon="note"></span></span>
+            <span><strong>فتح صفحة الحسابات الخاصة</strong><small>أشخاص وحركات وأرصدة محفوظة في Firebase بشكل مستقل تماماً عن التجار والمنتجات والصناديق.</small></span>
+          </button>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -1440,6 +1453,12 @@ function installMobileTapGuard(){
 ══════════════════════════════════════ */
 function bindUI(){
   if(uiBound)return;uiBound=true;bindModalShell();
+  const openPrivateAccounts=()=>{
+    try{sessionStorage.setItem("privateAccountsEntry","dashboard");}catch(_){}
+    location.href="/private_accounts.html";
+  };
+  document.getElementById("private-accounts-open")?.addEventListener("click",openPrivateAccounts);
+  document.getElementById("private-accounts-open-top")?.addEventListener("click",openPrivateAccounts);
   document.querySelectorAll("[data-fin-type]").forEach(b=>b.addEventListener("click",()=>openFinance(b.dataset.finType)));
 
   document.getElementById("sale-warehouse").addEventListener("change",()=>{saleLines.forEach(l=>l.productId="");renderSaleLines();updateSaleSummary();});
