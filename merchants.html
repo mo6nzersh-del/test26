@@ -1841,7 +1841,7 @@ function _preciseEventMillis(t){
   إذا كانت الفاتورة هي آخر عملية بيع للتاجر، نبحث عن الدفعات التي تمت بعدها فعلاً.
   نستبعد الدفع الفوري المرتبط بنفس opId لأنه جزء من نفس فاتورة البيع وليس دفعة لاحقة.
 */
-function getPaymentsAfterLastSale(saleTx){
+function getPaymentsAfterLastSale(saleTx,historicalAfter){
   if(!saleTx?.merchantId) return null;
   const merId=saleTx.merchantId;
   const sales=merchantTxs.filter(t=>
@@ -1851,26 +1851,33 @@ function getPaymentsAfterLastSale(saleTx){
   const latestSale=[...sales].sort((a,b)=>_preciseEventMillis(b)-_preciseEventMillis(a))[0];
   if(!latestSale || latestSale.id!==saleTx.id) return null;
 
+  /*
+    المرجع النهائي هنا هو نفس calcBalance الذي يغذي رصيد التاجر/بطاقة
+    «المبلغ المستحق على هذا التاجر» أعلى الصفحة. لذلك لا يمكن أن يختلف
+    الرقم النهائي في الفاتورة عن الرقم المعروض في ملخص التاجر.
+  */
+  const currentBalance=calcBalance(merId);
+  const after=Number(historicalAfter)||0;
+  const netAdjustment=currentBalance-after;
+
+  // نحاول فقط معرفة وجود/عدد الحركات اللاحقة لعرض توضيح مناسب،
+  // لكن لا نعتمد على مجموعها لحساب الرصيد النهائي لأن بعض الحركات القديمة
+  // قد تحتوي تاريخاً فقط من دون توقيت دقيق.
   const saleTime=_preciseEventMillis(saleTx);
   const later=[];
-
-  // الدفعات المالية الحديثة
   finTxs.forEach(t=>{
-    if(t._active===false || t.merchantId!==merId || t.type!=="merchant" || t.dir!=="in") return;
+    if(t._active===false || t.merchantId!==merId || t.type!=="merchant") return;
     if(saleTx.opId && t.opId===saleTx.opId) return;
     const tm=_preciseEventMillis(t);
-    if(tm>saleTime) later.push({id:t.id,amount:Number(t.amount)||0,time:tm,source:"finance"});
+    if(tm>saleTime) later.push({id:t.id,amount:Number(t.amount)||0,dir:t.dir,time:tm,source:"finance"});
   });
-
-  // دعم الدفعات القديمة المسجلة مباشرة في merchantTransactions
   merchantTxs.forEach(t=>{
-    if(t.merchantId!==merId || t.type!=="in") return;
+    if(t.merchantId!==merId || t.id===saleTx.id) return;
     if(saleTx.opId && t.opId===saleTx.opId) return;
     const tm=_preciseEventMillis(t);
-    if(tm>saleTime) later.push({id:t.id,amount:Number(t.amount)||0,time:tm,source:"direct"});
+    if(tm>saleTime) later.push({id:t.id,amount:Number(t.amount)||0,dir:t.type,time:tm,source:"direct"});
   });
 
-  // حماية من تكرار نفس المستند إن ظهر من مصدرين بنفس المعرّف
   const unique=[];
   const seen=new Set();
   later.sort((a,b)=>a.time-b.time).forEach(p=>{
@@ -1878,11 +1885,18 @@ function getPaymentsAfterLastSale(saleTx){
     if(seen.has(key)) return;
     seen.add(key); unique.push(p);
   });
-  if(!unique.length) return null;
+
+  if(Math.abs(netAdjustment)<0.01 && !unique.length) return null;
   return {
     count:unique.length,
-    total:unique.reduce((s,p)=>s+p.amount,0),
-    payments:unique
+    detectedPayments:unique.filter(p=>p.dir==="in").length,
+    currentBalance,
+    netAdjustment,
+    // مقدار انخفاض الدين/زيادة رصيد التاجر الصافي منذ آخر عملية بيع.
+    // هذا مشتق من الرصيد الحقيقي الحالي، لذلك يشمل أي دفعة لم يلتقطها
+    // ترتيب التاريخ/الوقت في البيانات القديمة.
+    paidNet:Math.max(0,netAdjustment),
+    movements:unique
   };
 }
 
@@ -1913,7 +1927,7 @@ function showMerchantSalePreview(data){
   const afterBalance=historicalCtx
     ? historicalCtx.after
     : storedHasBalance?(Number(data.merchantBalanceAfter)||0):0;
-  const laterPaymentsInfo=historicalCtx&&sourceSaleTx?getPaymentsAfterLastSale(sourceSaleTx):null;
+  const laterPaymentsInfo=historicalCtx&&sourceSaleTx?getPaymentsAfterLastSale(sourceSaleTx,afterBalance):null;
   let salePaid=null;
   if(typeof data.paid==="boolean") salePaid=data.paid;
   else if(hasBalanceInfo) salePaid=Math.abs(afterBalance-beforeBalance)<0.01;
@@ -1934,19 +1948,29 @@ function showMerchantSalePreview(data){
         ? `مبلغ مستحق للتاجر ${fmtMoney(after)}`
         : "الحساب مسدّد بالكامل";
     let laterPaymentsHtml="";
-    if(laterPaymentsInfo&&laterPaymentsInfo.total>0){
-      const afterLater=after+laterPaymentsInfo.total;
-      const afterLaterText=afterLater<0
-        ? `على التاجر تسديد ${fmtMoney(Math.abs(afterLater))}`
-        : afterLater>0
-          ? `مبلغ مستحق للتاجر ${fmtMoney(afterLater)}`
+    if(laterPaymentsInfo){
+      const current=Number(laterPaymentsInfo.currentBalance)||0;
+      const currentText=current<0
+        ? `على التاجر تسديد ${fmtMoney(Math.abs(current))}`
+        : current>0
+          ? `مبلغ مستحق للتاجر ${fmtMoney(current)}`
           : "الحساب مسدّد بالكامل";
+      const paidNet=Number(laterPaymentsInfo.paidNet)||0;
+      const changeAbs=Math.abs(Number(laterPaymentsInfo.netAdjustment)||0);
+      const hasPaymentEffect=paidNet>0.009;
+      const title=hasPaymentEffect
+        ? "بعد هذه الحركة تم تسجيل عمليات دفع / تسوية مالية"
+        : "بعد هذه الحركة تم تسجيل حركات مالية أثّرت على الحساب";
+      const firstLabel=hasPaymentEffect
+        ? "إجمالي ما تم تسديده بعد هذه الحركة"
+        : "صافي التغير في الحساب بعد هذه الحركة";
+      const firstValue=hasPaymentEffect?paidNet:changeAbs;
       laterPaymentsHtml=`
         <div class="inv-post-payments">
-          <div class="inv-post-payments-title">بعد هذه الحركة تم تسجيل ${laterPaymentsInfo.count} ${laterPaymentsInfo.count===1?"عملية دفع":"عمليات دفع"}</div>
+          <div class="inv-post-payments-title">${title}</div>
           <div class="inv-post-payments-grid">
-            <div class="inv-post-payments-item"><span>إجمالي الدفعات التي تمت بعد هذه الحركة</span><strong>${fmtMoney(laterPaymentsInfo.total)}</strong></div>
-            <div class="inv-post-payments-item"><span>المبلغ المستحق بعد الدفعات اللاحقة</span><strong>${afterLaterText}</strong></div>
+            <div class="inv-post-payments-item"><span>${firstLabel}</span><strong>${fmtMoney(firstValue)}</strong></div>
+            <div class="inv-post-payments-item"><span>المبلغ المستحق الحالي — مطابق لملخص التاجر</span><strong>${currentText}</strong></div>
           </div>
         </div>`;
     }
