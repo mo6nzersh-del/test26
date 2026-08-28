@@ -684,6 +684,12 @@
      .merchant-invoice-box .inv-bal-result{border-top:1px solid #bdbdbd;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:10px}
      .merchant-invoice-box .inv-bal-result span{color:#666;font-weight:700}
      .merchant-invoice-box .inv-bal-result strong{color:#111;font-size:11px;font-weight:900}
+    .merchant-invoice-box .inv-post-payments{border-top:1px solid #bdbdbd;padding:9px 10px;background:#fff}
+    .merchant-invoice-box .inv-post-payments-title{font-size:10.5px;font-weight:900;color:#111;margin-bottom:7px}
+    .merchant-invoice-box .inv-post-payments-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .merchant-invoice-box .inv-post-payments-item{border:1px solid #d5d5d5;border-radius:4px;padding:7px 9px}
+    .merchant-invoice-box .inv-post-payments-item span{display:block;font-size:8.8px;color:#666;font-weight:700;margin-bottom:3px}
+    .merchant-invoice-box .inv-post-payments-item strong{display:block;font-size:11px;color:#111;font-weight:900}
      .merchant-invoice-box .inv-doc-note{background:#fff;border:1px dashed #bbb;border-right:3px solid #222;color:#333;border-radius:0;padding:9px 12px}
      .merchant-invoice-box .inv-doc-footer{color:#777;border-color:#aaa;margin-top:22px}
 
@@ -746,6 +752,7 @@
        .merchant-invoice-box .inv-bal-connector{font-size:13px}
        .merchant-invoice-box .inv-bal-result{display:block;text-align:right}
        .merchant-invoice-box .inv-bal-result strong{display:block;margin-top:4px}
+       .merchant-invoice-box .inv-post-payments-grid{grid-template-columns:1fr}
        .fin-doc-screen{padding:15px 12px;border:0;box-shadow:none}
        .fin-doc-head{display:block}.fin-doc-title{text-align:right;min-width:0;margin-top:10px}
        .fin-info-grid{grid-template-columns:1fr}.fin-info-item:nth-child(odd){border-left:0}.fin-info-item{border-bottom:1px solid #ddd!important}.fin-info-item:last-child{border-bottom:0!important}
@@ -1807,12 +1814,76 @@ async function openMerchantSalePreview(raw,seqLabel){
       seqLabel:seqLabel||activityOpMap[raw.opId]||raw.opId.slice(0,8).toUpperCase(),
       merchantName:operation.merchantName||raw.merchantName||"—",
       performedBy:operation.performedBy||raw.performedBy||"—",
+      // نمرر معرّف حركة التاجر الأصلية حتى تعتمد الفاتورة على نفس
+      // حساب «قبل/بعد هذه الحركة» المستخدم في صناديق سجل التاجر.
+      sourceMerchantTxId:raw.id,
+      paid:typeof operation.paid==="boolean"?operation.paid:raw.paid,
     });
   }catch(err){
     console.error("loading operation preview:",err);
     modal.classList.remove("open");
     toast("تعذر تحميل معاينة عملية البيع",true);
   }
+}
+
+function _preciseEventMillis(t){
+  if(!t) return 0;
+  const c=t.createdAt;
+  if(c?.toMillis) return c.toMillis();
+  if(c?.seconds!==undefined) return Number(c.seconds)*1000+Math.floor(Number(c.nanoseconds||0)/1000000);
+  if(c instanceof Date) return c.getTime();
+  if(c){ const d=new Date(c); if(!isNaN(d)) return d.getTime(); }
+  if(t.date){ const d=new Date(String(t.date)+"T12:00:00"); if(!isNaN(d)) return d.getTime(); }
+  return 0;
+}
+
+/*
+  إذا كانت الفاتورة هي آخر عملية بيع للتاجر، نبحث عن الدفعات التي تمت بعدها فعلاً.
+  نستبعد الدفع الفوري المرتبط بنفس opId لأنه جزء من نفس فاتورة البيع وليس دفعة لاحقة.
+*/
+function getPaymentsAfterLastSale(saleTx){
+  if(!saleTx?.merchantId) return null;
+  const merId=saleTx.merchantId;
+  const sales=merchantTxs.filter(t=>
+    t.merchantId===merId && t.type==="out" && (t.source==="loading" || t.opId)
+  );
+  if(!sales.length) return null;
+  const latestSale=[...sales].sort((a,b)=>_preciseEventMillis(b)-_preciseEventMillis(a))[0];
+  if(!latestSale || latestSale.id!==saleTx.id) return null;
+
+  const saleTime=_preciseEventMillis(saleTx);
+  const later=[];
+
+  // الدفعات المالية الحديثة
+  finTxs.forEach(t=>{
+    if(t._active===false || t.merchantId!==merId || t.type!=="merchant" || t.dir!=="in") return;
+    if(saleTx.opId && t.opId===saleTx.opId) return;
+    const tm=_preciseEventMillis(t);
+    if(tm>saleTime) later.push({id:t.id,amount:Number(t.amount)||0,time:tm,source:"finance"});
+  });
+
+  // دعم الدفعات القديمة المسجلة مباشرة في merchantTransactions
+  merchantTxs.forEach(t=>{
+    if(t.merchantId!==merId || t.type!=="in") return;
+    if(saleTx.opId && t.opId===saleTx.opId) return;
+    const tm=_preciseEventMillis(t);
+    if(tm>saleTime) later.push({id:t.id,amount:Number(t.amount)||0,time:tm,source:"direct"});
+  });
+
+  // حماية من تكرار نفس المستند إن ظهر من مصدرين بنفس المعرّف
+  const unique=[];
+  const seen=new Set();
+  later.sort((a,b)=>a.time-b.time).forEach(p=>{
+    const key=p.source+":"+p.id;
+    if(seen.has(key)) return;
+    seen.add(key); unique.push(p);
+  });
+  if(!unique.length) return null;
+  return {
+    count:unique.length,
+    total:unique.reduce((s,p)=>s+p.amount,0),
+    payments:unique
+  };
 }
 
 function showMerchantSalePreview(data){
@@ -1826,14 +1897,23 @@ function showMerchantSalePreview(data){
       <td style="text-align:center">${fmtMoney(line.price)}</td>
       <td style="text-align:center;font-weight:800">${fmtMoney(line.total)}</td>
     </tr>`).join("");
-  const hasBalanceInfo=data.merchantBalanceBefore!==undefined && data.merchantBalanceAfter!==undefined;
-  const beforeBalance=hasBalanceInfo?(Number(data.merchantBalanceBefore)||0):0;
-  const afterBalance=hasBalanceInfo?(Number(data.merchantBalanceAfter)||0):0;
-  // قيمة الملخص الحالية يجب أن تطابق بطاقة «المبلغ المستحق على هذا التاجر».
-  // نستخدم calcBalance لأنه يجمع كل عمليات البيع ودفعات التاجر الحالية،
-  // بينما merchantBalanceAfter يبقى فقط لتحديد حالة دفع الفاتورة وقت تنفيذها.
-  const balanceMerchantId=data.merchantId||currentMerId;
-  const currentMerchantBalance=balanceMerchantId?calcBalance(balanceMerchantId):afterBalance;
+  // نأخذ الرصيد التاريخي قبل/بعد نفس حركة البيع من نفس المصدر الذي
+  // يُستخدم في صناديق «الصناديق قبل هذه الحركة / بعد هذه الحركة» في سجل التاجر.
+  // لا نستخدم الرصيد الحالي، ولا نعتمد على merchantBalanceBefore/After القديمة
+  // إلا كـ fallback للعمليات القديمة التي لا يمكن العثور على حركة التاجر الأصلية لها.
+  const sourceSaleTx=data.sourceMerchantTxId
+    ? merchantTxs.find(t=>t.id===data.sourceMerchantTxId)
+    : (data.opId?merchantTxs.find(t=>t.opId===data.opId&&t.source==="loading"):null);
+  const historicalCtx=sourceSaleTx?calcMerchantBalanceBeforeAfter(sourceSaleTx):null;
+  const storedHasBalance=data.merchantBalanceBefore!==undefined && data.merchantBalanceAfter!==undefined;
+  const hasBalanceInfo=!!historicalCtx||storedHasBalance;
+  const beforeBalance=historicalCtx
+    ? historicalCtx.before
+    : storedHasBalance?(Number(data.merchantBalanceBefore)||0):0;
+  const afterBalance=historicalCtx
+    ? historicalCtx.after
+    : storedHasBalance?(Number(data.merchantBalanceAfter)||0):0;
+  const laterPaymentsInfo=historicalCtx&&sourceSaleTx?getPaymentsAfterLastSale(sourceSaleTx):null;
   let salePaid=null;
   if(typeof data.paid==="boolean") salePaid=data.paid;
   else if(hasBalanceInfo) salePaid=Math.abs(afterBalance-beforeBalance)<0.01;
@@ -1842,7 +1922,7 @@ function showMerchantSalePreview(data){
   const paymentStatusClass=salePaid===false?"unpaid":"";
   const balanceSection=hasBalanceInfo?(()=>{
     const before=beforeBalance;
-    const after=currentMerchantBalance;
+    const after=afterBalance;
     const accountView=value=>({
       amount:fmtMoney(Math.abs(value))
     });
@@ -1853,6 +1933,23 @@ function showMerchantSalePreview(data){
       : after>0
         ? `مبلغ مستحق للتاجر ${fmtMoney(after)}`
         : "الحساب مسدّد بالكامل";
+    let laterPaymentsHtml="";
+    if(laterPaymentsInfo&&laterPaymentsInfo.total>0){
+      const afterLater=after+laterPaymentsInfo.total;
+      const afterLaterText=afterLater<0
+        ? `على التاجر تسديد ${fmtMoney(Math.abs(afterLater))}`
+        : afterLater>0
+          ? `مبلغ مستحق للتاجر ${fmtMoney(afterLater)}`
+          : "الحساب مسدّد بالكامل";
+      laterPaymentsHtml=`
+        <div class="inv-post-payments">
+          <div class="inv-post-payments-title">بعد هذه الحركة تم تسجيل ${laterPaymentsInfo.count} ${laterPaymentsInfo.count===1?"عملية دفع":"عمليات دفع"}</div>
+          <div class="inv-post-payments-grid">
+            <div class="inv-post-payments-item"><span>إجمالي الدفعات التي تمت بعد هذه الحركة</span><strong>${fmtMoney(laterPaymentsInfo.total)}</strong></div>
+            <div class="inv-post-payments-item"><span>المبلغ المستحق بعد الدفعات اللاحقة</span><strong>${afterLaterText}</strong></div>
+          </div>
+        </div>`;
+    }
     return `
     <div class="inv-doc-balance">
       <div class="inv-bal-title">
@@ -1870,6 +1967,7 @@ function showMerchantSalePreview(data){
         </div>
       </div>
       <div class="inv-bal-result"><span>وضع الحساب بعد العملية</span><strong>${afterText}</strong></div>
+      ${laterPaymentsHtml}
     </div>`;
   })():"";
   const printNow=new Date().toLocaleString("ar-EG-u-nu-latn",{
@@ -1998,17 +2096,15 @@ function openTxDetail(t){
   const movementText=isPayment
     ? `دفعة بقيمة ${fN(t.amount)}${t.description?` — ${t.description}`:""}`
     : `إضافة دين بقيمة ${fN(t.amount)}${t.description?` — ${t.description}`:""}`;
+  // نفس الرصيد التاريخي المستخدم في صناديق قبل/بعد هذه الحركة في سجل التاجر.
+  // لذلك تبقى الفاتورة ثابتة تاريخياً ولا تتغير بسبب حركات تمت لاحقاً.
   const balCtx=calcMerchantBalanceBeforeAfter(t);
-  // الرصيد الأول تاريخي: قبل هذه الحركة تحديداً.
-  // أما القيمة الحالية فتطابق بطاقة «المبلغ المستحق على هذا التاجر» في صفحة التاجر،
-  // أي أنها تشمل كل عمليات البيع والدفعات الحالية ولا تعتمد على الرصيد القديم بعد هذه الحركة.
-  const currentDueBalance=t.merchantId?calcBalance(t.merchantId):(balCtx?.after||0);
   const balanceView=value=>{
     const v=Number(value)||0;
     return {amount:fAmount(v)};
   };
   const before=balanceView(balCtx?.before||0);
-  const after=balanceView(currentDueBalance);
+  const after=balanceView(balCtx?.after||0);
 
   const documentInner=`
     <div class="inv-doc-head simple-fin-invoice-head">
@@ -2038,7 +2134,7 @@ function openTxDetail(t){
         <div class="simple-fin-balance-value"><span class="simple-fin-balance-number">${eS(before.amount)}</span><span class="simple-fin-balance-currency">ج.م</span></div>
       </div>
       <div class="simple-fin-balance">
-        <div class="simple-fin-balance-label">المبلغ المستحق الحالي</div>
+        <div class="simple-fin-balance-label">الرصيد بعد الحركة</div>
         <div class="simple-fin-balance-value"><span class="simple-fin-balance-number">${eS(after.amount)}</span><span class="simple-fin-balance-currency">ج.م</span></div>
       </div>
     </div>
