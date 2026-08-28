@@ -1829,6 +1829,11 @@ function showMerchantSalePreview(data){
   const hasBalanceInfo=data.merchantBalanceBefore!==undefined && data.merchantBalanceAfter!==undefined;
   const beforeBalance=hasBalanceInfo?(Number(data.merchantBalanceBefore)||0):0;
   const afterBalance=hasBalanceInfo?(Number(data.merchantBalanceAfter)||0):0;
+  // قيمة الملخص الحالية يجب أن تطابق بطاقة «المبلغ المستحق على هذا التاجر».
+  // نستخدم calcBalance لأنه يجمع كل عمليات البيع ودفعات التاجر الحالية،
+  // بينما merchantBalanceAfter يبقى فقط لتحديد حالة دفع الفاتورة وقت تنفيذها.
+  const balanceMerchantId=data.merchantId||currentMerId;
+  const currentMerchantBalance=balanceMerchantId?calcBalance(balanceMerchantId):afterBalance;
   let salePaid=null;
   if(typeof data.paid==="boolean") salePaid=data.paid;
   else if(hasBalanceInfo) salePaid=Math.abs(afterBalance-beforeBalance)<0.01;
@@ -1837,7 +1842,7 @@ function showMerchantSalePreview(data){
   const paymentStatusClass=salePaid===false?"unpaid":"";
   const balanceSection=hasBalanceInfo?(()=>{
     const before=beforeBalance;
-    const after=afterBalance;
+    const after=currentMerchantBalance;
     const accountView=value=>({
       amount:fmtMoney(Math.abs(value))
     });
