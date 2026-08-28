@@ -1948,6 +1948,8 @@ function showMerchantSalePreview(data){
         ? `مبلغ مستحق للتاجر ${fmtMoney(after)}`
         : "الحساب مسدّد بالكامل";
     let laterPaymentsHtml="";
+    let finalAccountText=afterText;
+    let finalAccountLabel="وضع الحساب بعد العملية";
     if(laterPaymentsInfo){
       const current=Number(laterPaymentsInfo.currentBalance)||0;
       const currentText=current<0
@@ -1955,6 +1957,12 @@ function showMerchantSalePreview(data){
         : current>0
           ? `مبلغ مستحق للتاجر ${fmtMoney(current)}`
           : "الحساب مسدّد بالكامل";
+      // في آخر فاتورة بيع، إذا تمت دفعات لاحقة فلا نطلب من التاجر
+      // الرصيد التاريخي قبل خصمها. السطر النهائي يعرض المستحق الحقيقي
+      // بعد جميع الدفعات اللاحقة، بينما يبقى "حساب التاجر الإجمالي"
+      // أعلاه قيمة تاريخية خاصة بلحظة تنفيذ عملية البيع نفسها.
+      finalAccountText=currentText;
+      finalAccountLabel="وضع الحساب بعد الدفعات اللاحقة";
       const paidNet=Number(laterPaymentsInfo.paidNet)||0;
       const changeAbs=Math.abs(Number(laterPaymentsInfo.netAdjustment)||0);
       const hasPaymentEffect=paidNet>0.009;
@@ -1990,7 +1998,7 @@ function showMerchantSalePreview(data){
           <div class="inv-bal-val">${afterView.amount}</div>
         </div>
       </div>
-      <div class="inv-bal-result"><span>وضع الحساب بعد العملية</span><strong>${afterText}</strong></div>
+      <div class="inv-bal-result"><span>${finalAccountLabel}</span><strong>${finalAccountText}</strong></div>
       ${laterPaymentsHtml}
     </div>`;
   })():"";
