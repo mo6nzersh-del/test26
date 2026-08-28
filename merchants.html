@@ -1807,6 +1807,10 @@ async function openMerchantSalePreview(raw,seqLabel){
       seqLabel:seqLabel||activityOpMap[raw.opId]||raw.opId.slice(0,8).toUpperCase(),
       merchantName:operation.merchantName||raw.merchantName||"—",
       performedBy:operation.performedBy||raw.performedBy||"—",
+      // نمرر معرّف حركة التاجر الأصلية حتى تعتمد الفاتورة على نفس
+      // حساب «قبل/بعد هذه الحركة» المستخدم في صناديق سجل التاجر.
+      sourceMerchantTxId:raw.id,
+      paid:typeof operation.paid==="boolean"?operation.paid:raw.paid,
     });
   }catch(err){
     console.error("loading operation preview:",err);
@@ -1826,14 +1830,22 @@ function showMerchantSalePreview(data){
       <td style="text-align:center">${fmtMoney(line.price)}</td>
       <td style="text-align:center;font-weight:800">${fmtMoney(line.total)}</td>
     </tr>`).join("");
-  const hasBalanceInfo=data.merchantBalanceBefore!==undefined && data.merchantBalanceAfter!==undefined;
-  const beforeBalance=hasBalanceInfo?(Number(data.merchantBalanceBefore)||0):0;
-  const afterBalance=hasBalanceInfo?(Number(data.merchantBalanceAfter)||0):0;
-  // قيمة الملخص الحالية يجب أن تطابق بطاقة «المبلغ المستحق على هذا التاجر».
-  // نستخدم calcBalance لأنه يجمع كل عمليات البيع ودفعات التاجر الحالية،
-  // بينما merchantBalanceAfter يبقى فقط لتحديد حالة دفع الفاتورة وقت تنفيذها.
-  const balanceMerchantId=data.merchantId||currentMerId;
-  const currentMerchantBalance=balanceMerchantId?calcBalance(balanceMerchantId):afterBalance;
+  // نأخذ الرصيد التاريخي قبل/بعد نفس حركة البيع من نفس المصدر الذي
+  // يُستخدم في صناديق «الصناديق قبل هذه الحركة / بعد هذه الحركة» في سجل التاجر.
+  // لا نستخدم الرصيد الحالي، ولا نعتمد على merchantBalanceBefore/After القديمة
+  // إلا كـ fallback للعمليات القديمة التي لا يمكن العثور على حركة التاجر الأصلية لها.
+  const sourceSaleTx=data.sourceMerchantTxId
+    ? merchantTxs.find(t=>t.id===data.sourceMerchantTxId)
+    : (data.opId?merchantTxs.find(t=>t.opId===data.opId&&t.source==="loading"):null);
+  const historicalCtx=sourceSaleTx?calcMerchantBalanceBeforeAfter(sourceSaleTx):null;
+  const storedHasBalance=data.merchantBalanceBefore!==undefined && data.merchantBalanceAfter!==undefined;
+  const hasBalanceInfo=!!historicalCtx||storedHasBalance;
+  const beforeBalance=historicalCtx
+    ? historicalCtx.before
+    : storedHasBalance?(Number(data.merchantBalanceBefore)||0):0;
+  const afterBalance=historicalCtx
+    ? historicalCtx.after
+    : storedHasBalance?(Number(data.merchantBalanceAfter)||0):0;
   let salePaid=null;
   if(typeof data.paid==="boolean") salePaid=data.paid;
   else if(hasBalanceInfo) salePaid=Math.abs(afterBalance-beforeBalance)<0.01;
@@ -1842,7 +1854,7 @@ function showMerchantSalePreview(data){
   const paymentStatusClass=salePaid===false?"unpaid":"";
   const balanceSection=hasBalanceInfo?(()=>{
     const before=beforeBalance;
-    const after=currentMerchantBalance;
+    const after=afterBalance;
     const accountView=value=>({
       amount:fmtMoney(Math.abs(value))
     });
@@ -1998,6 +2010,8 @@ function openTxDetail(t){
   const movementText=isPayment
     ? `دفعة بقيمة ${fN(t.amount)}${t.description?` — ${t.description}`:""}`
     : `إضافة دين بقيمة ${fN(t.amount)}${t.description?` — ${t.description}`:""}`;
+  // نفس الرصيد التاريخي المستخدم في صناديق قبل/بعد هذه الحركة في سجل التاجر.
+  // لذلك تبقى الفاتورة ثابتة تاريخياً ولا تتغير بسبب حركات تمت لاحقاً.
   const balCtx=calcMerchantBalanceBeforeAfter(t);
   const balanceView=value=>{
     const v=Number(value)||0;
