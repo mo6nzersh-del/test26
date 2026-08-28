@@ -42,15 +42,21 @@
     .tools{padding:11px 12px;border-bottom:1px solid var(--border);display:flex;gap:8px}.search{position:relative;flex:1}.search input{width:100%;height:42px;border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;background:#fbfcfb;color:var(--ink);font-size:13px;outline:none}.search input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);background:#fff}.btn{border:0;border-radius:10px;min-height:42px;padding:8px 13px;font-size:12px;font-weight:900;cursor:pointer}.btn.primary{background:var(--primary);color:#fff}.btn.outline{border:1px solid var(--border);background:#fff;color:var(--ink)}.btn.danger{background:var(--red-soft);color:var(--red);border:1px solid #efd5cf}.btn.small{min-height:34px;padding:6px 10px;font-size:10.5px}
     .people{max-height:65vh;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}.person{padding:12px 13px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;transition:background .12s}.person:last-child{border-bottom:0}.person:hover,.person.active{background:var(--primary-soft)}.person-main{min-width:0}.person-name{font-weight:900;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.person-meta{font-size:10.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.person-bal{text-align:left;white-space:nowrap;font-size:11px;font-weight:900}.bal-pos{color:var(--red)}.bal-neg{color:var(--blue)}.bal-zero{color:var(--muted)}
     .empty{padding:32px 16px;text-align:center;color:var(--muted);font-size:12px}.detail-empty{min-height:390px;display:grid;place-items:center;padding:30px;text-align:center;color:var(--muted)}
-    .detail{display:none}.detail.show{display:block}.account-head{padding:16px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;border-bottom:1px solid var(--border)}.account-name{font-size:18px;font-weight:900}.account-sub{font-size:11px;color:var(--muted);margin-top:3px}.account-actions{display:flex;gap:6px;flex-wrap:wrap}.balance-box{margin:14px 15px;background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:13px 15px;display:flex;align-items:center;justify-content:space-between;gap:12px}.balance-box span{font-size:11px;color:var(--muted);font-weight:700}.balance-box strong{font-size:19px;font-weight:900}.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 15px 14px}.quick{border:1px solid var(--border);background:#fff;border-radius:11px;padding:10px 8px;font-size:10.5px;font-weight:900;cursor:pointer;min-height:52px}.quick.debt-on{background:var(--red-soft);border-color:#efd4ce;color:#943725}.quick.pay-from{background:var(--primary-soft);border-color:#d3e7da;color:var(--primary-dark)}.quick.debt-to{background:var(--blue-soft);border-color:#d8e2f0;color:#294f83}.quick.pay-to{background:var(--gold-soft);border-color:#eadbbf;color:#795316}
+    .detail{display:none}.detail.show{display:block}.account-head{padding:16px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;border-bottom:1px solid var(--border)}.account-name{font-size:18px;font-weight:900}.account-sub{font-size:11px;color:var(--muted);margin-top:3px}.account-actions{display:flex;gap:6px;flex-wrap:wrap}.balance-box{margin:14px 15px;background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:13px 15px;display:flex;align-items:center;justify-content:space-between;gap:12px}.balance-box span{font-size:11px;color:var(--muted);font-weight:700}.balance-box strong{font-size:19px;font-weight:900}.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 15px 14px}.quick{border:1px solid var(--border);background:#fff;border-radius:12px;padding:11px 10px;font-size:12px;font-weight:900;cursor:pointer;min-height:56px}.quick.add{background:var(--primary-soft);border-color:#d3e7da;color:var(--primary-dark)}.quick.withdraw{background:var(--red-soft);border-color:#efd4ce;color:#943725}
     .tx-tools{padding:11px 15px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center}.tx-tools input{flex:1;height:40px;border:1px solid var(--border);border-radius:9px;padding:7px 10px;font-size:12px;outline:none}.tx-tools input:focus{border-color:var(--primary)}
+    .egypt-time-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:10px 13px;margin-bottom:16px;box-shadow:0 3px 14px rgba(28,37,33,.035)}
+    .egypt-date-side{display:flex;align-items:center;gap:8px;min-width:0}.egypt-day{font-size:12px;font-weight:900;color:var(--ink);white-space:nowrap}.egypt-date{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap}.egypt-clock{display:inline-flex;align-items:center;gap:6px;direction:ltr;font-family:monospace,Cairo,sans-serif;font-size:15px;font-weight:900;letter-spacing:.5px;color:var(--primary-dark);background:var(--primary-soft);border:1px solid #cfe3d6;border-radius:9px;padding:6px 10px;white-space:nowrap}
+    .tx-period-wrap{padding:10px 15px 0;border-top:1px solid var(--border)}
+    .tx-period-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.tx-period-head b{font-size:11px}.tx-period-label{font-size:9.5px;color:var(--primary-dark);background:var(--primary-soft);border:1px solid #d4e7da;border-radius:999px;padding:3px 8px;font-weight:800;white-space:nowrap}
+    .tx-period-tabs{display:flex;gap:4px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}.tx-period-tabs::-webkit-scrollbar{display:none}.tx-period-btn{flex:1 0 auto;border:0;background:transparent;color:var(--muted);min-height:34px;padding:6px 11px;border-radius:7px;font-size:10.5px;font-weight:800;cursor:pointer;white-space:nowrap}.tx-period-btn.active{background:var(--surface);color:var(--primary-dark);box-shadow:0 1px 5px rgba(28,37,33,.08)}
+    .tx-custom-range{display:none;grid-template-columns:1fr auto 1fr;gap:7px;align-items:center;margin-top:8px}.tx-custom-range.show{display:grid}.tx-custom-range input{width:100%;height:38px;border:1px solid var(--border);border-radius:8px;background:#fff;padding:6px 8px;color:var(--ink);font-size:11px;outline:none}.tx-custom-range input:focus{border-color:var(--primary)}.tx-custom-range span{font-size:10px;color:var(--muted);font-weight:800}
     .table-wrap{overflow:auto;-webkit-overflow-scrolling:touch}.tx-table{width:100%;border-collapse:collapse;min-width:720px}.tx-table th{background:#f6f8f6;color:var(--muted);font-size:10.5px;font-weight:900;padding:8px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}.tx-table td{padding:8px;border-bottom:1px solid var(--border);font-size:11px;vertical-align:middle}.tx-table tr:last-child td{border-bottom:0}.txid{font-family:monospace;font-size:10px;font-weight:800}.amount{font-weight:900;white-space:nowrap}.after{font-weight:800;white-space:nowrap}.tx-actions{display:flex;gap:5px}.kind{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:3px 7px;font-size:9.5px;font-weight:800;white-space:nowrap}.kind.pos{background:var(--red-soft);color:var(--red)}.kind.neg{background:var(--blue-soft);color:var(--blue)}
     .mobile-txs{display:none;padding:10px}.m-tx{border:1px solid var(--border);border-radius:12px;padding:10px;margin-bottom:8px;background:#fff}.m-tx:last-child{margin-bottom:0}.m-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.m-date{font-size:10px;color:var(--muted)}.m-mid{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:7px}.m-note{font-size:10.5px;color:var(--muted);margin-top:6px}.m-actions{display:flex;gap:6px;border-top:1px solid var(--border);padding-top:8px;margin-top:8px}
     .overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(15,23,42,.46);align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)}.overlay.open{display:flex}.modal{width:min(520px,100%);max-height:90vh;overflow:auto;background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.22)}.modal.wide{width:min(860px,100%)}.modal-head{position:sticky;top:0;background:rgba(255,255,255,.97);z-index:2;padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:10px}.modal-head h3{font-size:15px;margin:0}.x{width:36px;height:36px;border:0;border-radius:9px;background:var(--bg);font-size:20px;color:var(--muted);cursor:pointer}.modal-body{padding:15px}.field{margin-bottom:12px}.field label{display:block;font-size:11.5px;font-weight:800;margin-bottom:5px}.field input,.field textarea,.field select{width:100%;min-height:44px;border:1.5px solid var(--border);border-radius:10px;padding:9px 10px;background:#fbfcfb;color:var(--ink);font-size:13px;outline:none}.field textarea{min-height:72px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);background:#fff}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.choice{border:1.5px solid var(--border);border-radius:11px;background:#fff;padding:10px;text-align:right;font-size:11px;font-weight:900;cursor:pointer;color:var(--ink)}.choice.selected{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-soft)}.choice small{display:block;color:var(--muted);font-size:9.5px;margin-top:2px;font-weight:600}.modal-actions{display:flex;gap:8px;margin-top:14px}.modal-actions .btn.primary{flex:1}
     .statement{background:#fff;color:#111;direction:rtl}.stmt-page{width:190mm;min-height:270mm;margin:0 auto 12px;background:#fff;padding:12mm;position:relative;border:1px solid #ddd}.stmt-head{display:flex;justify-content:space-between;gap:18px;padding-bottom:9px;border-bottom:2px solid #111}.stmt-brand{font-size:17px;font-weight:900}.stmt-brand small{display:block;font-size:9px;font-weight:500;margin-top:2px;color:#555}.stmt-meta{font-size:9.5px;min-width:170px}.stmt-meta div{display:flex;justify-content:space-between;gap:12px;margin-bottom:3px}.stmt-title{text-align:center;margin:12px 0 9px}.stmt-title h2{font-size:16px;margin:0}.stmt-title p{font-size:9.5px;margin:3px 0 0}.stmt-summary{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #111;margin-bottom:10px}.stmt-summary div{padding:7px;text-align:center;border-left:1px solid #111}.stmt-summary div:last-child{border-left:0}.stmt-summary span{display:block;font-size:8.5px}.stmt-summary strong{font-size:11px}.stmt-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:8.5px}.stmt-table th,.stmt-table td{border:1px solid #333;padding:5px;text-align:right}.stmt-table th{font-weight:900}.stmt-foot{position:absolute;bottom:8mm;left:12mm;right:12mm;display:flex;justify-content:space-between;border-top:1px solid #777;padding-top:4px;font-size:8px}.stmt-print-actions{display:flex;gap:8px;padding:12px 15px;border-top:1px solid var(--border);background:#fff;position:sticky;bottom:0}
     .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);background:#17211b;color:#fff;padding:10px 14px;border-radius:10px;font-size:11.5px;font-weight:800;opacity:0;pointer-events:none;transition:.18s;z-index:3000}.toast.show{opacity:1;transform:translate(-50%,0)}.toast.error{background:#8f3526}
     .loader{position:fixed;inset:0;z-index:5000;background:#f4f7f5;display:grid;place-items:center;transition:opacity .22s}.loader.hide{opacity:0;pointer-events:none}.loader-inner{text-align:center;color:var(--primary-dark)}.spinner{width:34px;height:34px;border:3px solid #cfddd4;border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px}@keyframes spin{to{transform:rotate(360deg)}}.loader-inner div{font-size:11.5px;font-weight:800}
-    @media(max-width:820px){.page{padding:12px 10px 84px}.top{top:4px;border-radius:14px;padding:10px 11px}.brand small{display:none}.hero{padding:15px;border-radius:15px}.hero h1{font-size:19px}.hero p{font-size:10.5px}.private-chip{font-size:9px}.summary{grid-template-columns:1fr 1fr;gap:7px}.sum-card{padding:10px 11px;border-radius:12px}.sum-card strong{font-size:15px}.layout{grid-template-columns:1fr}.people{max-height:300px}.detail-empty{min-height:180px}.quick-grid{grid-template-columns:1fr 1fr}.tx-table{display:none}.mobile-txs{display:block}.panel-head{padding:12px}.account-head{padding:13px}.balance-box{margin:11px 12px;padding:11px}.balance-box strong{font-size:16px}.quick-grid{padding:0 12px 11px}.tx-tools{padding:9px 12px}.overlay{padding:0;align-items:flex-end;backdrop-filter:none}.modal,.modal.wide{width:100%;max-height:92dvh;border-radius:20px 20px 0 0;border-bottom:0;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}.form-grid{grid-template-columns:1fr}.stmt-page{transform-origin:top center}.statement{overflow:hidden}.stmt-print-actions{padding-bottom:max(12px,env(safe-area-inset-bottom))}}
+    @media(max-width:820px){.page{padding:12px 10px 84px}.top{top:4px;border-radius:14px;padding:10px 11px}.brand small{display:none}.hero{padding:15px;border-radius:15px}.hero h1{font-size:19px}.hero p{font-size:10.5px}.private-chip{font-size:9px}.egypt-time-bar{padding:8px 10px;margin-bottom:12px;border-radius:12px}.egypt-date-side{gap:5px;flex-direction:column;align-items:flex-start}.egypt-day{font-size:10.5px}.egypt-date{font-size:9.5px}.egypt-clock{font-size:13px;padding:5px 8px}.tx-period-wrap{padding:9px 12px 0}.tx-period-head{margin-bottom:6px}.tx-period-btn{min-height:32px;padding:5px 10px;font-size:10px}.tx-custom-range{grid-template-columns:1fr 1fr}.tx-custom-range span{display:none}.summary{grid-template-columns:1fr 1fr;gap:7px}.sum-card{padding:10px 11px;border-radius:12px}.sum-card strong{font-size:15px}.layout{grid-template-columns:1fr}.people{max-height:300px}.detail-empty{min-height:180px}.quick-grid{grid-template-columns:1fr 1fr}.tx-table{display:none}.mobile-txs{display:block}.panel-head{padding:12px}.account-head{padding:13px}.balance-box{margin:11px 12px;padding:11px}.balance-box strong{font-size:16px}.quick-grid{padding:0 12px 11px}.tx-tools{padding:9px 12px}.overlay{padding:0;align-items:flex-end;backdrop-filter:none}.modal,.modal.wide{width:100%;max-height:92dvh;border-radius:20px 20px 0 0;border-bottom:0;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}.form-grid{grid-template-columns:1fr}.stmt-page{transform-origin:top center}.statement{overflow:hidden}.stmt-print-actions{padding-bottom:max(12px,env(safe-area-inset-bottom))}}
     @media(max-width:380px){.hero{align-items:flex-start}.private-chip{display:none}.summary{grid-template-columns:1fr 1fr}.account-head{display:block}.account-actions{margin-top:9px}.people{max-height:250px}}
     @media print{
       @page{size:A4 portrait;margin:0}
@@ -76,6 +82,11 @@
         <div class="private-chip">مستقل عن النظام</div>
       </section>
 
+      <div class="egypt-time-bar" aria-label="توقيت مصر">
+        <div class="egypt-date-side"><span class="egypt-day" id="egypt-day">—</span><span class="egypt-date" id="egypt-date">—</span></div>
+        <div class="egypt-clock"><span>🕐</span><span id="egypt-clock">--:--:--</span></div>
+      </div>
+
       <section class="summary">
         <div class="sum-card"><span>عدد الأشخاص</span><strong id="sum-people">0</strong></div>
         <div class="sum-card"><span>إجمالي مبالغ عليهم لك</span><strong id="sum-receivable">0 ج.م</strong></div>
@@ -99,10 +110,19 @@
             </div>
             <div class="balance-box"><span>الرصيد الحالي</span><strong id="detail-balance">—</strong></div>
             <div class="quick-grid">
-              <button class="quick debt-on" data-tx-type="debt_on">+ مبلغ عليه</button>
-              <button class="quick pay-from" data-tx-type="payment_from">دفعة منه</button>
-              <button class="quick debt-to" data-tx-type="debt_to">+ مبلغ له</button>
-              <button class="quick pay-to" data-tx-type="payment_to">دفعة له</button>
+              <button class="quick add" data-tx-type="add">إضافة</button>
+              <button class="quick withdraw" data-tx-type="withdraw">سحب</button>
+            </div>
+            <div class="tx-period-wrap">
+              <div class="tx-period-head"><b>فترة الحركات</b><span class="tx-period-label" id="tx-period-label">كل الحركات</span></div>
+              <div class="tx-period-tabs" id="tx-period-tabs">
+                <button type="button" class="tx-period-btn active" data-tx-period="all">الكل</button>
+                <button type="button" class="tx-period-btn" data-tx-period="day">يومي</button>
+                <button type="button" class="tx-period-btn" data-tx-period="week">أسبوعي</button>
+                <button type="button" class="tx-period-btn" data-tx-period="month">شهري</button>
+                <button type="button" class="tx-period-btn" data-tx-period="custom">مخصص</button>
+              </div>
+              <div class="tx-custom-range" id="tx-custom-range"><input type="date" id="tx-from"><span>إلى</span><input type="date" id="tx-to"></div>
             </div>
             <div class="tx-tools"><input type="search" id="tx-search" placeholder="ابحث في الحركات أو الملاحظات…"><span id="tx-count" style="font-size:10.5px;color:var(--muted);white-space:nowrap"></span></div>
             <div class="table-wrap"><table class="tx-table"><thead><tr><th>رقم الحركة</th><th>التاريخ</th><th>الحركة</th><th>المبلغ</th><th>الرصيد بعدها</th><th>الوصف</th><th></th></tr></thead><tbody id="tx-tbody"></tbody></table></div>
@@ -153,18 +173,49 @@ const TX_COL="private_accounts_transactions";
 const META_COL="private_accounts_meta";
 
 let currentUser=null,people=[],txs=[],selectedPersonId="",openingSide="on",unsubs=[];
+let txPeriodMode="all",txCustomFrom="",txCustomTo="";
 const TYPE_CFG={
-  debt_on:{label:"إضافة مبلغ عليه",delta:1,cls:"pos"},
-  payment_from:{label:"دفعة منه",delta:-1,cls:"neg"},
-  debt_to:{label:"إضافة مبلغ له",delta:-1,cls:"neg"},
-  payment_to:{label:"دفعة له",delta:1,cls:"pos"},
+  /* الحركتان الجديدتان فقط */
+  add:{label:"إضافة",delta:1,cls:"pos"},
+  withdraw:{label:"سحب",delta:-1,cls:"neg"},
+
+  /* دعم الحركات القديمة الموجودة مسبقاً في Firebase بدون كسر البيانات */
+  debt_on:{label:"إضافة",delta:1,cls:"pos"},
+  payment_to:{label:"إضافة",delta:1,cls:"pos"},
+  payment_from:{label:"سحب",delta:-1,cls:"neg"},
+  debt_to:{label:"سحب",delta:-1,cls:"neg"},
   opening_on:{label:"رصيد افتتاحي — عليه لك",delta:1,cls:"pos"},
   opening_to:{label:"رصيد افتتاحي — له عليك",delta:-1,cls:"neg"}
 };
 const esc=v=>{const d=document.createElement('div');d.textContent=v??'';return d.innerHTML};
 const money=n=>new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(Math.abs(Number(n)||0))+" ج.م";
-const today=()=>new Date().toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
-const fmtDate=s=>s?new Date(s+"T12:00:00").toLocaleDateString("ar-EG-u-nu-latn",{year:"numeric",month:"long",day:"numeric"}):"—";
+const EGYPT_TZ="Africa/Cairo";
+const today=()=>new Date().toLocaleDateString("en-CA",{timeZone:EGYPT_TZ});
+const cairoDateFromIso=s=>s?new Date(s+"T12:00:00Z"):null;
+const fmtDate=s=>{const d=cairoDateFromIso(s);return d?d.toLocaleDateString("ar-EG-u-nu-latn",{timeZone:EGYPT_TZ,year:"numeric",month:"long",day:"numeric"}):"—"};
+const addIsoDays=(s,n)=>{const [y,m,d]=s.split("-").map(Number),dt=new Date(Date.UTC(y,m-1,d+n,12));return dt.toLocaleDateString("en-CA",{timeZone:"UTC"})};
+function monthStartCairo(){const parts=new Intl.DateTimeFormat("en-CA",{timeZone:EGYPT_TZ,year:"numeric",month:"2-digit"}).formatToParts(new Date());const get=t=>parts.find(p=>p.type===t)?.value||"";return `${get("year")}-${get("month")}-01`}
+function updateEgyptClock(){
+  const now=new Date();
+  const day=document.getElementById("egypt-day"),date=document.getElementById("egypt-date"),clock=document.getElementById("egypt-clock");
+  if(day)day.textContent=new Intl.DateTimeFormat("ar-EG-u-nu-latn",{timeZone:EGYPT_TZ,weekday:"long"}).format(now);
+  if(date)date.textContent=new Intl.DateTimeFormat("ar-EG-u-nu-latn",{timeZone:EGYPT_TZ,year:"numeric",month:"long",day:"numeric"}).format(now);
+  if(clock){const parts=new Intl.DateTimeFormat("ar-EG-u-nu-latn",{timeZone:EGYPT_TZ,hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true}).formatToParts(now);const get=t=>parts.find(p=>p.type===t)?.value||"";clock.textContent=`${get("hour")}:${get("minute")}:${get("second")} ${get("dayPeriod")||get("dayperiod")}`.trim()}
+}
+function txPeriodRange(){
+  const now=today();
+  if(txPeriodMode==="day") return {from:now,to:now,label:"اليوم"};
+  if(txPeriodMode==="week") return {from:addIsoDays(now,-6),to:now,label:"آخر 7 أيام"};
+  if(txPeriodMode==="month") return {from:monthStartCairo(),to:now,label:"هذا الشهر"};
+  if(txPeriodMode==="custom") return {from:txCustomFrom,to:txCustomTo,label:(txCustomFrom&&txCustomTo)?`${fmtDate(txCustomFrom)} — ${fmtDate(txCustomTo)}`:"حدد الفترة"};
+  return {from:"",to:"",label:"كل الحركات"};
+}
+function matchesTxPeriod(t){const r=txPeriodRange();if(txPeriodMode==="all")return true;if(!r.from||!r.to)return false;const d=String(t.date||"");return !!d&&d>=r.from&&d<=r.to}
+function updateTxPeriodUI(){
+  document.querySelectorAll("[data-tx-period]").forEach(b=>b.classList.toggle("active",b.dataset.txPeriod===txPeriodMode));
+  const custom=document.getElementById("tx-custom-range");if(custom)custom.classList.toggle("show",txPeriodMode==="custom");
+  const label=document.getElementById("tx-period-label");if(label)label.textContent=txPeriodRange().label;
+}
 function norm(s){return String(s||'').toLowerCase().normalize('NFKD').replace(/[\u064B-\u065F\u0670]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').trim()}
 function toast(msg,err=false){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(err?' error':'');clearTimeout(t._t);t._t=setTimeout(()=>t.className='toast',2500)}
 function show(el,on=true){el.classList.toggle('open',on)}
@@ -213,7 +264,8 @@ function renderDetail(){
   document.getElementById('detail-name').textContent=p.name||'—';document.getElementById('detail-sub').textContent=[p.phone,p.note].filter(Boolean).join(' — ')||'حساب خاص مستقل';
   const bal=balanceFor(p.id),bEl=document.getElementById('detail-balance');bEl.textContent=balanceText(bal);bEl.className=balanceClass(bal);
   const q=norm(document.getElementById('tx-search').value);
-  let rows=runningRowsFor(p.id).filter(t=>!q||norm([TYPE_CFG[t.type]?.label,t.note,t.txId,t.date].join(' ')).includes(q)).sort((a,b)=>-sortTx(a,b));
+  let rows=runningRowsFor(p.id).filter(matchesTxPeriod).filter(t=>!q||norm([TYPE_CFG[t.type]?.label,t.note,t.txId,t.date].join(' ')).includes(q)).sort((a,b)=>-sortTx(a,b));
+  updateTxPeriodUI();
   document.getElementById('tx-count').textContent=`${rows.length} حركة`;
   const tbody=document.getElementById('tx-tbody'),mob=document.getElementById('mobile-txs');
   if(!rows.length){tbody.innerHTML='<tr><td colspan="7"><div class="empty">لا توجد حركات</div></td></tr>';mob.innerHTML='<div class="empty">لا توجد حركات</div>';return}
@@ -269,7 +321,10 @@ function printStatement(){document.body.classList.add('print-statement');const c
 
 function bind(){
   document.getElementById('back-dashboard').addEventListener('click',()=>location.href='/dashboard.html');
-  document.getElementById('people-search').addEventListener('input',renderPeople);document.getElementById('tx-search').addEventListener('input',renderDetail);document.getElementById('add-person').addEventListener('click',()=>openPerson(true));document.getElementById('edit-person').addEventListener('click',()=>openPerson(false));document.getElementById('delete-person').addEventListener('click',deletePerson);document.querySelectorAll('[data-tx-type]').forEach(b=>b.addEventListener('click',()=>openTx(b.dataset.txType)));document.getElementById('person-form').addEventListener('submit',savePerson);document.getElementById('tx-form').addEventListener('submit',saveTx);document.querySelectorAll('[data-opening]').forEach(b=>b.addEventListener('click',()=>{openingSide=b.dataset.opening;document.querySelectorAll('[data-opening]').forEach(x=>x.classList.toggle('selected',x===b))}));document.getElementById('statement-btn').addEventListener('click',buildStatement);document.getElementById('statement-print').addEventListener('click',printStatement);document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id)}));window.addEventListener('resize',fitStatement,{passive:true});document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(o=>closeModal(o.id))});
+  document.getElementById('people-search').addEventListener('input',renderPeople);document.getElementById('tx-search').addEventListener('input',renderDetail);
+  document.querySelectorAll('[data-tx-period]').forEach(b=>b.addEventListener('click',()=>{txPeriodMode=b.dataset.txPeriod;if(txPeriodMode==='custom'){const now=today();if(!txCustomTo)txCustomTo=now;if(!txCustomFrom)txCustomFrom=addIsoDays(now,-6);document.getElementById('tx-from').value=txCustomFrom;document.getElementById('tx-to').value=txCustomTo}updateTxPeriodUI();renderDetail()}));
+  ['tx-from','tx-to'].forEach(id=>document.getElementById(id).addEventListener('change',()=>{txCustomFrom=document.getElementById('tx-from').value;txCustomTo=document.getElementById('tx-to').value;if(txCustomFrom&&txCustomTo&&txCustomFrom>txCustomTo){const tmp=txCustomFrom;txCustomFrom=txCustomTo;txCustomTo=tmp;document.getElementById('tx-from').value=txCustomFrom;document.getElementById('tx-to').value=txCustomTo}updateTxPeriodUI();renderDetail()}));
+  document.getElementById('add-person').addEventListener('click',()=>openPerson(true));document.getElementById('edit-person').addEventListener('click',()=>openPerson(false));document.getElementById('delete-person').addEventListener('click',deletePerson);document.querySelectorAll('[data-tx-type]').forEach(b=>b.addEventListener('click',()=>openTx(b.dataset.txType)));document.getElementById('person-form').addEventListener('submit',savePerson);document.getElementById('tx-form').addEventListener('submit',saveTx);document.querySelectorAll('[data-opening]').forEach(b=>b.addEventListener('click',()=>{openingSide=b.dataset.opening;document.querySelectorAll('[data-opening]').forEach(x=>x.classList.toggle('selected',x===b))}));document.getElementById('statement-btn').addEventListener('click',buildStatement);document.getElementById('statement-print').addEventListener('click',printStatement);document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id)}));window.addEventListener('resize',fitStatement,{passive:true});document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(o=>closeModal(o.id))});
 }
 function startData(){
   let pReady=false,tReady=false;const ready=()=>{if(pReady&&tReady){document.getElementById('loader').classList.add('hide');setTimeout(()=>document.getElementById('loader').style.display='none',250)}};
@@ -277,6 +332,7 @@ function startData(){
   unsubs.push(onSnapshot(collection(db,TX_COL),snap=>{txs=snap.docs.map(d=>({id:d.id,...d.data()}));tReady=true;renderPeople();renderDetail();ready()},err=>{console.error(err);tReady=true;ready();toast('تعذر تحميل الحركات',true)}));
 }
 bind();
+updateEgyptClock();setInterval(updateEgyptClock,1000);updateTxPeriodUI();
 onAuthStateChanged(auth,async user=>{
   if(!user){location.replace('/index.html');return}
   try{const blocked=await getDocs(query(collection(db,'blockedUsers'),where('email','==',String(user.email||'').trim().toLowerCase())));if(!blocked.empty){await signOut(auth);location.replace('/index.html');return}}catch(err){console.error(err)}
