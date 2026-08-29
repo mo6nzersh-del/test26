@@ -1655,14 +1655,46 @@ function toast(msg,err=false){
   t._timer=setTimeout(()=>{ t.className="toast"; },2600);
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   مصدر موحّد لحساب مستحقات التاجر
+   - يمنع احتساب نفس الحركة المالية أكثر من مرة عبر finId
+   - يمنع تكرار نفس عملية البيع عبر opId
+   - كل أقسام الصفحة (الرصيد/الفواتير/قبل وبعد) تعتمد عليه
+═══════════════════════════════════════════════════════════════ */
+function _merchantDirectLedger(merId){
+  const rows=merchantTxs.filter(t=>t.merchantId===merId);
+  const map=new Map();
+  rows.forEach(t=>{
+    const key=(t.source==="loading"&&t.opId)?`sale:${t.opId}`:`direct:${t.id}`;
+    const prev=map.get(key);
+    if(!prev || _preciseEventMillis(t)>=_preciseEventMillis(prev)) map.set(key,t);
+  });
+  return [...map.values()];
+}
+function _merchantFinanceLedger(merId){
+  const rows=finTxs.filter(t=>t._active!==false&&t.merchantId===merId&&t.type==="merchant");
+  const map=new Map();
+  rows.forEach(t=>{
+    // finId هو معرّف العملية المالية المنطقي؛ إذا لم يوجد نستخدم opId ثم id.
+    const key=t.finId?`fin:${t.finId}`:(t.opId?`op:${t.opId}:merchant`:`id:${t.id}`);
+    const prev=map.get(key);
+    if(!prev || _preciseEventMillis(t)>=_preciseEventMillis(prev)) map.set(key,t);
+  });
+  return [...map.values()];
+}
+function _merchantLedgerRows(merId){
+  const direct=_merchantDirectLedger(merId).map(t=>({
+    id:t.id,kind:"direct",raw:t,dir:t.type,amount:Number(t.amount)||0,
+    time:_preciseEventMillis(t),dateStr:_toDateStr(t)
+  }));
+  const finance=_merchantFinanceLedger(merId).map(t=>({
+    id:t.id,kind:"finance",raw:t,dir:t.dir,amount:Number(t.amount)||0,
+    time:_preciseEventMillis(t),dateStr:_toDateStr(t)
+  }));
+  return [...direct,...finance].sort((a,b)=>a.time-b.time || String(a.id).localeCompare(String(b.id)));
+}
 function calcBalance(merId){
-  // الحركات المباشرة (merchantTransactions)
-  const directBal=merchantTxs.filter(t=>t.merchantId===merId)
-    .reduce((s,t)=>s+(t.type==="out"?-t.amount:t.amount),0);
-  // دفعات المالية (finance_transactions نوع تاجر فقط)
-  const finBal=finTxs.filter(t=>t.merchantId===merId&&t.type==="merchant")
-    .reduce((s,t)=>s+(t.dir==="in"?t.amount:-t.amount),0);
-  return directBal+finBal;
+  return _merchantLedgerRows(merId).reduce((s,t)=>s+(t.dir==="in"?t.amount:-t.amount),0);
 }
 
 /* ── تn�يئة ── */
@@ -1844,8 +1876,8 @@ function _preciseEventMillis(t){
 function getPaymentsAfterLastSale(saleTx,historicalAfter){
   if(!saleTx?.merchantId) return null;
   const merId=saleTx.merchantId;
-  const sales=merchantTxs.filter(t=>
-    t.merchantId===merId && t.type==="out" && (t.source==="loading" || t.opId)
+  const sales=_merchantDirectLedger(merId).filter(t=>
+    t.type==="out" && (t.source==="loading" || t.opId)
   );
   if(!sales.length) return null;
   const latestSale=[...sales].sort((a,b)=>_preciseEventMillis(b)-_preciseEventMillis(a))[0];
@@ -1865,17 +1897,16 @@ function getPaymentsAfterLastSale(saleTx,historicalAfter){
   // قد تحتوي تاريخاً فقط من دون توقيت دقيق.
   const saleTime=_preciseEventMillis(saleTx);
   const later=[];
-  finTxs.forEach(t=>{
-    if(t._active===false || t.merchantId!==merId || t.type!=="merchant") return;
+  _merchantFinanceLedger(merId).forEach(t=>{
     if(saleTx.opId && t.opId===saleTx.opId) return;
     const tm=_preciseEventMillis(t);
-    if(tm>saleTime) later.push({id:t.id,amount:Number(t.amount)||0,dir:t.dir,time:tm,source:"finance"});
+    if(tm>saleTime) later.push({id:t.id,amount:Number(t.amount)||0,dir:t.dir,time:tm,source:"finance",finId:t.finId||""});
   });
-  merchantTxs.forEach(t=>{
-    if(t.merchantId!==merId || t.id===saleTx.id) return;
+  _merchantDirectLedger(merId).forEach(t=>{
+    if(t.id===saleTx.id) return;
     if(saleTx.opId && t.opId===saleTx.opId) return;
     const tm=_preciseEventMillis(t);
-    if(tm>saleTime) later.push({id:t.id,amount:Number(t.amount)||0,dir:t.type,time:tm,source:"direct"});
+    if(tm>saleTime) later.push({id:t.id,amount:Number(t.amount)||0,dir:t.type,time:tm,source:"direct",opId:t.opId||""});
   });
 
   const unique=[];
@@ -2078,13 +2109,7 @@ function amountInWords(n){
 /* ── حساب رصيد التاجر قبل وبعد حركة مالية معيّنة (لعرضه في المعاينة/الطباعة) ── */
 function calcMerchantBalanceBeforeAfter(tx){
   const merId=tx.merchantId; if(!merId) return null;
-  const direct=merchantTxs.filter(x=>x.merchantId===merId).map(x=>({
-    id:x.id, dateSecs:_toSecs(x), dir:x.type, amount:x.amount||0,
-  }));
-  const fin=finTxs.filter(x=>x.merchantId===merId&&x.type==="merchant").map(x=>({
-    id:x.id, dateSecs:x.date?new Date(x.date+"T00:00:00").getTime()/1000:0, dir:x.dir, amount:x.amount||0,
-  }));
-  const sorted=[...direct,...fin].sort((a,b)=>a.dateSecs-b.dateSecs);
+  const sorted=_merchantLedgerRows(merId);
   let running=0, before=0, after=0, found=false;
   sorted.forEach(r=>{
     if(!found && r.id===tx.id){
@@ -2096,7 +2121,11 @@ function calcMerchantBalanceBeforeAfter(tx){
       running+=(r.dir==="in"?1:-1)*r.amount;
     }
   });
-  if(!found){ after=running; before=running-((tx.dir==="in"?1:-1)*(tx.amount||0)); }
+  if(!found){
+    // fallback فقط للحركات القديمة التي لم تعد موجودة ضمن السجل النشط
+    after=running;
+    before=running-((tx.dir==="in"?1:-1)*(Number(tx.amount)||0));
+  }
   return {before, after};
 }
 
@@ -2567,31 +2596,31 @@ function _buildAllRows(){
   const fromD  =fromVal?fromVal:"";
   const toD    =toVal  ?toVal  :"";
 
-  const direct=merchantTxs.filter(t=>t.merchantId===currentMerId).map(t=>({
+  const direct=_merchantDirectLedger(currentMerId).map(t=>({
     _src: t.source==="loading" ? "loading" : "direct",
     seqId: (t.opId && activityOpMap[t.opId])
       ? activityOpMap[t.opId]
       : (t.txId || (t.opId ? t.opId.slice(0,8).toUpperCase() : "—")),
     dateStr:_toDateStr(t),
-    dateSecs:_toSecs(t),
+    dateSecs:_preciseEventMillis(t)/1000,
     dir:t.type,
-    amount:t.amount||0,
+    amount:Number(t.amount)||0,
     note:t.note||"",
     id:t.id,
-     opId:t.opId||"",
-     performedBy:t.performedBy||"",
+    opId:t.opId||"",
+    performedBy:t.performedBy||"",
     sourcePage:t.sourcePage||"",
   }));
-  const fin=finTxs.filter(t=>t.merchantId===currentMerId).map(t=>({
-    // أي حركة finance_transactions مرتبطة بهذا التاجر تظهر هنا، بغض النظر عن نوعها
-    // (دفعة تاجر / سلفة / سحب / إيداع / أخرى) — لكن فقط دفعات النوع "merchant" تُحتسب في رصيد مستحقاته
+  const canonicalFinIds=new Set(_merchantFinanceLedger(currentMerId).map(t=>t.id));
+  const fin=finTxs.filter(t=>t.merchantId===currentMerId && (t.type!=="merchant" || canonicalFinIds.has(t.id))).map(t=>({
+    // حركات merchant تُعرض مرة واحدة فقط حسب finId، أما الأنواع الأخرى فتبقى للعرض ولا تؤثر على المستحقات.
     _src: t.type==="merchant" ? "finance" : "finance-other",
     txType:t.type,
     seqId:t.finId||"—",
-    dateStr:t.date||"",
-    dateSecs:t.date?new Date(t.date+"T00:00:00").getTime()/1000:0,
+    dateStr:_toDateStr(t),
+    dateSecs:_preciseEventMillis(t)/1000,
     dir:t.dir,
-    amount:t.amount||0,
+    amount:Number(t.amount)||0,
     note:t.description||"",
     id:t.id,
     sourcePage:t.sourcePage||"",
@@ -2609,8 +2638,8 @@ function renderUnifiedStats(){
   const all=_buildAllRows().filter(t=>t._src!=="finance-other");
   // الإحصائيات الكلية (بدون فلتر) للرصيد الحقيقي
   const allFull=[
-    ...merchantTxs.filter(t=>t.merchantId===currentMerId).map(t=>({dir:t.type,amount:t.amount||0})),
-    ...finTxs.filter(t=>t.merchantId===currentMerId&&t.type==="merchant").map(t=>({dir:t.dir,amount:t.amount||0})),
+    ..._merchantDirectLedger(currentMerId).map(t=>({dir:t.type,amount:Number(t.amount)||0})),
+    ..._merchantFinanceLedger(currentMerId).map(t=>({dir:t.dir,amount:Number(t.amount)||0})),
   ];
   // dir="out" = بيع/تحميل = مسحوبات (ما أخذه التاجر)
   // dir="in"  = دفعة/سداد = مدفوعات (ما دفعه التاجر)
@@ -2680,8 +2709,8 @@ function renderUnifiedList(){
   if(fromVal){
     // كل حركات مستحقات التاجر قبل تاريخ البداية (بدون فلتر) — لا نحتسب هنا حركات
     // finance_transactions من نوع غير "merchant" (سلفة/سحب/إيداع/أخرى) لأنها لا تمثل ديناً على التاجر
-    const allDirect=merchantTxs.filter(t=>t.merchantId===currentMerId);
-    const allFin   =finTxs.filter(t=>t.merchantId===currentMerId&&t.type==="merchant");
+    const allDirect=_merchantDirectLedger(currentMerId);
+    const allFin   =_merchantFinanceLedger(currentMerId);
     [...allDirect,...allFin].forEach(t=>{
       const ds=t.date??(t.createdAt?.toDate?.()?.toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"})??"");
       if(ds && ds<fromVal) openingBalance+=(t.type==="in"||t.dir==="in"?1:-1)*(t.amount||0);
@@ -2703,9 +2732,9 @@ function renderUnifiedList(){
   // ── حساب الـ3 صناديق (مسحوبات/مدفوعات/مستحق) قبل وبعد كل حركة، على كامل تاريخ التاجر بلا فلتر ──
   // (فقط الحركات التي تمثل ديناً حقيقياً على التاجر: تحميل/مباشرة + finance_transactions من نوع "merchant")
   const fullHist=[
-    ...merchantTxs.filter(t=>t.merchantId===currentMerId).map(t=>({id:t.id,dir:t.type,amount:t.amount||0,dateSecs:_toSecs(t)})),
-    ...finTxs.filter(t=>t.merchantId===currentMerId&&t.type==="merchant").map(t=>({id:t.id,dir:t.dir,amount:t.amount||0,dateSecs:t.date?new Date(t.date+"T00:00:00").getTime()/1000:0})),
-  ].sort((a,b)=>a.dateSecs-b.dateSecs);
+    ..._merchantDirectLedger(currentMerId).map(t=>({id:t.id,dir:t.type,amount:Number(t.amount)||0,dateSecs:_preciseEventMillis(t)/1000})),
+    ..._merchantFinanceLedger(currentMerId).map(t=>({id:t.id,dir:t.dir,amount:Number(t.amount)||0,dateSecs:_preciseEventMillis(t)/1000})),
+  ].sort((a,b)=>a.dateSecs-b.dateSecs || String(a.id).localeCompare(String(b.id)));
   const box3ById={};
   let rIn=0,rOut=0;
   fullHist.forEach(t=>{
@@ -2959,8 +2988,8 @@ function exportLedgerCSV(){
   // رصيد افتتاحي
   let openingBal=0;
   if(fromVal){
-    [...merchantTxs.filter(t=>t.merchantId===currentMerId),
-     ...finTxs.filter(t=>t.merchantId===currentMerId&&t.type==="merchant")]
+    [..._merchantDirectLedger(currentMerId),
+     ..._merchantFinanceLedger(currentMerId)]
     .forEach(t=>{
       const ds=_toDateStr(t);
       if(ds&&ds<fromVal) openingBal+=(t.type==="in"||t.dir==="in"?1:-1)*(t.amount||0);
@@ -3065,8 +3094,8 @@ function printStatement(){
   /* رصيد افتتاحي: كل ما قبل fromVal */
   let openingBalance=0;
   if(fromVal){
-    [...merchantTxs.filter(t=>t.merchantId===currentMerId),
-     ...finTxs.filter(t=>t.merchantId===currentMerId&&t.type==="merchant")]
+    [..._merchantDirectLedger(currentMerId),
+     ..._merchantFinanceLedger(currentMerId)]
     .forEach(t=>{
       const ds=_toDateStr(t);
       if(ds&&ds<fromVal) openingBalance+=(t.type==="in"||t.dir==="in"?1:-1)*(t.amount||0);
