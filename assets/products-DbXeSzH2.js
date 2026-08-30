@@ -20,6 +20,8 @@ function listenAliases() {
       const { email, alias } = d.data();
       if (email && alias) emailToAlias[email] = alias;
     });
+    // إذا كان سجل العمليات مفتوحاً، حدّث البحث بعد وصول الأسماء المستعارة
+    if (typeof applyActivityLogPersonFilter === "function") applyActivityLogPersonFilter();
   }, err => console.error("aliases listener:", err));
 }
 
@@ -35,6 +37,8 @@ let merchantBalancesStarted = false;
 let movementsRecordsStarted = false;
 let loadingRecordsStarted = false;
 let activityLogStarted = false;
+let activityLogSearchTerm = "";
+let activityLogTotalCount = 0;
 let warehouseViewActivated = false;
 let warehousesLoadVersion = 0;
 let productsLoadVersion = 0;
@@ -1418,14 +1422,93 @@ function bindDeleteBtns(container, colName) {
 /* ══════════════════════════════════════
    ACTIVITY LOG
 ══════════════════════════════════════ */
+function normalizeActivityPersonSearch(value) {
+  return String(value ?? "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u064B-\u065F\u0670]/g, "")
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ة/g, "ه")
+    .replace(/ى/g, "ي")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function applyActivityLogPersonFilter() {
+  const tbody = document.getElementById("log-table-body");
+  const mobList = document.getElementById("mob-log-list");
+  const countEl = document.getElementById("log-count");
+  if (!tbody) return;
+
+  const term = normalizeActivityPersonSearch(activityLogSearchTerm);
+  tbody.querySelectorAll(".log-search-empty").forEach(el => el.remove());
+  if (mobList) mobList.querySelectorAll(".log-search-empty").forEach(el => el.remove());
+
+  const rows = [...tbody.querySelectorAll("tr[data-log-person-base]")];
+  const cards = mobList ? [...mobList.querySelectorAll(".mob-log-card[data-log-person-base]")] : [];
+  let visible = 0;
+
+  rows.forEach(row => {
+    const rawPerformer = row.dataset.logPerformedBy || "";
+    const haystack = normalizeActivityPersonSearch([
+      row.dataset.logPersonBase || "",
+      rawPerformer,
+      resolveAlias(rawPerformer) || ""
+    ].join(" "));
+    const show = !term || haystack.includes(term);
+    row.style.display = show ? "" : "none";
+    if (show) visible++;
+  });
+
+  cards.forEach(card => {
+    const rawPerformer = card.dataset.logPerformedBy || "";
+    const haystack = normalizeActivityPersonSearch([
+      card.dataset.logPersonBase || "",
+      rawPerformer,
+      resolveAlias(rawPerformer) || ""
+    ].join(" "));
+    card.style.display = (!term || haystack.includes(term)) ? "" : "none";
+  });
+
+  if (countEl) {
+    countEl.textContent = term ? `${visible} من ${activityLogTotalCount} عملية` : `${activityLogTotalCount} عملية`;
+  }
+
+  if (term && visible === 0 && activityLogTotalCount > 0) {
+    const emptyRow = document.createElement("tr");
+    emptyRow.className = "log-search-empty";
+    emptyRow.innerHTML = '<td colspan="6"><div class="empty-state">لا توجد حركات مطابقة لهذا الاسم</div></td>';
+    tbody.appendChild(emptyRow);
+    if (mobList) {
+      const emptyCard = document.createElement("div");
+      emptyCard.className = "empty-state log-search-empty";
+      emptyCard.textContent = "لا توجد حركات مطابقة لهذا الاسم";
+      mobList.appendChild(emptyCard);
+    }
+  }
+}
+
 function loadActivityLog() {
   if (activityLogStarted) return;
   activityLogStarted = true;
   const tbody = document.getElementById("log-table-body");
   const mobList = document.getElementById("mob-log-list");
   const countEl = document.getElementById("log-count");
+  const searchInput = document.getElementById("log-person-search");
+  if (searchInput && !searchInput.dataset.bound) {
+    searchInput.dataset.bound = "1";
+    searchInput.addEventListener("input", () => {
+      activityLogSearchTerm = searchInput.value || "";
+      applyActivityLogPersonFilter();
+    });
+    searchInput.addEventListener("search", () => {
+      activityLogSearchTerm = searchInput.value || "";
+      applyActivityLogPersonFilter();
+    });
+  }
   const q = query(collection(db, "activityLog"), orderBy("createdAt", "desc"));
   onSnapshot(q, snap => {
+    activityLogTotalCount = snap.size;
     if (countEl) countEl.textContent = `${snap.size} عملية`;
     if (snap.empty) {
       tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state">لا توجد عمليات مسجلة بعد</div></td></tr>';
@@ -1453,6 +1536,13 @@ function loadActivityLog() {
 
       // ── صف الجدول (سطح المكتب) ──
       const tr = document.createElement("tr");
+      // فهرس أسماء الأشخاص: منفّذ العملية + الاسم/التاجر الظاهر داخل الحركة
+      const _personSearchBase = [
+        d.merchantName, d.employeeName, d.partyName, d.personName,
+        d.summary, d.details, d.note
+      ].filter(Boolean).join(" ");
+      tr.dataset.logPersonBase = _personSearchBase;
+      tr.dataset.logPerformedBy = d.performedBy || "";
       // رصيد التاجر للعرض في صف السجل
       const _rBalBef = d.merchantBalanceBefore ?? (d.opId && loadingRecordsCache[d.opId]?.merchantBalanceBefore);
       const _rBalAft = d.merchantBalanceAfter  ?? (d.opId && loadingRecordsCache[d.opId]?.merchantBalanceAfter);
@@ -1485,6 +1575,8 @@ function loadActivityLog() {
       if (mobList) {
         const card = document.createElement("div");
         card.className = "mob-log-card";
+        card.dataset.logPersonBase = _personSearchBase;
+        card.dataset.logPerformedBy = d.performedBy || "";
         const detailsTxt = [d.details, d.note ? `(${d.note})` : ""].filter(Boolean).join(" — ");
         const _mobBal = (d.type === "loading" && _rBalBef !== undefined)
           ? `<div style="font-size:12px;margin-top:5px;line-height:1.8;direction:rtl">
@@ -1515,7 +1607,8 @@ function loadActivityLog() {
     });
     bindPreview(tbody);
     if (mobList) bindPreview(mobList);
-  }, err => { console.error(err); tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state">حدث خطأ</div></td></tr>'; });
+    applyActivityLogPersonFilter();
+  }, err => { console.error(err); tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state">حدث خطأ</div></td></tr>'; });
 }
 
 /* ══════════════════════════════════════
