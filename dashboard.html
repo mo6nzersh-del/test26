@@ -448,7 +448,37 @@
       body.dashboard-print-invoice #dashboard-print-root *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
     }
 
-</style>
+
+
+    /* إصلاح منع تحديث الصفحة أثناء السحب داخل نوافذ الداشبورد/عمليات البيع */
+    @media screen and (hover:none) and (pointer:coarse){
+      html,body{
+        overscroll-behavior-y:none!important;
+      }
+      .dash-modal.open{
+        overflow:hidden!important;
+        overscroll-behavior:contain!important;
+        touch-action:none!important;
+      }
+      .dash-modal-box,.dash-modal-box.wide{
+        overflow-y:auto!important;
+        overflow-x:hidden!important;
+        -webkit-overflow-scrolling:touch!important;
+        overscroll-behavior:contain!important;
+        touch-action:pan-y!important;
+      }
+      .modal-body,.dash-modal-box form,.dash-modal-box .field,
+      .dash-modal-box .line-row,.dash-modal-box .items-block,
+      .dash-modal-box .items-lines-block{
+        touch-action:pan-y!important;
+      }
+      .smart-select-menu .smart-options{
+        overscroll-behavior:contain!important;
+        touch-action:pan-y!important;
+      }
+    }
+
+  </style>
   <script defer src="/assets/ui-stability.js?v=20260907.2"></script>
 </head>
 <body>
@@ -1669,22 +1699,74 @@ async function submitMerchantPay(e){
 
 /* ثبات إضافي لتمرير نوافذ الداشبورد على الهاتف: لا يمنع النقر، فقط يساعد WebView على فهم السحب العمودي. */
 function installDashboardModalScrollFix(){
-  if(!window.matchMedia?.("(pointer: coarse)").matches)return;
   if(window.__dashboardModalScrollFix)return;
   window.__dashboardModalScrollFix=true;
+
+  const isTouchDevice=()=>window.matchMedia?.("(pointer: coarse)").matches||("ontouchstart" in window);
+  const modalSelector=".dash-modal.open";
+  const scrollableSelector=".smart-options,.modal-body,.dash-modal-box";
+  let startY=0,startX=0,activeScroll=null;
+
+  function canScroll(el){
+    return !!el && (el.scrollHeight-el.clientHeight)>2;
+  }
+  function findScrollable(target){
+    const modal=target?.closest?.(modalSelector);
+    if(!modal)return null;
+    let node=target.closest?.(scrollableSelector);
+    while(node && node!==modal){
+      if(canScroll(node))return node;
+      node=node.parentElement?.closest?.(scrollableSelector);
+    }
+    const box=modal.querySelector(".dash-modal-box");
+    return canScroll(box)?box:modal;
+  }
+  function atTop(el){return (el?.scrollTop||0)<=0;}
+  function atBottom(el){return !!el && (el.scrollTop+el.clientHeight)>=(el.scrollHeight-1);}
+
   document.addEventListener("touchstart",e=>{
-    const box=e.target.closest?.(".dash-modal.open .dash-modal-box");
-    if(!box||e.touches.length!==1)return;
-    if(box.scrollHeight<=box.clientHeight)return;
-    if(box.scrollTop<=0)box.scrollTop=1;
-    else if(box.scrollTop+box.clientHeight>=box.scrollHeight)box.scrollTop=box.scrollHeight-box.clientHeight-1;
-  },{passive:true,capture:true});
+    if(!isTouchDevice()||e.touches.length!==1)return;
+    activeScroll=findScrollable(e.target);
+    if(!activeScroll)return;
+    startY=e.touches[0].clientY;
+    startX=e.touches[0].clientX;
+    /* أبقِ النافذة داخل نطاقها حتى لا يستلم WebView السحب كـ Pull-to-refresh. */
+    if(canScroll(activeScroll)){
+      if(activeScroll.scrollTop<=0)activeScroll.scrollTop=1;
+      else if(atBottom(activeScroll))activeScroll.scrollTop=activeScroll.scrollHeight-activeScroll.clientHeight-1;
+    }
+  },{capture:true,passive:true});
+
+  document.addEventListener("touchmove",e=>{
+    if(!activeScroll||e.touches.length!==1)return;
+    const dy=e.touches[0].clientY-startY;
+    const dx=e.touches[0].clientX-startX;
+    if(Math.abs(dx)>Math.abs(dy))return;
+
+    /* فقط عند الحافة نمنع السحب من الوصول للصفحة/تحديث WebView. داخل المحتوى السحب طبيعي. */
+    if((dy>0&&atTop(activeScroll))||(dy<0&&atBottom(activeScroll))){
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  },{capture:true,passive:false});
+
+  ["touchend","touchcancel"].forEach(type=>document.addEventListener(type,()=>{
+    activeScroll=null;
+  },{capture:true,passive:true}));
+
   document.addEventListener("focusin",e=>{
     const box=e.target.closest?.(".dash-modal.open .dash-modal-box");
     if(!box)return;
     setTimeout(()=>{
       try{e.target.scrollIntoView({block:"nearest",inline:"nearest"});}catch(_){}
     },80);
+  },true);
+
+  document.addEventListener("click",()=>{
+    if(!document.querySelector(".dash-modal.open")){
+      document.body.style.overflow="";
+      document.documentElement.style.overflow="";
+    }
   },true);
 }
 
