@@ -1,0 +1,116 @@
+{
+  "release": "2026-09-07-ui-stability-2",
+  "sources": {
+    "auth-guard-C6CJ8_8i.css": {
+      "source": "auth-guard-C6CJ8_8i(3).css",
+      "original_sha256": "9ff01959d5d9844dd2cc18e747229dcd2415e9ebaa94d79c46d8bd02f75cc8bc",
+      "release_sha256": "438a2dfa4a6c1492ff07cb0abe163b308d58f32b2d5573909c885940854eb24c",
+      "changed": true
+    },
+    "auth-guard-DMMO1gWE.js": {
+      "source": "auth-guard-DMMO1gWE(4).js",
+      "original_sha256": "a125ded3c3c0ad73b04eced19ed97b4575075ea957ec193c1dad6a5eac214d6c",
+      "release_sha256": "66b360bbe3755e538a3f3ad367185097643331351713e66d0e6d41eefc7afda2",
+      "changed": true
+    },
+    "dashboard-DSedGtPY.js": {
+      "source": "dashboard-DSedGtPY(4).js",
+      "original_sha256": "8915cfdff8ae0ee8a686396c9d837480863b829cbc411dcaae689d173108759c",
+      "release_sha256": "8915cfdff8ae0ee8a686396c9d837480863b829cbc411dcaae689d173108759c",
+      "changed": false
+    },
+    "image-utils-ix_Ztzsr.js": {
+      "source": "image-utils-ix_Ztzsr(3).js",
+      "original_sha256": "87bb19a724f0fdc02d2bd47a8bebba170f4ea3f1f72e229bb118c4642ab2ef2e",
+      "release_sha256": "87bb19a724f0fdc02d2bd47a8bebba170f4ea3f1f72e229bb118c4642ab2ef2e",
+      "changed": false
+    },
+    "main-Dl33upf7.js": {
+      "source": "main-Dl33upf7(3).js",
+      "original_sha256": "7aa89592d5e5d44fb134de0c44f279fca7987bf09351262397b6798e44f62409",
+      "release_sha256": "7aa89592d5e5d44fb134de0c44f279fca7987bf09351262397b6798e44f62409",
+      "changed": false
+    },
+    "merchants-Dy2XUbzk.js": {
+      "source": "merchants-Dy2XUbzk(3).js",
+      "original_sha256": "303403a82e558fb29e1f9d72efe3384ff39ae3f9b3581c257c99a79a5de16ecb",
+      "release_sha256": "303403a82e558fb29e1f9d72efe3384ff39ae3f9b3581c257c99a79a5de16ecb",
+      "changed": false
+    },
+    "nav-C4LmEyvm.js": {
+      "source": "nav-C4LmEyvm(3).js",
+      "original_sha256": "31a850013a9e15039158308ffe6a777aba7985cb41ef31881b131112227dadce",
+      "release_sha256": "31a850013a9e15039158308ffe6a777aba7985cb41ef31881b131112227dadce",
+      "changed": false
+    },
+    "products-DbXeSzH2.js": {
+      "source": "products-DbXeSzH2(6).js",
+      "original_sha256": "32a7fd16094b21c74bc015fbd6aedb36661ccf86063864a4cb24a2b0f4fea843",
+      "release_sha256": "4c5d7fb0e5c1a64a831a76d72069bee5614bdcb03723237d8c9a9680bdfb914b",
+      "changed": true
+    },
+    "dashboard.html": {
+      "source": "dashboard(20260907-165724).html",
+      "original_sha256": "4a6826b325e6565a3d00365be06977aa9f7a901ca4b147e17d761ca26b95b51b",
+      "release_sha256": "fcda628e53a66af7938a2e8023276f0ba51420676b230210fb2fa9b0600b11c2",
+      "changed": true
+    },
+    "DeepLog.html": {
+      "source": "DeepLog(7).html",
+      "original_sha256": "04b4e39543d19f056854648e753e38250f603a09b3b4713bc8ce4af9842159a4",
+      "release_sha256": "023aa29c081ab3a62aa2454ff7f777ebead0052e2f1c5ea7f109a8eb929b8c63",
+      "changed": true
+    },
+    "employees.html": {
+      "source": "employees(3).html",
+      "original_sha256": "852e8399246106a022b891f3276038db1caa84805164b7b737d604e8c77526fc",
+      "release_sha256": "fb8598afd3d2a0226d4ea6d70f30bb007aabf70c422b1db16b81d6d851007419",
+      "changed": true
+    },
+    "finance.html": {
+      "source": "finance(10).html",
+      "original_sha256": "e264b4c2145f3e41f26f283f9d50207952b022f62080984b811448b36b87f231",
+      "release_sha256": "eb4b75582179378e4ecf3965ec47cfaa44f5aa647b3a8e971f8f9279d461e18c",
+      "changed": true
+    },
+    "index.html": {
+      "source": "index(10).html",
+      "original_sha256": "d6b912e8ba6a0b5ce73c4a2fd792a58fdb2c8df58e2ab89019f88afff0402cea",
+      "release_sha256": "85e72ca5bee81b664fded038626ed64fd89d86567850d37f9d4fd48e418b5267",
+      "changed": true
+    },
+    "merchants.html": {
+      "source": "merchants(20260907-165725).html",
+      "original_sha256": "657c726b6d6bf32c03b714a479f5b1fb325662ad8046a27d9b07620660bd0752",
+      "release_sha256": "115cb08e9cd5bb4d5c32dc6e7dd7f117fef6f459f3da7bf08fbb836c7e4b8080",
+      "changed": true
+    },
+    "private_accounts.html": {
+      "source": "private_accounts(3).html",
+      "original_sha256": "6da73d34c69bd42dd7cc04a793601c33f4294b57bd35549455bd019ce22e2078",
+      "release_sha256": "8f86b118605463c439b86bb7980ef0c475e93e9813a4a47b994914c5f60b995e",
+      "changed": true
+    },
+    "products.html": {
+      "source": "products(6).html",
+      "original_sha256": "e57d6723ea09e1167f619b4c0ca40f8a1794270ba825b37db09024dbbf50c487",
+      "release_sha256": "da1a8a18161a0c4309d85144499bdc3d0c648fbe3a845734cbff9786f9ee95aa",
+      "changed": true
+    }
+  },
+  "changed": {
+    "auth-guard-C6CJ8_8i.css": "قواعد شاشة محدودة لتحسين التمرير وتقليل مؤثرات الهاتف؛ الطباعة محفوظة",
+    "auth-guard-DMMO1gWE.js": "منع تكرار تهيئة الواجهة والتحويل المتزامن؛ Firebase SDK وقواعد الحظر محفوظة",
+    "assets/ui-stability.js": "استعادة قفل التمرير العالق عند إغلاق النوافذ، دون اعتراض النقرات أو التنقل أو البيانات",
+    "products-DbXeSzH2.js": "قوائم البيع: تمرير طبيعي، ارتفاع واتجاه مرن، وفتح دون قفزة لوحة المفاتيح؛ الحفظ والحسابات محفوظة",
+    "dashboard.html": "تحسين اللمس والتمرير والحفاظ على العمليات الحالية",
+    "DeepLog.html": "تحسينات واجهة وتمريرة دون تغيير العمليات",
+    "employees.html": "تحسينات واجهة وتمريرة دون تغيير العمليات",
+    "finance.html": "تحسينات واجهة وتمريرة دون تغيير العمليات",
+    "index.html": "تحسينات واجهة وتمريرة دون تغيير العمليات",
+    "merchants.html": "تحسينات واجهة وتمريرة دون تغيير العمليات",
+    "private_accounts.html": "تحسينات واجهة وتمريرة دون تغيير العمليات",
+    "products.html": "تحسين اللمس والتمرير والحفاظ على العمليات الحالية"
+  },
+  "deployment": "Copy matching root HTML and assets/* files. Keep all other site files intact. Do not run tools/inject_wh_feature.js in the browser."
+}
