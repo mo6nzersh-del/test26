@@ -145,3 +145,30 @@
   .prod-line-row{grid-template-columns:1fr auto auto}
   .section-tabs button{font-size:12px;padding:8px 11px}
 }
+
+
+/* 2026-09-07 — native touch scrolling. Does not affect print or business logic. */
+@media screen {
+  .ui-scroll-region{min-height:0;-webkit-overflow-scrolling:touch;overscroll-behavior-y:auto}
+  .ui-scroll-region{touch-action:auto}
+  .ui-horizontal-scroll{touch-action:auto}
+}
+@media screen and (hover:none) and (pointer:coarse){
+  .topbar{background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none}
+  .modal-overlay .modal-box{animation:none}
+  .stat-card:active,.warehouse-card:active,.qa-btn:active,.row-actions button:active{transform:none}
+  #bottom-nav{transform:none;backface-visibility:visible;contain:none}
+  #bottom-nav .bot-nav-item{touch-action:manipulation}
+  .record-row{animation:none}
+}
+@supports(overflow:clip){
+  @media screen and (hover:none) and (pointer:coarse){html,body{overflow-x:clip}}
+}
+@media screen and (max-width:900px){
+  #bottom-nav{padding-bottom:env(safe-area-inset-bottom,0px)}
+  .page{padding-bottom:calc(82px + env(safe-area-inset-bottom,0px))!important}
+}
+@media screen and (prefers-reduced-motion:reduce){
+  .modal-box,.record-row{animation:none!important}
+  .ui-scroll-region{scroll-behavior:auto!important}
+}
