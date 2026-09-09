@@ -592,25 +592,8 @@
         padding-top:7px;border-top:1px solid var(--border);
         font-size:11px;color:var(--muted);
       }
-/* Sales touch stability only; the original native selects and forms are preserved. */
-@media screen {
- #view-loading .inline-search-select.iss-open{z-index:90}
- #view-loading .loading-line-row.iss-line-open{position:relative;z-index:90}
- #view-loading .iss-menu.drop-up{top:auto;bottom:calc(100% + 5px)}
- #view-loading .iss-menu{min-width:100%;max-width:100%;display:none;overflow:clip}
- #view-loading .iss-menu.open{display:block}
- #view-loading .iss-options{min-height:0;-webkit-overflow-scrolling:touch;overscroll-behavior-y:auto;touch-action:pan-y}
- #view-loading .iss-option{touch-action:manipulation}
- #view-loading .iss-trigger{touch-action:manipulation}
- #view-loading .iss-search-input{touch-action:auto}
-}
-@media screen and (hover:none) and (pointer:coarse){
- #view-loading,#view-loading .panel,#view-loading #loading-form,#view-loading .items-lines-block,#view-loading #load-lines{touch-action:auto}
- #view-loading .iss-menu{animation:none}
-}
 </style>
-    <script defer src="/assets/ui-stability.js?v=20260907.2"></script>
-</head>
+  </head>
   <body>
     <!-- ══ شاشة التحميل ══ -->
 <div id="page-loader">

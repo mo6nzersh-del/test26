@@ -879,7 +879,8 @@ let _searchableSelectDocBound = false;
 function _closeAllSearchableSelects(exceptRoot = null) {
   document.querySelectorAll("#view-loading .inline-search-select").forEach(root => {
     if (root === exceptRoot) return;
-    root.querySelector("select")?._issApi?.close();
+    root.querySelector(".iss-menu")?.classList.remove("open");
+    root.querySelector(".iss-trigger")?.classList.remove("open");
   });
 }
 
@@ -958,76 +959,21 @@ function initSearchableSelect(select, cfg = {}) {
     }).join("");
   }
 
-  let positionFrame=0;
-  function positionMenu() {
-    if (!root.isConnected) { closeMenu(); return; }
-    if (!menu.classList.contains("open")) return;
-    menu.classList.remove("drop-up");
-    menu.style.maxHeight="";
-    optionsBox.style.maxHeight="";
-    const rect=trigger.getBoundingClientRect();
-    const viewport=window.visualViewport;
-    const upper=viewport ? viewport.offsetTop : 0;
-    const lower=viewport ? viewport.offsetTop+viewport.height : window.innerHeight;
-    const below=Math.max(0,lower-rect.bottom-8);
-    const above=Math.max(0,rect.top-upper-8);
-    const up=below<210&&above>below;
-    menu.classList.toggle("drop-up",up);
-    const available=up?above:below;
-    const height=Math.max(90,Math.min(340,Math.floor(available)));
-    menu.style.maxHeight=height+"px";
-    optionsBox.style.maxHeight=Math.max(36,height-64)+"px";
-    optionsBox.style.overscrollBehaviorY="auto";
-  }
-  function schedulePosition() {
-    if(!menu.classList.contains("open"))return;
-    if(positionFrame)cancelAnimationFrame(positionFrame);
-    positionFrame=requestAnimationFrame(()=>{positionFrame=0;positionMenu();});
-  }
-  let tracking=false;
-  function startPositionTracking(){
-    if(tracking)return;tracking=true;
-    window.addEventListener("resize",schedulePosition,{passive:true});
-    window.visualViewport?.addEventListener("resize",schedulePosition,{passive:true});
-    window.visualViewport?.addEventListener("scroll",schedulePosition,{passive:true});
-    window.addEventListener("scroll",schedulePosition,{passive:true});
-  }
-  function stopPositionTracking(){
-    if(!tracking)return;tracking=false;
-    window.removeEventListener("resize",schedulePosition);
-    window.visualViewport?.removeEventListener("resize",schedulePosition);
-    window.visualViewport?.removeEventListener("scroll",schedulePosition);
-    window.removeEventListener("scroll",schedulePosition);
-  }
   function openMenu() {
     _closeAllSearchableSelects(root);
-    root.classList.add("iss-open");
-    root.closest(".loading-line-row")?.classList.add("iss-line-open");
     menu.classList.add("open");
     trigger.classList.add("open");
-    trigger.setAttribute("aria-expanded","true");
-    input.value="";
+    trigger.setAttribute("aria-expanded", "true");
+    input.value = "";
     render();
-    startPositionTracking();
-    schedulePosition();
-    // On phones, open the list first; the user can tap search when ready.
-    if(window.matchMedia?.("(hover:hover) and (pointer:fine)").matches){
-      requestAnimationFrame(()=>{if(menu.classList.contains("open")){input.focus({preventScroll:true});input.select();}});
-    }
+    requestAnimationFrame(() => { input.focus(); input.select(); });
   }
+
   function closeMenu() {
-    stopPositionTracking();
-    if(positionFrame)cancelAnimationFrame(positionFrame);
-    positionFrame=0;
-    menu.classList.remove("open","drop-up");
-    root.classList.remove("iss-open");
-    root.closest(".loading-line-row")?.classList.remove("iss-line-open");
+    menu.classList.remove("open");
     trigger.classList.remove("open");
-    trigger.setAttribute("aria-expanded","false");
-    menu.style.maxHeight="";
-    optionsBox.style.maxHeight="";
+    trigger.setAttribute("aria-expanded", "false");
   }
-  input.addEventListener("focus",schedulePosition);
 
   trigger.addEventListener("click", () => menu.classList.contains("open") ? closeMenu() : openMenu());
   input.addEventListener("input", render);
@@ -1288,7 +1234,6 @@ function initLoadingForm() {
 }
 
 function renderLoadLines() {
-  _closeAllSearchableSelects();
   const container = document.getElementById("load-lines");
   if (!container) return;
   const whId = document.getElementById("load-warehouse")?.value;

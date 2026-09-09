@@ -226,19 +226,19 @@
     html{
       -webkit-text-size-adjust:100%;
       text-size-adjust:100%;
-      overscroll-behavior-y:auto;
+      overscroll-behavior-y:none;
       scroll-behavior:auto;
     }
     body{
       -webkit-overflow-scrolling:touch;
-      overscroll-behavior-y:auto;
-      touch-action:auto;
+      overscroll-behavior-y:none;
+      touch-action:pan-y;
     }
     button,a,label,input,textarea,select{
       -webkit-tap-highlight-color:transparent;
     }
     .dash-page,.ops-section,.action-grid{
-      touch-action:auto;
+      touch-action:pan-y;
     }
     .action-card,.section-link,.primary-btn,.ghost-btn,.danger-btn,.type-choice,
     .radio-card,.add-line,.remove-line,.modal-x,.smart-select-btn,.smart-option,
@@ -287,6 +287,13 @@
         overscroll-behavior:contain;
       }
       .modal-body{touch-action:pan-y}
+      #smart-select-popover{
+        position:fixed!important;
+        max-height:min(52vh,380px);
+        border-radius:14px!important;
+        overflow:hidden;
+        transform:none!important;
+      }
       .smart-search-box{padding:9px;position:sticky;top:0;z-index:2;background:var(--surface,#fff)}
       .smart-options{
         max-height:min(36vh,280px)!important;
@@ -340,146 +347,7 @@
       .smart-select-menu .smart-search-input{height:43px;font-size:14px}
       .smart-select-menu .smart-option{min-height:44px;font-size:13.5px}
     }
-/* Touch stability: scrollable lists keep their own vertical pan; page content uses native scrolling. */
-@media screen and (hover:none) and (pointer:coarse){
- .dash-page,.ops-section,.action-grid,.dash-modal,.dash-modal-box,.modal-body{touch-action:auto}
- .smart-options{touch-action:pan-y;overscroll-behavior-y:auto}
- .smart-select-menu{overflow:clip}
- .dash-modal{backdrop-filter:none;-webkit-backdrop-filter:none}
-}
-
-
-    /* ══════════════════════════════════════
-       ثبات تمرير واجهات الداشبورد داخل WebView
-       يسمح بالسحب للأعلى والأسفل حتى إذا بدأ الإصبع فوق زر أو حقل داخل النافذة
-    ══════════════════════════════════════ */
-    @media screen and (hover:none) and (pointer:coarse){
-      .dash-modal.open{
-        overflow-y:auto!important;
-        -webkit-overflow-scrolling:touch!important;
-        overscroll-behavior-y:auto!important;
-        touch-action:pan-y!important;
-      }
-      .dash-modal-box,.dash-modal-box.wide{
-        -webkit-overflow-scrolling:touch!important;
-        overscroll-behavior-y:auto!important;
-        touch-action:pan-y!important;
-        will-change:auto!important;
-      }
-      .dash-modal-box button,.dash-modal-box a,.dash-modal-box label,
-      .dash-modal-box input,.dash-modal-box textarea,.dash-modal-box select,
-      .dash-modal-box .field,.dash-modal-box .line-row,.dash-modal-box .type-choice,
-      .dash-modal-box .radio-card,.dash-modal-box .cash-check,.dash-modal-box .smart-select-btn,
-      .dash-modal-box .smart-option,.dash-modal-box .modal-body,.dash-modal-box .items-block,
-      .dash-modal-box .items-lines-block{
-        touch-action:pan-y!important;
-      }
-      .dash-modal-box input[type="text"],.dash-modal-box input[type="number"],
-      .dash-modal-box input[type="date"],.dash-modal-box textarea,
-      .dash-modal-box .smart-search-input{
-        touch-action:manipulation!important;
-      }
-      .modal-actions{
-        touch-action:pan-y!important;
-        transform:translateZ(0);
-      }
-      .smart-select-menu .smart-options{
-        overscroll-behavior-y:auto!important;
-        touch-action:pan-y!important;
-      }
-    }
-
-    /* ══════════════════════════════════════
-       معاينة وطباعة فاتورة البيع من الداشبورد
-       مطابقة لتصميم فاتورة البيع في صفحة المنتجات
-    ══════════════════════════════════════ */
-    .dash-invoice-modal .dash-modal-box{width:min(860px,100%)}
-    .dash-invoice-content{padding:18px;background:#f8faf8}
-    .dash-invoice-content .inv-doc{font-family:Cairo,"Segoe UI",sans-serif;direction:rtl;max-width:680px;margin:0 auto;color:#111;background:#fff;border:1px solid #ddd;padding:24px 26px;border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,.06)}
-    .inv-doc{font-family:Cairo,"Segoe UI",sans-serif;direction:rtl;max-width:680px;margin:0 auto;color:#111;background:#fff}
-    .inv-doc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:14px;margin-bottom:14px;border-bottom:2px solid #222}
-    .inv-doc-logo-wrap{display:flex;flex-direction:column;gap:3px}
-    .inv-doc-brand{font-size:16px;font-weight:800;color:#111;margin-top:6px}
-    .inv-doc-brand-sub{font-size:11px;color:#777;margin-top:1px}
-    .inv-doc-nums{text-align:left;min-width:170px}
-    .inv-doc-num-row{display:flex;justify-content:space-between;gap:16px;font-size:12.5px;margin-bottom:5px}
-    .inv-doc-num-row span{color:#777;white-space:nowrap}.inv-doc-num-row strong{color:#111;font-weight:700;text-align:right}
-    .inv-doc-bill{margin-bottom:16px}
-    .inv-doc-bill-label{font-size:10.5px;font-weight:700;color:#777;letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px}
-    .inv-doc-bill-name{font-size:14.5px;font-weight:800;color:#111;margin-bottom:2px}
-    .inv-doc-bill-detail{font-size:12px;color:#555;line-height:1.65}
-    .inv-doc-type-badge{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;padding:3px 10px;margin-bottom:12px;border:1px solid}
-    .inv-doc-type-badge.t-load{background:#fdf4e3;color:#92400e;border-color:#fcd34d}
-    .inv-doc-pay-state{display:inline-block;border:1px dashed #999;padding:5px 10px;border-radius:4px;margin:0 0 14px;font-size:11.5px;font-weight:800;color:#111;background:#fff}
-    .inv-doc-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:0}
-    .inv-doc-table th{text-align:right;padding:9px 12px;background:#f5f5f5;font-size:12px;font-weight:700;color:#444;border:1px solid #ddd}
-    .inv-doc-table td{padding:9px 12px;border:1px solid #e0e0e0;vertical-align:middle;color:#111}
-    .inv-doc-table tr:nth-child(even) td{background:#fafafa}
-    .inv-doc-total-wrap{border:1px solid #ddd;border-top:none;display:flex;justify-content:flex-end}
-    .inv-doc-total-table{border-collapse:collapse;min-width:260px}
-    .inv-doc-total-table td{padding:8px 12px;border-top:1px solid #e0e0e0;font-size:13px}
-    .inv-doc-total-table tr:last-child td{background:#f5f5f5;font-weight:800;font-size:14px;color:#111;border-top:2px solid #222}
-    .inv-doc-total-table .tot-lbl{color:#555}.inv-doc-total-table .tot-val{text-align:left;font-family:monospace}
-    .inv-doc-dashboard-balance{margin-top:14px;border-top:1px solid var(--border,#ddd);padding-top:12px;direction:rtl;font-size:13px;line-height:2;color:#111}
-    .inv-doc-dashboard-balance .bal-title{font-weight:700}.inv-doc-dashboard-balance strong{font-family:monospace}
-    .inv-doc-note{margin-top:14px;padding:10px 14px;background:#f9f9f9;border-right:3px solid #bbb;font-size:12px;color:#555;border-radius:0 4px 4px 0}
-    .inv-doc-footer{margin-top:26px;padding-top:12px;border-top:1px dashed #ccc;display:flex;align-items:flex-end;justify-content:space-between;font-size:11px;color:#aaa}
-    .inv-doc-sig-line{width:110px;border-top:1px solid #666;margin-bottom:4px}.inv-doc-sig{text-align:center;font-size:11px;color:#777}
-    #dashboard-print-root{display:none}
-    @media(max-width:620px){
-      .dash-invoice-content{padding:12px;background:#fff}
-      .dash-invoice-content .inv-doc{padding:18px 14px;box-shadow:none;border-radius:8px}
-      .inv-doc-head{gap:10px}.inv-doc-nums{min-width:150px}.inv-doc-table{font-size:12px}.inv-doc-table th,.inv-doc-table td{padding:8px 7px}.inv-doc-total-table{min-width:210px}.inv-doc-footer{gap:12px}
-    }
-    @media print{
-      @page{size:A4 portrait;margin:0}
-      html,body{background:#fff!important;background-image:none!important;margin:0!important;padding:0!important;width:210mm!important;min-height:297mm!important;overflow:visible!important}
-      body.dashboard-print-invoice > :not(#dashboard-print-root){display:none!important}
-      body.dashboard-print-invoice #dashboard-print-root,
-      body.dashboard-print-invoice #dashboard-print-root *{visibility:visible!important}
-      body.dashboard-print-invoice #dashboard-print-root{display:block!important;position:fixed!important;inset:0!important;width:210mm!important;min-height:297mm!important;background:#fff!important;padding:14mm 16mm!important;box-sizing:border-box!important;overflow:visible!important;z-index:999999!important;color:#111!important}
-      body.dashboard-print-invoice #dashboard-print-root .inv-doc{display:block!important;width:100%!important;max-width:100%!important;margin:0 auto!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important;color:#111!important}
-      body.dashboard-print-invoice #dashboard-print-root .inv-doc-table th,
-      body.dashboard-print-invoice #dashboard-print-root .inv-doc-table td,
-      body.dashboard-print-invoice #dashboard-print-root .inv-doc-total-wrap,
-      body.dashboard-print-invoice #dashboard-print-root .inv-doc-total-table td{border-color:#999!important}
-      body.dashboard-print-invoice #dashboard-print-root .inv-doc-type-badge,
-      body.dashboard-print-invoice #dashboard-print-root .inv-doc-pay-state{background:#fff!important;color:#111!important;border-color:#777!important}
-      body.dashboard-print-invoice #dashboard-print-root *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-    }
-
-
-
-    /* إصلاح منع تحديث الصفحة أثناء السحب داخل نوافذ الداشبورد/عمليات البيع */
-    @media screen and (hover:none) and (pointer:coarse){
-      html,body{
-        overscroll-behavior-y:none!important;
-      }
-      .dash-modal.open{
-        overflow:hidden!important;
-        overscroll-behavior:contain!important;
-        touch-action:none!important;
-      }
-      .dash-modal-box,.dash-modal-box.wide{
-        overflow-y:auto!important;
-        overflow-x:hidden!important;
-        -webkit-overflow-scrolling:touch!important;
-        overscroll-behavior:contain!important;
-        touch-action:pan-y!important;
-      }
-      .modal-body,.dash-modal-box form,.dash-modal-box .field,
-      .dash-modal-box .line-row,.dash-modal-box .items-block,
-      .dash-modal-box .items-lines-block{
-        touch-action:pan-y!important;
-      }
-      .smart-select-menu .smart-options{
-        overscroll-behavior:contain!important;
-        touch-action:pan-y!important;
-      }
-    }
-
-  </style>
-  <script defer src="/assets/ui-stability.js?v=20260907.2"></script>
+</style>
 </head>
 <body>
   <div id="page-loader">
@@ -689,20 +557,6 @@
 
 
 
-  <!-- SALE INVOICE PREVIEW FROM DASHBOARD -->
-  <div class="dash-modal dash-invoice-modal" id="dashboard-sale-invoice-modal">
-    <div class="dash-modal-box wide">
-      <div class="modal-head">
-        <div class="modal-title-wrap"><div class="m-ico"><span class="svg-icon" data-svg-icon="receipt-check"></span></div><div><h3 id="dashboard-sale-invoice-title">معاينة فاتورة البيع</h3><p>تم تنفيذ العملية من الداشبورد — يمكنك طباعتها فوراً</p></div></div>
-        <button class="modal-x" data-close><span class="svg-icon" data-svg-icon="close"></span></button>
-      </div>
-      <div class="dash-invoice-content" id="dashboard-sale-invoice-content"></div>
-      <div class="modal-actions" id="dashboard-sale-invoice-actions" style="padding:0 18px 18px;margin-top:0">
-        <button type="button" class="primary-btn" id="dashboard-sale-invoice-print">طباعة 🖨</button>
-        <button type="button" class="ghost-btn" data-close>إغلاق</button>
-      </div>
-    </div>
-  </div>
 
 <script>
 (function(){
@@ -839,16 +693,6 @@ function money(value){
 function today(){
   return new Date().toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
 }
-function dashboardDateTime(value){
-  const d=value?.toDate?.()?value.toDate():(value instanceof Date?value:new Date(value||Date.now()));
-  return d.toLocaleString("ar-EG-u-nu-latn",{timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});
-}
-function invoiceBalanceLabel(value){
-  const n=Number(value)||0;
-  if(n<0)return `على التاجر تسديد ${money(Math.abs(n))}`;
-  if(n>0)return `مبلغ مستحق للتاجر ${money(n)}`;
-  return "الحساب مسدد";
-}
 function opId(){
   return `${Date.now()}-${Math.random().toString(36).slice(2,7)}`;
 }
@@ -917,8 +761,6 @@ function renderNav(user){
       if(Math.abs(e.clientX-holdStartX)>10||Math.abs(e.clientY-holdStartY)>10) cancelHold();
     },{passive:true});
     ["pointerup","pointercancel","pointerleave"].forEach(type=>secretLogo.addEventListener(type,cancelHold,{passive:true}));
-    window.addEventListener("scroll",cancelHold,{passive:true});
-    window.addEventListener("pagehide",cancelHold);
     secretLogo.addEventListener("dragstart",e=>e.preventDefault());
     secretLogo.addEventListener("contextmenu",e=>e.preventDefault());
     secretLogo.addEventListener("click",e=>{
@@ -1067,8 +909,8 @@ function dataError(err){
 function fillSelect(id,items,placeholder,labelFn){
   const el=document.getElementById(id); if(!el)return;
   const prev=el.value;
-  const next=`<option value="">${placeholder}</option>`+items.map(item=>`<option value="${esc(item.id)}">${esc(labelFn(item))}</option>`).join("");
-  if(el.innerHTML!==next){el.innerHTML=next;if(items.some(x=>x.id===prev))el.value=prev;}
+  el.innerHTML=`<option value="">${placeholder}</option>`+items.map(item=>`<option value="${esc(item.id)}">${esc(labelFn(item))}</option>`).join("");
+  if(items.some(x=>x.id===prev))el.value=prev;
 }
 function refreshAllSelects(){
   refreshWarehouseSelects();
@@ -1103,12 +945,7 @@ function smartButtonsOf(select){return [...(smartMenuOf(select)?.querySelectorAl
 function paintSmartActive(select){
   const buttons=smartButtonsOf(select);
   buttons.forEach((b,i)=>b.classList.toggle("active",i===smartActiveIndex));
-  const active=buttons[smartActiveIndex],box=smartMenuOf(select)?.querySelector(".smart-options");
-  if(active&&box){
-    const a=active.getBoundingClientRect(),b=box.getBoundingClientRect();
-    if(a.top<b.top)box.scrollTop-=b.top-a.top;
-    else if(a.bottom>b.bottom)box.scrollTop+=a.bottom-b.bottom;
-  }
+  buttons[smartActiveIndex]?.scrollIntoView({block:"nearest"});
 }
 function syncSmartSelect(select){
   const btn=select?select._smartButton:null;if(!btn)return;
@@ -1237,11 +1074,7 @@ function initSearchableSelects(){
   enhanceAllSelects(document);
   if(!searchableObserver){
     searchableObserver=new MutationObserver(records=>{
-      for(const record of records)for(const node of record.addedNodes){
-        if(node.nodeType!==1)continue;
-        if(node.matches?.("select"))enhanceSelect(node);
-        else if(node.querySelector?.("select"))enhanceAllSelects(node);
-      }
+      for(const record of records)for(const node of record.addedNodes)if(node.nodeType===1)enhanceAllSelects(node);
     });
     searchableObserver.observe(document.body,{childList:true,subtree:true});
   }
@@ -1263,16 +1096,6 @@ function initSearchableSelects(){
 /* ══════════════════════════════════════
    modal shell
 ══════════════════════════════════════ */
-function lockDashboardScroll(){
-  document.body.style.overflow="hidden";
-  document.documentElement.style.overflow="hidden";
-}
-function unlockDashboardScrollIfReady(){
-  if(document.querySelector(".dash-modal.open"))return;
-  document.body.style.overflow="";
-  document.documentElement.style.overflow="";
-  window.UIStability?.scheduleRecovery?.();
-}
 function openModal(id){
   const modal=document.getElementById(id); if(!modal)return;
   if(id==="sale-modal"||id==="merchant-pay-modal") startBalanceData();
@@ -1284,15 +1107,16 @@ function openModal(id){
   if(id==="warehouse-modal") document.getElementById("warehouse-form").reset();
   if(id==="merchant-pay-modal") resetMerchantPay();
   modal.classList.add("open");
-  const box=modal.querySelector(".dash-modal-box");
-  if(box)box.scrollTop=0;
-  lockDashboardScroll();
-  setTimeout(()=>{try{box?.focus?.({preventScroll:true});}catch(_){}},0);
+  document.body.style.overflow="hidden";
+  document.documentElement.style.overflow="hidden";
 }
 function closeModal(modal){
   closeSmartSelect();
   (typeof modal==="string"?document.getElementById(modal):modal)?.classList.remove("open");
-  unlockDashboardScrollIfReady();
+  if(!document.querySelector(".dash-modal.open")){
+    document.body.style.overflow="";
+    document.documentElement.style.overflow="";
+  }
 }
 function bindModalShell(){
   document.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openModal(b.dataset.open)));
@@ -1300,102 +1124,6 @@ function bindModalShell(){
   document.querySelectorAll(".dash-modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)closeModal(m);}));
   document.addEventListener("keydown",e=>{if(e.key==="Escape"){const m=document.querySelector(".dash-modal.open");if(m)closeModal(m);}});
 }
-
-/* ══════════════════════════════════════
-   DASHBOARD SALE INVOICE PREVIEW
-══════════════════════════════════════ */
-function dashboardInvoiceBalanceValue(v){
-  return v < 0 ? `-${money(Math.abs(v))}` : money(v||0);
-}
-function showDashboardSaleInvoice(data){
-  const modal=document.getElementById("dashboard-sale-invoice-modal");
-  const content=document.getElementById("dashboard-sale-invoice-content");
-  if(!modal||!content)return;
-  const now=data.createdAt?dashboardDateTime(data.createdAt):dashboardDateTime(new Date());
-  const printNow=dashboardDateTime(new Date());
-  const shortId=data.seqLabel||(data.opId?String(data.opId).slice(0,8).toUpperCase():"—");
-  const lineRows=(data.lines||[]).map(l=>`
-    <tr>
-      <td>${esc(l.productName)}</td>
-      <td style="text-align:center">${num(l.qty)} ${esc(l.unit||"")}</td>
-      <td style="text-align:center">${money(l.price)}</td>
-      <td style="text-align:center;font-weight:700">${money(l.total)}</td>
-    </tr>`).join("");
-  const rawBef=data.merchantBalanceBefore;
-  const rawAft=data.merchantBalanceAfter;
-  const balSection=rawBef!==undefined?`
-    <div class="inv-doc-dashboard-balance">
-      <div class="bal-title">المبلغ المستحق على التاجر — ${esc(data.merchantName||"")}</div>
-      <div>الحساب قبل الطلب: <strong>${dashboardInvoiceBalanceValue(rawBef)}</strong></div>
-      <div>الحساب بعد الطلب: <strong>${dashboardInvoiceBalanceValue(rawAft??0)}</strong></div>
-      <div style="font-weight:800;margin-top:2px">${esc(invoiceBalanceLabel(rawAft||0))}</div>
-    </div>`:"";
-  const payState=data.isPaid?"حالة الدفع لهذه الفاتورة: مدفوعة":"حالة الدفع لهذه الفاتورة: غير مدفوعة";
-  content.innerHTML=`
-    <div class="inv-doc">
-      <div class="inv-doc-head">
-        <div class="inv-doc-logo-wrap">
-          <div class="inv-doc-brand">Ahmed And Hamdy</div>
-          <div class="inv-doc-brand-sub">نظام المحاسبة الداخلي — من الداشبورد</div>
-        </div>
-        <div class="inv-doc-nums">
-          <div class="inv-doc-num-row"><span>رقم الفاتورة</span><strong>#${esc(shortId)}</strong></div>
-          <div class="inv-doc-num-row"><span>التاريخ</span><strong>${esc(now)}</strong></div>
-          <div class="inv-doc-num-row"><span>نفّذها</span><strong>${esc(data.performedBy||currentUser?.email||"—")}</strong></div>
-        </div>
-      </div>
-      <span class="inv-doc-type-badge t-load">فاتورة بيع</span>
-      <div><span class="inv-doc-pay-state">${esc(payState)}</span></div>
-      <div class="inv-doc-bill">
-        <div class="inv-doc-bill-label">إلى</div>
-        <div class="inv-doc-bill-name">${esc(data.merchantName||"")}</div>
-        <div class="inv-doc-bill-detail">من مخزن: ${esc(data.warehouseName||"")}</div>
-      </div>
-      <table class="inv-doc-table">
-        <thead><tr><th>الصنف</th><th style="text-align:center">الكمية</th><th style="text-align:center">سعر الوحدة</th><th style="text-align:center">الإجمالي</th></tr></thead>
-        <tbody>${lineRows}</tbody>
-      </table>
-      <div class="inv-doc-total-wrap"><table class="inv-doc-total-table">
-        <tr><td class="tot-lbl">المجموع الفرعي</td><td class="tot-val">${money(data.totalAmount)}</td></tr>
-        <tr><td class="tot-lbl"><strong>الإجمالي</strong></td><td class="tot-val"><strong>${money(data.totalAmount)}</strong></td></tr>
-      </table></div>
-      ${balSection}
-      ${data.note?`<div class="inv-doc-note">ملاحظة: ${esc(data.note)}</div>`:""}
-      <div class="inv-doc-footer">
-        <div>تمت معاينتها بتاريخ: ${esc(printNow)}</div>
-        <div class="inv-doc-sig"><div class="inv-doc-sig-line"></div><div>التوقيع والختم</div></div>
-      </div>
-    </div>`;
-  const title=document.getElementById("dashboard-sale-invoice-title");
-  if(title)title.textContent="معاينة فاتورة البيع";
-  openModal("dashboard-sale-invoice-modal");
-}
-function printDashboardSaleInvoice(){
-  const source=document.querySelector("#dashboard-sale-invoice-content .inv-doc");
-  if(!source){toast("لا توجد فاتورة للطباعة",true);return;}
-  let root=document.getElementById("dashboard-print-root");
-  if(!root){
-    root=document.createElement("div");
-    root.id="dashboard-print-root";
-    document.body.appendChild(root);
-  }
-  root.innerHTML=source.outerHTML;
-  document.body.classList.add("dashboard-print-invoice");
-  let cleaned=false;
-  const cleanup=()=>{
-    if(cleaned)return;
-    cleaned=true;
-    document.body.classList.remove("dashboard-print-invoice");
-    if(root)root.innerHTML="";
-    if(!document.querySelector(".dash-modal.open")){
-      document.body.style.overflow="";
-      document.documentElement.style.overflow="";
-    }
-  };
-  window.addEventListener("afterprint",cleanup,{once:true});
-  setTimeout(()=>{try{window.print();}finally{setTimeout(cleanup,3500);}},90);
-}
-
 
 /* ══════════════════════════════════════
    SALE — same direction/schema as products page
@@ -1498,14 +1226,7 @@ async function submitSale(e){
     }
     batch.set(doc(collection(db,"activityLog")),{type:"loading",summary:`بيع: ${wh?.name??""} → ${merchant?.name??""}`,details:`${lines.length} صنف — إجمالي: ${money(total)}`,opId:id,note,merchantBalanceBefore:before,merchantBalanceAfter:after,performedBy:currentUser?.email??"—",createdAt:serverTimestamp()});
     batch.set(doc(collection(db,"auditLog")),{action:"إضافة",entity:"عملية بيع",page:"المنتجات",details:`بيع: ${wh?.name??""} → ${merchant?.name??""} — ${lines.length} صنف — إجمالي: ${money(total)}`,userEmail:currentUser?.email??"—",createdAt:serverTimestamp()});
-    await batch.commit();
-    closeModal("sale-modal");
-    toast("تمت عملية البيع بنجاح");
-    showDashboardSaleInvoice({
-      type:"loading",opId:id,warehouseName:wh?.name??"",merchantName:merchant?.name??"",
-      lines,totalAmount:total,note,isPaid,merchantBalanceBefore:before,merchantBalanceAfter:after,
-      performedBy:currentUser?.email??"—",createdAt:new Date()
-    });
+    await batch.commit(); closeModal("sale-modal"); toast("تمت عملية البيع بنجاح");
   }catch(err){console.error(err);toast("حدث خطأ أثناء تنفيذ البيع",true);}finally{setBusy(btn,false,"تنفيذ عملية البيع");}
 }
 
@@ -1697,80 +1418,36 @@ async function submitMerchantPay(e){
   }catch(err){console.error(err);toast("خطأ أثناء الحفظ",true);}finally{setBusy(btn,false,"حفظ الدفعة");}
 }
 
-/* ثبات إضافي لتمرير نوافذ الداشبورد على الهاتف: لا يمنع النقر، فقط يساعد WebView على فهم السحب العمودي. */
-function installDashboardModalScrollFix(){
-  if(window.__dashboardModalScrollFix)return;
-  window.__dashboardModalScrollFix=true;
-
-  const isTouchDevice=()=>window.matchMedia?.("(pointer: coarse)").matches||("ontouchstart" in window);
-  const modalSelector=".dash-modal.open";
-  const scrollableSelector=".smart-options,.modal-body,.dash-modal-box";
-  let startY=0,startX=0,activeScroll=null;
-
-  function canScroll(el){
-    return !!el && (el.scrollHeight-el.clientHeight)>2;
-  }
-  function findScrollable(target){
-    const modal=target?.closest?.(modalSelector);
-    if(!modal)return null;
-    let node=target.closest?.(scrollableSelector);
-    while(node && node!==modal){
-      if(canScroll(node))return node;
-      node=node.parentElement?.closest?.(scrollableSelector);
-    }
-    const box=modal.querySelector(".dash-modal-box");
-    return canScroll(box)?box:modal;
-  }
-  function atTop(el){return (el?.scrollTop||0)<=0;}
-  function atBottom(el){return !!el && (el.scrollTop+el.clientHeight)>=(el.scrollHeight-1);}
-
-  document.addEventListener("touchstart",e=>{
-    if(!isTouchDevice()||e.touches.length!==1)return;
-    activeScroll=findScrollable(e.target);
-    if(!activeScroll)return;
-    startY=e.touches[0].clientY;
-    startX=e.touches[0].clientX;
-    /* أبقِ النافذة داخل نطاقها حتى لا يستلم WebView السحب كـ Pull-to-refresh. */
-    if(canScroll(activeScroll)){
-      if(activeScroll.scrollTop<=0)activeScroll.scrollTop=1;
-      else if(atBottom(activeScroll))activeScroll.scrollTop=activeScroll.scrollHeight-activeScroll.clientHeight-1;
-    }
+/* ── منع الضغط العرضي أثناء سحب الصفحة على الهاتف ── */
+function installMobileTapGuard(){
+  if(!window.matchMedia?.("(pointer: coarse)").matches)return;
+  const selector=".action-card,.section-link,#bottom-nav a,.primary-btn,.ghost-btn,.danger-btn,.type-choice,.radio-card,.add-line,.remove-line";
+  let active=null,startX=0,startY=0,moved=false,suppressUntil=0;
+  document.addEventListener("pointerdown",e=>{
+    if(e.pointerType==="mouse")return;
+    active=e.target.closest(selector);
+    if(!active)return;
+    startX=e.clientX;startY=e.clientY;moved=false;
   },{capture:true,passive:true});
-
-  document.addEventListener("touchmove",e=>{
-    if(!activeScroll||e.touches.length!==1)return;
-    const dy=e.touches[0].clientY-startY;
-    const dx=e.touches[0].clientX-startX;
-    if(Math.abs(dx)>Math.abs(dy))return;
-
-    /* فقط عند الحافة نمنع السحب من الوصول للصفحة/تحديث WebView. داخل المحتوى السحب طبيعي. */
-    if((dy>0&&atTop(activeScroll))||(dy<0&&atBottom(activeScroll))){
+  document.addEventListener("pointermove",e=>{
+    if(!active||e.pointerType==="mouse")return;
+    if(Math.abs(e.clientX-startX)>11||Math.abs(e.clientY-startY)>11)moved=true;
+  },{capture:true,passive:true});
+  document.addEventListener("pointerup",()=>{
+    if(active&&moved)suppressUntil=performance.now()+450;
+    active=null;
+  },{capture:true,passive:true});
+  document.addEventListener("pointercancel",()=>{active=null;moved=false;},{capture:true,passive:true});
+  document.addEventListener("click",e=>{
+    if(performance.now()>suppressUntil)return;
+    if(e.target.closest(selector)){
       e.preventDefault();
-      e.stopPropagation();
-    }
-  },{capture:true,passive:false});
-
-  ["touchend","touchcancel"].forEach(type=>document.addEventListener(type,()=>{
-    activeScroll=null;
-  },{capture:true,passive:true}));
-
-  document.addEventListener("focusin",e=>{
-    const box=e.target.closest?.(".dash-modal.open .dash-modal-box");
-    if(!box)return;
-    setTimeout(()=>{
-      try{e.target.scrollIntoView({block:"nearest",inline:"nearest"});}catch(_){}
-    },80);
-  },true);
-
-  document.addEventListener("click",()=>{
-    if(!document.querySelector(".dash-modal.open")){
-      document.body.style.overflow="";
-      document.documentElement.style.overflow="";
+      e.stopImmediatePropagation();
+      suppressUntil=0;
     }
   },true);
 }
 
-/* Browser-native touch handling. No global click interception or post-swipe cooldown. */
 /* ══════════════════════════════════════
    UI binding
 ══════════════════════════════════════ */
@@ -1782,7 +1459,6 @@ function bindUI(){
   };
   document.getElementById("private-accounts-open")?.addEventListener("click",openPrivateAccounts);
   document.getElementById("private-accounts-open-top")?.addEventListener("click",openPrivateAccounts);
-  document.getElementById("dashboard-sale-invoice-print")?.addEventListener("click",printDashboardSaleInvoice);
   document.querySelectorAll("[data-fin-type]").forEach(b=>b.addEventListener("click",()=>openFinance(b.dataset.finType)));
 
   document.getElementById("sale-warehouse").addEventListener("change",()=>{saleLines.forEach(l=>l.productId="");renderSaleLines();updateSaleSummary();});
@@ -1808,7 +1484,6 @@ function bindUI(){
   document.querySelectorAll("[data-mp-type]").forEach(c=>c.addEventListener("click",()=>{const type=c.dataset.mpType;c.querySelector("input").checked=true;if(type==="out")document.getElementById("mp-cash").checked=false;else document.getElementById("mp-cash").checked=true;updateMerchantPayStyle();}));document.getElementById("merchant-pay-form").addEventListener("submit",submitMerchantPay);
 }
 
-let dashboardBooted=false;
 onAuthStateChanged(auth, async user=>{
   if(!user){location.href="/index.html";return;}
   try{
@@ -1824,9 +1499,7 @@ onAuthStateChanged(auth, async user=>{
   }catch(err){
     console.error("blocked user check failed",err);
   }
-  if(dashboardBooted||auth.currentUser?.uid!==user.uid)return;
-  dashboardBooted=true;
-  currentUser=user;renderNav(user);updateDashboardGreeting(user);initSearchableSelects();installDashboardModalScrollFix();bindUI();startData();window.__dashboardReady=true;document.getElementById("app").style.visibility="visible";hideLoader();
+  currentUser=user;renderNav(user);updateDashboardGreeting(user);initSearchableSelects();installMobileTapGuard();bindUI();startData();window.__dashboardReady=true;document.getElementById("app").style.visibility="visible";hideLoader();
 });
 
 </script>
