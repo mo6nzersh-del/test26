@@ -347,6 +347,178 @@
       .smart-select-menu .smart-search-input{height:43px;font-size:14px}
       .smart-select-menu .smart-option{min-height:44px;font-size:13.5px}
     }
+
+/* ═══════════════════════════════════════════════════════
+   معاينة وطباعة الداشبورد — نفس روح فواتير صفحة التجار
+   لا يغيّر الحفظ أو الحسابات، فقط معاينة بعد العملية
+═══════════════════════════════════════════════════════ */
+.dash-doc-modal{position:fixed;inset:0;z-index:2600;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:18px;direction:rtl}
+.dash-doc-modal.open{display:flex}
+.dashboard-doc-shell{width:min(940px,100%);max-height:min(94dvh,980px);background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.28);border:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.dashboard-doc-head{min-height:60px;padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff}
+.dashboard-doc-head h3{margin:0;font-size:17px;font-weight:900;color:#111}
+.dashboard-doc-close{width:38px;height:38px;border:0;border-radius:10px;background:var(--bg);color:var(--muted);font-size:25px;line-height:1;display:grid;place-items:center;cursor:pointer}
+.dashboard-doc-close:hover{background:var(--danger-soft);color:var(--danger)}
+.dashboard-doc-stage{flex:1;overflow:auto;background:#f5f5f5;padding:20px;display:flex;justify-content:center;-webkit-overflow-scrolling:touch}
+.dashboard-doc-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px 18px;border-top:1px solid var(--border);background:#fff}
+.dashboard-doc-actions button{min-height:48px;border-radius:12px;border:1.5px solid var(--border);background:#fff;font:800 14px Cairo,sans-serif;cursor:pointer}
+.dashboard-doc-actions .print{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 8px 18px rgba(47,111,79,.22)}
+.dashboard-doc-box{width:100%;display:flex;justify-content:center}
+
+/* نسخة فاتورة البيع — مطابقة تقريباً لصفحة التجار */
+.dashboard-doc-box.merchant-invoice-box .inv-doc{
+  width:min(760px,100%);border:1px solid #d7d7d7;padding:26px 28px;border-radius:8px;
+  box-shadow:0 3px 14px rgba(0,0,0,.035);background:#fff;color:#111;direction:rtl;font-family:Cairo,sans-serif
+}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:16px;margin-bottom:16px;border-bottom:2px solid #111}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-brand{font-size:19px;font-weight:900;letter-spacing:.1px;margin-top:0;color:#111}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-brand-sub{font-size:10.5px;color:#666;margin-top:2px}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-nums{min-width:220px;border:1px solid #d9d9d9;border-radius:6px;padding:8px 10px;text-align:left}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-num-row{display:flex;justify-content:space-between;gap:16px;font-size:11.5px;margin-bottom:5px;padding-bottom:5px;border-bottom:1px dotted #ddd}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-num-row:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-num-row span{color:#777}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-num-row strong{color:#111;font-weight:800}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-type-line{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-type-badge{display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#111;border:1px solid #111;border-radius:3px;margin:0;padding:4px 11px;font-size:11px;font-weight:900}
+.dashboard-doc-box.merchant-invoice-box .inv-payment-state{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid #111;border-radius:3px;font-size:10px;font-weight:900;color:#111;background:#fff;white-space:nowrap}
+.dashboard-doc-box.merchant-invoice-box .inv-payment-state.unpaid{border-style:dashed}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-party-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-bottom:16px}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-party-card{border:1px solid #d8d8d8;padding:10px 12px;border-radius:5px;min-height:64px}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-party-label{font-size:9.5px;color:#777;font-weight:800;margin-bottom:4px}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-party-value{font-size:13.5px;color:#111;font-weight:800;line-height:1.6}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-party-sub{font-size:10.5px;color:#666;margin-top:2px}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-table{width:100%;font-size:11.5px;table-layout:fixed;border-collapse:collapse}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-table th{background:#f5f5f5;color:#111;border:1px solid #bbb;padding:8px 9px;font-size:10.5px;text-align:right}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-table td{padding:8px 9px;border:1px solid #d0d0d0;color:#111}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-total-wrap{border:1px solid #bbb;border-top:0;background:#fff;display:flex;justify-content:flex-end}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-total-table{min-width:285px;border-collapse:collapse}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-total-table td{padding:8px 11px;border-bottom:1px solid #ddd;font-size:11px;color:#111}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-total-table tr:last-child td{background:#fff;border-top:2px solid #111;border-bottom:0}
+.dashboard-doc-box.merchant-invoice-box .tot-lbl{font-weight:700;color:#666}.dashboard-doc-box.merchant-invoice-box .tot-val{text-align:left;font-family:monospace,Cairo,sans-serif;font-weight:900}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-balance{margin-top:16px;border:1px solid #bdbdbd;padding:0;border-radius:5px;overflow:hidden;line-height:normal;background:#fff}
+.dashboard-doc-box.merchant-invoice-box .inv-bal-title{font-size:11px;font-weight:900;padding:8px 10px;border-bottom:1px solid #bdbdbd;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.dashboard-doc-box.merchant-invoice-box .inv-bal-merchant{font-size:10px;font-weight:700;color:#555}
+.dashboard-doc-box.merchant-invoice-box .inv-bal-flow{display:grid;grid-template-columns:1fr 1fr!important;align-items:stretch}
+.dashboard-doc-box.merchant-invoice-box .inv-bal-step{padding:14px 12px!important;text-align:center;display:flex;flex-direction:column;justify-content:center;min-height:74px}
+.dashboard-doc-box.merchant-invoice-box .inv-bal-step+.inv-bal-step{border-right:1px solid #bbb}
+.dashboard-doc-box.merchant-invoice-box .inv-bal-lbl{font-size:10px!important;color:#555!important;margin-bottom:7px!important;font-weight:700}
+.dashboard-doc-box.merchant-invoice-box .inv-bal-val{font-size:15px!important;font-weight:900;color:#111;font-family:monospace,Cairo,sans-serif;direction:ltr;unicode-bidi:embed}
+.dashboard-doc-box.merchant-invoice-box .inv-bal-result{border-top:1px solid #bdbdbd;padding:8px 11px!important;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:10px}
+.dashboard-doc-box.merchant-invoice-box .inv-bal-result span{color:#666;font-weight:700}
+.dashboard-doc-box.merchant-invoice-box .inv-bal-result strong{color:#111;font-size:11px;font-weight:900}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-note{margin-top:14px;background:#fff;border:1px dashed #bbb;border-right:3px solid #222;color:#333;border-radius:0;padding:9px 12px;font-size:11px}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-footer{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;color:#777;border-top:1px dashed #aaa;margin-top:22px;padding-top:12px;font-size:10px}
+.dashboard-doc-box.merchant-invoice-box .inv-doc-sig{text-align:center;min-width:115px}.dashboard-doc-box.merchant-invoice-box .inv-doc-sig-line{border-top:1px solid #777;margin-bottom:4px}
+
+/* مستند الحركة المالية — نفس ترويسة صفحة التجار للحركة المالية */
+.dashboard-doc-box .simple-fin-doc{width:min(760px,100%);direction:rtl;background:#fff;color:#111;font-family:Cairo,sans-serif;border:1px solid #d2d2d2;border-radius:8px;padding:22px 24px;box-shadow:0 3px 14px rgba(0,0,0,.035)}
+.dashboard-doc-box .simple-fin-doc .inv-doc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:16px;margin-bottom:16px;border-bottom:2px solid #111}
+.dashboard-doc-box .simple-fin-doc .inv-doc-brand{font-size:19px;font-weight:900;color:#111;letter-spacing:.1px}
+.dashboard-doc-box .simple-fin-doc .inv-doc-brand-sub{font-size:10.5px;color:#666;margin-top:2px}
+.dashboard-doc-box .simple-fin-doc .inv-doc-nums{text-align:left;min-width:220px;border:1px solid #d9d9d9;border-radius:6px;padding:8px 10px}
+.dashboard-doc-box .simple-fin-doc .inv-doc-num-row{display:flex;justify-content:space-between;gap:16px;font-size:11.5px;margin-bottom:5px;padding-bottom:5px;border-bottom:1px dotted #ddd}
+.dashboard-doc-box .simple-fin-doc .inv-doc-num-row:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
+.dashboard-doc-box .simple-fin-doc .inv-doc-num-row span{color:#777}.dashboard-doc-box .simple-fin-doc .inv-doc-num-row strong{color:#111;font-weight:800}
+.dashboard-doc-box .simple-fin-doc .inv-doc-type-line{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.dashboard-doc-box .simple-fin-doc .inv-doc-type-badge{display:inline-block;font-size:11px;font-weight:900;background:#fff;color:#111;border:1px solid #111;border-radius:3px;margin:0;padding:4px 11px}
+.dashboard-doc-box .simple-fin-party{margin-top:18px;border-bottom:1px solid #bbb;padding-bottom:12px}
+.dashboard-doc-box .simple-fin-label{font-size:9px;color:#777;font-weight:800;margin-bottom:3px}
+.dashboard-doc-box .simple-fin-name{font-size:18px;font-weight:900;color:#111}
+.dashboard-doc-box .simple-fin-movement{margin-top:14px;border:1px solid #bbb;padding:12px 14px}
+.dashboard-doc-box .simple-fin-kind{font-size:11px;font-weight:900;margin-bottom:5px}
+.dashboard-doc-box .simple-fin-desc{font-size:12px;line-height:1.8;font-weight:700}
+.dashboard-doc-box .simple-fin-balances{display:grid;grid-template-columns:1fr 1fr;border:1px solid #111;margin-top:14px}
+.dashboard-doc-box .simple-fin-balance{padding:14px 12px;text-align:center;min-height:76px;display:flex;flex-direction:column;justify-content:center}
+.dashboard-doc-box .simple-fin-balance+.simple-fin-balance{border-right:1px solid #111}
+.dashboard-doc-box .simple-fin-balance-label{font-size:9.5px;color:#555;font-weight:800;margin-bottom:7px}
+.dashboard-doc-box .simple-fin-balance-value{display:flex;align-items:baseline;justify-content:center;gap:5px;direction:rtl;white-space:nowrap;font-weight:900;color:#111}
+.dashboard-doc-box .simple-fin-balance-number{font:900 17px monospace,Cairo,sans-serif;direction:ltr;unicode-bidi:isolate;letter-spacing:.1px}
+.dashboard-doc-box .simple-fin-balance-currency{font-size:10.5px;font-weight:800;color:#555;direction:rtl;unicode-bidi:isolate}
+.dashboard-doc-box .simple-fin-foot{display:flex;justify-content:space-between;gap:12px;margin-top:18px;padding-top:7px;border-top:1px solid #aaa;font-size:8.5px;color:#777}
+
+@media(max-width:620px){
+  .dash-doc-modal{padding:0;align-items:flex-end}
+  .dashboard-doc-shell{width:100%;height:94dvh;border-radius:22px 22px 0 0;border-bottom:0}
+  .dashboard-doc-stage{padding:12px}
+  .dashboard-doc-actions{grid-template-columns:1fr 1fr;padding:12px}
+  .dashboard-doc-box.merchant-invoice-box .inv-doc{padding:15px 12px;border:0;box-shadow:none}
+  .dashboard-doc-box.merchant-invoice-box .inv-doc-head{display:block}
+  .dashboard-doc-box.merchant-invoice-box .inv-doc-nums{margin-top:10px;min-width:0;text-align:right}
+  .dashboard-doc-box.merchant-invoice-box .inv-doc-party-grid{grid-template-columns:1fr}
+  .dashboard-doc-box.merchant-invoice-box .inv-doc-table{font-size:9.5px}
+  .dashboard-doc-box.merchant-invoice-box .inv-doc-table th,.dashboard-doc-box.merchant-invoice-box .inv-doc-table td{padding:6px 4px}
+  .dashboard-doc-box.merchant-invoice-box .inv-doc-total-table{min-width:220px}
+  .dashboard-doc-box.merchant-invoice-box .inv-bal-title{display:block}.dashboard-doc-box.merchant-invoice-box .inv-bal-merchant{display:block;margin-top:3px}
+  .dashboard-doc-box.merchant-invoice-box .inv-bal-step{padding:11px 6px!important;min-height:68px}
+  .dashboard-doc-box.merchant-invoice-box .inv-bal-val{font-size:11px!important}
+  .dashboard-doc-box.merchant-invoice-box .inv-bal-result{display:block;text-align:right}.dashboard-doc-box.merchant-invoice-box .inv-bal-result strong{display:block;margin-top:4px}
+  .dashboard-doc-box .simple-fin-doc{padding:15px 12px;border:0;box-shadow:none}
+  .dashboard-doc-box .simple-fin-doc .inv-doc-head{display:block}.dashboard-doc-box .simple-fin-doc .inv-doc-nums{margin-top:10px;min-width:0;text-align:right}
+  .dashboard-doc-box .simple-fin-balances{grid-template-columns:1fr 1fr}.dashboard-doc-box .simple-fin-balance{padding:12px 7px}.dashboard-doc-box .simple-fin-balance-number{font-size:14px}
+}
+
+@media print{
+  @page{size:210mm 297mm;margin:0}
+  html,body{width:210mm!important;min-width:210mm!important;max-width:210mm!important;margin:0!important;padding:0!important;background:#fff!important;overflow:visible!important;-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}
+  body.dash-doc-print{zoom:1!important;transform:none!important}
+  body.dash-doc-print > *{visibility:hidden!important}
+  body.dash-doc-print #dashboard-doc-modal,
+  body.dash-doc-print #dashboard-doc-modal *{visibility:visible!important}
+  body.dash-doc-print #dashboard-doc-modal{
+    display:block!important;position:absolute!important;inset:0 auto auto 0!important;
+    width:210mm!important;min-width:210mm!important;max-width:210mm!important;min-height:297mm!important;
+    margin:0!important;padding:12mm 13mm!important;box-sizing:border-box!important;background:#fff!important;
+    overflow:visible!important;transform:none!important
+  }
+  body.dash-doc-print .dashboard-doc-shell,
+  body.dash-doc-print .dashboard-doc-stage,
+  body.dash-doc-print .dashboard-doc-box{
+    display:block!important;width:184mm!important;min-width:184mm!important;max-width:184mm!important;
+    min-height:auto!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+    box-shadow:none!important;overflow:visible!important;background:#fff!important;transform:none!important
+  }
+  body.dash-doc-print .dashboard-doc-head,
+  body.dash-doc-print .dashboard-doc-actions{display:none!important}
+  body.dash-doc-print .dashboard-doc-box.merchant-invoice-box .inv-doc,
+  body.dash-doc-print .dashboard-doc-box .simple-fin-doc{
+    display:block!important;width:184mm!important;min-width:184mm!important;max-width:184mm!important;
+    margin:0!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+    background:#fff!important;color:#111!important;transform:none!important;font-size:initial!important
+  }
+  body.dash-doc-print .dashboard-doc-box .inv-doc *,
+  body.dash-doc-print .dashboard-doc-box .simple-fin-doc *{color:#111!important;box-shadow:none!important;text-shadow:none!important}
+  body.dash-doc-print .dashboard-doc-box .inv-doc-head,
+  body.dash-doc-print .dashboard-doc-box .simple-fin-doc .inv-doc-head{
+    display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:20px!important;
+    padding-bottom:16px!important;margin-bottom:16px!important;border-bottom:2px solid #111!important
+  }
+  body.dash-doc-print .dashboard-doc-box .inv-doc-nums,
+  body.dash-doc-print .dashboard-doc-box .simple-fin-doc .inv-doc-nums{
+    display:block!important;width:auto!important;min-width:220px!important;max-width:none!important;
+    margin:0!important;padding:8px 10px!important;text-align:left!important;border:1px solid #d9d9d9!important;border-radius:6px!important
+  }
+  body.dash-doc-print .dashboard-doc-box .inv-doc-num-row,
+  body.dash-doc-print .dashboard-doc-box .simple-fin-doc .inv-doc-num-row{
+    display:flex!important;justify-content:space-between!important;gap:16px!important;font-size:11.5px!important;margin-bottom:5px!important;padding-bottom:5px!important
+  }
+  body.dash-doc-print .dashboard-doc-box.merchant-invoice-box .inv-doc-party-grid{display:grid!important;grid-template-columns:1.4fr 1fr!important;gap:10px!important}
+  body.dash-doc-print .dashboard-doc-box.merchant-invoice-box .inv-doc-table{width:100%!important;table-layout:fixed!important;font-size:11.5px!important;border-collapse:collapse!important}
+  body.dash-doc-print .dashboard-doc-box.merchant-invoice-box .inv-doc-table th{background:#f5f5f5!important;padding:8px 9px!important;font-size:10.5px!important}
+  body.dash-doc-print .dashboard-doc-box.merchant-invoice-box .inv-doc-table td{padding:8px 9px!important;font-size:11.5px!important}
+  body.dash-doc-print .dashboard-doc-box.merchant-invoice-box .inv-bal-title{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important}
+  body.dash-doc-print .dashboard-doc-box.merchant-invoice-box .inv-bal-result{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important}
+  body.dash-doc-print .dashboard-doc-box .simple-fin-doc .inv-doc-type-line{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;flex-wrap:nowrap!important}
+  body.dash-doc-print .dashboard-doc-box .simple-fin-balances{display:grid!important;grid-template-columns:1fr 1fr!important}
+  body.dash-doc-print .inv-doc-head,
+  body.dash-doc-print .inv-doc-party-grid,
+  body.dash-doc-print .inv-doc-total-wrap,
+  body.dash-doc-print .inv-doc-balance,
+  body.dash-doc-print .simple-fin-party,
+  body.dash-doc-print .simple-fin-movement,
+  body.dash-doc-print .simple-fin-balances{break-inside:avoid!important;page-break-inside:avoid!important}
+  body.dash-doc-print *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+}
+
 </style>
 </head>
 <body>
@@ -421,6 +593,24 @@
         </div>
       </section>
     </main>
+  </div>
+
+
+  <!-- DASHBOARD DOCUMENT PREVIEW / PRINT -->
+  <div class="dash-doc-modal" id="dashboard-doc-modal" aria-hidden="true">
+    <div class="dashboard-doc-shell" role="dialog" aria-modal="true">
+      <div class="dashboard-doc-head">
+        <h3 id="dashboard-doc-title">معاينة المستند</h3>
+        <button type="button" class="dashboard-doc-close" id="dashboard-doc-close" aria-label="إغلاق">×</button>
+      </div>
+      <div class="dashboard-doc-stage">
+        <div class="dashboard-doc-box merchant-invoice-box" id="dashboard-doc-content"></div>
+      </div>
+      <div class="dashboard-doc-actions">
+        <button type="button" id="dashboard-doc-close2">إغلاق</button>
+        <button type="button" class="print" id="dashboard-doc-print">طباعة 🖨️</button>
+      </div>
+    </div>
   </div>
 
   <!-- SALE -->
@@ -1125,6 +1315,213 @@ function bindModalShell(){
   document.addEventListener("keydown",e=>{if(e.key==="Escape"){const m=document.querySelector(".dash-modal.open");if(m)closeModal(m);}});
 }
 
+
+/* ══════════════════════════════════════
+   DOCUMENT PREVIEW / PRINT FROM DASHBOARD
+   نفس شكل مستندات صفحة التجار، دون تغيير منطق الحفظ
+══════════════════════════════════════ */
+function dashboardDocDate(ts){
+  const d=ts?.toDate ? ts.toDate() : (ts instanceof Date ? ts : (ts?new Date(ts):new Date()));
+  return d.toLocaleString("ar-EG-u-nu-latn",{timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});
+}
+function dashboardDocDateOnly(s){
+  return s?new Date(String(s)+"T00:00:00").toLocaleDateString("ar-EG-u-nu-latn",{timeZone:"Africa/Cairo",year:"numeric",month:"long",day:"numeric"}):"—";
+}
+function dashboardMoneyAbs(n){
+  return new Intl.NumberFormat("ar-EG-u-nu-latn",{maximumFractionDigits:2}).format(Math.abs(Number(n)||0))+" ج.م";
+}
+function dashboardAccountText(value){
+  const v=Number(value)||0;
+  if(v<0) return `على التاجر تسديد ${money(Math.abs(v))}`;
+  if(v>0) return `مبلغ مستحق للتاجر ${money(v)}`;
+  return "الحساب مسدّد بالكامل";
+}
+function openDashboardDoc(title,html,kind="sale"){
+  const modal=document.getElementById("dashboard-doc-modal"),content=document.getElementById("dashboard-doc-content"),titleEl=document.getElementById("dashboard-doc-title");
+  if(!modal||!content)return;
+  if(titleEl)titleEl.textContent=title||"معاينة المستند";
+  content.className=kind==="sale"?"dashboard-doc-box merchant-invoice-box":"dashboard-doc-box";
+  content.innerHTML=html;
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden","false");
+}
+function closeDashboardDoc(){
+  const modal=document.getElementById("dashboard-doc-modal");
+  modal?.classList.remove("open");
+  modal?.setAttribute("aria-hidden","true");
+  document.body.classList.remove("dash-doc-print");
+}
+function printDashboardDoc(){
+  document.body.classList.add("dash-doc-print");
+  window.print();
+  setTimeout(()=>document.body.classList.remove("dash-doc-print"),1200);
+}
+function bindDashboardDocModal(){
+  document.getElementById("dashboard-doc-close")?.addEventListener("click",closeDashboardDoc);
+  document.getElementById("dashboard-doc-close2")?.addEventListener("click",closeDashboardDoc);
+  document.getElementById("dashboard-doc-print")?.addEventListener("click",printDashboardDoc);
+  document.getElementById("dashboard-doc-modal")?.addEventListener("click",e=>{if(e.target.id==="dashboard-doc-modal")closeDashboardDoc();});
+}
+function renderDashboardSalePreview(data){
+  const lineRows=(data.lines||[]).map(line=>`
+    <tr>
+      <td>${esc(line.productName)}</td>
+      <td style="text-align:center">${num(line.qty)} ${esc(line.unit)}</td>
+      <td style="text-align:center">${money(line.price)}</td>
+      <td style="text-align:center;font-weight:800">${money(line.total)}</td>
+    </tr>`).join("");
+  const before=Number(data.merchantBalanceBefore)||0;
+  const after=Number(data.merchantBalanceAfter)||0;
+  const salePaid=typeof data.paid==="boolean"?data.paid:Math.abs(after-before)<0.01;
+  const paymentStatusText=salePaid?"مدفوعة":"غير مدفوعة";
+  const paymentStatusClass=salePaid?"":"unpaid";
+  const printNow=dashboardDocDate(new Date());
+  const html=`
+    <div class="inv-doc">
+      <div class="inv-doc-head">
+        <div class="inv-doc-logo-wrap">
+          <div class="inv-doc-brand">Ahmed And Hamdy</div>
+          <div class="inv-doc-brand-sub">النظام المحاسبي الداخلي — فاتورة حركة بيع</div>
+        </div>
+        <div class="inv-doc-nums">
+          <div class="inv-doc-num-row"><span>رقم الفاتورة</span><strong>${esc(data.seqLabel||"—")}</strong></div>
+          <div class="inv-doc-num-row"><span>تاريخ الحركة</span><strong>${esc(dashboardDocDate(data.createdAt||new Date()))}</strong></div>
+        </div>
+      </div>
+      <div class="inv-doc-type-line">
+        <span class="inv-doc-type-badge">فاتورة بيع</span>
+        <span class="inv-payment-state ${paymentStatusClass}">حالة الدفع لهذه الفاتورة: ${paymentStatusText}</span>
+      </div>
+      <div class="inv-doc-party-grid">
+        <div class="inv-doc-party-card">
+          <div class="inv-doc-party-label">الفاتورة إلى</div>
+          <div class="inv-doc-party-value">${esc(data.merchantName||"—")}</div>
+          <div class="inv-doc-party-sub">التاجر / العميل</div>
+        </div>
+        <div class="inv-doc-party-card">
+          <div class="inv-doc-party-label">المخزن المصدر</div>
+          <div class="inv-doc-party-value">${esc(data.warehouseName||"—")}</div>
+          <div class="inv-doc-party-sub">المخزن الذي خرجت منه البضاعة</div>
+        </div>
+      </div>
+      <table class="inv-doc-table">
+        <thead><tr>
+          <th style="width:42%">الصنف</th><th style="text-align:center;width:18%">الكمية</th>
+          <th style="text-align:center;width:20%">سعر الوحدة</th><th style="text-align:center;width:20%">الإجمالي</th>
+        </tr></thead>
+        <tbody>${lineRows||`<tr><td colspan="4" style="text-align:center">لا توجد أصناف</td></tr>`}</tbody>
+      </table>
+      <div class="inv-doc-total-wrap"><table class="inv-doc-total-table">
+        <tr><td class="tot-lbl">المجموع الفرعي</td><td class="tot-val">${money(data.totalAmount)}</td></tr>
+        <tr><td class="tot-lbl"><strong>الإجمالي</strong></td><td class="tot-val"><strong>${money(data.totalAmount)}</strong></td></tr>
+      </table></div>
+      <div class="inv-doc-balance">
+        <div class="inv-bal-title">
+          <span>ملخص حساب التاجر</span>
+          <span class="inv-bal-merchant">${esc(data.merchantName||"")}</span>
+        </div>
+        <div class="inv-bal-flow">
+          <div class="inv-bal-step">
+            <div class="inv-bal-lbl">حساب التاجر السابق</div>
+            <div class="inv-bal-val">${dashboardMoneyAbs(before)}</div>
+          </div>
+          <div class="inv-bal-step inv-bal-step-final">
+            <div class="inv-bal-lbl">حساب التاجر الإجمالي</div>
+            <div class="inv-bal-val">${dashboardMoneyAbs(after)}</div>
+          </div>
+        </div>
+        <div class="inv-bal-result"><span>وضع الحساب بعد العملية</span><strong>${dashboardAccountText(after)}</strong></div>
+      </div>
+      ${data.note?`<div class="inv-doc-note"><strong>ملاحظة:</strong> ${esc(data.note)}</div>`:""}
+      <div class="inv-doc-footer">
+        <div>تمت معاينة المستند: ${esc(printNow)}</div>
+        <div class="inv-doc-sig"><div class="inv-doc-sig-line"></div><div>التوقيع والختم</div></div>
+      </div>
+    </div>`;
+  openDashboardDoc("معاينة فاتورة البيع",html,"sale");
+}
+function renderDashboardMerchantFinancePreview(t,beforeBal,afterBal){
+  const isPayment=t.dir==="in";
+  const movementTitle=isPayment?"دفعة من التاجر":"دين / إضافة على حساب التاجر";
+  const movementText=isPayment
+    ? `دفعة بقيمة ${money(t.amount)}${t.description?` — ${t.description}`:""}`
+    : `إضافة دين بقيمة ${money(t.amount)}${t.description?` — ${t.description}`:""}`;
+  const html=`
+    <div class="simple-fin-doc">
+      <div class="inv-doc-head simple-fin-invoice-head">
+        <div class="inv-doc-logo-wrap">
+          <div class="inv-doc-brand">Ahmed And Hamdy</div>
+          <div class="inv-doc-brand-sub">النظام المحاسبي الداخلي — حركة مالية</div>
+        </div>
+        <div class="inv-doc-nums">
+          <div class="inv-doc-num-row"><span>رقم الحركة</span><strong>${esc(t.finId||"—")}</strong></div>
+          <div class="inv-doc-num-row"><span>تاريخ ووقت التنفيذ</span><strong>${esc(dashboardDocDate(t.createdAt||new Date()))}</strong></div>
+        </div>
+      </div>
+      <div class="inv-doc-type-line simple-fin-type-line">
+        <span class="inv-doc-type-badge">حركة مالية</span>
+      </div>
+      <div class="simple-fin-party">
+        <div class="simple-fin-label">اسم التاجر</div>
+        <div class="simple-fin-name">${esc(t.merchantName||t.partyName||"—")}</div>
+      </div>
+      <div class="simple-fin-movement">
+        <div class="simple-fin-kind">${esc(movementTitle)}</div>
+        <div class="simple-fin-desc">${esc(movementText)}</div>
+      </div>
+      <div class="simple-fin-balances">
+        <div class="simple-fin-balance">
+          <div class="simple-fin-balance-label">الرصيد قبل الحركة</div>
+          <div class="simple-fin-balance-value"><span class="simple-fin-balance-number">${dashboardMoneyAbs(beforeBal)}</span><span class="simple-fin-balance-currency">ج.م</span></div>
+        </div>
+        <div class="simple-fin-balance">
+          <div class="simple-fin-balance-label">الرصيد بعد الحركة</div>
+          <div class="simple-fin-balance-value"><span class="simple-fin-balance-number">${dashboardMoneyAbs(afterBal)}</span><span class="simple-fin-balance-currency">ج.م</span></div>
+        </div>
+      </div>
+      <div class="simple-fin-foot"><span>${esc(movementTitle)}</span><span>${esc(t.finId||"")}</span></div>
+    </div>`;
+  openDashboardDoc("معاينة حركة مالية",html,"finance");
+}
+function renderDashboardFinancePreview(t){
+  const cfg=FIN_TYPES[t.type]||{label:t.type||"حركة مالية"};
+  const direction=t.dir==="in"?"إيداع في الصندوق":"سحب من الصندوق";
+  const party=t.employeeName||t.merchantName||t.partyName||"—";
+  const html=`
+    <div class="simple-fin-doc">
+      <div class="inv-doc-head simple-fin-invoice-head">
+        <div class="inv-doc-logo-wrap">
+          <div class="inv-doc-brand">Ahmed And Hamdy</div>
+          <div class="inv-doc-brand-sub">النظام المحاسبي الداخلي — حركة مالية</div>
+        </div>
+        <div class="inv-doc-nums">
+          <div class="inv-doc-num-row"><span>رقم الحركة</span><strong>${esc(t.finId||"—")}</strong></div>
+          <div class="inv-doc-num-row"><span>تاريخ ووقت التنفيذ</span><strong>${esc(dashboardDocDate(t.createdAt||new Date()))}</strong></div>
+        </div>
+      </div>
+      <div class="inv-doc-type-line simple-fin-type-line">
+        <span class="inv-doc-type-badge">حركة مالية</span>
+      </div>
+      <div class="simple-fin-party">
+        <div class="simple-fin-label">${t.type==="advance"?"اسم الموظف":"الجهة"}</div>
+        <div class="simple-fin-name">${esc(party)}</div>
+      </div>
+      <div class="simple-fin-movement">
+        <div class="simple-fin-kind">${esc(cfg.label)} — ${esc(direction)}</div>
+        <div class="simple-fin-desc">${esc(t.description||"بدون ملاحظات")}</div>
+      </div>
+      <div class="simple-fin-balances" style="grid-template-columns:1fr">
+        <div class="simple-fin-balance">
+          <div class="simple-fin-balance-label">المبلغ الإجمالي</div>
+          <div class="simple-fin-balance-value"><span class="simple-fin-balance-number">${money(t.amount)}</span></div>
+        </div>
+      </div>
+      <div class="simple-fin-foot"><span>${esc(cfg.label)}</span><span>${esc(t.finId||"")}</span></div>
+    </div>`;
+  openDashboardDoc("معاينة حركة مالية",html,"finance");
+}
+
+
 /* ══════════════════════════════════════
    SALE — same direction/schema as products page
 ══════════════════════════════════════ */
@@ -1226,7 +1623,14 @@ async function submitSale(e){
     }
     batch.set(doc(collection(db,"activityLog")),{type:"loading",summary:`بيع: ${wh?.name??""} → ${merchant?.name??""}`,details:`${lines.length} صنف — إجمالي: ${money(total)}`,opId:id,note,merchantBalanceBefore:before,merchantBalanceAfter:after,performedBy:currentUser?.email??"—",createdAt:serverTimestamp()});
     batch.set(doc(collection(db,"auditLog")),{action:"إضافة",entity:"عملية بيع",page:"المنتجات",details:`بيع: ${wh?.name??""} → ${merchant?.name??""} — ${lines.length} صنف — إجمالي: ${money(total)}`,userEmail:currentUser?.email??"—",createdAt:serverTimestamp()});
-    await batch.commit(); closeModal("sale-modal"); toast("تمت عملية البيع بنجاح");
+    await batch.commit();
+    closeModal("sale-modal");
+    renderDashboardSalePreview({
+      type:"loading",opId:id,seqLabel:id.slice(0,8).toUpperCase(),
+      warehouseName:wh?.name??"",merchantName:merchant?.name??"",lines,totalAmount:total,note,
+      merchantBalanceBefore:before,merchantBalanceAfter:after,paid:isPaid,performedBy:currentUser?.email??"—",createdAt:new Date()
+    });
+    toast("تمت عملية البيع بنجاح");
   }catch(err){console.error(err);toast("حدث خطأ أثناء تنفيذ البيع",true);}finally{setBusy(btn,false,"تنفيذ عملية البيع");}
 }
 
@@ -1390,11 +1794,35 @@ function updateFinanceDirHint(){
   if(!dir){hint.className="dir-box custom";hint.textContent="حدد اتجاه العملية";}else if(dir==="in"){hint.className="dir-box in";hint.textContent="✅ هذه العملية ستُضاف إلى رصيد الصندوق";}else{hint.className="dir-box out";hint.textContent="⚠️ هذه العملية ستُخصم من رصيد الصندوق";}
 }
 async function submitFinance(e){
-  e.preventDefault();const cfg=FIN_TYPES[financeType];if(!cfg)return toast("اختر نوع العملية",true);const amount=Number(document.getElementById("fin-amount").value);if(!amount||amount<=0)return toast("أدخل مبلغاً صحيحاً",true);const dir=cfg.fixed?cfg.dir:document.querySelector('input[name="fin-dir"]:checked')?.value;if(!dir)return toast("حدد اتجاه العملية",true);
-  const empId=financeType==="advance"?document.getElementById("fin-employee").value:"";if(financeType==="advance"&&!empId)return toast("اختر الموظف أولاً",true);const emp=employees.find(x=>x.id===empId);const deductMonth=financeType==="advance"?document.getElementById("fin-deduct-month").value:"";if(financeType==="advance"&&!deductMonth)return toast("حدد شهر الخصم من الراتب",true);
-  const partyName=document.getElementById("fin-party").value.trim();let merchantId="",merchantName="";const matched=partyName?merchants.find(m=>(m.name||"").trim().toLowerCase()===partyName.toLowerCase()):null;if(matched){merchantId=matched.id;merchantName=matched.name;}
-  const date=document.getElementById("fin-date").value;if(!date)return toast("اختر التاريخ",true);const btn=document.getElementById("fin-submit");setBusy(btn,true,"حفظ العملية");
-  try{const finId=await nextFinId(),data={type:financeType,dir,amount,date,description:document.getElementById("fin-desc").value.trim(),partyName,merchantId,merchantName,employeeId:empId,employeeName:emp?.name??"",deductMonth:financeType==="advance"?deductMonth:"",sourcePage:"المالية",_active:true};await addDoc(collection(db,"finance_transactions"),{...data,finId,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});await writeAudit("إضافة","حركة مالية",`${finId} — ${data.type} — ${data.amount} ج.م${data.employeeName?" — "+data.employeeName:""}${data.merchantName?" — "+data.merchantName:""}`);closeModal("finance-modal");toast("تمت الإضافة — المعرف: "+finId);}catch(err){console.error(err);toast("خطأ أثناء الحفظ",true);}finally{setBusy(btn,false,"حفظ العملية");}
+  e.preventDefault();
+  const cfg=FIN_TYPES[financeType];
+  if(!cfg)return toast("اختر نوع العملية",true);
+  const amount=Number(document.getElementById("fin-amount").value);
+  if(!amount||amount<=0)return toast("أدخل مبلغاً صحيحاً",true);
+  const dir=cfg.fixed?cfg.dir:document.querySelector('input[name="fin-dir"]:checked')?.value;
+  if(!dir)return toast("حدد اتجاه العملية",true);
+  const empId=financeType==="advance"?document.getElementById("fin-employee").value:"";
+  if(financeType==="advance"&&!empId)return toast("اختر الموظف أولاً",true);
+  const emp=employees.find(x=>x.id===empId);
+  const deductMonth=financeType==="advance"?document.getElementById("fin-deduct-month").value:"";
+  if(financeType==="advance"&&!deductMonth)return toast("حدد شهر الخصم من الراتب",true);
+  const partyName=document.getElementById("fin-party").value.trim();
+  let merchantId="",merchantName="";
+  const matched=partyName?merchants.find(m=>(m.name||"").trim().toLowerCase()===partyName.toLowerCase()):null;
+  if(matched){merchantId=matched.id;merchantName=matched.name;}
+  const date=document.getElementById("fin-date").value;
+  if(!date)return toast("اختر التاريخ",true);
+  const btn=document.getElementById("fin-submit");setBusy(btn,true,"حفظ العملية");
+  try{
+    const finId=await nextFinId();
+    const data={type:financeType,dir,amount,date,description:document.getElementById("fin-desc").value.trim(),partyName,merchantId,merchantName,employeeId:empId,employeeName:emp?.name??"",deductMonth:financeType==="advance"?deductMonth:"",sourcePage:"المالية",_active:true};
+    await addDoc(collection(db,"finance_transactions"),{...data,finId,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
+    await writeAudit("إضافة","حركة مالية",`${finId} — ${data.type} — ${data.amount} ج.م${data.employeeName?" — "+data.employeeName:""}${data.merchantName?" — "+data.merchantName:""}`);
+    closeModal("finance-modal");
+    renderDashboardFinancePreview({...data,finId,createdAt:new Date()});
+    toast("تمت الإضافة — المعرف: "+finId);
+  }catch(err){console.error(err);toast("خطأ أثناء الحفظ",true);}
+  finally{setBusy(btn,false,"حفظ العملية");}
 }
 
 /* ══════════════════════════════════════
@@ -1409,13 +1837,30 @@ function updateMerchantPayStyle(){
   const hint=document.getElementById("mp-dir-hint");if(type==="in"){hint.className="dir-box in";hint.textContent="تسديد مستحقات: يقل دين التاجر، والنقد — إن وُجد — يدخل الصندوق.";}else{hint.className="dir-box out";hint.textContent="إضافة على الحساب: يزيد دين التاجر، والنقد — إن وُجد — يخرج من الصندوق.";}
 }
 async function submitMerchantPay(e){
-  e.preventDefault();const merchantId=document.getElementById("mp-merchant").value,merchant=merchants.find(m=>m.id===merchantId);if(!merchant)return toast("اختر التاجر أولاً",true);const payType=document.querySelector('input[name="mp-type"]:checked')?.value;if(!payType)return toast("اختر نوع الحركة",true);const amount=Number(document.getElementById("mp-amount").value);if(!amount||amount<=0)return toast("أدخل مبلغاً صحيحاً",true);const date=document.getElementById("mp-date").value;if(!date)return toast("اختر التاريخ",true);const isCash=document.getElementById("mp-cash").checked,desc=document.getElementById("mp-desc").value.trim(),autoDesc=desc||(payType==="in"?`دفعة من ${merchant.name}`:`إضافة لحساب ${merchant.name}`),btn=document.getElementById("mp-submit");setBusy(btn,true,"حفظ الدفعة");
+  e.preventDefault();
+  const merchantId=document.getElementById("mp-merchant").value,merchant=merchants.find(m=>m.id===merchantId);
+  if(!merchant)return toast("اختر التاجر أولاً",true);
+  const payType=document.querySelector('input[name="mp-type"]:checked')?.value;
+  if(!payType)return toast("اختر نوع الحركة",true);
+  const amount=Number(document.getElementById("mp-amount").value);
+  if(!amount||amount<=0)return toast("أدخل مبلغاً صحيحاً",true);
+  const date=document.getElementById("mp-date").value;
+  if(!date)return toast("اختر التاريخ",true);
+  const isCash=document.getElementById("mp-cash").checked,desc=document.getElementById("mp-desc").value.trim(),autoDesc=desc||(payType==="in"?`دفعة من ${merchant.name}`:`إضافة لحساب ${merchant.name}`),btn=document.getElementById("mp-submit");
+  setBusy(btn,true,"حفظ الدفعة");
   try{
     const finId=await nextFinId(),batch=writeBatch(db);
+    const before=merchantBalances[merchantId]??0;
+    const after=before+(payType==="in"?amount:-amount);
     batch.set(doc(collection(db,"finance_transactions")),{type:"merchant",dir:payType,amount,date,description:autoDesc,merchantId,merchantName:merchant.name,partyName:merchant.name,employeeId:"",employeeName:"",finId,_active:true,sourcePage:"المالية",createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
     if(isCash)batch.set(doc(collection(db,"finance_transactions")),{type:payType==="in"?"deposit":"withdrawal",dir:payType==="in"?"in":"out",amount,date,description:`دفعة تاجر (${merchant.name}) — ${autoDesc}`,partyName:merchant.name,merchantId:"",merchantName:"",employeeId:"",employeeName:"",finId,_active:true,sourcePage:"المالية",createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
-    await batch.commit();await writeAudit("إضافة","دفعة تاجر",`${merchant.name} — ${payType==="in"?"تسديد مستحقات":"زيادة دين"} — ${amount} ج.م${isCash?" (نقدي)":""}`);closeModal("merchant-pay-modal");toast("تم الحفظ — "+finId);
-  }catch(err){console.error(err);toast("خطأ أثناء الحفظ",true);}finally{setBusy(btn,false,"حفظ الدفعة");}
+    await batch.commit();
+    await writeAudit("إضافة","دفعة تاجر",`${merchant.name} — ${payType==="in"?"تسديد مستحقات":"زيادة دين"} — ${amount} ج.م${isCash?" (نقدي)":""}`);
+    closeModal("merchant-pay-modal");
+    renderDashboardMerchantFinancePreview({type:"merchant",dir:payType,amount,date,description:autoDesc,merchantId,merchantName:merchant.name,partyName:merchant.name,finId,createdAt:new Date()},before,after);
+    toast("تم الحفظ — "+finId);
+  }catch(err){console.error(err);toast("خطأ أثناء الحفظ",true);}
+  finally{setBusy(btn,false,"حفظ الدفعة");}
 }
 
 /* ── منع الضغط العرضي أثناء سحب الصفحة على الهاتف ── */
@@ -1452,7 +1897,7 @@ function installMobileTapGuard(){
    UI binding
 ══════════════════════════════════════ */
 function bindUI(){
-  if(uiBound)return;uiBound=true;bindModalShell();
+  if(uiBound)return;uiBound=true;bindModalShell();bindDashboardDocModal();
   const openPrivateAccounts=()=>{
     try{sessionStorage.setItem("privateAccountsEntry","dashboard");}catch(_){}
     location.href="/private_accounts.html";
