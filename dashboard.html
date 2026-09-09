@@ -348,6 +348,57 @@
       .smart-select-menu .smart-option{min-height:44px;font-size:13.5px}
     }
 
+
+
+/* ═══════════════════════════════════════════════════════
+   إصلاح سحب نوافذ الداشبورد داخل Android WebView
+   يمنع Pull-to-refresh عند حدود النافذة فقط، ولا يغيّر الحفظ أو الحسابات
+═══════════════════════════════════════════════════════ */
+@media(max-width:620px){
+  html.dash-modal-locked,
+  body.dash-modal-locked{
+    overscroll-behavior-y:none!important;
+    overscroll-behavior-x:none!important;
+  }
+  body.dash-modal-locked{
+    overscroll-behavior-y:none!important;
+    overscroll-behavior-x:none!important;
+  }
+  .dash-modal.open,
+  .dash-doc-modal.open{
+    position:fixed!important;
+    inset:0!important;
+    overflow:hidden!important;
+    overscroll-behavior:none!important;
+  }
+  .dash-modal.open .dash-modal-box,
+  .dash-doc-modal.open .dashboard-doc-shell,
+  .dash-doc-modal.open .dashboard-doc-stage{
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior-y:contain!important;
+    overscroll-behavior-x:none!important;
+    touch-action:pan-y!important;
+  }
+  .dash-modal.open .dash-modal-box,
+  .dash-modal.open .dash-modal-box.wide{
+    max-height:calc(100dvh - env(safe-area-inset-top,0px))!important;
+    height:auto!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+  }
+  .dash-modal.open .modal-body{
+    min-height:0!important;
+    overflow:visible!important;
+    overscroll-behavior-y:contain!important;
+    touch-action:pan-y!important;
+  }
+  .dash-modal.open .smart-select-menu .smart-options,
+  .dash-modal.open .smart-options{
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior-y:contain!important;
+    touch-action:pan-y!important;
+  }
+}
 /* ═══════════════════════════════════════════════════════
    معاينة وطباعة الداشبورد — نفس روح فواتير صفحة التجار
    لا يغيّر الحفظ أو الحسابات، فقط معاينة بعد العملية
@@ -1283,6 +1334,117 @@ function initSearchableSelects(){
   },true);
 }
 
+
+
+/* ══════════════════════════════════════
+   WEBVIEW MODAL SCROLL GUARD
+   يمنع تحديث الصفحة أثناء سحب نوافذ الداشبورد، خصوصاً عملية المبيعات
+══════════════════════════════════════ */
+const dashModalScrollState={locked:false,scrollY:0,sentinel:false,body:{},html:{}};
+function dashIsCoarsePointer(){
+  return !!(window.matchMedia?.("(pointer: coarse)").matches || (window.innerWidth||0)<=620);
+}
+function lockDashboardPageScroll(){
+  const body=document.body,html=document.documentElement,scroller=document.scrollingElement||html;
+  if(!body||!html)return;
+  if(dashModalScrollState.locked)return;
+  dashModalScrollState.locked=true;
+  dashModalScrollState.scrollY=window.scrollY||html.scrollTop||body.scrollTop||0;
+  dashModalScrollState.sentinel=false;
+  dashModalScrollState.body={overflow:body.style.overflow,overscrollBehaviorY:body.style.overscrollBehaviorY,touchAction:body.style.touchAction};
+  dashModalScrollState.html={overflow:html.style.overflow,overscrollBehaviorY:html.style.overscrollBehaviorY};
+  html.classList.add("dash-modal-locked");
+  body.classList.add("dash-modal-locked");
+  if(dashIsCoarsePointer()){
+    /*
+      مهم للـ Android WebView داخل SwipeRefreshLayout:
+      لا نقفل root scroll بـ position:fixed/overflow:hidden لأن ذلك يجعل التطبيق يعتقد
+      أن الصفحة عند الأعلى فيفعّل التحديث. نُبقي الصفحة قابلة للتمرير مع نقطة 1px
+      بينما كل اللمس محصور داخل النافذة بواسطة guard أدناه.
+    */
+    body.style.overscrollBehaviorY="none";
+    html.style.overscrollBehaviorY="none";
+    body.style.touchAction="auto";
+    if((window.scrollY||0)<1 && scroller.scrollHeight>scroller.clientHeight+2){
+      dashModalScrollState.sentinel=true;
+      requestAnimationFrame(()=>window.scrollTo(0,1));
+    }
+  }else{
+    body.style.overflow="hidden";
+    html.style.overflow="hidden";
+  }
+}
+function unlockDashboardPageScroll(force=false){
+  if(!force && document.querySelector(".dash-modal.open,.dash-doc-modal.open"))return;
+  const body=document.body,html=document.documentElement;
+  if(!body||!html)return;
+  html.classList.remove("dash-modal-locked");
+  body.classList.remove("dash-modal-locked");
+  if(!dashModalScrollState.locked){
+    body.style.overflow="";html.style.overflow="";return;
+  }
+  const y=dashModalScrollState.scrollY||0;
+  body.style.overflow=dashModalScrollState.body.overflow||"";
+  body.style.overscrollBehaviorY=dashModalScrollState.body.overscrollBehaviorY||"";
+  body.style.touchAction=dashModalScrollState.body.touchAction||"";
+  html.style.overflow=dashModalScrollState.html.overflow||"";
+  html.style.overscrollBehaviorY=dashModalScrollState.html.overscrollBehaviorY||"";
+  dashModalScrollState.locked=false;
+  if(dashIsCoarsePointer()) requestAnimationFrame(()=>window.scrollTo(0,y));
+}
+function installWebViewModalScrollGuard(){
+  if(window.__dashWebViewModalScrollGuard)return;
+  window.__dashWebViewModalScrollGuard=true;
+  let startY=0,startX=0,lastY=0;
+  const modalSelector=".dash-modal.open,.dash-doc-modal.open";
+  const scrollableSelector=".smart-select-menu .smart-options,.smart-options,.dashboard-doc-stage,.dashboard-doc-shell,.dash-modal-box";
+  function canScrollY(el){
+    if(!el||!el.isConnected)return false;
+    const st=getComputedStyle(el);
+    return /(auto|scroll)/.test(st.overflowY||"") && el.scrollHeight>el.clientHeight+1;
+  }
+  function nearestScroller(target,modal){
+    let el=target?.closest?.(scrollableSelector)||null;
+    while(el && modal.contains(el)){
+      if(canScrollY(el))return el;
+      el=el.parentElement?.closest?.(scrollableSelector)||null;
+    }
+    const fallback=modal.querySelector(".smart-select-menu.open .smart-options,.dashboard-doc-stage,.dash-modal-box,.dashboard-doc-shell");
+    return canScrollY(fallback)?fallback:null;
+  }
+  document.addEventListener("touchstart",e=>{
+    const modal=e.target?.closest?.(modalSelector);
+    if(!modal||!e.touches||e.touches.length!==1)return;
+    startY=lastY=e.touches[0].clientY;
+    startX=e.touches[0].clientX;
+  },{capture:true,passive:true});
+  document.addEventListener("touchmove",e=>{
+    const modal=e.target?.closest?.(modalSelector);
+    if(!modal)return;
+    if(!e.touches||e.touches.length!==1){e.preventDefault();return;}
+    const t=e.touches[0];
+    const dy=t.clientY-lastY;
+    const totalY=t.clientY-startY,totalX=t.clientX-startX;
+    lastY=t.clientY;
+    if(Math.abs(totalX)>Math.abs(totalY)*1.4)return;
+    e.stopPropagation();
+    if(dashIsCoarsePointer() && (window.scrollY||0)<1 && (document.scrollingElement?.scrollHeight||0)>(document.scrollingElement?.clientHeight||0)+2){
+      window.scrollTo(0,1);
+    }
+    const scroller=nearestScroller(e.target,modal);
+    if(!scroller){e.preventDefault();return;}
+    const max=scroller.scrollHeight-scroller.clientHeight;
+    const y=scroller.scrollTop;
+    const atTop=y<=0;
+    const atBottom=y>=max-1;
+    if((atTop&&dy>0)||(atBottom&&dy<0)){
+      e.preventDefault();
+      if(atTop)scroller.scrollTop=0;
+      else if(atBottom)scroller.scrollTop=max;
+    }
+  },{capture:true,passive:false});
+  window.addEventListener("pageshow",()=>{if(!document.querySelector(".dash-modal.open,.dash-doc-modal.open"))unlockDashboardPageScroll(true);},{passive:true});
+}
 /* ══════════════════════════════════════
    modal shell
 ══════════════════════════════════════ */
@@ -1297,15 +1459,13 @@ function openModal(id){
   if(id==="warehouse-modal") document.getElementById("warehouse-form").reset();
   if(id==="merchant-pay-modal") resetMerchantPay();
   modal.classList.add("open");
-  document.body.style.overflow="hidden";
-  document.documentElement.style.overflow="hidden";
+  lockDashboardPageScroll();
 }
 function closeModal(modal){
   closeSmartSelect();
   (typeof modal==="string"?document.getElementById(modal):modal)?.classList.remove("open");
-  if(!document.querySelector(".dash-modal.open")){
-    document.body.style.overflow="";
-    document.documentElement.style.overflow="";
+  if(!document.querySelector(".dash-modal.open,.dash-doc-modal.open")){
+    unlockDashboardPageScroll();
   }
 }
 function bindModalShell(){
@@ -1344,12 +1504,15 @@ function openDashboardDoc(title,html,kind="sale"){
   content.innerHTML=html;
   modal.classList.add("open");
   modal.setAttribute("aria-hidden","false");
+  lockDashboardPageScroll();
+  requestAnimationFrame(()=>{const stage=modal.querySelector(".dashboard-doc-stage");if(stage)stage.scrollTop=0;});
 }
 function closeDashboardDoc(){
   const modal=document.getElementById("dashboard-doc-modal");
   modal?.classList.remove("open");
   modal?.setAttribute("aria-hidden","true");
   document.body.classList.remove("dash-doc-print");
+  if(!document.querySelector(".dash-modal.open,.dash-doc-modal.open"))unlockDashboardPageScroll();
 }
 function printDashboardDoc(){
   document.body.classList.add("dash-doc-print");
@@ -1785,7 +1948,7 @@ function openFinance(type){
   if(type==="withdrawal"||type==="deposit"){document.getElementById("fin-party-label").textContent="جهة الصرف / المصدر";document.getElementById("fin-party").placeholder="مثال: إيجار، مصروفات إدارية…";}else if(type==="other"){document.getElementById("fin-party-label").textContent="اسم الجهة";document.getElementById("fin-party").placeholder="اختياري";}
   document.querySelectorAll("[data-fin-dir]").forEach(c=>c.classList.remove("active-in","active-out"));
   if(cfg.fixed){const r=document.querySelector(`input[name="fin-dir"][value="${cfg.dir}"]`);if(r)r.checked=true;}
-  updateFinanceDirHint();document.getElementById("finance-modal").classList.add("open");document.body.style.overflow="hidden";
+  updateFinanceDirHint();document.getElementById("finance-modal").classList.add("open");lockDashboardPageScroll();
 }
 function updateFinanceDirHint(){
   const cfg=FIN_TYPES[financeType],hint=document.getElementById("fin-dir-hint");if(!cfg){hint.className="dir-box custom";hint.textContent="اختر العملية";return;}
@@ -1944,7 +2107,7 @@ onAuthStateChanged(auth, async user=>{
   }catch(err){
     console.error("blocked user check failed",err);
   }
-  currentUser=user;renderNav(user);updateDashboardGreeting(user);initSearchableSelects();installMobileTapGuard();bindUI();startData();window.__dashboardReady=true;document.getElementById("app").style.visibility="visible";hideLoader();
+  currentUser=user;renderNav(user);updateDashboardGreeting(user);installWebViewModalScrollGuard();initSearchableSelects();installMobileTapGuard();bindUI();startData();window.__dashboardReady=true;document.getElementById("app").style.visibility="visible";hideLoader();
 });
 
 </script>
