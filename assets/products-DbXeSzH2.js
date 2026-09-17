@@ -1120,6 +1120,7 @@ function initLoadingForm() {
         merchantId, merchantName: merchant?.name ?? "",
         lines: lineDetails, totalAmount, note,
         merchantBalanceBefore, merchantBalanceAfter,
+        paid: isPaid,
         performedBy: currentUser?.email ?? "—",
         createdAt: serverTimestamp(),
       });
@@ -1712,6 +1713,43 @@ function showInvoice(data) {
 
   // تحديد بادج نوع العملية
   const docTypeCls = data.type==="production"?"t-prod":data.type==="loading"?"t-load":"t-trans";
+
+  if (data.type === "loading") {
+    const before = Number(data.merchantBalanceBefore) || 0;
+    const after = Number(data.merchantBalanceAfter) || 0;
+    const paid = typeof data.paid === "boolean" ? data.paid : Math.abs(after-before) < 0.01;
+    const paymentText = paid ? "مدفوعة" : "غير مدفوعة";
+    const accountText = after < 0
+      ? `على التاجر تسديد ${fmtMoney(Math.abs(after))}`
+      : after > 0 ? `مبلغ مستحق للتاجر ${fmtMoney(after)}` : "الحساب مسدّد بالكامل";
+    const modernRows = (data.lines || []).map(l => `<tr>
+      <td>${esc(l.productName)}</td>
+      <td style="text-align:center">${fmtNum(l.qty)} ${esc(l.unit)}</td>
+      <td style="text-align:center">${fmtMoney(l.price)}</td>
+      <td style="text-align:center;font-weight:800">${fmtMoney(l.total)}</td>
+    </tr>`).join("");
+    content.innerHTML = `<div class="inv-doc sale-invoice-modern">
+      <div class="inv-doc-head">
+        <div class="inv-doc-logo-wrap"><div class="inv-doc-brand">Ahmed And Hamdy</div><div class="inv-doc-brand-sub">النظام المحاسبي الداخلي — فاتورة حركة بيع</div></div>
+        <div class="inv-doc-nums">
+          <div class="inv-doc-num-row"><span>رقم الفاتورة</span><strong>${esc(data.seqLabel?shortId:"#"+shortId)}</strong></div>
+          <div class="inv-doc-num-row"><span>تاريخ الحركة</span><strong>${esc(now)}</strong></div>
+        </div>
+      </div>
+      <div class="inv-doc-type-line"><span class="inv-doc-type-badge">فاتورة بيع</span><span class="inv-payment-state ${paid?"":"unpaid"}">حالة الدفع لهذه الفاتورة: ${paymentText}</span></div>
+      <div class="inv-doc-party-grid">
+        <div class="inv-doc-party-card"><div class="inv-doc-party-label">الفاتورة إلى</div><div class="inv-doc-party-value">${esc(data.merchantName||"—")}</div><div class="inv-doc-party-sub">التاجر / العميل</div></div>
+        <div class="inv-doc-party-card"><div class="inv-doc-party-label">المخزن المصدر</div><div class="inv-doc-party-value">${esc(data.warehouseName||"—")}</div><div class="inv-doc-party-sub">المخزن الذي خرجت منه البضاعة</div></div>
+      </div>
+      <table class="inv-doc-table"><thead><tr><th style="width:42%">الصنف</th><th style="text-align:center;width:18%">الكمية</th><th style="text-align:center;width:20%">سعر الوحدة</th><th style="text-align:center;width:20%">الإجمالي</th></tr></thead><tbody>${modernRows||'<tr><td colspan="4" style="text-align:center">لا توجد أصناف</td></tr>'}</tbody></table>
+      <div class="inv-doc-total-wrap"><table class="inv-doc-total-table"><tr><td class="tot-lbl">المجموع الفرعي</td><td class="tot-val">${fmtMoney(data.totalAmount)}</td></tr><tr><td class="tot-lbl"><strong>الإجمالي</strong></td><td class="tot-val"><strong>${fmtMoney(data.totalAmount)}</strong></td></tr></table></div>
+      <div class="inv-doc-balance"><div class="inv-bal-title"><span>ملخص حساب التاجر</span><span class="inv-bal-merchant">${esc(data.merchantName||"")}</span></div><div class="inv-bal-flow"><div class="inv-bal-step"><div class="inv-bal-lbl">حساب التاجر السابق</div><div class="inv-bal-val">${fmtMoney(Math.abs(before))}</div></div><div class="inv-bal-step"><div class="inv-bal-lbl">حساب التاجر الإجمالي</div><div class="inv-bal-val">${fmtMoney(Math.abs(after))}</div></div></div><div class="inv-bal-result"><span>وضع الحساب بعد العملية</span><strong>${accountText}</strong></div></div>
+      ${data.note?`<div class="inv-doc-note"><strong>ملاحظة:</strong> ${esc(data.note)}</div>`:""}
+      <div class="inv-doc-footer"><div>تمت معاينة المستند: ${esc(printNow)}</div><div class="inv-doc-sig"><div class="inv-doc-sig-line"></div><div>التوقيع والختم</div></div></div>
+    </div>`;
+    modal.classList.add("open");
+    return;
+  }
 
   content.innerHTML = `
     <div class="inv-doc">
