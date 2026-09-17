@@ -360,14 +360,14 @@
     .cpb-btn:hover{color:var(--primary-dark,#1a6b3a)}
     .cpb-btn.active{background:var(--primary,#1a6b3a);color:#fff}
     .cash-period-inp{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .cash-period-inp select,.cash-period-inp input[type=date],.cash-period-inp input[type=week]{
+    .cash-period-inp select,.cash-period-inp input[type=date]{
       border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;
       font-family:Cairo,sans-serif;font-size:13px;font-weight:600;
       background:var(--surface);color:var(--ink);cursor:pointer;
       outline:none;transition:border-color .15s;min-height:39px;box-sizing:border-box}
-    .cash-period-inp select:focus,.cash-period-inp input[type=date]:focus,.cash-period-inp input[type=week]:focus{
+    .cash-period-inp select:focus,.cash-period-inp input[type=date]:focus{
       border-color:var(--primary,#1a6b3a)}
-    #cash-inp-week input{min-width:180px;direction:ltr;text-align:center}
+    .cash-last-seven{font-size:12px;font-weight:800;color:var(--primary-dark,#1a6b3a);padding:7px 11px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface);white-space:nowrap}
     #cash-period-label{font-size:12px;color:var(--primary-dark,#1a6b3a);font-weight:700;
       background:var(--primary-soft,#eef7f2);border-radius:6px;
       padding:4px 10px;white-space:nowrap;border:1px solid var(--primary,#1a6b3a)}
@@ -391,9 +391,9 @@
       .cpb-btn{width:100%;padding:8px 4px;font-size:11.5px}
       .cash-period-inp{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
       .cash-period-inp select{width:auto;min-width:0;flex:1 1 0}
-      .cash-period-inp input[type=date],.cash-period-inp input[type=week]{width:100%;min-width:0}
+      .cash-period-inp input[type=date]{width:100%;min-width:0}
       #cash-inp-week,#cash-inp-day{grid-template-columns:1fr}
-      #cash-inp-week input{min-width:0}
+      .cash-last-seven{width:100%;box-sizing:border-box;text-align:center}
       #day-live-clock{width:100%;justify-content:center;box-sizing:border-box}
       #cash-period-label{width:100%;box-sizing:border-box;text-align:center;white-space:normal;line-height:1.7}
     }
@@ -961,7 +961,7 @@
         </select>
       </div>
       <div class="cash-period-inp" id="cash-inp-week" style="display:none">
-        <input type="week" id="cash-week-sel" />
+        <span class="cash-last-seven">آخر 7 أيام حتى اليوم</span>
       </div>
       <div class="cash-period-inp" id="cash-inp-day" style="display:none">
         <input type="date" id="cash-day-sel" />
@@ -1424,7 +1424,6 @@ let editTxId      = null;
 /* ── فترة صندوق الكاش ── */
 let cashPeriodMode = "month"; // "all" | "month" | "week" | "day"
 let cashPeriodYM   = "";      // "YYYY-MM"
-let cashPeriodWeek = "";      // "YYYY-Www"
 let cashPeriodDay  = "";      // "YYYY-MM-DD"
 let cashReportSelection = null; // {mode:"range"|"all", from, to, label}
 
@@ -1480,25 +1479,11 @@ const fmtMonth = s => {
   return new Date(Number(y),Number(m)-1,1).toLocaleDateString("ar-EG-u-nu-latn",{month:"long",year:"numeric"});
 };
 
-function isoWeekValue(date){
-  const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
-  const day=d.getUTCDay()||7;
-  d.setUTCDate(d.getUTCDate()+4-day);
-  const yearStart=new Date(Date.UTC(d.getUTCFullYear(),0,1));
-  const week=Math.ceil((((d-yearStart)/86400000)+1)/7);
-  return `${d.getUTCFullYear()}-W${String(week).padStart(2,"0")}`;
-}
-
-function getIsoWeekRange(value){
-  const match=/^(\d{4})-W(\d{2})$/.exec(value||"");
-  if(!match) return null;
-  const year=Number(match[1]), week=Number(match[2]);
-  const jan4=new Date(Date.UTC(year,0,4));
-  const jan4Day=jan4.getUTCDay()||7;
-  const monday=new Date(jan4);
-  monday.setUTCDate(jan4.getUTCDate()-(jan4Day-1)+(week-1)*7);
-  const sunday=new Date(monday);
-  sunday.setUTCDate(monday.getUTCDate()+6);
+function getLastSevenDaysRange(){
+  const endIso=today();
+  const sunday=new Date(endIso+"T12:00:00Z");
+  const monday=new Date(sunday);
+  monday.setUTCDate(sunday.getUTCDate()-6);
   const toIso=d=>d.toISOString().slice(0,10);
   return {from:toIso(monday),to:toIso(sunday)};
 }
@@ -1531,7 +1516,6 @@ function initCashPeriod(){
   const curY  = now.getFullYear();
   const curM  = String(now.getMonth()+1).padStart(2,"0");
   cashPeriodYM  = `${curY}-${curM}`;
-  cashPeriodWeek= isoWeekValue(now);
   cashPeriodDay = now.toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
 
   /* بناء dropdown السنوات (السنة الحالية + 4 سابقة) */
@@ -1543,7 +1527,6 @@ function initCashPeriod(){
     yearSel.appendChild(o);
   }
   document.getElementById("cash-month-sel").value = curM;
-  document.getElementById("cash-week-sel").value  = cashPeriodWeek;
   document.getElementById("cash-day-sel").value   = cashPeriodDay;
 
   /* أزرار الوضع */
@@ -1564,7 +1547,6 @@ function initCashPeriod(){
 
   document.getElementById("cash-year-sel") .addEventListener("change",syncPeriod);
   document.getElementById("cash-month-sel").addEventListener("change",syncPeriod);
-  document.getElementById("cash-week-sel") .addEventListener("change",syncPeriod);
   document.getElementById("cash-day-sel")  .addEventListener("change",syncPeriod);
 
   /* تشغيل أولي */
@@ -1575,7 +1557,6 @@ function syncPeriod(){
   const y=document.getElementById("cash-year-sel").value;
   const m=document.getElementById("cash-month-sel").value;
   cashPeriodYM  = `${y}-${m}`;
-  cashPeriodWeek= document.getElementById("cash-week-sel").value||isoWeekValue(new Date());
   cashPeriodDay = document.getElementById("cash-day-sel").value||new Date().toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
 
   /* تحديث badge الفترة */
@@ -1583,8 +1564,8 @@ function syncPeriod(){
   if(cashPeriodMode==="all")        lbl.textContent="جميع الفترات";
   else if(cashPeriodMode==="month") lbl.textContent=fmtMonth(cashPeriodYM+"-01");
   else if(cashPeriodMode==="week") {
-    const range=getIsoWeekRange(cashPeriodWeek);
-    lbl.textContent=range?`من ${fmtDate(range.from)} إلى ${fmtDate(range.to)}`:"اختر الأسبوع";
+    const range=getLastSevenDaysRange();
+    lbl.textContent=`آخر 7 أيام: من ${fmtDate(range.from)} إلى ${fmtDate(range.to)}`;
   }
   else                               lbl.textContent=fmtDate(cashPeriodDay);
 
@@ -2624,9 +2605,9 @@ function updateStats(){
   let periodTx=cashTx;
   if(cashPeriodMode==="month"&&cashPeriodYM)
     periodTx=cashTx.filter(t=>(t.date??"").startsWith(cashPeriodYM));
-  else if(cashPeriodMode==="week"&&cashPeriodWeek){
-    const range=getIsoWeekRange(cashPeriodWeek);
-    if(range) periodTx=cashTx.filter(t=>(t.date??"")>=range.from&&(t.date??"")<=range.to);
+  else if(cashPeriodMode==="week"){
+    const range=getLastSevenDaysRange();
+    periodTx=cashTx.filter(t=>(t.date??"")>=range.from&&(t.date??"")<=range.to);
   }
   else if(cashPeriodMode==="day"&&cashPeriodDay)
     periodTx=cashTx.filter(t=>(t.date??"")==cashPeriodDay);
@@ -2656,8 +2637,8 @@ function updateStats(){
     outSub=`مسحوبات ${ml}: ${periodTx.filter(t=>t.dir==="out").length} عملية`;
     advSub=`سلف ${ml}: ${periodTx.filter(t=>t.type==="advance").length} سلفة`;
   } else if(cashPeriodMode==="week"){
-    const range=getIsoWeekRange(cashPeriodWeek);
-    const wl=range?`من ${fmtDate(range.from)} إلى ${fmtDate(range.to)}`:"الأسبوع المحدد";
+    const range=getLastSevenDaysRange();
+    const wl=`من ${fmtDate(range.from)} إلى ${fmtDate(range.to)}`;
     balSub=`رصيد الأسبوع ${wl}`;
     inSub =`إيداعات الأسبوع: ${periodTx.filter(t=>t.dir==="in").length} عملية`;
     outSub=`مسحوبات الأسبوع: ${periodTx.filter(t=>t.dir==="out").length} عملية`;
@@ -2692,9 +2673,9 @@ function renderTable(){
     /* ── فلتر الفترة العلوي (يأخذ الأولوية على filter-month) ── */
     if(cashPeriodMode==="month"&&cashPeriodYM){
       if(!(t.date??"").startsWith(cashPeriodYM)) return false;
-    } else if(cashPeriodMode==="week"&&cashPeriodWeek){
-      const range=getIsoWeekRange(cashPeriodWeek);
-      if(range&&((t.date??"")<range.from||(t.date??"")>range.to)) return false;
+    } else if(cashPeriodMode==="week"){
+      const range=getLastSevenDaysRange();
+      if((t.date??"")<range.from||(t.date??"")>range.to) return false;
     } else if(cashPeriodMode==="day"&&cashPeriodDay){
       if((t.date??"")!==cashPeriodDay) return false;
     } else if(cashPeriodMode==="all"&&monthF){
