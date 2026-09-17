@@ -899,7 +899,12 @@
       .qa-btn{font-size:10.8px!important;padding:6px 6px!important}
     }
 
+@media screen and (hover:none) and (pointer:coarse){
+ #fin-search-popover{overflow:clip}
+ #fin-search-popover .fin-search-options{overscroll-behavior-y:auto;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+}
 </style>
+  <script defer src="/assets/ui-stability.js?v=20260907.2"></script>
 </head>
 <body>
 <!-- ══ شاشة التحميل ══ -->
@@ -932,7 +937,6 @@
       <div class="cash-period-tabs">
         <button class="cpb-btn" data-cp="all">الكل</button>
         <button class="cpb-btn active" data-cp="month">شهري</button>
-        <button class="cpb-btn" data-cp="week">أسبوعي</button>
         <button class="cpb-btn" data-cp="day">يومي</button>
       </div>
       <div class="cash-period-inp" id="cash-inp-month">
@@ -945,9 +949,6 @@
           <option value="09">سبتمبر</option><option value="10">أكتوبر</option>
           <option value="11">نوفمبر</option><option value="12">ديسمبر</option>
         </select>
-      </div>
-      <div class="cash-period-inp" id="cash-inp-week" style="display:none">
-        <input type="week" id="cash-week-sel" />
       </div>
       <div class="cash-period-inp" id="cash-inp-day" style="display:none">
         <input type="date" id="cash-day-sel" />
@@ -1408,9 +1409,8 @@ let selectedType  = "";
 let editTxId      = null;
 
 /* ── فترة صندوق الكاش ── */
-let cashPeriodMode = "month"; // "all" | "month" | "week" | "day"
+let cashPeriodMode = "month"; // "all" | "month" | "day"
 let cashPeriodYM   = "";      // "YYYY-MM"
-let cashPeriodWeek = "";      // "YYYY-Www"
 let cashPeriodDay  = "";      // "YYYY-MM-DD"
 let cashReportSelection = null; // {mode:"range"|"all", from, to, label}
 
@@ -1466,29 +1466,6 @@ const fmtMonth = s => {
   return new Date(Number(y),Number(m)-1,1).toLocaleDateString("ar-EG-u-nu-latn",{month:"long",year:"numeric"});
 };
 
-function isoWeekValue(date){
-  const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
-  const day=d.getUTCDay()||7;
-  d.setUTCDate(d.getUTCDate()+4-day);
-  const yearStart=new Date(Date.UTC(d.getUTCFullYear(),0,1));
-  const week=Math.ceil((((d-yearStart)/86400000)+1)/7);
-  return `${d.getUTCFullYear()}-W${String(week).padStart(2,"0")}`;
-}
-
-function getIsoWeekRange(value){
-  const match=/^(\d{4})-W(\d{2})$/.exec(value||"");
-  if(!match) return null;
-  const year=Number(match[1]), week=Number(match[2]);
-  const jan4=new Date(Date.UTC(year,0,4));
-  const jan4Day=jan4.getUTCDay()||7;
-  const monday=new Date(jan4);
-  monday.setUTCDate(jan4.getUTCDate()-(jan4Day-1)+(week-1)*7);
-  const sunday=new Date(monday);
-  sunday.setUTCDate(monday.getUTCDate()+6);
-  const toIso=d=>d.toISOString().slice(0,10);
-  return {from:toIso(monday),to:toIso(sunday)};
-}
-
 function toast(msg,err=false){
   let t=document.getElementById("toast");
   if(!t){ t=document.createElement("div"); t.id="toast"; t.className="toast"; document.body.appendChild(t); }
@@ -1517,7 +1494,6 @@ function initCashPeriod(){
   const curY  = now.getFullYear();
   const curM  = String(now.getMonth()+1).padStart(2,"0");
   cashPeriodYM  = `${curY}-${curM}`;
-  cashPeriodWeek= isoWeekValue(now);
   cashPeriodDay = now.toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
 
   /* بناء dropdown السنوات (السنة الحالية + 4 سابقة) */
@@ -1529,7 +1505,6 @@ function initCashPeriod(){
     yearSel.appendChild(o);
   }
   document.getElementById("cash-month-sel").value = curM;
-  document.getElementById("cash-week-sel").value  = cashPeriodWeek;
   document.getElementById("cash-day-sel").value   = cashPeriodDay;
 
   /* أزرار الوضع */
@@ -1539,7 +1514,6 @@ function initCashPeriod(){
       document.querySelectorAll(".cpb-btn[data-cp]").forEach(b=>b.classList.remove("active"));
       btn.classList.add("active");
       document.getElementById("cash-inp-month").style.display=cashPeriodMode==="month"?"flex":"none";
-      document.getElementById("cash-inp-week").style.display =cashPeriodMode==="week" ?"flex":"none";
       document.getElementById("cash-inp-day").style.display  =cashPeriodMode==="day"  ?"flex":"none";
       /* إظهار/إخفاء فلتر الشهر في شريط الجدول */
       const mfWrap=document.getElementById("filter-month-wrap");
@@ -1550,7 +1524,6 @@ function initCashPeriod(){
 
   document.getElementById("cash-year-sel") .addEventListener("change",syncPeriod);
   document.getElementById("cash-month-sel").addEventListener("change",syncPeriod);
-  document.getElementById("cash-week-sel") .addEventListener("change",syncPeriod);
   document.getElementById("cash-day-sel")  .addEventListener("change",syncPeriod);
 
   /* تشغيل أولي */
@@ -1561,17 +1534,12 @@ function syncPeriod(){
   const y=document.getElementById("cash-year-sel").value;
   const m=document.getElementById("cash-month-sel").value;
   cashPeriodYM  = `${y}-${m}`;
-  cashPeriodWeek= document.getElementById("cash-week-sel").value||isoWeekValue(new Date());
   cashPeriodDay = document.getElementById("cash-day-sel").value||new Date().toLocaleDateString("en-CA",{timeZone:"Africa/Cairo"});
 
   /* تحديث badge الفترة */
   const lbl=document.getElementById("cash-period-label");
   if(cashPeriodMode==="all")        lbl.textContent="جميع الفترات";
   else if(cashPeriodMode==="month") lbl.textContent=fmtMonth(cashPeriodYM+"-01");
-  else if(cashPeriodMode==="week") {
-    const range=getIsoWeekRange(cashPeriodWeek);
-    lbl.textContent=range?`من ${fmtDate(range.from)} إلى ${fmtDate(range.to)}`:"اختر الأسبوع";
-  }
   else                               lbl.textContent=fmtDate(cashPeriodDay);
 
   /* مزامنة filter-month في شريط الجدول (عند وضع الشهر) */
@@ -2610,10 +2578,6 @@ function updateStats(){
   let periodTx=cashTx;
   if(cashPeriodMode==="month"&&cashPeriodYM)
     periodTx=cashTx.filter(t=>(t.date??"").startsWith(cashPeriodYM));
-  else if(cashPeriodMode==="week"&&cashPeriodWeek){
-    const range=getIsoWeekRange(cashPeriodWeek);
-    if(range) periodTx=cashTx.filter(t=>(t.date??"")>=range.from&&(t.date??"")<=range.to);
-  }
   else if(cashPeriodMode==="day"&&cashPeriodDay)
     periodTx=cashTx.filter(t=>(t.date??"")==cashPeriodDay);
 
@@ -2641,13 +2605,6 @@ function updateStats(){
     inSub =`إيداعات ${ml}: ${periodTx.filter(t=>t.dir==="in").length} عملية`;
     outSub=`مسحوبات ${ml}: ${periodTx.filter(t=>t.dir==="out").length} عملية`;
     advSub=`سلف ${ml}: ${periodTx.filter(t=>t.type==="advance").length} سلفة`;
-  } else if(cashPeriodMode==="week"){
-    const range=getIsoWeekRange(cashPeriodWeek);
-    const wl=range?`من ${fmtDate(range.from)} إلى ${fmtDate(range.to)}`:"الأسبوع المحدد";
-    balSub=`رصيد الأسبوع ${wl}`;
-    inSub =`إيداعات الأسبوع: ${periodTx.filter(t=>t.dir==="in").length} عملية`;
-    outSub=`مسحوبات الأسبوع: ${periodTx.filter(t=>t.dir==="out").length} عملية`;
-    advSub=`سلف الأسبوع: ${periodTx.filter(t=>t.type==="advance").length} سلفة`;
   } else {
     const dl=fmtDate(cashPeriodDay);
     balSub=`رصيد تراكمي حتى ${dl}`;
@@ -2678,9 +2635,6 @@ function renderTable(){
     /* ── فلتر الفترة العلوي (يأخذ الأولوية على filter-month) ── */
     if(cashPeriodMode==="month"&&cashPeriodYM){
       if(!(t.date??"").startsWith(cashPeriodYM)) return false;
-    } else if(cashPeriodMode==="week"&&cashPeriodWeek){
-      const range=getIsoWeekRange(cashPeriodWeek);
-      if(range&&((t.date??"")<range.from||(t.date??"")>range.to)) return false;
     } else if(cashPeriodMode==="day"&&cashPeriodDay){
       if((t.date??"")!==cashPeriodDay) return false;
     } else if(cashPeriodMode==="all"&&monthF){
