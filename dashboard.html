@@ -571,6 +571,20 @@
   body.dash-doc-print *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 }
 
+
+/* Dashboard quick favourites — original action handlers remain authoritative */
+.dash-favorites{margin-bottom:16px}
+.dash-fav-empty{padding:12px 6px;color:var(--muted);font-size:13px}
+.dash-fav-star{position:absolute;top:8px;left:8px;z-index:2;width:29px;height:29px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--muted);font:900 19px Arial,sans-serif;cursor:pointer;display:grid;place-items:center;line-height:1}
+.dash-fav-star.is-favorite{color:#cf9b25;background:#fff8de;border-color:#ebd28d}
+.dash-fav-star:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.ops-section .action-card{position:relative}
+.dash-fav-source .action-card{width:100%;height:100%;padding-left:42px}
+.dash-favorites .action-card{position:relative}
+.dash-favorites .action-card .dash-fav-remove{position:absolute;top:8px;left:8px;border:1px solid #ebd28d;background:#fff8de;color:#a87b13;width:29px;height:29px;border-radius:9px;font-size:17px;display:grid;place-items:center;cursor:pointer;z-index:2}
+.dash-favorites .action-card{padding-left:42px}
+@media print{body.dash-doc-print #dashboard-doc-modal{left:0!important;right:0!important;width:210mm!important;max-width:210mm!important;margin-left:auto!important;margin-right:auto!important;direction:rtl!important;padding:5mm 13mm 12mm!important;box-sizing:border-box!important}body.dash-doc-print .dashboard-doc-shell,body.dash-doc-print .dashboard-doc-stage,body.dash-doc-print .dashboard-doc-box{margin-left:auto!important;margin-right:auto!important;float:none!important;position:static!important;direction:rtl!important}body.dash-doc-print .dashboard-doc-box .inv-doc,body.dash-doc-print .dashboard-doc-box .simple-fin-doc{margin-left:auto!important;margin-right:auto!important;float:none!important}}
+
 </style>
 </head>
 <body>
@@ -597,6 +611,12 @@
           <div class="live-chip"><span class="live-dot"></span><span id="data-status">جارِ ربط البيانات…</span></div>
           <div class="welcome-avatar" id="welcome-avatar" aria-hidden="true">A</div>
         </div>
+      </section>
+
+      <section class="ops-section dash-favorites" id="dash-favorites-section" aria-label="العمليات المفضلة">
+        <div class="ops-head"><div class="ops-title"><div class="ops-icon" aria-hidden="true">★</div><div><h2>العمليات المفضلة</h2><p>اختصارات سريعة للعمليات التي تستخدمها كثيراً</p></div></div></div>
+        <div id="dash-favorites-grid" class="action-grid"></div>
+        <p class="dash-fav-empty" id="dash-favorites-empty">اضغط على النجمة ★ في إحدى العمليات بالأسفل لإضافتها هنا.</p>
       </section>
 
       <section class="ops-section">
@@ -2060,8 +2080,44 @@ function installMobileTapGuard(){
 /* ══════════════════════════════════════
    UI binding
 ══════════════════════════════════════ */
+
+/* Customisable quick actions; copies dispatch through original, already-bound buttons. */
+function initDashboardFavorites(){
+  const section=document.getElementById('dash-favorites-section');
+  const grid=document.getElementById('dash-favorites-grid');
+  const empty=document.getElementById('dash-favorites-empty');
+  if(!section||!grid||!empty)return;
+  const key='dashboard-favorites-v1-'+(currentUser?.uid||'local');
+  const originals=[...document.querySelectorAll('.ops-section:not(.dash-favorites) .action-card[data-open],.ops-section:not(.dash-favorites) .action-card[data-fin-type]')];
+  const getId=b=>b.dataset.open?'open:'+b.dataset.open:'finance:'+b.dataset.finType;
+  const sources=new Map(originals.map(b=>[getId(b),b]));
+  let selected=[];
+  try{const stored=JSON.parse(localStorage.getItem(key)||'[]');if(Array.isArray(stored))selected=[...new Set(stored.filter(id=>sources.has(id)))];}catch(e){console.warn('Favorites storage unavailable',e)}
+  const save=()=>{try{localStorage.setItem(key,JSON.stringify(selected))}catch(e){console.warn('Favorites cannot be saved',e)}};
+  const render=()=>{
+    grid.replaceChildren();empty.hidden=selected.length>0;
+    for(const id of selected){
+      const original=sources.get(id);if(!original)continue;
+      const wrap=document.createElement('div');wrap.style.position='relative';wrap.style.minWidth='0';
+      const clone=original.cloneNode(true);clone.removeAttribute('id');clone.removeAttribute('data-open');clone.removeAttribute('data-fin-type');
+      clone.addEventListener('click',()=>original.click());
+      const remove=document.createElement('button');remove.type='button';remove.className='dash-fav-remove';remove.textContent='★';remove.title='إزالة من المفضلة';remove.setAttribute('aria-label','إزالة '+(original.querySelector('strong')?.textContent||'العملية')+' من المفضلة');
+      remove.addEventListener('click',e=>{e.stopPropagation();toggle(id)});
+      clone.append(remove);wrap.append(clone);grid.append(wrap);
+    }
+    for(const b of originals){const star=b.querySelector('.dash-fav-star');if(!star)continue;const active=selected.includes(getId(b));star.classList.toggle('is-favorite',active);star.textContent=active?'★':'☆';star.title=active?'إزالة من المفضلة':'إضافة للمفضلة';star.setAttribute('aria-pressed',String(active));}
+  };
+  const toggle=id=>{selected=selected.includes(id)?selected.filter(x=>x!==id):[...selected,id];save();render()};
+  for(const b of originals){
+    const star=document.createElement('button');star.type='button';star.className='dash-fav-star';star.setAttribute('aria-label','تبديل تفضيل '+(b.querySelector('strong')?.textContent||'العملية'));
+    star.addEventListener('click',e=>{e.stopPropagation();toggle(getId(b))});
+    const holder=b.parentElement;const wrapper=document.createElement('div');wrapper.className='dash-fav-source';wrapper.style.position='relative';wrapper.style.minWidth='0';b.before(wrapper);wrapper.append(b,star);
+  }
+  render();
+}
+
 function bindUI(){
-  if(uiBound)return;uiBound=true;bindModalShell();bindDashboardDocModal();
+  if(uiBound)return;uiBound=true;bindModalShell();bindDashboardDocModal();initDashboardFavorites();
   const openPrivateAccounts=()=>{
     try{sessionStorage.setItem("privateAccountsEntry","dashboard");}catch(_){}
     location.href="/private_accounts.html";
